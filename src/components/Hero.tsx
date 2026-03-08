@@ -122,7 +122,7 @@ const Hero = () => {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Button asChild size="lg" className="neon-glow text-base px-8 py-6 rounded-full gap-2">
-            <a href="#register">
+            <a href="#events">
               <Rocket className="h-4 w-4" />
               Register Now
             </a>
