@@ -185,23 +185,6 @@ const AdminSettings = () => {
     }
   };
 
-  // Check if current user matches a session user
-  const isCurrentUser = (userId: string) => user?.id === userId;
-
-    try {
-      const { data: { session: authSession } } = await supabase.auth.getSession();
-      const resp = await supabase.functions.invoke("kick-session", {
-        body: { session_id: sessionId, user_id: session.user_id },
-      });
-      if (resp.error) throw resp.error;
-      toast.success("Session terminated & user signed out");
-      fetchActiveSessions();
-    } catch {
-      toast.error("Failed to kick session");
-    }
-  };
-
-  const isCurrentUser = (userId: string) => userId === user?.id;
 
   return (
     <div className="space-y-8 max-w-4xl">
