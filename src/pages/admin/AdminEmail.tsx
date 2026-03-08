@@ -125,7 +125,7 @@ const AdminEmail = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("announcement");
   const [subject, setSubject] = useState(templates[0].subject);
   const [message, setMessage] = useState("");
-  const [recipientMode, setRecipientMode] = useState<"manual" | "event">("manual");
+  const [recipientMode, setRecipientMode] = useState<"manual" | "event" | "table">("manual");
   const [manualEmails, setManualEmails] = useState("");
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [events, setEvents] = useState<{ id: string; name: string }[]>([]);
@@ -168,7 +168,8 @@ const AdminEmail = () => {
       .replace(/\{\{college\}\}/gi, recipient.college || "")
       .replace(/\{\{event\}\}/gi, recipient.event || eventName || "");
   };
-  const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string }[]>([]);
+  const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string; team_name: string; college_name: string }[]>([]);
+  const [tableSelected, setTableSelected] = useState<Set<string>>(new Set());
   const [regSearch, setRegSearch] = useState("");
 
   // load events + all registrations
@@ -176,13 +177,15 @@ const AdminEmail = () => {
     supabase.from("events").select("id,name").eq("is_active", true).order("name").then(({ data }) => {
       if (data) setEvents(data);
       // load registrations with event names
-      supabase.from("registrations").select("leader_name,leader_email,leader_phone,event_id").order("created_at", { ascending: false }).then(({ data: regs }) => {
+      supabase.from("registrations").select("leader_name,leader_email,leader_phone,team_name,college_name,event_id").order("created_at", { ascending: false }).then(({ data: regs }) => {
         if (regs && data) {
           const eventMap = new Map(data.map(e => [e.id, e.name]));
           setAllRegistrations(regs.map(r => ({
             leader_name: r.leader_name,
             leader_email: r.leader_email,
             leader_phone: r.leader_phone,
+            team_name: r.team_name || "",
+            college_name: r.college_name,
             event_name: eventMap.get(r.event_id) || "Unknown",
           })));
         }
@@ -221,6 +224,11 @@ const AdminEmail = () => {
 
   const getRecipients = (): { email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[] => {
     if (recipientMode === "event") return selectedParticipants;
+    if (recipientMode === "table") {
+      return allRegistrations
+        .filter((_, i) => tableSelected.has(String(i)))
+        .map(r => ({ email: r.leader_email, name: r.leader_name, phone: r.leader_phone, team_name: r.team_name, college: r.college_name, event: r.event_name }));
+    }
     return manualEmails.split(/[,;\n]/).map(e => e.trim()).filter(Boolean).map(e => ({ email: e, name: e.split("@")[0] }));
   };
 
@@ -361,10 +369,11 @@ const AdminEmail = () => {
               <CardDescription className="text-xs">Choose who receives this email</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Tabs value={recipientMode} onValueChange={v => setRecipientMode(v as "manual" | "event")}>
+              <Tabs value={recipientMode} onValueChange={v => setRecipientMode(v as "manual" | "event" | "table")}>
                 <TabsList className="w-full">
                   <TabsTrigger value="manual" className="flex-1 text-xs">Manual</TabsTrigger>
                   <TabsTrigger value="event" className="flex-1 text-xs">By Event</TabsTrigger>
+                  <TabsTrigger value="table" className="flex-1 text-xs">From Table</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="manual" className="mt-3">
@@ -410,6 +419,28 @@ const AdminEmail = () => {
                     </>
                   )}
                 </TabsContent>
+
+                <TabsContent value="table" className="mt-3">
+                  <p className="text-xs text-muted-foreground mb-2">Select participants from the table below, then come back here to send.</p>
+                  <p className="text-sm text-foreground font-medium">{tableSelected.size} participant(s) selected</p>
+                  {tableSelected.size > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {Array.from(tableSelected).slice(0, 8).map(idx => {
+                        const r = allRegistrations[Number(idx)];
+                        return r ? (
+                          <Badge key={idx} variant="secondary" className="text-xs gap-1 pr-1">
+                            {r.leader_name}
+                            <button onClick={() => setTableSelected(prev => { const n = new Set(prev); n.delete(idx); return n; })} className="hover:text-destructive"><X size={12} /></button>
+                          </Badge>
+                        ) : null;
+                      })}
+                      {tableSelected.size > 8 && <Badge variant="outline" className="text-xs">+{tableSelected.size - 8} more</Badge>}
+                    </div>
+                  )}
+                  {tableSelected.size > 0 && (
+                    <Button variant="ghost" size="sm" className="text-xs h-7 mt-2" onClick={() => setTableSelected(new Set())}>Clear All</Button>
+                  )}
+                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
@@ -450,10 +481,20 @@ const AdminEmail = () => {
               <Table2 size={18} className="text-primary" />
               <CardTitle className="text-base">Registered Participants</CardTitle>
               <Badge variant="secondary" className="text-xs">{allRegistrations.length}</Badge>
+              {tableSelected.size > 0 && (
+                <Badge className="text-xs bg-primary/20 text-primary border-primary/30">{tableSelected.size} selected</Badge>
+              )}
             </div>
-            <div className="relative w-full sm:w-64">
-              <Search size={14} className="absolute left-2.5 top-2.5 text-muted-foreground" />
-              <Input placeholder="Search name, email, event…" value={regSearch} onChange={e => setRegSearch(e.target.value)} className="pl-8 bg-background border-border text-xs h-9" />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              {tableSelected.size > 0 && (
+                <Button variant="neon-outline" size="sm" className="text-xs h-8 gap-1.5" onClick={() => { setRecipientMode("table"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+                  <Send size={12} /> Email Selected
+                </Button>
+              )}
+              <div className="relative flex-1 sm:w-64">
+                <Search size={14} className="absolute left-2.5 top-2.5 text-muted-foreground" />
+                <Input placeholder="Search name, email, event…" value={regSearch} onChange={e => setRegSearch(e.target.value)} className="pl-8 bg-background border-border text-xs h-9" />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -462,6 +503,17 @@ const AdminEmail = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-muted/50 border-b border-border">
+                  <th className="px-3 py-3 w-10">
+                    <input
+                      type="checkbox"
+                      className="rounded border-muted-foreground/30 accent-[hsl(var(--primary))]"
+                      checked={allRegistrations.length > 0 && tableSelected.size === allRegistrations.length}
+                      onChange={e => {
+                        if (e.target.checked) setTableSelected(new Set(allRegistrations.map((_, i) => String(i))));
+                        else setTableSelected(new Set());
+                      }}
+                    />
+                  </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">#</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
@@ -470,28 +522,41 @@ const AdminEmail = () => {
                 </tr>
               </thead>
               <tbody>
-                {allRegistrations
-                  .filter(r => {
+                {(() => {
+                  const filtered = allRegistrations.map((r, origIdx) => ({ ...r, origIdx })).filter(r => {
                     if (!regSearch.trim()) return true;
                     const q = regSearch.toLowerCase();
                     return r.leader_name.toLowerCase().includes(q) || r.leader_email.toLowerCase().includes(q) || r.event_name.toLowerCase().includes(q) || r.leader_phone.includes(q);
-                  })
-                  .map((r, i) => (
-                    <tr key={`${r.leader_email}-${r.event_name}-${i}`} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3 text-muted-foreground text-xs">{i + 1}</td>
-                      <td className="px-4 py-3 text-foreground font-medium">{r.leader_name}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{r.leader_email}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{r.leader_phone}</td>
-                      <td className="px-4 py-3"><Badge variant="outline" className="text-xs">{r.event_name}</Badge></td>
-                    </tr>
-                  ))}
-                {allRegistrations.filter(r => {
-                  if (!regSearch.trim()) return true;
-                  const q = regSearch.toLowerCase();
-                  return r.leader_name.toLowerCase().includes(q) || r.leader_email.toLowerCase().includes(q) || r.event_name.toLowerCase().includes(q) || r.leader_phone.includes(q);
-                }).length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground text-sm">No registrations found</td></tr>
-                )}
+                  });
+                  if (filtered.length === 0) return (
+                    <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground text-sm">No registrations found</td></tr>
+                  );
+                  return filtered.map((r, i) => {
+                    const key = String(r.origIdx);
+                    const isChecked = tableSelected.has(key);
+                    return (
+                      <tr
+                        key={`${r.leader_email}-${r.event_name}-${r.origIdx}`}
+                        className={`border-b border-border last:border-0 transition-colors cursor-pointer ${isChecked ? "bg-primary/5" : "hover:bg-muted/30"}`}
+                        onClick={() => setTableSelected(prev => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; })}
+                      >
+                        <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            className="rounded border-muted-foreground/30 accent-[hsl(var(--primary))]"
+                            checked={isChecked}
+                            onChange={() => setTableSelected(prev => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; })}
+                          />
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground text-xs">{i + 1}</td>
+                        <td className="px-4 py-3 text-foreground font-medium">{r.leader_name}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{r.leader_email}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{r.leader_phone}</td>
+                        <td className="px-4 py-3"><Badge variant="outline" className="text-xs">{r.event_name}</Badge></td>
+                      </tr>
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>
