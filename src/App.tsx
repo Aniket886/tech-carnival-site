@@ -16,7 +16,7 @@ import AdminEvents from "./pages/admin/AdminEvents";
 import AdminColleges from "./pages/admin/AdminColleges";
 import AdminApiKeys from "./pages/admin/AdminApiKeys";
 import AdminApiDocs from "./pages/admin/AdminApiDocs";
-import AdminEventLinks from "./pages/admin/AdminEventLinks";
+
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminScores from "./pages/admin/AdminScores";
 import AdminSponsors from "./pages/admin/AdminSponsors";
