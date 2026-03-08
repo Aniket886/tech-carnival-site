@@ -204,7 +204,31 @@
   .btn-red:hover { background-position: right; transform: scale(1.05); }
   .btn-red:active { transform: scale(0.95); }
 
-  .text-gradient {
+  .btn-purple {
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right, hsl(270 80% 50% / 0.4), hsl(270 80% 60%), hsl(270 80% 50% / 0.4), hsl(270 80% 50% / 0.4), hsl(270 80% 60%), hsl(270 80% 50% / 0.4));
+    background-size: 250%;
+    background-position: left;
+    color: hsl(270 80% 65%);
+    overflow: hidden;
+    transition: background-position 1s, transform 0.3s;
+  }
+
+  .btn-purple::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 8px;
+    background-color: hsl(var(--background) / 0.9);
+    z-index: 0;
+  }
+
+  .btn-purple > * { position: relative; z-index: 1; }
+  .btn-purple:hover { background-position: right; transform: scale(1.05); }
+  .btn-purple:active { transform: scale(0.95); }
+
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
   }

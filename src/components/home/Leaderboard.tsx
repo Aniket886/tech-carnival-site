@@ -25,7 +25,7 @@ const tabs = [
   { key: "overall", label: "🏆 Overall", btnClass: "btn-gold", ringColor: "ring-[hsl(45_90%_55%/0.5)]" },
   { key: "technical", label: "💻 Technical", btnClass: "btn-golden", ringColor: "ring-primary/50" },
   { key: "gaming", label: "🎮 Gaming", btnClass: "btn-red", ringColor: "ring-[hsl(0_80%_55%/0.5)]" },
-  { key: "cultural", label: "🎭 Cultural", btnClass: "btn-golden", ringColor: "ring-primary/50" },
+  { key: "cultural", label: "🎭 Cultural", btnClass: "btn-purple", ringColor: "ring-[hsl(270_80%_60%/0.5)]" },
 ];
 
 const rankStyle = (rank: number) => {
