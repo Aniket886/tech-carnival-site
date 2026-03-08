@@ -12,7 +12,7 @@ const Footer = () => {
 
       <div className="relative z-10 container mx-auto px-4">
         {/* Main content */}
-        <div className="flex flex-col items-center text-center mb-10">
+        <div className="flex flex-col items-center text-center mb-6">
           <div className="inline-flex items-center gap-2 mb-4">
             <Sparkles className="h-5 w-5 text-primary" />
             <h3 className="font-display text-2xl font-bold gradient-text tracking-wide">
