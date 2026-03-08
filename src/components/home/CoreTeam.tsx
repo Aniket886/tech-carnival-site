@@ -22,16 +22,16 @@ const CoreTeam = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+        <div className="flex flex-wrap justify-center gap-10 md:gap-14">
           {coreTeam.map((name) => (
             <div
               key={name}
-              className="flex flex-col items-center text-center group w-36 sm:w-44"
+              className="flex flex-col items-center text-center group w-40 sm:w-52"
             >
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-primary/40 bg-muted/60 flex items-center justify-center mb-4 overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.15)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] group-hover:border-primary/70 transition-all duration-300">
-                <User className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground/50" />
+              <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-primary/40 bg-muted/60 flex items-center justify-center mb-5 overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.15)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] group-hover:border-primary/70 transition-all duration-300">
+                <User className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/50" />
               </div>
-              <h3 className="text-sm sm:text-base font-semibold text-foreground leading-tight whitespace-nowrap">
+              <h3 className="text-base sm:text-lg font-semibold text-foreground leading-tight whitespace-nowrap">
                 {name}
               </h3>
             </div>
