@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const { loginAndCheckRole } = useAdminAuth();
-
-  const expiredMsg = (location.state as any)?.expired;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,12 +37,6 @@ const AdminLogin = () => {
           <h1 className="font-display text-2xl font-bold text-primary mb-2">Admin Login</h1>
           <p className="text-sm text-muted-foreground">Tech Carnival – 2K26 Dashboard</p>
         </div>
-
-        {expiredMsg && (
-          <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive text-center">
-            {expiredMsg}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 space-y-5">
           <div className="space-y-1.5">

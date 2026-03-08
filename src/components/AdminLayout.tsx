@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { useAdminSessionTimeout } from "@/hooks/useAdminSessionTimeout";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
@@ -9,32 +8,28 @@ import {
   Trophy, Handshake, BookOpen, FileCode, Layers, Bot,
 } from "lucide-react";
 
-const allLinks = [
-  { label: "Overview", to: "/admin/overview", icon: LayoutDashboard, ownerOnly: false },
-  { label: "Page Manager", to: "/admin/page-manager", icon: Layers, ownerOnly: false },
-  { label: "Registrations", to: "/admin/registrations", icon: ClipboardList, ownerOnly: false },
-  { label: "Payments", to: "/admin/payments", icon: CreditCard, ownerOnly: false },
-  { label: "Events", to: "/admin/events", icon: CalendarDays, ownerOnly: false },
-  { label: "Colleges", to: "/admin/colleges", icon: Building2, ownerOnly: false },
-  { label: "Sponsors", to: "/admin/sponsors", icon: Handshake, ownerOnly: false },
-  { label: "Scores", to: "/admin/scores", icon: Trophy, ownerOnly: false },
-  { label: "API Keys", to: "/admin/api-keys", icon: Key, ownerOnly: true },
-  { label: "API Docs", to: "/admin/api-docs", icon: BookOpen, ownerOnly: false },
-  { label: "Starter Kit", to: "/admin/starter-template", icon: FileCode, ownerOnly: false },
-  { label: "CarniBOT", to: "/admin/bot-settings", icon: Bot, ownerOnly: false },
-  { label: "Messages", to: "/admin/messages", icon: MessageSquare, ownerOnly: false },
-  { label: "Settings", to: "/admin/settings", icon: Settings, ownerOnly: true },
+const links = [
+  { label: "Overview", to: "/admin/overview", icon: LayoutDashboard },
+  { label: "Page Manager", to: "/admin/page-manager", icon: Layers },
+  { label: "Registrations", to: "/admin/registrations", icon: ClipboardList },
+  { label: "Payments", to: "/admin/payments", icon: CreditCard },
+  { label: "Events", to: "/admin/events", icon: CalendarDays },
+  { label: "Colleges", to: "/admin/colleges", icon: Building2 },
+  { label: "Sponsors", to: "/admin/sponsors", icon: Handshake },
+  { label: "Scores", to: "/admin/scores", icon: Trophy },
+  { label: "API Keys", to: "/admin/api-keys", icon: Key },
+  { label: "API Docs", to: "/admin/api-docs", icon: BookOpen },
+  { label: "Starter Kit", to: "/admin/starter-template", icon: FileCode },
+  { label: "CarniBOT", to: "/admin/bot-settings", icon: Bot },
+  { label: "Messages", to: "/admin/messages", icon: MessageSquare },
+  { label: "Settings", to: "/admin/settings", icon: Settings },
 ];
 
 const AdminLayout = () => {
-  const { user, isAdmin, isOwner, loading, signOut, sessionId, timeoutMinutes } = useAdminAuth();
+  const { user, isAdmin, loading, signOut } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { WarningDialog } = useAdminSessionTimeout({ sessionId, timeoutMinutes });
-
-  const links = allLinks.filter((l) => !l.ownerOnly || isOwner);
 
   useEffect(() => {
     if (loading) return;
@@ -52,8 +47,7 @@ const AdminLayout = () => {
   }
 
   const handleLogout = async () => {
-    await signOut("manual");
-    localStorage.removeItem("admin_last_activity");
+    await signOut();
     navigate("/admin", { replace: true });
   };
 
@@ -63,8 +57,6 @@ const AdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <WarningDialog />
-
       {sidebarOpen && (
         <div className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
@@ -93,10 +85,6 @@ const AdminLayout = () => {
         </nav>
 
         <div className="p-3 border-t border-border">
-          <div className="px-3 py-1 mb-2 text-xs text-muted-foreground truncate">
-            {user.email}
-            {isOwner && <span className="ml-1.5 text-amber-400">👑</span>}
-          </div>
           <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-destructive" onClick={handleLogout}>
             <LogOut size={18} className="mr-2" /> Logout
           </Button>

@@ -62,48 +62,6 @@ export type Database = {
         }
         Relationships: []
       }
-      admin_sessions: {
-        Row: {
-          email: string
-          id: string
-          ip_address: string | null
-          is_active: boolean
-          last_active_at: string
-          logged_out_at: string | null
-          login_at: string
-          logout_reason: string | null
-          role: string
-          user_agent: string | null
-          user_id: string
-        }
-        Insert: {
-          email: string
-          id?: string
-          ip_address?: string | null
-          is_active?: boolean
-          last_active_at?: string
-          logged_out_at?: string | null
-          login_at?: string
-          logout_reason?: string | null
-          role?: string
-          user_agent?: string | null
-          user_id: string
-        }
-        Update: {
-          email?: string
-          id?: string
-          ip_address?: string | null
-          is_active?: boolean
-          last_active_at?: string
-          logged_out_at?: string | null
-          login_at?: string
-          logout_reason?: string | null
-          role?: string
-          user_agent?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       admin_settings: {
         Row: {
           id: string
