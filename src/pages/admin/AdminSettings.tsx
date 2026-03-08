@@ -24,6 +24,7 @@ interface AdminRole {
   user_id: string;
   role: string;
   is_owner: boolean;
+  email?: string;
 }
 
 interface LoginLog {
