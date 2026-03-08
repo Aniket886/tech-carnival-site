@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import paymentQr from "@/assets/payment-qr.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -478,10 +479,10 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 <div className="flex flex-col items-center gap-3">
                   <div className="bg-white rounded-xl p-3 shadow-md">
                     <img
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=example@upi&pn=TechCarnival&cu=INR"
-                      alt="Payment QR Code"
-                      width={180}
-                      height={180}
+                      src={paymentQr}
+                      alt="Payment QR Code - Scan to pay with any UPI app"
+                      width={200}
+                      height={200}
                       className="rounded-lg"
                     />
                   </div>
