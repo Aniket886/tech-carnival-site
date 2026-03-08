@@ -15,9 +15,9 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { toast } from "sonner";
-import { UserPlus, Trash2, Shield, Clock, Activity, LogOut } from "lucide-react";
+import { UserPlus, Trash2, Shield, Clock } from "lucide-react";
 
 interface AdminRole {
   id: string;
@@ -27,22 +27,6 @@ interface AdminRole {
   email?: string;
 }
 
-interface LoginLog {
-  id: string;
-  user_id: string;
-  email: string;
-  action_type: string;
-  logged_in_at: string;
-}
-
-interface ActiveSession {
-  id: string;
-  user_id: string;
-  email: string;
-  is_active: boolean;
-  login_at: string;
-  last_active_at: string;
-}
 
 const AdminSettings = () => {
   const { user } = useAdminAuth();
@@ -61,10 +45,6 @@ const AdminSettings = () => {
   const [sessionTimeout, setSessionTimeout] = useState("30");
   const [savingTimeout, setSavingTimeout] = useState(false);
 
-  // Login logs & active sessions
-  const [loginLogs, setLoginLogs] = useState<LoginLog[]>([]);
-  const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
-  const [logTab, setLogTab] = useState("active");
 
   const fetchAdmins = useCallback(async () => {
     const { data: roles } = await supabase
@@ -98,23 +78,6 @@ const AdminSettings = () => {
     setAdmins(adminRoles);
   }, [user]);
 
-  const fetchLogs = useCallback(async () => {
-    const { data } = await supabase
-      .from("admin_login_logs")
-      .select("*")
-      .order("logged_in_at", { ascending: false })
-      .limit(50);
-    setLoginLogs(data || []);
-  }, []);
-
-  const fetchActiveSessions = useCallback(async () => {
-    const { data } = await supabase
-      .from("admin_sessions")
-      .select("*")
-      .eq("is_active", true)
-      .order("login_at", { ascending: false });
-    setActiveSessions(data || []);
-  }, []);
 
   const fetchTimeout = useCallback(async () => {
     const { data } = await supabase
@@ -127,10 +90,8 @@ const AdminSettings = () => {
 
   useEffect(() => {
     fetchAdmins();
-    fetchLogs();
-    fetchActiveSessions();
     fetchTimeout();
-  }, [fetchAdmins, fetchLogs, fetchActiveSessions, fetchTimeout]);
+  }, [fetchAdmins, fetchTimeout]);
 
   // Create admin
   const handleCreateAdmin = async () => {
@@ -207,26 +168,6 @@ const AdminSettings = () => {
       setSavingTimeout(false);
     }
   };
-
-  // Kick a session (calls edge function to also revoke auth)
-  const handleKickSession = async (sessionId: string) => {
-    // Find the user_id for this session
-    const session = activeSessions.find(s => s.id === sessionId);
-    if (!session) return;
-
-    try {
-      const { data: { session: authSession } } = await supabase.auth.getSession();
-      const resp = await supabase.functions.invoke("kick-session", {
-        body: { session_id: sessionId, user_id: session.user_id },
-      });
-      if (resp.error) throw resp.error;
-      toast.success("Session terminated & user signed out");
-      fetchActiveSessions();
-    } catch {
-      toast.error("Failed to kick session");
-    }
-  };
-
   const isCurrentUser = (userId: string) => userId === user?.id;
 
   return (
@@ -328,100 +269,6 @@ const AdminSettings = () => {
             {savingTimeout ? "Saving…" : "Save"}
           </Button>
         </div>
-      </section>
-
-      {/* ──── Session Activity ──── */}
-      <section>
-        <h2 className="text-lg font-bold text-foreground flex items-center gap-2 mb-4">
-          <Activity size={20} className="text-primary" /> Session Activity
-        </h2>
-        <Tabs value={logTab} onValueChange={setLogTab}>
-          <TabsList className="mb-3">
-            <TabsTrigger value="active">Active Sessions ({activeSessions.length})</TabsTrigger>
-            <TabsTrigger value="history">History ({loginLogs.length})</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="active">
-            <div className="rounded-xl border border-border bg-card overflow-hidden">
-              {activeSessions.length === 0 ? (
-                <p className="p-6 text-center text-muted-foreground text-sm">No active sessions.</p>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-border hover:bg-transparent">
-                      <TableHead className="text-xs text-muted-foreground w-10">#</TableHead>
-                      <TableHead className="text-xs text-muted-foreground">Email</TableHead>
-                      <TableHead className="text-xs text-muted-foreground">Status</TableHead>
-                      <TableHead className="text-xs text-muted-foreground">Logged in at</TableHead>
-                      <TableHead className="text-xs text-muted-foreground text-right">Manage</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {activeSessions.map((s, i) => (
-                      <TableRow key={s.id} className="border-border">
-                        <TableCell className="text-sm text-muted-foreground">{i + 1}</TableCell>
-                        <TableCell className="text-sm text-foreground">{s.email}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30 text-[10px]">
-                            Online
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {new Date(s.login_at).toLocaleString("en-IN")}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {isOwner && user?.email === "aniket.gmu@gmail.com" && !isCurrentUser(s.user_id) && (
-                            <button
-                              onClick={() => handleKickSession(s.id)}
-                              className="text-xs text-destructive flex items-center justify-end gap-1 cursor-pointer hover:underline ml-auto"
-                            >
-                              <LogOut size={12} /> Kick
-                            </button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="history">
-            <div className="rounded-xl border border-border bg-card overflow-hidden">
-              {loginLogs.length === 0 ? (
-                <p className="p-6 text-center text-muted-foreground text-sm">No login history.</p>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-border hover:bg-transparent">
-                      <TableHead className="text-xs text-muted-foreground w-10">#</TableHead>
-                      <TableHead className="text-xs text-muted-foreground">Email</TableHead>
-                      <TableHead className="text-xs text-muted-foreground">Action</TableHead>
-                      <TableHead className="text-xs text-muted-foreground">Time</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {loginLogs.map((l, i) => (
-                      <TableRow key={l.id} className="border-border">
-                        <TableCell className="text-sm text-muted-foreground">{i + 1}</TableCell>
-                        <TableCell className="text-sm text-foreground">{l.email}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={`text-[10px] capitalize ${l.action_type === "login" ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-muted text-muted-foreground border-border"}`}>
-                            {l.action_type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {new Date(l.logged_in_at).toLocaleString("en-IN")}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
       </section>
 
       {/* Delete Confirm */}
