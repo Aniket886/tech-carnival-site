@@ -416,8 +416,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                         onClose={() => setOtherCollegeOpen(false)}
                         onCollegeSaved={(name) => {
                           setForm((f) => ({ ...f, collegeName: name }));
+                          setTouched((t) => ({ ...t, collegeName: true }));
+                          setErrors((e) => { const n = { ...e }; delete n.collegeName; return n; });
                           fetchColleges();
-                          handleBlur("collegeName");
                         }}
                       />
                     </>
