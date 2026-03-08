@@ -11,7 +11,7 @@ import ContactSection from "@/components/home/ContactSection";
 import OrganizingCommittee from "@/components/home/OrganizingCommittee";
 import CoreTeam from "@/components/home/CoreTeam";
 import Footer from "@/components/layout/Footer";
-
+import ScrollToTop from "@/components/layout/ScrollToTop";
 import CarniBotWidget from "@/components/chatbot/CarniBotWidget";
 import PageLoader from "@/components/layout/PageLoader";
 import CustomCursor from "@/components/layout/CustomCursor";
@@ -40,7 +40,7 @@ const Index = () => {
       <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>
       <ScrollAnimate><CoreTeam /></ScrollAnimate>
       {isSectionVisible("footer") && <Footer />}
-      
+      <ScrollToTop />
       <CarniBotWidget />
     </div>
   );
