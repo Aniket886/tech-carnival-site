@@ -49,7 +49,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "Solo",
     detailedDescription: "Code Compass is a competitive programming event that puts your algorithmic thinking and coding speed to the test.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-myth-busters",
