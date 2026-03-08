@@ -282,18 +282,18 @@ const ScheduleSection = () => {
           </p>
         </div>
 
-        <div className="flex justify-center gap-1 mb-6 bg-muted/30 rounded-lg p-1 w-fit mx-auto border border-border/40">
+        <div className="flex justify-center gap-3 mb-6">
           {days.map((d, i) => (
             <button
               key={d.label}
               onClick={() => { setActiveDay(i); setActiveCategory("all"); }}
-              className={`px-8 py-2.5 rounded-md font-display font-semibold text-sm tracking-wide transition-all duration-300
+              className={`btn-golden h-10 px-6 text-sm font-display font-semibold tracking-wide inline-flex items-center justify-center rounded-lg transition-all duration-300
                 ${activeDay === i
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "ring-2 ring-primary/50 shadow-[0_0_20px_hsl(var(--primary)/0.25)]"
+                  : "opacity-60 hover:opacity-100"
                 }`}
             >
-              {d.label}
+              <span>{d.label}</span>
             </button>
           ))}
         </div>
