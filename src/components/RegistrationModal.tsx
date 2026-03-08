@@ -96,7 +96,7 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
 
   // Fetch event details when eventId changes
   useEffect(() => {
-    if (!eventId) {
+    if (!eventName) {
       setEvent(null);
       setForm({ ...initialForm });
       setStep(0);
@@ -108,12 +108,12 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
     supabase
       .from("events")
       .select("id, name, icon, category, team_size_min, team_size_max")
-      .eq("id", eventId)
+      .eq("name", eventName)
+      .eq("is_active", true)
       .single()
       .then(({ data }) => {
         if (data) {
           setEvent(data);
-          // Auto-adjust members
           if (data.team_size_max > 1) {
             const minExtra = Math.max(0, data.team_size_min - 1);
             setForm((prev) => ({
@@ -123,7 +123,7 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
           }
         }
       });
-  }, [eventId]);
+  }, [eventName]);
 
   const onBlur = (field: string) => {
     setTouched((prev) => new Set(prev).add(field));
