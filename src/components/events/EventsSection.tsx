@@ -129,19 +129,16 @@ const EventsSection = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
           {tabs.map((tab) => (
             <button
               key={tab.value}
               onClick={() => setActive(tab.value)}
-              className={`px-5 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 ${
-                active === tab.value
-                  ? "bg-primary/15 text-primary neon-border"
-                  : "glass text-muted-foreground hover:text-foreground"
+              className={`${tab.btnClass} h-10 px-5 text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 ${
+                active === tab.value ? `ring-2 ${tab.ringColor}` : "opacity-70"
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
-              {tab.label}
+              <span>{tab.icon} {tab.label}</span>
             </button>
           ))}
         </div>
