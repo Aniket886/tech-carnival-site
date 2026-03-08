@@ -135,11 +135,25 @@ const AdminEmail = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
+  const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string }[]>([]);
+  const [regSearch, setRegSearch] = useState("");
 
-  // load events
+  // load events + all registrations
   useEffect(() => {
     supabase.from("events").select("id,name").eq("is_active", true).order("name").then(({ data }) => {
       if (data) setEvents(data);
+      // load registrations with event names
+      supabase.from("registrations").select("leader_name,leader_email,leader_phone,event_id").order("created_at", { ascending: false }).then(({ data: regs }) => {
+        if (regs && data) {
+          const eventMap = new Map(data.map(e => [e.id, e.name]));
+          setAllRegistrations(regs.map(r => ({
+            leader_name: r.leader_name,
+            leader_email: r.leader_email,
+            leader_phone: r.leader_phone,
+            event_name: eventMap.get(r.event_id) || "Unknown",
+          })));
+        }
+      });
     });
   }, []);
 
