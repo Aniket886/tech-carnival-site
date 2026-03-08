@@ -122,12 +122,12 @@
     position: relative;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(to right, hsl(var(--primary) / 0.4), hsl(var(--primary)), hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.4), hsl(var(--primary)), hsl(var(--primary) / 0.4));
-    background-size: 250%;
-    background-position: left;
-    color: hsl(var(--primary));
+    background: linear-gradient(270deg, hsl(45 90% 55%), hsl(195 100% 50%), hsl(0 80% 55%), hsl(270 80% 60%), hsl(45 90% 55%));
+    background-size: 400% 400%;
+    animation: golden-sync 6s ease infinite;
+    color: hsl(45 90% 55%);
     overflow: hidden;
-    transition: background-position 1s;
+    transition: transform 0.3s;
   }
 
   .btn-golden::before {
@@ -137,7 +137,6 @@
     border-radius: 8px;
     background-color: hsl(var(--background) / 0.9);
     z-index: 0;
-    transition: background-position 1s;
   }
 
   .btn-golden > * {
@@ -146,12 +145,19 @@
   }
 
   .btn-golden:hover {
-    background-position: right;
     transform: scale(1.05);
   }
 
   .btn-golden:active {
     transform: scale(0.95);
+  }
+
+  @keyframes golden-sync {
+    0% { background-position: 0% 50%; color: hsl(45 90% 55%); }
+    25% { background-position: 33% 50%; color: hsl(195 100% 50%); }
+    50% { background-position: 66% 50%; color: hsl(0 80% 55%); }
+    75% { background-position: 100% 50%; color: hsl(270 80% 60%); }
+    100% { background-position: 0% 50%; color: hsl(45 90% 55%); }
   }
 
   .btn-gold {
