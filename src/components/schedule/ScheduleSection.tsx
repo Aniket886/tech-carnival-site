@@ -293,7 +293,7 @@ const ScheduleSection = () => {
                   : "bg-primary/10 border-primary/40 text-primary hover:bg-primary/20"
                 }`}
             >
-              {d.label}
+              <span className="font-sans">{d.label}</span>
             </button>
           ))}
         </div>
