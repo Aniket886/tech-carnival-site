@@ -25,6 +25,7 @@ const categoryBorder: Record<string, string> = {
 interface Props {
   event: EventItem | null;
   onClose: () => void;
+  onRegister?: (eventName: string) => void;
   categoryBadge: Record<string, { label: string; className: string }>;
 }
 
