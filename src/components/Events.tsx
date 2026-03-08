@@ -38,6 +38,7 @@ const events: EventItem[] = [
     teamSize: "1-2 members",
     detailedDesc: "Pixel Perfect challenges you to present complex technical ideas through visually compelling posters. Whether it's a research concept, a product idea, or a social impact project — your poster should tell the story. Creativity, clarity, and technical depth are all key evaluation criteria.",
     rules: ["Individual or team of 2 members", "Posters must be original and created by participants", "Standard poster size: A1 or A2", "Digital and hand-drawn posters both accepted", "Presentation time: 5 minutes per team"],
+    rulebookUrl: "",
   },
   {
     emoji: "🧭", name: "Code Compass", desc: "Navigate coding challenges and prove your skills", category: "technical",
