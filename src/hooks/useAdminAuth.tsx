@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useRef } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -6,6 +6,7 @@ interface AdminAuthCtx {
   user: User | null;
   isAdmin: boolean;
   loading: boolean;
+  loginAndCheckRole: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
 }
 
@@ -13,72 +14,73 @@ const Ctx = createContext<AdminAuthCtx>({
   user: null,
   isAdmin: false,
   loading: true,
+  loginAndCheckRole: async () => null,
   signOut: async () => {},
 });
 
 export const useAdminAuth = () => useContext(Ctx);
 
+async function fetchIsAdmin(userId: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc("has_role", {
+    _user_id: userId,
+    _role: "admin" as const,
+  });
+  if (error) {
+    console.error("has_role error:", error);
+    return false;
+  }
+  return !!data;
+}
+
 export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const checking = useRef(false);
 
-  const checkRole = useCallback(async (u: User | null) => {
-    if (checking.current) return;
-    checking.current = true;
+  // On mount, check existing session
+  useEffect(() => {
+    let cancelled = false;
 
-    setUser(u);
-    if (!u) {
-      setIsAdmin(false);
-      setLoading(false);
-      checking.current = false;
-      return;
-    }
-
-    try {
-      // Small delay to ensure the auth token is propagated to the client
-      await new Promise(r => setTimeout(r, 300));
-
-      // Re-fetch session to ensure token is current
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setIsAdmin(false);
-        setLoading(false);
-        checking.current = false;
-        return;
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (cancelled) return;
+      if (session?.user) {
+        const admin = await fetchIsAdmin(session.user.id);
+        if (cancelled) return;
+        setUser(session.user);
+        setIsAdmin(admin);
       }
+      setLoading(false);
+    });
 
-      const { data, error } = await supabase.rpc("has_role", {
-        _user_id: session.user.id,
-        _role: "admin",
-      });
+    // Listen for sign-out only
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        setUser(null);
+        setIsAdmin(false);
+      }
+    });
 
-      console.log("has_role result:", data, "error:", error);
-      setIsAdmin(!!data);
-    } catch (err) {
-      console.error("checkRole error:", err);
-      setIsAdmin(false);
-    }
-
-    setLoading(false);
-    checking.current = false;
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  useEffect(() => {
-    // 1. Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_ev, session) => {
-      console.log("Auth state changed:", _ev, session?.user?.email);
-      checkRole(session?.user ?? null);
-    });
+  // Login: sign in, then check role, then update state
+  const loginAndCheckRole = useCallback(async (email: string, password: string): Promise<string | null> => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return error.message;
 
-    // 2. Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      checkRole(session?.user ?? null);
-    });
+    const admin = await fetchIsAdmin(data.user.id);
+    if (!admin) {
+      await supabase.auth.signOut();
+      return "Access denied — admin privileges required.";
+    }
 
-    return () => subscription.unsubscribe();
-  }, [checkRole]);
+    setUser(data.user);
+    setIsAdmin(true);
+    return null;
+  }, []);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
@@ -87,7 +89,7 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <Ctx.Provider value={{ user, isAdmin, loading, signOut }}>
+    <Ctx.Provider value={{ user, isAdmin, loading, loginAndCheckRole, signOut }}>
       {children}
     </Ctx.Provider>
   );
