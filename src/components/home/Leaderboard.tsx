@@ -127,13 +127,11 @@ const Leaderboard = () => {
             <button
               key={t.key}
               onClick={() => { setTab(t.key); setExpandedEvent(null); }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
-                tab === t.key
-                  ? `${t.color} bg-muted/50 border-current`
-                  : "text-muted-foreground border-border/50 hover:bg-muted/30"
+              className={`btn-golden h-10 px-5 text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 ${
+                tab === t.key ? "ring-2 ring-primary/50" : "opacity-70"
               }`}
             >
-              {t.label}
+              <span>{t.label}</span>
             </button>
           ))}
         </div>
