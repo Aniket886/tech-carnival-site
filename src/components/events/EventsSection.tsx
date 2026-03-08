@@ -29,11 +29,11 @@ export interface EventData {
   rulebookUrl: string | null;
 }
 
-const tabs: { label: string; value: Category; icon: string }[] = [
-  { label: "All Events", value: "all", icon: "🎯" },
-  { label: "Technical", value: "technical", icon: "💻" },
-  { label: "Gaming", value: "gaming", icon: "🎮" },
-  { label: "Cultural", value: "cultural", icon: "🎭" },
+const tabs: { label: string; value: Category; icon: string; btnClass: string; ringColor: string }[] = [
+  { label: "All Events", value: "all", icon: "🎯", btnClass: "btn-gold", ringColor: "ring-[hsl(45_90%_55%/0.5)]" },
+  { label: "Technical", value: "technical", icon: "💻", btnClass: "btn-golden", ringColor: "ring-primary/50" },
+  { label: "Gaming", value: "gaming", icon: "🎮", btnClass: "btn-red", ringColor: "ring-[hsl(0_80%_55%/0.5)]" },
+  { label: "Cultural", value: "cultural", icon: "🎭", btnClass: "btn-purple", ringColor: "ring-[hsl(270_80%_60%/0.5)]" },
 ];
 
 const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string }> = {
@@ -129,19 +129,16 @@ const EventsSection = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
           {tabs.map((tab) => (
             <button
               key={tab.value}
               onClick={() => setActive(tab.value)}
-              className={`px-5 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 ${
-                active === tab.value
-                  ? "bg-primary/15 text-primary neon-border"
-                  : "glass text-muted-foreground hover:text-foreground"
+              className={`${tab.btnClass} h-10 px-5 text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 ${
+                active === tab.value ? `ring-2 ${tab.ringColor}` : "opacity-70"
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
-              {tab.label}
+              <span>{tab.icon} {tab.label}</span>
             </button>
           ))}
         </div>
