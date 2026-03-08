@@ -177,7 +177,7 @@ const Events = () => {
                           className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
                           onClick={(ev) => {
                             ev.stopPropagation();
-                            handleRegisterClick(e.name);
+                            setRegisterEventId(e.name);
                           }}
                         >
                           Register
@@ -196,6 +196,11 @@ const Events = () => {
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
         categoryBadge={categoryBadge}
+      />
+
+      <RegistrationModal
+        eventName={registerEventId}
+        onClose={() => setRegisterEventId(null)}
       />
     </section>
   );
