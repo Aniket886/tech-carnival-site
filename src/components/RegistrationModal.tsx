@@ -63,6 +63,9 @@ interface FormData {
   team_name: string;
   members: TeamMember[];
   agreed: boolean;
+  amount_paid: string;
+  utr_number: string;
+  transaction_id: string;
 }
 
 interface FieldErrors {
@@ -89,6 +92,9 @@ const initialForm: FormData = {
   team_name: "",
   members: [],
   agreed: false,
+  amount_paid: "",
+  utr_number: "",
+  transaction_id: "",
 };
 
 const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
@@ -192,7 +198,12 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         });
       }
       if (s === 1) {
-        // Payment step - no validation needed for now (coming soon)
+        if (!form.amount_paid.trim()) e.amount_paid = "Enter the amount you paid";
+        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid amount";
+        if (!form.utr_number.trim()) e.utr_number = "Enter your UTR number";
+        else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
+        if (!form.transaction_id.trim()) e.transaction_id = "Enter your Transaction ID";
+        else if (form.transaction_id.trim().length < 4) e.transaction_id = "Transaction ID must be at least 4 characters";
       }
       if (s === 2) {
         if (!form.agreed) e.agreed = "You must agree to the terms";
@@ -202,7 +213,9 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     [form, isTeamEvent]
   );
 
-  const goNext = () => {
+  const [checkingPayment, setCheckingPayment] = useState(false);
+
+  const goNext = async () => {
     const errs = validateStep(step);
     setErrors(errs);
     if (step === 0) {
@@ -210,11 +223,39 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         ? [...touched, ...["leader_name", "leader_email", "leader_phone", "college_name", ...(isTeamEvent ? ["team_name"] : [])]]
         : touched));
     }
+    if (step === 1) {
+      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id"]));
+    }
     if (countErrors(errs) > 0) {
       setShake(true);
       setTimeout(() => setShake(false), 500);
       toast({ title: `Please fix ${countErrors(errs)} error${countErrors(errs) > 1 ? "s" : ""} before continuing`, variant: "destructive" });
       return;
+    }
+    // Duplicate payment check on step 1
+    if (step === 1) {
+      setCheckingPayment(true);
+      try {
+        const utr = form.utr_number.trim();
+        const txn = form.transaction_id.trim();
+        const { data: dupes } = await supabase
+          .from("registrations")
+          .select("id, utr_number, transaction_id")
+          .or(`utr_number.eq.${utr},transaction_id.eq.${txn}`);
+        if (dupes && dupes.length > 0) {
+          const dupErrs: FieldErrors = {};
+          if (dupes.some((d) => d.utr_number === utr)) dupErrs.utr_number = "This UTR number has already been used";
+          if (dupes.some((d) => d.transaction_id === txn)) dupErrs.transaction_id = "This Transaction ID has already been used";
+          setErrors(dupErrs);
+          setCheckingPayment(false);
+          return;
+        }
+      } catch {
+        toast({ title: "Could not verify payment details. Please try again.", variant: "destructive" });
+        setCheckingPayment(false);
+        return;
+      }
+      setCheckingPayment(false);
     }
     setStep((s) => s + 1);
   };
@@ -265,6 +306,9 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           members: isTeamEvent && form.members.length > 0
             ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
             : null,
+          amount_paid: form.amount_paid.trim(),
+          utr_number: form.utr_number.trim(),
+          transaction_id: form.transaction_id.trim(),
         }]);
 
       const timeoutPromise = new Promise((_, reject) =>
@@ -531,32 +575,58 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           {/* Step 1: Payment */}
           {step === 1 && (
             <motion.div key="step-1" variants={stepVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-              <div className="space-y-6">
-                <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center space-y-4">
-                  <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <QrCode className="h-8 w-8 text-primary" />
+              <div className="space-y-5">
+                <p className="text-sm font-semibold text-muted-foreground border-b border-border pb-2">💳 Payment Details</p>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Amount Paid (₹) *</Label>
+                    <Input
+                      placeholder="e.g. 200"
+                      value={form.amount_paid}
+                      onChange={(e) => setForm((p) => ({ ...p, amount_paid: e.target.value.replace(/[^0-9.]/g, "") }))}
+                      onBlur={() => onBlur("amount_paid")}
+                      maxLength={10}
+                      className={fieldClass("amount_paid")}
+                    />
+                    <FieldError field="amount_paid" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground">Payment Gateway</h3>
-                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span className="text-sm">Coming Soon</span>
+                  <div className="space-y-1">
+                    <Label className="text-xs">UTR Number *</Label>
+                    <Input
+                      placeholder="Enter UTR / Reference Number"
+                      value={form.utr_number}
+                      onChange={(e) => setForm((p) => ({ ...p, utr_number: e.target.value }))}
+                      onBlur={() => onBlur("utr_number")}
+                      maxLength={50}
+                      className={fieldClass("utr_number")}
+                    />
+                    <FieldError field="utr_number" />
                   </div>
-                  <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                    QR code payment will be available here shortly. For now, you can complete your registration and pay later.
-                  </p>
-                  <Badge variant="outline" className="border-primary/30 text-primary">
-                    Free Registration (for now)
-                  </Badge>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Transaction ID *</Label>
+                    <Input
+                      placeholder="Enter Transaction ID"
+                      value={form.transaction_id}
+                      onChange={(e) => setForm((p) => ({ ...p, transaction_id: e.target.value }))}
+                      onBlur={() => onBlur("transaction_id")}
+                      maxLength={50}
+                      className={fieldClass("transaction_id")}
+                    />
+                    <FieldError field="transaction_id" />
+                  </div>
                 </div>
+                <p className="text-xs text-muted-foreground">All fields are required. Please ensure your payment details are accurate.</p>
               </div>
 
               <div className="flex justify-between mt-6">
                 <Button variant="outline" onClick={goBack} className="gap-2">
                   <ChevronLeft className="h-4 w-4" /> Back
                 </Button>
-                <Button onClick={goNext} className="neon-glow gap-2">
-                  Review <ChevronRight className="h-4 w-4" />
-                </Button>
+                <motion.div animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : {}} transition={{ duration: 0.4 }}>
+                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment}>
+                    {checkingPayment ? "Verifying..." : "Review"} <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </motion.div>
               </div>
             </motion.div>
           )}
@@ -604,7 +674,14 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
 
                 <div className="rounded-lg border border-border bg-muted/10 p-3">
                   <p className="text-xs text-muted-foreground mb-1">Payment</p>
-                  <Badge variant="outline" className="border-primary/30 text-primary text-xs">Free (Payment coming soon)</Badge>
+                  <div className="grid grid-cols-2 gap-y-1.5 text-sm">
+                    <span className="text-muted-foreground">Amount Paid</span>
+                    <span className="text-foreground">₹{form.amount_paid}</span>
+                    <span className="text-muted-foreground">UTR Number</span>
+                    <span className="text-foreground font-mono text-xs">{form.utr_number}</span>
+                    <span className="text-muted-foreground">Transaction ID</span>
+                    <span className="text-foreground font-mono text-xs">{form.transaction_id}</span>
+                  </div>
                 </div>
 
                 <div className="flex items-start gap-3 mt-3">
