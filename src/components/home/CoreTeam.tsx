@@ -4,7 +4,7 @@ const coreTeam = [
   "Adarsh Gouda D",
   "Aniket Tegginamath",
   "Bhanuprakash K S",
-  "K Vishwasheetal Sintalkar",
+  "K Vishwasheetal",
   "Sonali V Meharwade",
 ];
 
