@@ -24,6 +24,7 @@ interface AdminRole {
   user_id: string;
   role: string;
   is_owner: boolean;
+  email?: string;
 }
 
 interface LoginLog {
@@ -65,12 +66,30 @@ const AdminSettings = () => {
   const [logTab, setLogTab] = useState("active");
 
   const fetchAdmins = useCallback(async () => {
-    const { data } = await supabase
+    const { data: roles } = await supabase
       .from("user_roles")
       .select("*")
       .eq("role", "admin")
       .order("is_owner", { ascending: false });
-    setAdmins(data || []);
+
+    // Fetch emails from login logs for each admin
+    const adminRoles = roles || [];
+    if (adminRoles.length > 0) {
+      const userIds = adminRoles.map(a => a.user_id);
+      const { data: logs } = await supabase
+        .from("admin_login_logs")
+        .select("user_id, email")
+        .in("user_id", userIds)
+        .order("logged_in_at", { ascending: false });
+      
+      const emailMap = new Map<string, string>();
+      logs?.forEach(l => {
+        if (!emailMap.has(l.user_id)) emailMap.set(l.user_id, l.email);
+      });
+      
+      adminRoles.forEach(a => { (a as AdminRole).email = emailMap.get(a.user_id); });
+    }
+    setAdmins(adminRoles as unknown as AdminRole[]);
   }, []);
 
   const fetchLogs = useCallback(async () => {
@@ -247,7 +266,7 @@ const AdminSettings = () => {
                 <Badge variant="outline" className="bg-primary/15 text-primary border-primary/30 text-[10px] shrink-0">
                   Admin
                 </Badge>
-                <span className="text-sm text-foreground truncate">{a.user_id}</span>
+                <span className="text-sm text-foreground truncate">{a.email || a.user_id}</span>
                 {a.is_owner && (
                   <Badge variant="outline" className="bg-amber-500/15 text-amber-400 border-amber-500/30 text-[10px]">
                     Owner
