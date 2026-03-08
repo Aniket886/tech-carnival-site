@@ -575,32 +575,58 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           {/* Step 1: Payment */}
           {step === 1 && (
             <motion.div key="step-1" variants={stepVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-              <div className="space-y-6">
-                <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center space-y-4">
-                  <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <QrCode className="h-8 w-8 text-primary" />
+              <div className="space-y-5">
+                <p className="text-sm font-semibold text-muted-foreground border-b border-border pb-2">💳 Payment Details</p>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Amount Paid (₹) *</Label>
+                    <Input
+                      placeholder="e.g. 200"
+                      value={form.amount_paid}
+                      onChange={(e) => setForm((p) => ({ ...p, amount_paid: e.target.value.replace(/[^0-9.]/g, "") }))}
+                      onBlur={() => onBlur("amount_paid")}
+                      maxLength={10}
+                      className={fieldClass("amount_paid")}
+                    />
+                    <FieldError field="amount_paid" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground">Payment Gateway</h3>
-                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span className="text-sm">Coming Soon</span>
+                  <div className="space-y-1">
+                    <Label className="text-xs">UTR Number *</Label>
+                    <Input
+                      placeholder="Enter UTR / Reference Number"
+                      value={form.utr_number}
+                      onChange={(e) => setForm((p) => ({ ...p, utr_number: e.target.value }))}
+                      onBlur={() => onBlur("utr_number")}
+                      maxLength={50}
+                      className={fieldClass("utr_number")}
+                    />
+                    <FieldError field="utr_number" />
                   </div>
-                  <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                    QR code payment will be available here shortly. For now, you can complete your registration and pay later.
-                  </p>
-                  <Badge variant="outline" className="border-primary/30 text-primary">
-                    Free Registration (for now)
-                  </Badge>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Transaction ID *</Label>
+                    <Input
+                      placeholder="Enter Transaction ID"
+                      value={form.transaction_id}
+                      onChange={(e) => setForm((p) => ({ ...p, transaction_id: e.target.value }))}
+                      onBlur={() => onBlur("transaction_id")}
+                      maxLength={50}
+                      className={fieldClass("transaction_id")}
+                    />
+                    <FieldError field="transaction_id" />
+                  </div>
                 </div>
+                <p className="text-xs text-muted-foreground">All fields are required. Please ensure your payment details are accurate.</p>
               </div>
 
               <div className="flex justify-between mt-6">
                 <Button variant="outline" onClick={goBack} className="gap-2">
                   <ChevronLeft className="h-4 w-4" /> Back
                 </Button>
-                <Button onClick={goNext} className="neon-glow gap-2">
-                  Review <ChevronRight className="h-4 w-4" />
-                </Button>
+                <motion.div animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : {}} transition={{ duration: 0.4 }}>
+                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment}>
+                    {checkingPayment ? "Verifying..." : "Review"} <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </motion.div>
               </div>
             </motion.div>
           )}
