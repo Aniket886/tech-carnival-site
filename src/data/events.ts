@@ -79,7 +79,7 @@ export const fallbackEvents: EventData[] = [
     category: "cultural",
     teamSize: "6-12 members",
     detailedDescription: "Dance Mania is the ultimate group dance showdown. Bring your crew, choreograph a stunning routine, and set the stage ablaze.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-scitopia",
