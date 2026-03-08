@@ -29,7 +29,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "1-2 members",
     detailedDescription: "Pixel Perfect challenges you to present complex technical ideas through visually compelling posters.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-pitch-perfect",
