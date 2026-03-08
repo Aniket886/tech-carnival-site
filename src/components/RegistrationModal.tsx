@@ -80,7 +80,7 @@ const initialForm: FormData = {
   agreed: false,
 };
 
-const RegistrationModal = ({ eventId, onClose }: RegistrationModalProps) => {
+const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
   const { toast } = useToast();
   const [step, setStep] = useState(0);
   const [event, setEvent] = useState<EventOption | null>(null);
