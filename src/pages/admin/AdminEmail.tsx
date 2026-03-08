@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { Mail, Send, Eye, Users, Search, X, Loader2, CheckCircle2 } from "lucide-react";
+import { Mail, Send, Eye, Users, Search, X, Loader2, CheckCircle2, Table2 } from "lucide-react";
 
 /* ─── email template definitions ─── */
 interface EmailTemplate {
