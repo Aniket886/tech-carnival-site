@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FileText } from "lucide-react";
 import EventDetailModal from "@/components/events/EventDetailModal";
 import RegistrationModal from "@/components/RegistrationModal";
 import { supabase } from "@/integrations/supabase/client";
