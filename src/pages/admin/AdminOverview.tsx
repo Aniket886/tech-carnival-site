@@ -126,6 +126,7 @@ const AdminOverview = () => {
         registrationsByEvent,
         registrationsByDay,
         statusBreakdown,
+        categoryBreakdown,
       });
       setLoading(false);
     };
