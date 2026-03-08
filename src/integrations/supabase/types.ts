@@ -14,33 +14,293 @@ export type Database = {
   }
   public: {
     Tables: {
-      registrations: {
+      api_keys: {
         Row: {
-          college: string
+          api_key: string
+          created_at: string
+          event_id: string
+          event_website_url: string | null
+          id: string
+          is_active: boolean
+          last_used_at: string | null
+        }
+        Insert: {
+          api_key?: string
+          created_at?: string
+          event_id: string
+          event_website_url?: string | null
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          event_id?: string
+          event_website_url?: string | null
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      colleges: {
+        Row: {
+          city: string | null
+          contact_email: string | null
+          contact_person: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          short_name: string | null
+          state: string | null
+        }
+        Insert: {
+          city?: string | null
+          contact_email?: string | null
+          contact_person?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          short_name?: string | null
+          state?: string | null
+        }
+        Update: {
+          city?: string | null
+          contact_email?: string | null
+          contact_person?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          short_name?: string | null
+          state?: string | null
+        }
+        Relationships: []
+      }
+      contacts: {
+        Row: {
           created_at: string
           email: string
           id: string
+          message: string
           name: string
-          phone: string
-          selected_event: string
         }
         Insert: {
-          college: string
           created_at?: string
           email: string
           id?: string
+          message: string
           name: string
-          phone: string
-          selected_event: string
         }
         Update: {
-          college?: string
           created_at?: string
           email?: string
           id?: string
+          message?: string
           name?: string
-          phone?: string
-          selected_event?: string
+        }
+        Relationships: []
+      }
+      event_updates: {
+        Row: {
+          api_key_id: string
+          created_at: string
+          event_id: string
+          id: string
+          payload: Json
+          sync_status: string
+          update_type: string
+        }
+        Insert: {
+          api_key_id: string
+          created_at?: string
+          event_id: string
+          id?: string
+          payload?: Json
+          sync_status?: string
+          update_type: string
+        }
+        Update: {
+          api_key_id?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          payload?: Json
+          sync_status?: string
+          update_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_updates_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_updates_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          category: string
+          created_at: string
+          date: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          prize_pool: string | null
+          rules: string[] | null
+          slug: string
+          team_size_max: number
+          team_size_min: number
+          time: string | null
+          venue: string | null
+          website_url: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          date?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          prize_pool?: string | null
+          rules?: string[] | null
+          slug: string
+          team_size_max?: number
+          team_size_min?: number
+          time?: string | null
+          venue?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          prize_pool?: string | null
+          rules?: string[] | null
+          slug?: string
+          team_size_max?: number
+          team_size_min?: number
+          time?: string | null
+          venue?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          college_id: string | null
+          college_name: string
+          created_at: string
+          event_id: string
+          id: string
+          leader_email: string
+          leader_name: string
+          leader_phone: string
+          members: Json | null
+          registration_status: string
+          semester: string | null
+          source: string
+          team_name: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          college_id?: string | null
+          college_name: string
+          created_at?: string
+          event_id: string
+          id?: string
+          leader_email: string
+          leader_name: string
+          leader_phone: string
+          members?: Json | null
+          registration_status?: string
+          semester?: string | null
+          source?: string
+          team_name?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          college_id?: string | null
+          college_name?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          leader_email?: string
+          leader_name?: string
+          leader_phone?: string
+          members?: Json | null
+          registration_status?: string
+          semester?: string | null
+          source?: string
+          team_name?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_college_id_fkey"
+            columns: ["college_id"]
+            isOneToOne: false
+            referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -49,10 +309,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -179,6 +445,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
