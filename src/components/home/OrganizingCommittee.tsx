@@ -34,7 +34,7 @@ const OrganizingCommittee = () => {
                 {/* Replace User icon with <img src="..." className="w-full h-full object-cover" /> when photos are ready */}
               </div>
 
-              <h3 className="text-sm sm:text-base font-semibold text-foreground leading-tight">
+              <h3 className="text-sm sm:text-base font-semibold text-foreground leading-tight whitespace-nowrap">
                 {member.name}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
