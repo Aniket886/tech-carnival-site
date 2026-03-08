@@ -17,9 +17,7 @@ const About = () => {
             About the Event
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-            Tech Carnival 2K26 is a three-day extravaganza bringing together the brightest minds in
-            technology, design, and entrepreneurship. From electrifying hackathons to inspiring keynote
-            sessions, this is where future-shapers converge to learn, compete, and celebrate innovation.
+            Tech Carnival – 2K26 is a grand inter-collegiate technical and cultural fest designed to ignite the spirit of innovation, creativity, and competition among students across India. Spanning across 2 action-packed days, this carnival brings together the brightest minds to compete, collaborate, and celebrate technology and talent under one roof.
           </p>
         </div>
 
