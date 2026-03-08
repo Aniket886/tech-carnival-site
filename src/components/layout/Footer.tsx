@@ -2,7 +2,7 @@ import { Mail, Phone, MapPin, Sparkles } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer id="contact-footer" className="relative py-8 overflow-hidden">
+    <footer id="contact-footer" className="relative py-5 overflow-hidden">
       {/* Glassmorphism background layers */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
       <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-2xl" />
