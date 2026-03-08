@@ -124,9 +124,17 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
       const remaining = timeoutMs - elapsed;
 
       if (remaining <= 0) {
-        // Auto logout
+        // Auto logout — mark session inactive
         setShowIdleWarning(false);
         setIdleMinutesLeft(0);
+        const sessionId = localStorage.getItem(SESSION_ID_KEY);
+        if (sessionId) {
+          supabase.from("admin_sessions").update({
+            is_active: false,
+            logged_out_at: new Date().toISOString(),
+            logout_reason: "idle_timeout",
+          }).eq("id", sessionId).then(() => localStorage.removeItem(SESSION_ID_KEY));
+        }
         supabase.auth.signOut().then(() => {
           setUser(null);
           setIsAdmin(false);
