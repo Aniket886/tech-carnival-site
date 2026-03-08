@@ -331,7 +331,9 @@ const Registration = () => {
   // ── Render helpers ──
   const FieldError = ({ field }: { field: string }) =>
     errors[field] ? (
-      <p className="text-sm text-destructive mt-1">{errors[field]}</p>
+      <p className="text-xs text-destructive mt-1">{errors[field]}</p>
+    ) : touched.has(field) ? (
+      <p className="text-xs text-green-400 mt-1 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> Valid</p>
     ) : null;
 
   const stepVariants = {
