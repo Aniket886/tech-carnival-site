@@ -10,18 +10,12 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Eye,
+  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle,
 } from "lucide-react";
 
 /* ─── types ─── */
