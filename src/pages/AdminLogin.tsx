@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,19 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const navigate = useNavigate();
+  const { user, isAdmin, loading: authLoading } = useAdminAuth();
+
+  // If already logged in as admin, redirect
+  useEffect(() => {
+    if (!authLoading && user && isAdmin) {
+      navigate("/admin/overview");
+    } else if (!authLoading && user && !isAdmin) {
+      // Signed in but not admin
+      toast.error("Access denied. Admin privileges required.");
+      supabase.auth.signOut();
+      setLoading(false);
+    }
+  }, [authLoading, user, isAdmin, navigate]);
 
   useEffect(() => {
     try {
@@ -30,31 +44,12 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-
-      // Check admin role
-      const { data: isAdmin } = await supabase.rpc("has_role", {
-        _user_id: data.user.id,
-        _role: "admin",
-      });
-
-      if (!isAdmin) {
-        await supabase.auth.signOut();
-        throw new Error("Access denied. Admin privileges required.");
-      }
-
-      // Log the login (don't await to avoid blocking navigation)
-      supabase.from("admin_login_logs").insert({
-        user_id: data.user.id,
-        email: data.user.email || email,
-        action_type: "login",
-      }).then(() => {});
-
-      navigate("/admin/overview");
+      // The AdminAuthProvider will detect the auth change,
+      // check the admin role, and the useEffect above will redirect.
     } catch (err: any) {
       toast.error(err.message || "Login failed");
-    } finally {
       setLoading(false);
     }
   };
@@ -102,7 +97,7 @@ const AdminLogin = () => {
               className="bg-muted/50 border-border focus:border-primary"
             />
           </div>
-          <Button variant="default" className="w-full" type="submit" disabled={loading}>
+          <Button variant="default" className="w-full" type="submit" disabled={loading || authLoading}>
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
