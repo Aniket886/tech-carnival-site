@@ -179,7 +179,7 @@ const AdminRegistrations = () => {
   };
 
   /* ─── members display ─── */
-  const getMembers = (members: any): { name: string; phone?: string }[] => {
+  const getMembers = (members: any): { name: string; phone?: string; email?: string }[] => {
     if (!members || !Array.isArray(members)) return [];
     return members;
   };
