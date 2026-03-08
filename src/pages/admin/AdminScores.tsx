@@ -42,7 +42,14 @@ interface FormData {
   points: number;
 }
 
-const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0, position: "participant" };
+const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0 };
+
+const getPositionFromPoints = (points: number): string => {
+  if (points >= 100) return "1st";
+  if (points >= 75) return "2nd";
+  if (points >= 50) return "3rd";
+  return "participant";
+};
 
 const positionStyles: Record<string, { label: string; cls: string }> = {
   "1st": { label: "🥇 1st", cls: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
