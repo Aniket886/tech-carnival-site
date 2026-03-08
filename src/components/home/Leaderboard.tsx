@@ -22,10 +22,10 @@ interface CollegeAgg {
 }
 
 const tabs = [
-  { key: "overall", label: "🏆 Overall", color: "border-yellow-500 text-yellow-400" },
-  { key: "technical", label: "💻 Technical", color: "border-primary text-primary" },
-  { key: "gaming", label: "🎮 Gaming", color: "border-red-400 text-red-400" },
-  { key: "cultural", label: "🎭 Cultural", color: "border-accent text-accent" },
+  { key: "overall", label: "🏆 Overall", btnClass: "btn-gold", ringColor: "ring-[hsl(45_90%_55%/0.5)]" },
+  { key: "technical", label: "💻 Technical", btnClass: "btn-golden", ringColor: "ring-primary/50" },
+  { key: "gaming", label: "🎮 Gaming", btnClass: "btn-red", ringColor: "ring-[hsl(0_80%_55%/0.5)]" },
+  { key: "cultural", label: "🎭 Cultural", btnClass: "btn-golden", ringColor: "ring-primary/50" },
 ];
 
 const rankStyle = (rank: number) => {
@@ -127,8 +127,8 @@ const Leaderboard = () => {
             <button
               key={t.key}
               onClick={() => { setTab(t.key); setExpandedEvent(null); }}
-              className={`btn-gold h-10 px-5 text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 ${
-                tab === t.key ? "ring-2 ring-[hsl(45_90%_55%/0.5)]" : "opacity-70"
+              className={`${t.btnClass} h-10 px-5 text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 ${
+                tab === t.key ? `ring-2 ${t.ringColor}` : "opacity-70"
               }`}
             >
               <span>{t.label}</span>
