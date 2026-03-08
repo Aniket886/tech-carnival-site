@@ -30,14 +30,17 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
+      console.log("[AdminLogin] Starting sign in...");
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
+      console.log("[AdminLogin] Auth success, checking role for:", data.user.id);
 
       // Check admin role
-      const { data: isAdmin } = await supabase.rpc("has_role", {
+      const { data: isAdmin, error: rpcError } = await supabase.rpc("has_role", {
         _user_id: data.user.id,
         _role: "admin",
       });
+      console.log("[AdminLogin] has_role result:", isAdmin, "error:", rpcError);
 
       if (!isAdmin) {
         await supabase.auth.signOut();
@@ -51,6 +54,7 @@ const AdminLogin = () => {
         action_type: "login",
       }).then(() => {});
 
+      console.log("[AdminLogin] Navigating to /admin/overview");
       navigate("/admin/overview");
     } catch (err: any) {
       toast.error(err.message || "Login failed");
