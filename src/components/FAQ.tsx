@@ -8,28 +8,28 @@ import {
 
 const faqs = [
   {
-    q: "Who can participate in Tech Carnival 2K26?",
-    a: "Tech Carnival is open to all college students across the country. Whether you're a beginner or an experienced developer, there's something for everyone!",
+    q: "Who can participate?",
+    a: "Any college student with a valid ID can participate.",
   },
   {
     q: "Is there a registration fee?",
-    a: "Registration is completely free for all events. However, some workshops may have limited seats, so early registration is recommended.",
+    a: "Some events are free while others have a nominal fee. Check event details.",
   },
   {
-    q: "Can I participate in multiple events?",
-    a: "Yes! You can register for multiple events as long as their schedules don't overlap. Check the schedule section for timings.",
+    q: "Can I register for multiple events?",
+    a: "Yes! You can register for multiple events as long as they don't have time conflicts.",
   },
   {
-    q: "Is accommodation provided for outstation participants?",
-    a: "Yes, we provide free accommodation for outstation participants on a first-come, first-served basis. Please mention your requirement during registration.",
+    q: "Will I get a certificate?",
+    a: "All participants will receive participation certificates. Winners get additional merit certificates.",
   },
   {
-    q: "What should I bring for the Hackathon?",
-    a: "Bring your laptop, charger, and any hardware you might need. We'll provide Wi-Fi, power strips, snacks, and meals throughout the 24-hour event.",
+    q: "What should I bring?",
+    a: "Your college ID, laptop (for hackathon/coding events), and enthusiasm!",
   },
   {
-    q: "Will certificates be provided?",
-    a: "Yes, all participants will receive digital certificates of participation. Winners will receive special merit certificates along with prizes.",
+    q: "How will I know my registration is confirmed?",
+    a: "You will receive a confirmation email after admin verification.",
   },
 ];
 
@@ -40,14 +40,24 @@ const FAQ = () => (
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-3xl sm:text-4xl font-bold text-gradient text-center mb-12"
+        className="text-3xl sm:text-4xl font-bold text-gradient text-center mb-4"
       >
         Frequently Asked Questions
       </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1 }}
+        className="text-center text-muted-foreground mb-12"
+      >
+        Everything you need to know about Tech Carnival 2K26
+      </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ delay: 0.2 }}
       >
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, i) => (
