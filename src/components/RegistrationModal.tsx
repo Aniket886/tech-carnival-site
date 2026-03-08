@@ -68,7 +68,7 @@ interface FieldErrors {
 }
 
 interface RegistrationModalProps {
-  eventName: string | null;
+  eventData: PassedEventData | null;
   onClose: () => void;
 }
 
