@@ -202,7 +202,7 @@ const CarniBotWidget = () => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
-            className="fixed bottom-24 right-6 z-50"
+            className="fixed bottom-32 right-6 z-50"
           >
             {showTooltip && (
               <motion.div
