@@ -59,13 +59,8 @@ const AdminLayout = () => {
 
       currentUserId = session.user.id;
 
-      const [{ data: role }, { data: setting }] = await Promise.all([
-        supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", session.user.id)
-          .eq("role", "admin")
-          .maybeSingle(),
+      const [{ data: isAdmin }, { data: setting }] = await Promise.all([
+        supabase.rpc("has_role", { _user_id: session.user.id, _role: "admin" }),
         supabase
           .from("admin_settings")
           .select("setting_value")
@@ -73,7 +68,7 @@ const AdminLayout = () => {
           .maybeSingle(),
       ]);
 
-      if (!role) { await supabase.auth.signOut(); navigate("/admin"); return; }
+      if (!isAdmin) { await supabase.auth.signOut(); navigate("/admin"); return; }
       if (setting?.setting_value) {
         setTimeoutMs(parseInt(setting.setting_value, 10) * 60_000);
       }
