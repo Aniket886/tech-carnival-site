@@ -25,20 +25,6 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          <div>
-            <h4 className="font-semibold text-sm tracking-wider uppercase text-foreground mb-3">Follow Us</h4>
-            <div className="flex gap-4">
-              {[
-                { icon: Instagram, href: "#", label: "Instagram" },
-                { icon: Linkedin, href: "#", label: "LinkedIn" },
-                { icon: Youtube, href: "#", label: "YouTube" },
-              ].map(({ icon: Icon, href, label }) => (
-                <a key={label} href={href} aria-label={label} className="w-10 h-10 rounded-lg glass flex items-center justify-center text-muted-foreground hover:text-primary hover:neon-border transition-all duration-300">
-                  <Icon size={18} />
-                </a>
-              ))}
-            </div>
-          </div>
         </div>
         <div className="border-t border-border pt-6 text-center">
           <p className="text-xs text-muted-foreground">© 2026 Tech Carnival – 2K26 | Organized by GM University | All Rights Reserved</p>
