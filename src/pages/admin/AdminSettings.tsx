@@ -72,41 +72,24 @@ const AdminSettings = () => {
       .eq("role", "admin")
       .order("is_owner", { ascending: false });
 
-    const adminRoles = roles || [];
-    if (adminRoles.length > 0) {
-      const userIds = adminRoles.map(a => a.user_id);
-      
-      // Try multiple sources for emails
+    const adminRoles = (roles || []) as unknown as AdminRole[];
+    
+    // For admins missing email in user_roles, try fallback sources
+    const missingEmailIds = adminRoles.filter(a => !a.email).map(a => a.user_id);
+    if (missingEmailIds.length > 0) {
       const [{ data: logs }, { data: sessions }] = await Promise.all([
-        supabase
-          .from("admin_login_logs")
-          .select("user_id, email")
-          .in("user_id", userIds)
-          .order("logged_in_at", { ascending: false }),
-        supabase
-          .from("admin_sessions")
-          .select("user_id, email")
-          .in("user_id", userIds)
-          .order("login_at", { ascending: false }),
+        supabase.from("admin_login_logs").select("user_id, email").in("user_id", missingEmailIds),
+        supabase.from("admin_sessions").select("user_id, email").in("user_id", missingEmailIds),
       ]);
       
       const emailMap = new Map<string, string>();
-      // Sessions as first source
-      sessions?.forEach(s => {
-        if (!emailMap.has(s.user_id)) emailMap.set(s.user_id, s.email);
-      });
-      // Login logs override if available
-      logs?.forEach(l => {
-        if (!emailMap.has(l.user_id)) emailMap.set(l.user_id, l.email);
-      });
-      // Current user fallback
-      if (user && !emailMap.has(user.id) && user.email) {
-        emailMap.set(user.id, user.email);
-      }
+      sessions?.forEach(s => { if (!emailMap.has(s.user_id)) emailMap.set(s.user_id, s.email); });
+      logs?.forEach(l => { if (!emailMap.has(l.user_id)) emailMap.set(l.user_id, l.email); });
+      if (user && !emailMap.has(user.id) && user.email) emailMap.set(user.id, user.email);
       
-      adminRoles.forEach(a => { (a as AdminRole).email = emailMap.get(a.user_id); });
+      adminRoles.forEach(a => { if (!a.email) a.email = emailMap.get(a.user_id); });
     }
-    setAdmins(adminRoles as unknown as AdminRole[]);
+    setAdmins(adminRoles);
   }, [user]);
 
   const fetchLogs = useCallback(async () => {

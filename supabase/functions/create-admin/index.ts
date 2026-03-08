@@ -112,7 +112,7 @@ Deno.serve(async (req) => {
     // Add admin role
     const { error: roleError } = await serviceClient
       .from("user_roles")
-      .insert({ user_id: userId, role: "admin" });
+      .insert({ user_id: userId, role: "admin", email: email.trim().toLowerCase() });
 
     if (roleError) {
       return new Response(JSON.stringify({ error: roleError.message }), {
