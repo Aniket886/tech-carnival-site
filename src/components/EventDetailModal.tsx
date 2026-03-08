@@ -29,7 +29,7 @@ interface Props {
   categoryBadge: Record<string, { label: string; className: string }>;
 }
 
-const EventDetailModal = ({ event, onClose, categoryBadge }: Props) => {
+const EventDetailModal = ({ event, onClose, onRegister, categoryBadge }: Props) => {
   if (!event) return null;
 
   const details = [
