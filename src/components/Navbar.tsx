@@ -48,9 +48,9 @@ const Navbar = () => {
               {link.label}
             </a>
           ))}
-          {isSectionVisible("registration") && (
+          {isSectionVisible("events") && (
             <Button asChild size="sm" className="neon-glow rounded-full px-5">
-              <a href="#register">Register</a>
+              <a href="#events">Register</a>
             </Button>
           )}
         </div>
