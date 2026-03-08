@@ -129,8 +129,8 @@ const AdminEmail = () => {
   const [manualEmails, setManualEmails] = useState("");
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [events, setEvents] = useState<{ id: string; name: string }[]>([]);
-  const [participants, setParticipants] = useState<{ email: string; name: string }[]>([]);
-  const [selectedParticipants, setSelectedParticipants] = useState<{ email: string; name: string }[]>([]);
+  const [participants, setParticipants] = useState<{ email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[]>([]);
+  const [selectedParticipants, setSelectedParticipants] = useState<{ email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[]>([]);
   const [search, setSearch] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
