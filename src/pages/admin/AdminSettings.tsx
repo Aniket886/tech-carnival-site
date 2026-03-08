@@ -185,11 +185,8 @@ const AdminSettings = () => {
     }
   };
 
-  // Kick a session (calls edge function to also revoke auth)
-  const handleKickSession = async (sessionId: string) => {
-    // Find the user_id for this session
-    const session = activeSessions.find(s => s.id === sessionId);
-    if (!session) return;
+  // Check if current user matches a session user
+  const isCurrentUser = (userId: string) => user?.id === userId;
 
     try {
       const { data: { session: authSession } } = await supabase.auth.getSession();
