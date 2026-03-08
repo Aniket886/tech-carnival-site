@@ -92,7 +92,7 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
   const [successData, setSuccessData] = useState<{ id: string; eventName: string } | null>(null);
 
   const isTeamEvent = event ? event.team_size_max > 1 : false;
-  const isOpen = !!eventId;
+  const isOpen = !!eventName;
 
   // Fetch event details when eventId changes
   useEffect(() => {
