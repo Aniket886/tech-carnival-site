@@ -60,31 +60,39 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .eq("is_active", true)
-        .order("name");
+      try {
+        const { data, error } = await supabase
+          .from("events")
+          .select("*")
+          .eq("is_active", true)
+          .order("name");
 
-      if (!error && data) {
-        setEvents(
-          data.map((e: any) => ({
-            id: e.id,
-            emoji: e.icon || "🎯",
-            name: e.name,
-            description: e.description?.substring(0, 60) + "..." || "",
-            category: e.category as Exclude<Category, "all">,
-            teamSize: formatTeamSize(e.team_size_min || 1, e.team_size_max || 1),
-            detailedDescription: e.description || "",
-            date: e.date,
-            time: e.time,
-            venue: e.venue,
-            prize_pool: e.prize_pool,
-            rules: e.rules,
-          }))
-        );
+        if (error) {
+          console.error("Failed to fetch events:", error);
+        }
+        if (data) {
+          setEvents(
+            data.map((e: any) => ({
+              id: e.id,
+              emoji: e.icon || "🎯",
+              name: e.name,
+              description: e.description?.substring(0, 60) + "..." || "",
+              category: e.category as Exclude<Category, "all">,
+              teamSize: formatTeamSize(e.team_size_min || 1, e.team_size_max || 1),
+              detailedDescription: e.description || "",
+              date: e.date,
+              time: e.time,
+              venue: e.venue,
+              prize_pool: e.prize_pool,
+              rules: e.rules,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error("Events fetch exception:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchEvents();
   }, []);
