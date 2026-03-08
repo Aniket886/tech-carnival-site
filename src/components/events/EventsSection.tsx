@@ -227,8 +227,8 @@ const EventsSection = () => {
       />
 
       <RegistrationModal
-        eventName={registerEventName}
-        onClose={() => setRegisterEventName(null)}
+        eventData={registerEvent}
+        onClose={() => setRegisterEvent(null)}
       />
     </section>
   );
