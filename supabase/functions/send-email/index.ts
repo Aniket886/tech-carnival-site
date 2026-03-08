@@ -5,7 +5,7 @@ const corsHeaders = {
 };
 
 interface EmailPayload {
-  type: "registration_received" | "registration_confirmed" | "registration_rejected";
+  type: "registration_received" | "registration_confirmed" | "registration_rejected" | "custom";
   to: string;
   leader_name: string;
   team_name?: string;
@@ -15,6 +15,8 @@ interface EmailPayload {
   event_time?: string;
   event_venue?: string;
   rejection_reason?: string;
+  custom_html?: string;
+  custom_subject?: string;
 }
 
 function buildHtml(payload: EmailPayload): string {
@@ -156,9 +158,10 @@ Deno.serve(async (req) => {
       registration_received: "Registration Received – Tech Carnival 2K26",
       registration_confirmed: "Registration Confirmed – Tech Carnival 2K26 🎉",
       registration_rejected: "Registration Update – Tech Carnival 2K26",
+      custom: payload.custom_subject || "Tech Carnival – 2K26",
     };
 
-    const html = buildHtml(payload);
+    const html = type === "custom" && payload.custom_html ? payload.custom_html : buildHtml(payload);
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

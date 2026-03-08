@@ -20,6 +20,7 @@ import AdminScores from "./pages/admin/AdminScores";
 import AdminSponsors from "./pages/admin/AdminSponsors";
 import AdminPageManager from "./pages/admin/AdminPageManager";
 import AdminBotSettings from "./pages/admin/AdminBotSettings";
+import AdminEmail from "./pages/admin/AdminEmail";
 import AdminSettings from "./pages/admin/AdminSettings";
 
 
@@ -47,6 +48,7 @@ const App = () => (
                 <Route path="/admin/scores" element={<AdminScores />} />
                 <Route path="/admin/messages" element={<AdminMessages />} />
                 <Route path="/admin/bot-settings" element={<AdminBotSettings />} />
+                <Route path="/admin/email" element={<AdminEmail />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
