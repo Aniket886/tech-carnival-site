@@ -198,7 +198,12 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         });
       }
       if (s === 1) {
-        // Payment step - no validation needed for now (coming soon)
+        if (!form.amount_paid.trim()) e.amount_paid = "Enter the amount you paid";
+        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid amount";
+        if (!form.utr_number.trim()) e.utr_number = "Enter your UTR number";
+        else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
+        if (!form.transaction_id.trim()) e.transaction_id = "Enter your Transaction ID";
+        else if (form.transaction_id.trim().length < 4) e.transaction_id = "Transaction ID must be at least 4 characters";
       }
       if (s === 2) {
         if (!form.agreed) e.agreed = "You must agree to the terms";
