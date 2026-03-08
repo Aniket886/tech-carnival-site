@@ -11,99 +11,58 @@ import { Lock } from "lucide-react";
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [sessionExpired, setSessionExpired] = useState(false);
+  const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
-  const { user, isAdmin, loading: authLoading } = useAdminAuth();
+  const { user, isAdmin, loading } = useAdminAuth();
 
-  // If already logged in as admin, redirect
   useEffect(() => {
-    if (!authLoading && user && isAdmin) {
-      navigate("/admin/overview");
-    } else if (!authLoading && user && !isAdmin) {
-      toast.error("Access denied. Admin privileges required.");
+    if (loading) return;
+    if (user && isAdmin) {
+      navigate("/admin/overview", { replace: true });
+    } else if (user && !isAdmin) {
+      toast.error("Access denied — admin privileges required.");
       supabase.auth.signOut();
-      setLoading(false);
     }
-  }, [authLoading, user, isAdmin, navigate]);
+  }, [loading, user, isAdmin, navigate]);
 
-  useEffect(() => {
-    try {
-      if (sessionStorage.getItem("session_expired") === "1") {
-        setSessionExpired(true);
-        sessionStorage.removeItem("session_expired");
-        const t = setTimeout(() => setSessionExpired(false), 10000);
-        return () => clearTimeout(t);
-      }
-    } catch {}
-  }, []);
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      // The AdminAuthProvider will detect the auth change and the useEffect will redirect
-    } catch (err: any) {
-      toast.error(err.message || "Login failed");
-      setLoading(false);
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast.error(error.message);
+      setBusy(false);
     }
+    // on success the auth listener in AdminAuthProvider triggers the redirect above
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        {sessionExpired && (
-          <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center gap-2 text-sm text-amber-300 animate-in fade-in duration-300">
-            <Lock size={16} className="shrink-0" />
-            <span>Your session expired due to inactivity. Please log in again.</span>
-          </div>
-        )}
-
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-primary/10 neon-border flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mx-auto mb-4">
             <Lock className="text-primary" size={28} />
           </div>
-          <h1 className="font-display text-2xl font-bold gradient-text mb-2">Admin Login</h1>
+          <h1 className="font-display text-2xl font-bold text-primary mb-2">Admin Login</h1>
           <p className="text-sm text-muted-foreground">Tech Carnival – 2K26 Dashboard</p>
         </div>
 
-        <form onSubmit={handleLogin} className="glass-strong rounded-xl p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 space-y-5">
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm text-foreground font-medium">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@techcarnival.com"
-              className="bg-muted/50 border-border focus:border-primary"
-            />
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@techcarnival.com" />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-sm text-foreground font-medium">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="bg-muted/50 border-border focus:border-primary"
-            />
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
           </div>
-          <Button variant="default" className="w-full" type="submit" disabled={loading}>
-            {loading ? "Signing in..." : "Sign In"}
+          <Button className="w-full" type="submit" disabled={busy}>
+            {busy ? "Signing in…" : "Sign In"}
           </Button>
         </form>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          <button onClick={() => navigate("/")} className="hover:text-primary transition-colors">
-            ← Back to site
-          </button>
+          <button onClick={() => navigate("/")} className="hover:text-primary transition-colors">← Back to site</button>
         </p>
       </div>
     </div>
