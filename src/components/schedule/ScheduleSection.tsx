@@ -287,7 +287,7 @@ const ScheduleSection = () => {
             <button
               key={d.label}
               onClick={() => { setActiveDay(i); setActiveCategory("all"); }}
-              className={`h-10 px-6 text-sm font-display font-semibold tracking-wide inline-flex items-center justify-center rounded-lg border transition-all duration-300
+              className={`h-11 px-7 text-base font-sans font-semibold tracking-wide inline-flex items-center justify-center rounded-lg border transition-all duration-300
                 ${activeDay === i
                   ? "bg-amber-500/20 border-amber-400/60 text-amber-400 shadow-[0_0_16px_hsl(45_90%_55%/0.3)]"
                   : "bg-primary/10 border-primary/40 text-primary hover:bg-primary/20"
