@@ -83,12 +83,35 @@ Deno.serve(async (req) => {
       })
       .eq("id", session_id);
 
-    // Sign out the user globally using admin API to invalidate their tokens
-    const { error: signOutError } = await serviceClient.auth.admin.signOut(user_id, "global");
-    
-    if (signOutError) {
-      console.error("Failed to sign out user:", signOutError);
-      // Still return success since session was marked inactive
+    // Sign out the user globally via GoTrue admin REST API
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    // First get user's sessions, then invalidate by updating user
+    // Force logout by setting a temporary ban then immediately unbanning
+    const banRes = await fetch(`${supabaseUrl}/auth/v1/admin/users/${user_id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: Deno.env.get("SUPABASE_ANON_KEY")!,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ban_duration: "1s" }),
+    });
+
+    if (!banRes.ok) {
+      console.error("Failed to ban user:", await banRes.text());
+    } else {
+      // Immediately unban so user can log back in
+      await fetch(`${supabaseUrl}/auth/v1/admin/users/${user_id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${serviceKey}`,
+          apikey: Deno.env.get("SUPABASE_ANON_KEY")!,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ban_duration: "none" }),
+      });
     }
 
     return new Response(
