@@ -334,14 +334,16 @@ const AdminPayments = () => {
                           <button
                             title="Confirm"
                             onClick={() => updateStatus(r.id, "confirmed")}
-                            className="p-1.5 rounded-md text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+                            disabled={r.registration_status === "confirmed"}
+                            className={`p-1.5 rounded-md transition-colors ${r.registration_status === "confirmed" ? "text-emerald-400/40 cursor-not-allowed" : "text-emerald-400 hover:bg-emerald-500/10"}`}
                           >
                             <CheckCircle2 size={16} />
                           </button>
                           <button
                             title="Reject"
                             onClick={() => updateStatus(r.id, "rejected")}
-                            className="p-1.5 rounded-md text-destructive hover:bg-destructive/10 transition-colors"
+                            disabled={r.registration_status === "confirmed"}
+                            className={`p-1.5 rounded-md transition-colors ${r.registration_status === "confirmed" ? "text-muted-foreground/30 cursor-not-allowed" : "text-destructive hover:bg-destructive/10"}`}
                           >
                             <XCircle size={16} />
                           </button>
