@@ -230,7 +230,14 @@ const AdminEmail = () => {
         .filter((_, i) => tableSelected.has(String(i)))
         .map(r => ({ email: r.leader_email, name: r.leader_name, phone: r.leader_phone, team_name: r.team_name, college: r.college_name, event: r.event_name }));
     }
-    return manualEmails.split(/[,;\n]/).map(e => e.trim()).filter(Boolean).map(e => ({ email: e, name: e.split("@")[0] }));
+    return manualEmails.split(/[,;\n]/).map(e => e.trim()).filter(Boolean).map(e => ({
+      email: e,
+      name: customFields.name || e.split("@")[0],
+      phone: customFields.phone || undefined,
+      team_name: customFields.team_name || undefined,
+      college: customFields.college || undefined,
+      event: customFields.event || undefined,
+    }));
   };
 
   const handleSend = async () => {
