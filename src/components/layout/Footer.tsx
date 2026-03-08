@@ -57,11 +57,14 @@ const Footer = () => {
           </div>
 
           {/* Bottom bar */}
-          <div className="mt-10 pt-5 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-sm font-sans font-medium text-foreground tracking-wider uppercase">
-              © {new Date().getFullYear()} Tech Carnival 2K26 · GM University · All Rights Reserved
+          <div className="mt-10 pt-5 border-t border-border/20 flex flex-col items-center gap-2 text-center">
+            <p className="text-xs sm:text-sm font-sans font-medium text-foreground tracking-wider uppercase leading-relaxed">
+              © {new Date().getFullYear()} Tech Carnival 2K26 · GM University
+              <br className="sm:hidden" />
+              <span className="hidden sm:inline"> · </span>
+              All Rights Reserved
             </p>
-            <p className="text-sm font-sans font-medium text-foreground/70 tracking-wider uppercase">
+            <p className="text-xs sm:text-sm font-sans font-medium text-foreground/70 tracking-wider uppercase">
               Built with <span className="text-destructive">♥</span> by FCIT Tech Team
             </p>
           </div>
