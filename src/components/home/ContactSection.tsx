@@ -73,8 +73,9 @@ const ContactSection = () => {
       const { error } = await supabase.from("contacts").insert({
         name: sanitizeInput(form.name),
         email: sanitizeInput(form.email).toLowerCase(),
+        phone: form.phone.trim() ? sanitizeInput(form.phone) : null,
         message: sanitizeInput(form.message),
-      } as any);
+      });
       if (error) throw error;
       localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
       toast.success("Message sent! We'll get back to you soon.");
