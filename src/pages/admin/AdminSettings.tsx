@@ -277,7 +277,7 @@ const AdminSettings = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove admin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will revoke admin access for user {deleteTarget?.user_id}. They can still log in but won't have admin privileges.
+              This will permanently remove {deleteTarget?.email || deleteTarget?.user_id} and revoke all access. They will no longer be able to log in.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

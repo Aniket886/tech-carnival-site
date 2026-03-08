@@ -94,6 +94,12 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Delete the auth user so they can no longer log in
+    const { error: deleteUserError } = await serviceClient.auth.admin.deleteUser(user_id);
+    if (deleteUserError) {
+      console.error("Failed to delete auth user:", deleteUserError.message);
+    }
+
     return new Response(
       JSON.stringify({ success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
