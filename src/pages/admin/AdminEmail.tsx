@@ -135,6 +135,39 @@ const AdminEmail = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
+  const messageRef = { current: null as HTMLTextAreaElement | null };
+
+  const PLACEHOLDERS = [
+    { label: "Name", value: "{{name}}" },
+    { label: "Team Name", value: "{{team_name}}" },
+    { label: "Email", value: "{{email}}" },
+    { label: "Phone", value: "{{phone}}" },
+    { label: "College", value: "{{college}}" },
+    { label: "Event", value: "{{event}}" },
+  ];
+
+  const insertPlaceholder = (placeholder: string) => {
+    const el = document.querySelector<HTMLTextAreaElement>("#email-message-textarea");
+    if (el) {
+      const start = el.selectionStart ?? message.length;
+      const end = el.selectionEnd ?? message.length;
+      const newMsg = message.slice(0, start) + placeholder + message.slice(end);
+      setMessage(newMsg);
+      setTimeout(() => { el.focus(); el.selectionStart = el.selectionEnd = start + placeholder.length; }, 0);
+    } else {
+      setMessage(prev => prev + placeholder);
+    }
+  };
+
+  const resolveMessage = (msg: string, recipient: { name: string; email: string; phone?: string; team_name?: string; college?: string; event?: string }) => {
+    return msg
+      .replace(/\{\{name\}\}/gi, recipient.name || "")
+      .replace(/\{\{team_name\}\}/gi, recipient.team_name || "")
+      .replace(/\{\{email\}\}/gi, recipient.email || "")
+      .replace(/\{\{phone\}\}/gi, recipient.phone || "")
+      .replace(/\{\{college\}\}/gi, recipient.college || "")
+      .replace(/\{\{event\}\}/gi, recipient.event || eventName || "");
+  };
   const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string }[]>([]);
   const [regSearch, setRegSearch] = useState("");
 
