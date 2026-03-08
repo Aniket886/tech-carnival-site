@@ -59,8 +59,9 @@ const AdminSettings = () => {
   const [sessionTimeout, setSessionTimeout] = useState("30");
   const [savingTimeout, setSavingTimeout] = useState(false);
 
-  // Login logs
+  // Login logs & active sessions
   const [loginLogs, setLoginLogs] = useState<LoginLog[]>([]);
+  const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
   const [logTab, setLogTab] = useState("active");
 
   const fetchAdmins = useCallback(async () => {
