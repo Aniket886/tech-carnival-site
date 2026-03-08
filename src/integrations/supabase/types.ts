@@ -241,6 +241,8 @@ export type Database = {
       }
       colleges: {
         Row: {
+          affiliated_university: string | null
+          approval_status: string
           city: string | null
           contact_email: string | null
           contact_person: string | null
@@ -251,9 +253,13 @@ export type Database = {
           logo_url: string | null
           name: string
           short_name: string | null
+          source: string
           state: string | null
+          website_url: string | null
         }
         Insert: {
+          affiliated_university?: string | null
+          approval_status?: string
           city?: string | null
           contact_email?: string | null
           contact_person?: string | null
@@ -264,9 +270,13 @@ export type Database = {
           logo_url?: string | null
           name: string
           short_name?: string | null
+          source?: string
           state?: string | null
+          website_url?: string | null
         }
         Update: {
+          affiliated_university?: string | null
+          approval_status?: string
           city?: string | null
           contact_email?: string | null
           contact_person?: string | null
@@ -277,7 +287,9 @@ export type Database = {
           logo_url?: string | null
           name?: string
           short_name?: string | null
+          source?: string
           state?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }
