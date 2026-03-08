@@ -135,6 +135,7 @@ const AdminEmail = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
+  const [customFields, setCustomFields] = useState({ name: "", team_name: "", phone: "", college: "", event: "" });
   const messageRef = { current: null as HTMLTextAreaElement | null };
 
   const PLACEHOLDERS = [
