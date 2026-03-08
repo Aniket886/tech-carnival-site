@@ -109,7 +109,9 @@ const AdminLayout = () => {
           <h1 className="font-display text-sm font-semibold text-foreground tracking-wide">{currentLabel}</h1>
         </header>
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          <Outlet />
+          <AdminRefreshContext.Provider value={refreshKey}>
+            <Outlet />
+          </AdminRefreshContext.Provider>
         </main>
       </div>
 
