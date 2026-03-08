@@ -1,122 +1,84 @@
-import { Mail, Phone, MapPin, Github, Instagram, Globe, ArrowUpRight } from "lucide-react";
-
-const quickLinks = [
-  { label: "Events", href: "#events" },
-  { label: "Schedule", href: "#schedule" },
-  { label: "Leaderboard", href: "#leaderboard" },
-  { label: "Register", href: "#register" },
-  { label: "Contact", href: "#contact" },
-];
-
-const socialLinks = [
-  { icon: Instagram, href: "https://instagram.com/techcarnival2k26", label: "Instagram" },
-  { icon: Globe, href: "https://techcarnival.online", label: "Website" },
-];
+import { Mail, Phone, MapPin, ArrowUp, Instagram, Globe } from "lucide-react";
 
 const Footer = () => {
-  const year = new Date().getFullYear();
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer className="relative overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute inset-0 bg-gradient-to-t from-card via-background to-background" />
-      <div className="absolute bottom-0 left-1/3 w-96 h-96 rounded-full bg-primary/5 blur-[120px]" />
-      <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full bg-accent/5 blur-[120px]" />
+    <footer className="relative border-t border-border/40">
+      <div className="absolute inset-0 bg-card/60 backdrop-blur-sm" />
 
-      {/* Top edge line */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-      <div className="relative z-10 container mx-auto px-4 pt-16 pb-8">
-        {/* Grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
-          {/* Brand column */}
-          <div className="md:col-span-5 space-y-4">
-            <h3 className="font-display text-2xl font-bold gradient-text tracking-wide">
-              Tech Carnival 2K26
+      <div className="relative z-10 container mx-auto px-4">
+        {/* Main row */}
+        <div className="py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="space-y-3">
+            <h3 className="font-display text-lg font-bold text-foreground tracking-wide">
+              Tech Carnival <span className="text-primary">2K26</span>
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-              Where innovation meets celebration. A multi-day inter-college tech fest hosted by GM University, Davangere — featuring competitions, workshops, and unforgettable experiences.
+            <p className="text-xs text-muted-foreground leading-relaxed max-w-[240px]">
+              Innovation meets celebration.<br />
+              GM University, Davangere.
             </p>
-            <div className="flex gap-2 pt-2">
-              {socialLinks.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="w-9 h-9 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
-                >
-                  <s.icon size={16} />
+            <div className="flex gap-2 pt-1">
+              <a href="https://instagram.com/techcarnival2k26" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 rounded-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200">
+                <Instagram size={14} />
+              </a>
+              <a href="https://techcarnival.online" target="_blank" rel="noopener noreferrer" aria-label="Website" className="w-8 h-8 rounded-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200">
+                <Globe size={14} />
+              </a>
+            </div>
+          </div>
+
+          {/* Navigate */}
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">Navigate</p>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+              {["Events", "Schedule", "Leaderboard", "Register", "Contact", "FAQ"].map((item) => (
+                <a key={item} href={`#${item.toLowerCase()}`} className="text-xs text-muted-foreground hover:text-foreground transition-colors py-0.5">
+                  {item}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Quick links */}
-          <div className="md:col-span-3">
-            <h4 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-              Quick Links
-            </h4>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="group text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5"
-                  >
-                    {link.label}
-                    <ArrowUpRight size={12} className="opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact info */}
-          <div className="md:col-span-4">
-            <h4 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-              Get in Touch
-            </h4>
-            <div className="space-y-3">
-              <a
-                href="mailto:info@techcarnival.online"
-                className="group flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <Mail size={14} className="text-primary" />
-                </div>
+          {/* Contact */}
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">Contact</p>
+            <div className="space-y-2.5">
+              <a href="mailto:info@techcarnival.online" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <Mail size={13} className="text-primary/70 shrink-0" />
                 info@techcarnival.online
               </a>
-              <a
-                href="tel:+918073491988"
-                className="group flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <Phone size={14} className="text-primary" />
-                </div>
+              <a href="tel:+918073491988" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <Phone size={13} className="text-primary/70 shrink-0" />
                 +91 80734 91988
               </a>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-                  <MapPin size={14} className="text-accent" />
-                </div>
-                P.B. Road, Davangere – 577006, Karnataka
+              <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                <MapPin size={13} className="text-primary/70 shrink-0 mt-0.5" />
+                P.B. Road, Davangere<br />577006, Karnataka
               </div>
             </div>
           </div>
+
+          {/* Back to top */}
+          <div className="flex flex-col items-start lg:items-end justify-between">
+            <button
+              onClick={scrollToTop}
+              className="group w-9 h-9 rounded-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200"
+              aria-label="Back to top"
+            >
+              <ArrowUp size={14} className="group-hover:-translate-y-0.5 transition-transform" />
+            </button>
+          </div>
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-
         {/* Bottom bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6">
-          <p className="text-xs text-muted-foreground/70">
-            © {year} Tech Carnival 2K26 · GM University · All Rights Reserved
+        <div className="border-t border-border/30 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-[11px] text-muted-foreground/50">
+            © {new Date().getFullYear()} Tech Carnival 2K26 · GM University
           </p>
-          <p className="text-xs text-muted-foreground/40">
-            Crafted with <span className="text-red-400">♥</span> by FCIT Tech Team
+          <p className="text-[11px] text-muted-foreground/40">
+            Built with <span className="text-destructive/60">♥</span> by FCIT Tech Team
           </p>
         </div>
       </div>
