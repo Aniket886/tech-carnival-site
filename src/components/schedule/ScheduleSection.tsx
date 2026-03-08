@@ -287,13 +287,13 @@ const ScheduleSection = () => {
             <button
               key={d.label}
               onClick={() => { setActiveDay(i); setActiveCategory("all"); }}
-              className={`btn-golden h-10 px-6 text-sm font-display font-semibold tracking-wide inline-flex items-center justify-center rounded-lg transition-all duration-300
+              className={`h-10 px-6 text-sm font-display font-semibold tracking-wide inline-flex items-center justify-center rounded-lg border transition-all duration-300
                 ${activeDay === i
-                  ? "ring-2 ring-primary/50 shadow-[0_0_20px_hsl(var(--primary)/0.25)]"
-                  : "opacity-60 hover:opacity-100"
+                  ? "bg-amber-500/20 border-amber-400/60 text-amber-400 shadow-[0_0_16px_hsl(45_90%_55%/0.3)]"
+                  : "bg-primary/10 border-primary/40 text-primary hover:bg-primary/20"
                 }`}
             >
-              <span>{d.label}</span>
+              {d.label}
             </button>
           ))}
         </div>
