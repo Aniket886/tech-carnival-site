@@ -105,7 +105,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
 
   const fetchColleges = () => {
-    supabase.from("colleges").select("id, name, short_name").eq("is_active", true).order("name")
+    supabase.from("colleges").select("id, name, short_name").eq("is_active", true).eq("approval_status" as any, "approved").order("name")
       .then(({ data }) => { if (data) setColleges(data); });
   };
 
