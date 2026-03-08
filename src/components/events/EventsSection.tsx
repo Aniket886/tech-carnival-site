@@ -17,6 +17,8 @@ export interface EventData {
   description: string;
   category: Exclude<Category, "all">;
   teamSize: string;
+  team_size_min: number;
+  team_size_max: number;
   detailedDescription: string;
   date: string | null;
   time: string | null;
