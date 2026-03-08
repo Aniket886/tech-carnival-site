@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -15,6 +16,8 @@ const faqs = [
 ];
 
 const FAQSection = () => {
+  const [openItem, setOpenItem] = useState<string | undefined>(undefined);
+
   return (
     <section id="faq" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
@@ -28,12 +31,14 @@ const FAQSection = () => {
           </p>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-3">
+        <Accordion type="single" collapsible value={openItem} onValueChange={setOpenItem} className="space-y-3">
           {faqs.map((faq, i) => (
             <AccordionItem
               key={i}
               value={`faq-${i}`}
               className="glass rounded-xl border-none px-5"
+              onMouseEnter={() => setOpenItem(`faq-${i}`)}
+              onMouseLeave={() => setOpenItem(undefined)}
             >
               <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4 hover:no-underline">
                 {faq.q}
