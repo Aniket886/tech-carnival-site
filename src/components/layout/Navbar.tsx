@@ -42,7 +42,7 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
   };
 
   return (
-    <nav role="navigation" aria-label="Main navigation" className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || mobileOpen ? "glass-strong shadow-lg" : "bg-transparent"}`}>
+    <nav role="navigation" aria-label="Main navigation" className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled || mobileOpen ? "bg-background/20 backdrop-blur-xl border-b border-primary/10 shadow-[0_8px_32px_hsl(var(--primary)/0.08)]" : "bg-transparent"}`}>
       <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         <button onClick={() => handleNav("#home")} className="font-bold text-lg tracking-wider gradient-text">Tech Carnival</button>
         <div className="hidden md:flex items-center gap-8">
