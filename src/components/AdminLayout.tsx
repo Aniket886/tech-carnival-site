@@ -47,6 +47,7 @@ const navItems = [
   { title: "Scores", url: "/admin/scores", icon: Trophy },
   { title: "Messages", url: "/admin/messages", icon: Mail },
   { title: "CarniBOT", url: "/admin/bot-settings", icon: Bot },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
 function AdminSidebar() {
