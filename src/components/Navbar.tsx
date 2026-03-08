@@ -75,9 +75,9 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
-              {isSectionVisible("registration") && (
+              {isSectionVisible("events") && (
                 <Button asChild className="neon-glow mt-4 rounded-full">
-                  <a href="#register" onClick={() => setOpen(false)}>
+                  <a href="#events" onClick={() => setOpen(false)}>
                     Register Now
                   </a>
                 </Button>
