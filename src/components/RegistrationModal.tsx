@@ -26,6 +26,7 @@ import {
   validateName, validateEmail, validatePhone,
   validateTeamName, validateCollegeName, sanitizeInput, countErrors,
 } from "@/lib/validators";
+import OtherCollegeDialog from "@/components/registration/OtherCollegeDialog";
 
 // ── Types ──
 interface EventOption {
