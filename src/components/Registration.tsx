@@ -234,7 +234,9 @@ const Registration = () => {
           college_name: form.college_name.trim(),
           semester: form.semester || null,
           team_name: isTeamEvent ? form.team_name.trim() : null,
-          members: isTeamEvent && form.members.length > 0 ? form.members : null,
+          members: isTeamEvent && form.members.length > 0
+            ? form.members.map((m) => ({ name: m.name, email: m.email, phone: m.phone } as Record<string, string>))
+            : null,
         },
       ])
       .select("id")
