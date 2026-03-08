@@ -68,7 +68,11 @@ const AdminSponsors = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 10_000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return sponsors;

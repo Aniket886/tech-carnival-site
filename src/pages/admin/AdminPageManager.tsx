@@ -91,7 +91,11 @@ const AdminPageManager = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchAll(); }, [fetchAll]);
+  useEffect(() => {
+    fetchAll();
+    const interval = setInterval(fetchAll, 10_000);
+    return () => clearInterval(interval);
+  }, [fetchAll]);
 
   /* toggle section visibility */
   const toggleSection = async (section: Section) => {

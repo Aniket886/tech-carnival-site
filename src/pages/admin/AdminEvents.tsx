@@ -93,7 +93,11 @@ const AdminEvents = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 10_000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const openCreate = () => { setEditingId(null); setForm(emptyForm); setDialogOpen(true); };
 
