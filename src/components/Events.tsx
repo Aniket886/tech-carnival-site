@@ -150,17 +150,30 @@ const Events = () => {
                       <Badge variant="outline" className={categoryBadge[e.category].className}>
                         {categoryBadge[e.category].label}
                       </Badge>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
-                        onClick={(ev) => {
-                          ev.stopPropagation();
-                          handleRegisterClick(e.name);
-                        }}
-                      >
-                        Register
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            setSelectedEvent(e);
+                          }}
+                        >
+                          Rule Book
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            handleRegisterClick(e.name);
+                          }}
+                        >
+                          Register
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
