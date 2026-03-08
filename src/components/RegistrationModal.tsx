@@ -63,6 +63,9 @@ interface FormData {
   team_name: string;
   members: TeamMember[];
   agreed: boolean;
+  amount_paid: string;
+  utr_number: string;
+  transaction_id: string;
 }
 
 interface FieldErrors {
