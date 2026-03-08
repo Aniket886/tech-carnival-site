@@ -56,8 +56,8 @@ const formatTeamSize = (min: number, max: number): string => {
 const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
   const [active, setActive] = useState<Category>("all");
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<EventData[]>(fallbackEvents);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
