@@ -27,6 +27,7 @@ import {
   LogOut,
   Globe,
   Trophy,
+  Handshake,
 } from "lucide-react";
 
 const navItems = [
