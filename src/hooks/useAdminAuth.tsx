@@ -163,6 +163,25 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
       return "Access denied — admin privileges required.";
     }
 
+    // Create active session record
+    const { data: session } = await supabase.from("admin_sessions").insert({
+      user_id: data.user.id,
+      email: email,
+      is_active: true,
+      user_agent: navigator.userAgent,
+    }).select("id").maybeSingle();
+
+    if (session?.id) {
+      localStorage.setItem(SESSION_ID_KEY, session.id);
+    }
+
+    // Also log to login_logs
+    await supabase.from("admin_login_logs").insert({
+      user_id: data.user.id,
+      email: email,
+      action_type: "login",
+    });
+
     setUser(data.user);
     setIsAdmin(true);
     signedInRef.current = true;
