@@ -26,6 +26,7 @@ import {
   checkDuplicateEmails,
 } from "@/lib/validators";
 import OtherCollegeDialog from "@/components/registration/OtherCollegeDialog";
+import CollegePicker from "@/components/registration/CollegePicker";
 
 type EventRow = Tables<"events">;
 
