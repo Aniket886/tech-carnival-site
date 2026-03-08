@@ -9,7 +9,7 @@ import {
 import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
-  Trophy, Handshake, Bot, Layers,
+  Trophy, Handshake, Bot, Layers, Mail,
 } from "lucide-react";
 
 const links = [
