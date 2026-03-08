@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
-import MagneticWrapper from "@/components/ui/magnetic-wrapper";
 import type { EventData } from "@/components/events/EventsSection";
 
 interface EventDetailModalProps {
@@ -141,15 +140,13 @@ const EventDetailModal = ({ event, onClose, onRegister, categoryStyles }: EventD
             </ul>
           </div>
 
-          <MagneticWrapper className="w-full">
-            <Button
-              variant="neon"
-              className="w-full"
-              onClick={() => onRegister(event.name)}
-            >
-              Register for {event.name}
-            </Button>
-          </MagneticWrapper>
+          <Button
+            variant="neon"
+            className="w-full"
+            onClick={() => onRegister(event.name)}
+          >
+            Register for {event.name}
+          </Button>
         </div>
       </div>
     </div>

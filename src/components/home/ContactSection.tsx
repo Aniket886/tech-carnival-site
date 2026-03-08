@@ -1,5 +1,4 @@
 import { useState } from "react";
-import MagneticWrapper from "@/components/ui/magnetic-wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -128,11 +127,9 @@ const ContactSection = () => {
               <Textarea id="contact-msg" required rows={4} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} onBlur={() => handleBlur("message")} placeholder="Your message..." className={`${getFieldClass("message")} resize-none`} maxLength={500} />
               {errors.message && touched.message && <p className="text-xs text-destructive">{errors.message}</p>}
             </div>
-            <MagneticWrapper className="w-full">
-              <Button variant="neon" className="w-full" type="submit" disabled={loading}>
-                {loading ? "Sending..." : (<><Send size={16} className="mr-2" /> Send Message</>)}
-              </Button>
-            </MagneticWrapper>
+            <Button variant="neon" className="w-full" type="submit" disabled={loading}>
+              {loading ? "Sending..." : (<><Send size={16} className="mr-2" /> Send Message</>)}
+            </Button>
           </form>
 
           <div className="space-y-6">
