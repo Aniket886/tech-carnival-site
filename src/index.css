@@ -1,51 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 230 25% 7%;
-    --foreground: 210 40% 98%;
+    --background: 230 25% 5%;
+    --foreground: 210 40% 95%;
 
-    --card: 230 25% 10%;
-    --card-foreground: 210 40% 98%;
+    --card: 230 20% 8%;
+    --card-foreground: 210 40% 95%;
 
-    --popover: 230 25% 10%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 230 20% 8%;
+    --popover-foreground: 210 40% 95%;
 
-    --primary: 190 100% 50%;
-    --primary-foreground: 230 25% 7%;
+    --primary: 195 100% 50%;
+    --primary-foreground: 230 25% 5%;
 
-    --secondary: 270 91% 65%;
+    --secondary: 270 80% 60%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 230 20% 15%;
+    --muted: 230 15% 15%;
     --muted-foreground: 215 20% 55%;
 
-    --accent: 270 91% 65%;
+    --accent: 270 80% 60%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 230 20% 18%;
-    --input: 230 20% 18%;
-    --ring: 190 100% 50%;
+    --border: 230 15% 18%;
+    --input: 230 15% 18%;
+    --ring: 195 100% 50%;
 
     --radius: 0.75rem;
 
-    --neon-blue: 190 100% 50%;
-    --neon-purple: 270 91% 65%;
-    --neon-glow: 0 0 20px hsl(190 100% 50% / 0.4), 0 0 40px hsl(270 91% 65% / 0.2);
+    --neon-blue: 195 100% 50%;
+    --neon-purple: 270 80% 60%;
+    --neon-glow: 0 0 20px hsl(195 100% 50% / 0.5), 0 0 60px hsl(195 100% 50% / 0.2);
+    --purple-glow: 0 0 20px hsl(270 80% 60% / 0.5), 0 0 60px hsl(270 80% 60% / 0.2);
 
-    --sidebar-background: 230 25% 7%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 190 100% 50%;
-    --sidebar-primary-foreground: 230 25% 7%;
-    --sidebar-accent: 270 91% 65%;
+    --sidebar-background: 230 20% 8%;
+    --sidebar-foreground: 210 40% 95%;
+    --sidebar-primary: 195 100% 50%;
+    --sidebar-primary-foreground: 230 25% 5%;
+    --sidebar-accent: 270 80% 60%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 230 20% 18%;
-    --sidebar-ring: 190 100% 50%;
+    --sidebar-border: 230 15% 18%;
+    --sidebar-ring: 195 100% 50%;
   }
 }
 
@@ -55,7 +58,12 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: "Inter", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Orbitron", sans-serif;
   }
 
   html {
@@ -64,51 +72,55 @@
 }
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+  .font-display {
+    font-family: "Orbitron", sans-serif;
   }
 
   .text-glow {
     text-shadow:
-      0 0 10px hsl(var(--primary) / 0.6),
-      0 0 40px hsl(var(--primary) / 0.3);
+      0 0 10px hsl(195 100% 50% / 0.6),
+      0 0 40px hsl(195 100% 50% / 0.3);
   }
 
   .text-glow-purple {
     text-shadow:
-      0 0 10px hsl(var(--accent) / 0.6),
-      0 0 40px hsl(var(--accent) / 0.3);
+      0 0 10px hsl(270 80% 60% / 0.6),
+      0 0 40px hsl(270 80% 60% / 0.3);
   }
 
   .neon-border {
     box-shadow:
-      0 0 10px hsl(var(--primary) / 0.3),
-      inset 0 0 10px hsl(var(--primary) / 0.1);
-    border-color: hsl(var(--primary) / 0.5);
+      0 0 10px hsl(195 100% 50% / 0.3),
+      inset 0 0 10px hsl(195 100% 50% / 0.1);
+    border-color: hsl(195 100% 50% / 0.5);
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    background: linear-gradient(135deg, hsl(195 100% 50%), hsl(270 80% 60%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .glass {
+    background: hsl(230 20% 8% / 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(195 100% 50% / 0.15);
+  }
+
+  .glass-strong {
+    background: hsl(230 20% 8% / 0.85);
+    backdrop-filter: blur(30px);
+    border: 1px solid hsl(195 100% 50% / 0.2);
   }
 
   .neon-glow {
     box-shadow: var(--neon-glow);
   }
 
-  .glass {
-    background: hsl(var(--card) / 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid hsl(var(--primary) / 0.15);
-  }
-
-  .glass-strong {
-    background: hsl(var(--card) / 0.85);
-    backdrop-filter: blur(30px);
-    border: 1px solid hsl(var(--primary) / 0.2);
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
   }
 
   .section-heading {
@@ -117,6 +129,13 @@
 
   .section-subtext {
     @apply text-center text-muted-foreground mb-12 max-w-xl mx-auto;
+  }
+
+  .schedule-grid-bg {
+    background-image:
+      linear-gradient(to right, hsl(210 40% 95% / 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(210 40% 95% / 0.03) 1px, transparent 1px);
+    background-size: 8.33% 44px;
   }
 }
 
@@ -137,36 +156,27 @@
   height: 200%;
   background-image:
     radial-gradient(1px 1px at 10% 20%, hsl(210 40% 98% / 0.7), transparent),
-    radial-gradient(1.5px 1.5px at 25% 60%, hsl(190 100% 50% / 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 25% 60%, hsl(195 100% 50% / 0.6), transparent),
     radial-gradient(1px 1px at 40% 15%, hsl(210 40% 98% / 0.5), transparent),
-    radial-gradient(2px 2px at 55% 45%, hsl(190 100% 50% / 0.4), transparent),
+    radial-gradient(2px 2px at 55% 45%, hsl(195 100% 50% / 0.4), transparent),
     radial-gradient(1px 1px at 70% 75%, hsl(210 40% 98% / 0.6), transparent),
-    radial-gradient(1.5px 1.5px at 85% 35%, hsl(270 91% 65% / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 85% 35%, hsl(270 80% 60% / 0.5), transparent),
     radial-gradient(1px 1px at 90% 85%, hsl(210 40% 98% / 0.4), transparent),
-    radial-gradient(1px 1px at 15% 80%, hsl(190 100% 50% / 0.3), transparent),
-    radial-gradient(2px 2px at 50% 90%, hsl(270 91% 65% / 0.3), transparent),
-    radial-gradient(1px 1px at 75% 10%, hsl(210 40% 98% / 0.6), transparent),
-    radial-gradient(1.5px 1.5px at 35% 35%, hsl(190 100% 50% / 0.4), transparent),
-    radial-gradient(1px 1px at 60% 65%, hsl(210 40% 98% / 0.3), transparent),
-    radial-gradient(1px 1px at 5% 50%, hsl(210 40% 98% / 0.5), transparent),
-    radial-gradient(2px 2px at 20% 90%, hsl(270 91% 65% / 0.4), transparent),
-    radial-gradient(1px 1px at 45% 5%, hsl(210 40% 98% / 0.5), transparent),
-    radial-gradient(1px 1px at 95% 55%, hsl(190 100% 50% / 0.3), transparent);
+    radial-gradient(1px 1px at 15% 80%, hsl(195 100% 50% / 0.3), transparent),
+    radial-gradient(2px 2px at 50% 90%, hsl(270 80% 60% / 0.3), transparent),
+    radial-gradient(1px 1px at 75% 10%, hsl(210 40% 98% / 0.6), transparent);
   animation: starfield-drift 120s linear infinite;
 }
 
 .starfield::after {
   background-image:
     radial-gradient(1px 1px at 5% 50%, hsl(210 40% 98% / 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 20% 90%, hsl(190 100% 50% / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 20% 90%, hsl(195 100% 50% / 0.5), transparent),
     radial-gradient(1px 1px at 30% 10%, hsl(210 40% 98% / 0.4), transparent),
-    radial-gradient(2px 2px at 45% 70%, hsl(270 91% 65% / 0.3), transparent),
+    radial-gradient(2px 2px at 45% 70%, hsl(270 80% 60% / 0.3), transparent),
     radial-gradient(1px 1px at 65% 25%, hsl(210 40% 98% / 0.6), transparent),
-    radial-gradient(1px 1px at 80% 55%, hsl(190 100% 50% / 0.3), transparent),
-    radial-gradient(1.5px 1.5px at 95% 40%, hsl(270 91% 65% / 0.5), transparent),
-    radial-gradient(1px 1px at 12% 42%, hsl(210 40% 98% / 0.3), transparent),
-    radial-gradient(2px 2px at 58% 12%, hsl(190 100% 50% / 0.4), transparent),
-    radial-gradient(1px 1px at 82% 92%, hsl(210 40% 98% / 0.3), transparent);
+    radial-gradient(1px 1px at 80% 55%, hsl(195 100% 50% / 0.3), transparent),
+    radial-gradient(1.5px 1.5px at 95% 40%, hsl(270 80% 60% / 0.5), transparent);
   animation: starfield-drift 90s linear infinite reverse;
 }
 
@@ -175,14 +185,34 @@
   100% { transform: translate(-25%, -25%); }
 }
 
-@keyframes twinkle {
-  0% { opacity: 0.5; }
-  100% { opacity: 1; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
 @keyframes marquee-scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
 }
 
 @keyframes float-slow {
@@ -192,4 +222,87 @@
 
 .animate-float-slow {
   animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Pac-Man Loader */
+.loader-wrapper {
+  position: relative;
+  width: 120px;
+  height: 50px;
+}
+
+.loader-wrapper .packman::before {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 25px;
+  background-color: #EFF107;
+  border-radius: 100px 100px 0 0;
+  transform: translate(-50%, -50%);
+  animation: pac-top 0.5s linear infinite;
+  transform-origin: center bottom;
+}
+
+.loader-wrapper .packman::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 25px;
+  background-color: #EFF107;
+  border-radius: 0 0 100px 100px;
+  transform: translate(-50%, 50%);
+  animation: pac-bot 0.5s linear infinite;
+  transform-origin: center top;
+}
+
+@keyframes pac-top {
+  0% { transform: translate(-50%, -50%) rotate(0); }
+  50% { transform: translate(-50%, -50%) rotate(-30deg); }
+  100% { transform: translate(-50%, -50%) rotate(0); }
+}
+
+@keyframes pac-bot {
+  0% { transform: translate(-50%, 50%) rotate(0); }
+  50% { transform: translate(-50%, 50%) rotate(30deg); }
+  100% { transform: translate(-50%, 50%) rotate(0); }
+}
+
+.dots .dot {
+  position: absolute;
+  z-index: -1;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.dots .dot:nth-child(1) { left: 90px; animation: dot-stage1 0.5s infinite; }
+.dots .dot:nth-child(2) { left: 60px; animation: dot-stage1 0.5s infinite; }
+.dots .dot:nth-child(3) { left: 30px; animation: dot-stage1 0.5s infinite; }
+.dots .dot:nth-child(4) { left: 10px; animation: dot-stage2 0.5s infinite; }
+
+@keyframes dot-stage1 {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-24px, 0); }
+}
+
+@keyframes dot-stage2 {
+  0% { transform: scale(1); }
+  5%, 100% { transform: scale(0); }
 }
