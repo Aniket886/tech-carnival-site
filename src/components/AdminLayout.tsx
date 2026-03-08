@@ -112,6 +112,7 @@ const AdminLayout = () => {
           <AdminRefreshContext.Provider value={refreshKey}>
             <Outlet />
           </AdminRefreshContext.Provider>
+          </AdminRefreshContext.Provider>
         </main>
       </div>
 
