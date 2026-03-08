@@ -5,6 +5,7 @@ import Events from "@/components/Events";
 import EventFlow from "@/components/EventFlow";
 import Sponsors from "@/components/Sponsors";
 import Registration from "@/components/Registration";
+import Leaderboard from "@/components/Leaderboard";
 import Contact from "@/components/Contact";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
@@ -18,6 +19,7 @@ const Index = () => (
     <EventFlow />
     <Sponsors />
     <Registration />
+    <Leaderboard />
     <FAQ />
     <Contact />
     <Footer />

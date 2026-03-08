@@ -26,6 +26,7 @@ import {
   Mail,
   LogOut,
   Globe,
+  Trophy,
 } from "lucide-react";
 
 const navItems = [
@@ -35,6 +36,7 @@ const navItems = [
   { title: "Colleges", url: "/admin/colleges", icon: GraduationCap },
   { title: "API Keys", url: "/admin/api-keys", icon: Key },
   { title: "Event Links", url: "/admin/event-links", icon: Globe },
+  { title: "Scores", url: "/admin/scores", icon: Trophy },
   { title: "Messages", url: "/admin/messages", icon: Mail },
 ];
 

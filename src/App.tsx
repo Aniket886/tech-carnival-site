@@ -15,6 +15,7 @@ import AdminColleges from "./pages/admin/AdminColleges";
 import AdminApiKeys from "./pages/admin/AdminApiKeys";
 import AdminEventLinks from "./pages/admin/AdminEventLinks";
 import AdminMessages from "./pages/admin/AdminMessages";
+import AdminScores from "./pages/admin/AdminScores";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
               <Route path="/admin/api-keys" element={<AdminApiKeys />} />
               <Route path="/admin/event-links" element={<AdminEventLinks />} />
               <Route path="/admin/messages" element={<AdminMessages />} />
+              <Route path="/admin/scores" element={<AdminScores />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
