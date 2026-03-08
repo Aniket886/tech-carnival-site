@@ -2,8 +2,8 @@ import { Instagram, Linkedin, Youtube, Mail, Phone } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer id="contact-footer" className="border-t border-border py-12 relative">
-      <div className="absolute inset-0 bg-gradient-to-t from-card/30 to-transparent" />
+    <footer id="contact-footer" className="relative py-12 border-t border-white/10 bg-white/5 backdrop-blur-xl">
+      <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
       <div className="relative z-10 container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
