@@ -322,7 +322,7 @@ const AdminSettings = () => {
             </Select>
           </div>
           <p className="text-xs text-muted-foreground">
-            A warning will appear 2 minutes before the session expires. Changes apply to all admin sessions.
+            A warning will appear 30 seconds before the session expires. Changes apply to all admin sessions.
           </p>
           <Button size="sm" onClick={handleSaveTimeout} disabled={savingTimeout}>
             {savingTimeout ? "Saving…" : "Save"}
