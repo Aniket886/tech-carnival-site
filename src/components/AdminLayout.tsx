@@ -27,6 +27,7 @@ import {
   LogOut,
   Globe,
   Trophy,
+  Bot,
   Handshake,
   Layers,
   BookOpen,
