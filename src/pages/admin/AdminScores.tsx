@@ -224,6 +224,24 @@ const AdminScores = () => {
 
   const updateField = (key: keyof FormData, value: any) => setForm(f => ({ ...f, [key]: value }));
 
+  const exportCSV = () => {
+    const header = "College,Event,Category,Team,Points,Position";
+    const rows = filtered.map(s =>
+      [s.college_name, s.event_name, s.category, s.team_name || "", s.points, s.position || "participant"]
+        .map(v => `"${String(v).replace(/"/g, '""')}"`)
+        .join(",")
+    );
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `scores_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exported ${filtered.length} scores`);
+  };
+
   if (loading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
 
   return (
