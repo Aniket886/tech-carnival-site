@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CollegePicker from "@/components/registration/CollegePicker";
 import {
   Dialog,
   DialogContent,
