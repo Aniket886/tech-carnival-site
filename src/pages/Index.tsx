@@ -8,6 +8,7 @@ import ScheduleSection from "@/components/schedule/ScheduleSection";
 import Leaderboard from "@/components/home/Leaderboard";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
+import OrganizingCommittee from "@/components/home/OrganizingCommittee";
 import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import CarniBotWidget from "@/components/chatbot/CarniBotWidget";
@@ -35,6 +36,7 @@ const Index = () => {
       {isSectionVisible("leaderboard") && <ScrollAnimate><Leaderboard /></ScrollAnimate>}
       {isSectionVisible("faq") && <ScrollAnimate><FAQSection /></ScrollAnimate>}
       {isSectionVisible("contact") && <ScrollAnimate><ContactSection /></ScrollAnimate>}
+      <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>
       {isSectionVisible("footer") && <Footer />}
       <ScrollToTop />
       <CarniBotWidget />
