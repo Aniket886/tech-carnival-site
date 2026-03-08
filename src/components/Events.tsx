@@ -73,6 +73,7 @@ const events: EventItem[] = [
     teamSize: "5-10 members",
     detailedDesc: "Scitopia is a theatrical extravaganza where teams perform short skits blending drama, comedy, and social commentary. Choose a theme, write your script, and bring your characters to life on stage. Whether it's a hilarious parody or a thought-provoking narrative — the stage is yours.",
     rules: ["Team size: 5-10 members", "Skit duration: 8-12 minutes", "Scripts must be original", "Basic stage props and costumes are allowed", "Content must be appropriate for all audiences"],
+    rulebookUrl: "",
   },
 ];
 
