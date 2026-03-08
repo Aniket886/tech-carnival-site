@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import EventDetailModal from "@/components/EventDetailModal";
+import RegistrationModal from "@/components/RegistrationModal";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
 
