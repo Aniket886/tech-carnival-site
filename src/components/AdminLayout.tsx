@@ -1,5 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useAdminSessionTimeout } from "@/hooks/useAdminSessionTimeout";
+import { useSessionTimeoutSettings } from "@/hooks/useSessionTimeoutSettings";
+import SessionWarningModal from "@/components/SessionWarningModal";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -39,7 +42,6 @@ function AdminSidebar() {
   const { signOut } = useAdminAuth();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border bg-card/30">
@@ -81,6 +83,63 @@ function AdminSidebar() {
   );
 }
 
+function SessionIndicator({ showWarning, remainingSeconds }: { showWarning: boolean; remainingSeconds: number }) {
+  if (showWarning) {
+    const mins = Math.floor(remainingSeconds / 60);
+    const secs = remainingSeconds % 60;
+    return (
+      <div className="flex items-center gap-1.5 text-xs text-destructive">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
+        </span>
+        <span className="font-mono tabular-nums">
+          {mins}:{secs.toString().padStart(2, "0")}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+      <span className="h-2 w-2 rounded-full bg-green-500" />
+      <span>Active</span>
+    </div>
+  );
+}
+
+function AdminDashboardContent() {
+  const { timeoutMs, warningMs } = useSessionTimeoutSettings();
+  const { showWarning, remainingSeconds, stayLoggedIn, logoutNow } = useAdminSessionTimeout({
+    timeoutMs,
+    warningMs,
+  });
+
+  return (
+    <>
+      <SessionWarningModal
+        open={showWarning}
+        remainingSeconds={remainingSeconds}
+        onStay={stayLoggedIn}
+        onLogout={logoutNow}
+      />
+      <div className="min-h-screen flex w-full bg-background">
+        <AdminSidebar />
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="h-14 flex items-center border-b border-border px-4 gap-4 shrink-0">
+            <SidebarTrigger />
+            <h1 className="text-sm font-semibold text-gradient flex-1">Tech Carnival – Admin</h1>
+            <SessionIndicator showWarning={showWarning} remainingSeconds={remainingSeconds} />
+          </header>
+          <main className="flex-1 overflow-auto p-4 sm:p-6">
+            <Outlet />
+          </main>
+        </div>
+      </div>
+    </>
+  );
+}
+
 const AdminLayout = () => {
   const { user, isAdmin, loading } = useAdminAuth();
 
@@ -98,18 +157,7 @@ const AdminLayout = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center border-b border-border px-4 gap-4 shrink-0">
-            <SidebarTrigger />
-            <h1 className="text-sm font-semibold text-gradient">Tech Carnival – Admin</h1>
-          </header>
-          <main className="flex-1 overflow-auto p-4 sm:p-6">
-            <Outlet />
-          </main>
-        </div>
-      </div>
+      <AdminDashboardContent />
     </SidebarProvider>
   );
 };
