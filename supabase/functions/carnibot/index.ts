@@ -22,7 +22,7 @@ Day 1 (15th September 2026):
   🎮 Battle Ground – Free Fire — 2:30 PM – 5:30 PM — 📍 Gaming Arena | Team: 4 (squad) [gaming]
   💃 Dance Mania (Group Dance) — 6:00 PM – 8:00 PM — 📍 Main Stage | Team: 6-12 [cultural]
 
-Day 2:
+Day 2 (16th September 2026):
   🧭 Code Compass — 9:00 AM – 11:00 AM — 📍 Computer Lab 1 | Team: Solo [technical]
   🎬 Scitopia (Skit Play) — 11:30 AM – 2:00 PM — 📍 Main Auditorium | Team: 5-10 [cultural]
   🍽️ Lunch Break — 2:00 PM – 3:00 PM — 📍 Food Court [break]
