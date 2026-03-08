@@ -138,6 +138,8 @@ const AdminEmail = () => {
   const [customField, setCustomField] = useState("");
 
   const QUICK_FIELDS = ["name", "team_name", "email", "phone", "college", "event"];
+
+  const insertPlaceholder = (placeholder: string) => {
     const el = document.querySelector<HTMLTextAreaElement>("#email-message-textarea");
     if (el) {
       const start = el.selectionStart ?? message.length;
