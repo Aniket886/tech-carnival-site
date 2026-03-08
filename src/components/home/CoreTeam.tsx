@@ -2,7 +2,7 @@ import { User } from "lucide-react";
 
 const coreTeam = [
   "Adarsh Gouda D",
-  "Aniket C Tegginamath",
+  "Aniket Tegginamath",
   "Bhanuprakash K S",
   "K Vishwasheetal Sintalkar",
   "Sonali V Meharwade",
@@ -31,7 +31,7 @@ const CoreTeam = () => {
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-primary/40 bg-muted/60 flex items-center justify-center mb-4 overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.15)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] group-hover:border-primary/70 transition-all duration-300">
                 <User className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground/50" />
               </div>
-              <h3 className="text-sm sm:text-base font-semibold text-foreground leading-tight">
+              <h3 className="text-sm sm:text-base font-semibold text-foreground leading-tight whitespace-nowrap">
                 {name}
               </h3>
             </div>
