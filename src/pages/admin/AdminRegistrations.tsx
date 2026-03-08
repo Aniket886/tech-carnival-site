@@ -73,7 +73,7 @@ const AdminRegistrations = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(fetchData, 10_000);
     return () => clearInterval(interval);
   }, [fetchData]);
 

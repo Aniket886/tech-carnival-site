@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+
+export const AdminRefreshContext = createContext(0);
+export const useAdminRefresh = () => useContext(AdminRefreshContext);
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog, AlertDialogContent, AlertDialogDescription,
@@ -30,8 +33,15 @@ const links = [
 const AdminLayout = () => {
   const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Auto-refresh admin data every 10 seconds
+  useEffect(() => {
+    const id = setInterval(() => setRefreshKey(k => k + 1), 10_000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (loading) return;
@@ -99,7 +109,9 @@ const AdminLayout = () => {
           <h1 className="font-display text-sm font-semibold text-foreground tracking-wide">{currentLabel}</h1>
         </header>
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          <Outlet />
+          <AdminRefreshContext.Provider value={refreshKey}>
+            <Outlet />
+          </AdminRefreshContext.Provider>
         </main>
       </div>
 

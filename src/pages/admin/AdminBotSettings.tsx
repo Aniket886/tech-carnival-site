@@ -59,7 +59,11 @@ const ContactsTab = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetch_(); }, [fetch_]);
+  useEffect(() => {
+    fetch_();
+    const interval = setInterval(fetch_, 10_000);
+    return () => clearInterval(interval);
+  }, [fetch_]);
 
   const getEdit = (id: string, field: keyof BotContact, fallback: any) =>
     edits[id]?.[field] !== undefined ? edits[id][field] : fallback;
@@ -207,7 +211,11 @@ const FaqTab = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetch_(); }, [fetch_]);
+  useEffect(() => {
+    fetch_();
+    const interval = setInterval(fetch_, 10_000);
+    return () => clearInterval(interval);
+  }, [fetch_]);
 
   const getEdit = (id: string, field: keyof BotFaq, fallback: any) =>
     edits[id]?.[field] !== undefined ? edits[id][field] : fallback;
@@ -346,6 +354,8 @@ const AnalyticsTab = () => {
       setLoading(false);
     };
     fetch_();
+    const interval = setInterval(fetch_, 10_000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) return <p className="text-muted-foreground">Loading analytics…</p>;

@@ -86,7 +86,11 @@ const AdminColleges = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 10_000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const pendingCount = useMemo(() => colleges.filter(c => c.approval_status === "pending").length, [colleges]);
 

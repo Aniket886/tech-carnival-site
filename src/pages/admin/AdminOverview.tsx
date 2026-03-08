@@ -165,7 +165,7 @@ const AdminOverview = () => {
     };
 
     fetchStats();
-    const interval = setInterval(fetchStats, 5000);
+    const interval = setInterval(fetchStats, 10_000);
     return () => clearInterval(interval);
   }, []);
 
