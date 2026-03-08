@@ -9,8 +9,8 @@ import { Mail, Phone, MapPin, User, Send } from "lucide-react";
 import { validateName, validateEmail, validatePhone, validateMessage, sanitizeInput } from "@/lib/validators";
 
 const coordinators = [
-  { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com" },
-  { name: "Sonali V Meharwade", role: "Core Organizer", phone: "+91 8073 289 015", email: "xyz@college.edu" },
+  { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com", initial: "A" },
+  { name: "Sonali V Meharwade", role: "Core Organizer", phone: "+91 8073 289 015", email: "xyz@college.edu", initial: "S" },
 ];
 
 const RATE_LIMIT_KEY = "contact_last_submit";
@@ -138,7 +138,7 @@ const ContactSection = () => {
             {coordinators.map((c) => (
               <div key={c.email} className="glass rounded-xl p-5 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <User size={18} className="text-primary" />
+                  <span className="text-primary font-display font-bold text-sm">{c.initial}</span>
                 </div>
                 <div className="space-y-1 text-sm">
                   <p className="font-semibold text-foreground">{c.name}</p>
