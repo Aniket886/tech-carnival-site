@@ -22,7 +22,7 @@ const ScrollToTop = () => {
     <Button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       size="icon"
-      className="fixed bottom-6 right-6 z-40 rounded-full w-12 h-12 bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+      className="fixed bottom-14 right-6 z-40 rounded-full w-12 h-12 bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
       aria-label="Scroll to top"
     >
       <ArrowUp size={20} />
