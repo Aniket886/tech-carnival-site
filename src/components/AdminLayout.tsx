@@ -31,6 +31,7 @@ import {
   Handshake,
   Layers,
   BookOpen,
+  Settings,
 } from "lucide-react";
 
 const navItems = [
