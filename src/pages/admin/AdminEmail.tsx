@@ -481,10 +481,20 @@ const AdminEmail = () => {
               <Table2 size={18} className="text-primary" />
               <CardTitle className="text-base">Registered Participants</CardTitle>
               <Badge variant="secondary" className="text-xs">{allRegistrations.length}</Badge>
+              {tableSelected.size > 0 && (
+                <Badge className="text-xs bg-primary/20 text-primary border-primary/30">{tableSelected.size} selected</Badge>
+              )}
             </div>
-            <div className="relative w-full sm:w-64">
-              <Search size={14} className="absolute left-2.5 top-2.5 text-muted-foreground" />
-              <Input placeholder="Search name, email, event…" value={regSearch} onChange={e => setRegSearch(e.target.value)} className="pl-8 bg-background border-border text-xs h-9" />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              {tableSelected.size > 0 && (
+                <Button variant="neon-outline" size="sm" className="text-xs h-8 gap-1.5" onClick={() => { setRecipientMode("table"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+                  <Send size={12} /> Email Selected
+                </Button>
+              )}
+              <div className="relative flex-1 sm:w-64">
+                <Search size={14} className="absolute left-2.5 top-2.5 text-muted-foreground" />
+                <Input placeholder="Search name, email, event…" value={regSearch} onChange={e => setRegSearch(e.target.value)} className="pl-8 bg-background border-border text-xs h-9" />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -493,6 +503,17 @@ const AdminEmail = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-muted/50 border-b border-border">
+                  <th className="px-3 py-3 w-10">
+                    <input
+                      type="checkbox"
+                      className="rounded border-muted-foreground/30 accent-[hsl(var(--primary))]"
+                      checked={allRegistrations.length > 0 && tableSelected.size === allRegistrations.length}
+                      onChange={e => {
+                        if (e.target.checked) setTableSelected(new Set(allRegistrations.map((_, i) => String(i))));
+                        else setTableSelected(new Set());
+                      }}
+                    />
+                  </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">#</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
@@ -501,28 +522,41 @@ const AdminEmail = () => {
                 </tr>
               </thead>
               <tbody>
-                {allRegistrations
-                  .filter(r => {
+                {(() => {
+                  const filtered = allRegistrations.map((r, origIdx) => ({ ...r, origIdx })).filter(r => {
                     if (!regSearch.trim()) return true;
                     const q = regSearch.toLowerCase();
                     return r.leader_name.toLowerCase().includes(q) || r.leader_email.toLowerCase().includes(q) || r.event_name.toLowerCase().includes(q) || r.leader_phone.includes(q);
-                  })
-                  .map((r, i) => (
-                    <tr key={`${r.leader_email}-${r.event_name}-${i}`} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3 text-muted-foreground text-xs">{i + 1}</td>
-                      <td className="px-4 py-3 text-foreground font-medium">{r.leader_name}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{r.leader_email}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{r.leader_phone}</td>
-                      <td className="px-4 py-3"><Badge variant="outline" className="text-xs">{r.event_name}</Badge></td>
-                    </tr>
-                  ))}
-                {allRegistrations.filter(r => {
-                  if (!regSearch.trim()) return true;
-                  const q = regSearch.toLowerCase();
-                  return r.leader_name.toLowerCase().includes(q) || r.leader_email.toLowerCase().includes(q) || r.event_name.toLowerCase().includes(q) || r.leader_phone.includes(q);
-                }).length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground text-sm">No registrations found</td></tr>
-                )}
+                  });
+                  if (filtered.length === 0) return (
+                    <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground text-sm">No registrations found</td></tr>
+                  );
+                  return filtered.map((r, i) => {
+                    const key = String(r.origIdx);
+                    const isChecked = tableSelected.has(key);
+                    return (
+                      <tr
+                        key={`${r.leader_email}-${r.event_name}-${r.origIdx}`}
+                        className={`border-b border-border last:border-0 transition-colors cursor-pointer ${isChecked ? "bg-primary/5" : "hover:bg-muted/30"}`}
+                        onClick={() => setTableSelected(prev => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; })}
+                      >
+                        <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            className="rounded border-muted-foreground/30 accent-[hsl(var(--primary))]"
+                            checked={isChecked}
+                            onChange={() => setTableSelected(prev => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; })}
+                          />
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground text-xs">{i + 1}</td>
+                        <td className="px-4 py-3 text-foreground font-medium">{r.leader_name}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{r.leader_email}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{r.leader_phone}</td>
+                        <td className="px-4 py-3"><Badge variant="outline" className="text-xs">{r.event_name}</Badge></td>
+                      </tr>
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>
