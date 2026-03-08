@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, useRef, ReactNode, useC
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
+const SESSION_ID_KEY = "admin_session_id";
+
 interface AdminAuthCtx {
   user: User | null;
   isAdmin: boolean;
