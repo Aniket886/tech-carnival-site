@@ -195,6 +195,7 @@ const Events = () => {
       <EventDetailModal
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
+        onRegister={(name) => { setSelectedEvent(null); setRegisterEventId(name); }}
         categoryBadge={categoryBadge}
       />
 

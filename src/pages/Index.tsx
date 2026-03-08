@@ -21,7 +21,7 @@ const sectionComponents: { key: string; Component: React.ComponentType }[] = [
   { key: "sponsors", Component: Sponsors },
   { key: "events", Component: Events },
   { key: "schedule", Component: EventFlow },
-  { key: "registration", Component: Registration },
+  { key: "leaderboard", Component: Leaderboard },
   { key: "leaderboard", Component: Leaderboard },
   { key: "faq", Component: FAQ },
   { key: "contact", Component: Contact },
