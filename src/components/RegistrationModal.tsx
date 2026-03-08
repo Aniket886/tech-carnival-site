@@ -213,7 +213,9 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     [form, isTeamEvent]
   );
 
-  const goNext = () => {
+  const [checkingPayment, setCheckingPayment] = useState(false);
+
+  const goNext = async () => {
     const errs = validateStep(step);
     setErrors(errs);
     if (step === 0) {
@@ -221,11 +223,39 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         ? [...touched, ...["leader_name", "leader_email", "leader_phone", "college_name", ...(isTeamEvent ? ["team_name"] : [])]]
         : touched));
     }
+    if (step === 1) {
+      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id"]));
+    }
     if (countErrors(errs) > 0) {
       setShake(true);
       setTimeout(() => setShake(false), 500);
       toast({ title: `Please fix ${countErrors(errs)} error${countErrors(errs) > 1 ? "s" : ""} before continuing`, variant: "destructive" });
       return;
+    }
+    // Duplicate payment check on step 1
+    if (step === 1) {
+      setCheckingPayment(true);
+      try {
+        const utr = form.utr_number.trim();
+        const txn = form.transaction_id.trim();
+        const { data: dupes } = await supabase
+          .from("registrations")
+          .select("id, utr_number, transaction_id")
+          .or(`utr_number.eq.${utr},transaction_id.eq.${txn}`);
+        if (dupes && dupes.length > 0) {
+          const dupErrs: FieldErrors = {};
+          if (dupes.some((d) => d.utr_number === utr)) dupErrs.utr_number = "This UTR number has already been used";
+          if (dupes.some((d) => d.transaction_id === txn)) dupErrs.transaction_id = "This Transaction ID has already been used";
+          setErrors(dupErrs);
+          setCheckingPayment(false);
+          return;
+        }
+      } catch {
+        toast({ title: "Could not verify payment details. Please try again.", variant: "destructive" });
+        setCheckingPayment(false);
+        return;
+      }
+      setCheckingPayment(false);
     }
     setStep((s) => s + 1);
   };
