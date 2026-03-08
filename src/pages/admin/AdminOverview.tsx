@@ -184,6 +184,32 @@ const AdminOverview = () => {
         ))}
       </div>
 
+      {/* Category Breakdown */}
+      {stats.categoryBreakdown.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {stats.categoryBreakdown.map((cat) => {
+            const iconMap: Record<string, { icon: typeof Cpu; color: string }> = {
+              technical: { icon: Cpu, color: "text-primary" },
+              gaming: { icon: Gamepad2, color: "text-destructive" },
+              cultural: { icon: Palette, color: "text-secondary" },
+            };
+            const match = iconMap[cat.name.toLowerCase()] || { icon: CalendarDays, color: "text-muted-foreground" };
+            const Icon = match.icon;
+            return (
+              <Card key={cat.name} className="bg-card border-border hover:border-primary/30 transition-colors">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon size={18} className={match.color} />
+                    <span className="text-sm font-medium text-foreground">{cat.name}</span>
+                  </div>
+                  <p className="text-2xl font-bold text-foreground">{cat.count}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Registration Trend */}
