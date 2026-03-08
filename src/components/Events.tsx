@@ -52,6 +52,7 @@ const events: EventItem[] = [
     teamSize: "Solo",
     detailedDesc: "Myth Busters is a unique event where participants are presented with common tech and science myths. Your job? Research, analyze, and either bust or confirm them with solid evidence and logical reasoning. It's a battle of wits, critical thinking, and presentation skills.",
     rules: ["Solo participation only", "Topics will be assigned on the spot", "Preparation time: 15 minutes", "Presentation time: 5 minutes per participant", "Judging based on logic, evidence, and delivery"],
+    rulebookUrl: "",
   },
   {
     emoji: "🔥", name: "Battle Ground", desc: "BGMI tournament – last team standing wins!", category: "gaming",
