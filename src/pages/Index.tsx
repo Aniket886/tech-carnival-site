@@ -14,6 +14,7 @@ import Contact from "@/components/Contact";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import { ArrowUp } from "lucide-react";
+import CarniBOT from "@/components/CarniBOT";
 
 const sectionComponents: { key: string; Component: React.ComponentType }[] = [
   { key: "hero", Component: Hero },
