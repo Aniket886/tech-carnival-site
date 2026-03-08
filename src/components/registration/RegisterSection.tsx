@@ -394,7 +394,46 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 {renderField("leaderName", "Full Name", form.leaderName, (v) => setForm((f) => ({ ...f, leaderName: v })), { placeholder: "John Doe" })}
                 {renderField("leaderEmail", "Email", form.leaderEmail, (v) => setForm((f) => ({ ...f, leaderEmail: v })), { type: "email", placeholder: "john@example.com" })}
                 {renderField("leaderPhone", "Phone Number", form.leaderPhone, (v) => setForm((f) => ({ ...f, leaderPhone: v })), { type: "tel", placeholder: "9876543210" })}
-                {renderField("collegeName", "College / Organization", form.collegeName, (v) => setForm((f) => ({ ...f, collegeName: v })), { placeholder: "ABC College of Engineering" })}
+                <div className="space-y-1.5">
+                  <Label htmlFor="collegeName" className="text-sm text-foreground font-medium">College / Organization *</Label>
+                  {colleges.length > 0 ? (
+                    <>
+                      <Select
+                        value={colleges.some(c => c.name === form.collegeName) ? form.collegeName : form.collegeName ? "__other" : ""}
+                        onValueChange={(v) => {
+                          if (v === "__other") {
+                            setOtherCollegeOpen(true);
+                          } else {
+                            setForm((f) => ({ ...f, collegeName: v }));
+                            handleBlur("collegeName");
+                          }
+                        }}
+                      >
+                        <SelectTrigger className={getFieldClass("collegeName")}><SelectValue placeholder="Select college" /></SelectTrigger>
+                        <SelectContent>
+                          {colleges.map((c) => (
+                            <SelectItem key={c.id} value={c.name}>
+                              {c.name}{c.short_name ? ` (${c.short_name})` : ""}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="__other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <OtherCollegeDialog
+                        open={otherCollegeOpen}
+                        onClose={() => setOtherCollegeOpen(false)}
+                        onCollegeSaved={(name) => {
+                          setForm((f) => ({ ...f, collegeName: name }));
+                          fetchColleges();
+                          handleBlur("collegeName");
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <Input id="collegeName" placeholder="ABC College of Engineering" value={form.collegeName} onChange={(e) => setForm((f) => ({ ...f, collegeName: e.target.value }))} onBlur={() => handleBlur("collegeName")} className={getFieldClass("collegeName")} />
+                  )}
+                  {errors.collegeName && <p className="text-xs text-destructive">{errors.collegeName}</p>}
+                </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="semester" className="text-sm text-foreground font-medium">Semester</Label>
                   <Select value={form.semester} onValueChange={(v) => setForm((f) => ({ ...f, semester: v }))}>
