@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FileText } from "lucide-react";
 import EventDetailModal from "@/components/EventDetailModal";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
