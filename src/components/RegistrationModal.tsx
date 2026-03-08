@@ -431,11 +431,11 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                     <Label className="text-xs">College *</Label>
                     {colleges.length > 0 ? (
                       <>
-                        <Select
+                      <Select
                           value={colleges.some(c => c.name === form.college_name) ? form.college_name : form.college_name ? "__other" : ""}
                           onValueChange={(v) => {
                             if (v === "__other") {
-                              setForm((p) => ({ ...p, college_name: "" }));
+                              setOtherCollegeOpen(true);
                             } else {
                               setForm((p) => ({ ...p, college_name: v }));
                               onBlur("college_name");
@@ -452,9 +452,15 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                             <SelectItem value="__other">Other</SelectItem>
                           </SelectContent>
                         </Select>
-                        {!colleges.some(c => c.name === form.college_name) && (
-                          <Input placeholder="Enter college name" value={form.college_name} onChange={(e) => setForm((p) => ({ ...p, college_name: e.target.value }))} onBlur={() => onBlur("college_name")} maxLength={100} className={`mt-1.5 ${fieldClass("college_name")}`} />
-                        )}
+                        <OtherCollegeDialog
+                          open={otherCollegeOpen}
+                          onClose={() => setOtherCollegeOpen(false)}
+                          onCollegeSaved={(name) => {
+                            setForm((p) => ({ ...p, college_name: name }));
+                            fetchColleges();
+                            onBlur("college_name");
+                          }}
+                        />
                       </>
                     ) : (
                       <Input placeholder="College name" value={form.college_name} onChange={(e) => setForm((p) => ({ ...p, college_name: e.target.value }))} onBlur={() => onBlur("college_name")} maxLength={100} className={fieldClass("college_name")} />
