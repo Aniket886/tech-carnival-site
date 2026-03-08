@@ -177,13 +177,15 @@ const AdminEmail = () => {
     supabase.from("events").select("id,name").eq("is_active", true).order("name").then(({ data }) => {
       if (data) setEvents(data);
       // load registrations with event names
-      supabase.from("registrations").select("leader_name,leader_email,leader_phone,event_id").order("created_at", { ascending: false }).then(({ data: regs }) => {
+      supabase.from("registrations").select("leader_name,leader_email,leader_phone,team_name,college_name,event_id").order("created_at", { ascending: false }).then(({ data: regs }) => {
         if (regs && data) {
           const eventMap = new Map(data.map(e => [e.id, e.name]));
           setAllRegistrations(regs.map(r => ({
             leader_name: r.leader_name,
             leader_email: r.leader_email,
             leader_phone: r.leader_phone,
+            team_name: r.team_name || "",
+            college_name: r.college_name,
             event_name: eventMap.get(r.event_id) || "Unknown",
           })));
         }
