@@ -147,6 +147,7 @@
 
   .btn-golden:hover {
     background-position: right;
+    transform: scale(1.05);
   }
 
   .btn-golden:active {
