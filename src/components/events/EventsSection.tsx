@@ -168,6 +168,13 @@ const EventsSection = () => {
                   <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                     {event.description}
                   </p>
+                  <p className="text-xs text-muted-foreground/70 mb-4">
+                    {event.team_size_min === 1 && event.team_size_max === 1
+                      ? "👤 Solo"
+                      : event.team_size_min === event.team_size_max
+                        ? `👥 Team of ${event.team_size_min}`
+                        : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
+                  </p>
                   <div className="flex items-center justify-between">
                     <Badge variant="outline" className={`text-xs capitalize ${style.badge}`}>
                       {event.category}
