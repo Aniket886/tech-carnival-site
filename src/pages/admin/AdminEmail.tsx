@@ -168,7 +168,8 @@ const AdminEmail = () => {
       .replace(/\{\{college\}\}/gi, recipient.college || "")
       .replace(/\{\{event\}\}/gi, recipient.event || eventName || "");
   };
-  const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string }[]>([]);
+  const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string; team_name: string; college_name: string }[]>([]);
+  const [tableSelected, setTableSelected] = useState<Set<string>>(new Set());
   const [regSearch, setRegSearch] = useState("");
 
   // load events + all registrations
