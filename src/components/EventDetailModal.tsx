@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
-import { type EventItem, handleRegisterClick } from "@/components/Events";
+import { type EventItem } from "@/components/Events";
 
 const categoryGlow: Record<string, string> = {
   technical: "shadow-[0_0_40px_hsl(217_90%_60%/0.2)]",
@@ -25,10 +25,11 @@ const categoryBorder: Record<string, string> = {
 interface Props {
   event: EventItem | null;
   onClose: () => void;
+  onRegister?: (eventName: string) => void;
   categoryBadge: Record<string, { label: string; className: string }>;
 }
 
-const EventDetailModal = ({ event, onClose, categoryBadge }: Props) => {
+const EventDetailModal = ({ event, onClose, onRegister, categoryBadge }: Props) => {
   if (!event) return null;
 
   const details = [
@@ -122,7 +123,7 @@ const EventDetailModal = ({ event, onClose, categoryBadge }: Props) => {
               className="w-full neon-glow"
               onClick={() => {
                 onClose();
-                handleRegisterClick(event.name);
+                onRegister?.(event.name);
               }}
             >
               Register for {event.name}

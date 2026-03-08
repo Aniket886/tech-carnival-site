@@ -48,9 +48,9 @@ const Navbar = () => {
               {link.label}
             </a>
           ))}
-          {isSectionVisible("registration") && (
+          {isSectionVisible("events") && (
             <Button asChild size="sm" className="neon-glow rounded-full px-5">
-              <a href="#register">Register</a>
+              <a href="#events">Register</a>
             </Button>
           )}
         </div>
@@ -75,9 +75,9 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
-              {isSectionVisible("registration") && (
+              {isSectionVisible("events") && (
                 <Button asChild className="neon-glow mt-4 rounded-full">
-                  <a href="#register" onClick={() => setOpen(false)}>
+                  <a href="#events" onClick={() => setOpen(false)}>
                     Register Now
                   </a>
                 </Button>

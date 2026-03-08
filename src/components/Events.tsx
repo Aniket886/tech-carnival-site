@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import EventDetailModal from "@/components/EventDetailModal";
+import RegistrationModal from "@/components/RegistrationModal";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
 
@@ -91,15 +92,10 @@ const categoryBadge: Record<string, { label: string; className: string }> = {
   cultural: { label: "Cultural", className: "bg-purple-500/15 text-purple-400 border-purple-500/30" },
 };
 
-export const handleRegisterClick = (eventName: string) => {
-  const el = document.getElementById("register");
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-  window.dispatchEvent(new CustomEvent("preselect-event", { detail: eventName }));
-};
-
 const Events = () => {
   const [active, setActive] = useState<Category>("all");
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [registerEventId, setRegisterEventId] = useState<string | null>(null);
   const filtered = active === "all" ? events : events.filter((e) => e.category === active);
 
   return (
@@ -181,7 +177,7 @@ const Events = () => {
                           className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
                           onClick={(ev) => {
                             ev.stopPropagation();
-                            handleRegisterClick(e.name);
+                            setRegisterEventId(e.name);
                           }}
                         >
                           Register
@@ -199,7 +195,13 @@ const Events = () => {
       <EventDetailModal
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
+        onRegister={(name) => { setSelectedEvent(null); setRegisterEventId(name); }}
         categoryBadge={categoryBadge}
+      />
+
+      <RegistrationModal
+        eventName={registerEventId}
+        onClose={() => setRegisterEventId(null)}
       />
     </section>
   );

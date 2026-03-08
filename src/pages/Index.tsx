@@ -8,7 +8,6 @@ import About from "@/components/About";
 import Sponsors from "@/components/Sponsors";
 import Events from "@/components/Events";
 import EventFlow from "@/components/EventFlow";
-import Registration from "@/components/Registration";
 import Leaderboard from "@/components/Leaderboard";
 import Contact from "@/components/Contact";
 import FAQ from "@/components/FAQ";
@@ -22,7 +21,6 @@ const sectionComponents: { key: string; Component: React.ComponentType }[] = [
   { key: "sponsors", Component: Sponsors },
   { key: "events", Component: Events },
   { key: "schedule", Component: EventFlow },
-  { key: "registration", Component: Registration },
   { key: "leaderboard", Component: Leaderboard },
   { key: "faq", Component: FAQ },
   { key: "contact", Component: Contact },
