@@ -279,13 +279,14 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           toast({ title: "Registration failed", description: error.message, variant: "destructive" });
         }
       } else {
-        setSuccessData({ id: crypto.randomUUID().slice(0, 8), eventName: event.name });
+        setSuccessData({ id: data?.[0]?.id || crypto.randomUUID().slice(0, 8), eventName: event.name });
         supabase.functions.invoke("send-email", {
           body: {
             type: "registration_received",
             to: form.leader_email.trim(),
             leader_name: form.leader_name.trim(),
             team_name: isTeamEvent ? form.team_name.trim() : undefined,
+            registration_id: data?.[0]?.id || "N/A",
             event_name: event.name,
           },
         }).catch(() => {});
