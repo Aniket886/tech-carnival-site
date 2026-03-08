@@ -101,11 +101,14 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const [shake, setShake] = useState(false);
   const [successData, setSuccessData] = useState<{ id: string; eventName: string } | null>(null);
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
+  const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
 
-  useEffect(() => {
+  const fetchColleges = () => {
     supabase.from("colleges").select("id, name, short_name").eq("is_active", true).order("name")
       .then(({ data }) => { if (data) setColleges(data); });
-  }, []);
+  };
+
+  useEffect(() => { fetchColleges(); }, []);
 
   const isTeamEvent = event ? event.team_size_max > 1 : false;
   const isOpen = !!eventData;
