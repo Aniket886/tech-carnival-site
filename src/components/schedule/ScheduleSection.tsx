@@ -273,11 +273,13 @@ const ScheduleSection = () => {
     <section id="schedule" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       <div className="relative z-10 container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text mb-3">
-            ⚡ Event Flow
+        <div className="text-center mb-16">
+          <span className="inline-block text-xs font-display uppercase tracking-[0.3em] text-primary/70 mb-3">📅 The Lineup</span>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black gradient-text mb-5 leading-tight">
+            Event Flow
           </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">
+          <div className="w-24 h-1 mx-auto rounded-full bg-gradient-to-r from-primary to-secondary mb-5" />
+          <p className="text-muted-foreground max-w-lg mx-auto text-base sm:text-lg leading-relaxed">
             Your 2-day schedule at a glance
           </p>
         </div>
