@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+
+export const AdminRefreshContext = createContext(0);
+export const useAdminRefresh = () => useContext(AdminRefreshContext);
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog, AlertDialogContent, AlertDialogDescription,
