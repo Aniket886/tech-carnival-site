@@ -172,8 +172,8 @@ const Contact = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-foreground">College Campus</p>
-                  <p className="text-sm text-muted-foreground">XYZ College of Engineering, Main Road,<br />City, State – 123456</p>
+                  <p className="font-semibold text-foreground">GM University</p>
+                  <p className="text-sm text-muted-foreground">GM University P.B. Road, Davanagere<br />Davangere – 577006 Karnataka,</p>
                 </div>
               </div>
               <div className="rounded-lg overflow-hidden border border-border aspect-video bg-muted/20 flex items-center justify-center">
