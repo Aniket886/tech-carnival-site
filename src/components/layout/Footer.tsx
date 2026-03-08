@@ -21,7 +21,7 @@ const Footer = () => {
             <Sparkles className="h-5 w-5 text-accent" />
           </div>
           <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-            Where Innovation Meets Celebration — GM University, Davangere
+            Innovation Meets Celebration — GM University, Davangere
           </p>
         </div>
 
