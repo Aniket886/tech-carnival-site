@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FileText } from "lucide-react";
 import EventDetailModal from "@/components/EventDetailModal";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
@@ -15,6 +16,7 @@ export interface EventItem {
   teamSize: string;
   detailedDesc: string;
   rules: string[];
+  rulebookUrl?: string;
 }
 
 const events: EventItem[] = [
@@ -23,48 +25,56 @@ const events: EventItem[] = [
     teamSize: "2-4 members",
     detailedDesc: "Hack Momentum is a high-energy 6-hour hackathon where teams race against the clock to ideate, design, and build innovative tech solutions. Whether it's a web app, mobile tool, or an AI-powered prototype — bring your A-game and compete for glory. Mentors and industry experts will be on-site to guide you through the process.",
     rules: ["Teams must consist of 2-4 members", "All code must be written during the event", "Pre-built templates or boilerplates are not allowed", "Projects must be submitted before the deadline", "Judges' decision is final and binding"],
+    rulebookUrl: "", // Add Google Drive PDF link here
   },
   {
     emoji: "🧠", name: "Brain Quest", desc: "A Quiz to test your tech knowledge", category: "technical",
     teamSize: "2 members",
     detailedDesc: "Brain Quest is a thrilling multi-round quiz competition that tests your knowledge across technology, science, current affairs, and general trivia. From rapid-fire buzzer rounds to tricky visual puzzles, each round brings a new challenge. Team up with a partner and prove you're the sharpest minds at Tech Carnival.",
     rules: ["Teams of exactly 2 members", "No electronic devices allowed during the quiz", "Multiple rounds with elimination", "Tie-breakers will be conducted if necessary", "Quiz master's decision is final"],
+    rulebookUrl: "",
   },
   {
     emoji: "📊", name: "Pixel Perfect", desc: "Present your ideas visually on a poster", category: "technical",
     teamSize: "1-2 members",
     detailedDesc: "Pixel Perfect challenges you to present complex technical ideas through visually compelling posters. Whether it's a research concept, a product idea, or a social impact project — your poster should tell the story. Creativity, clarity, and technical depth are all key evaluation criteria.",
     rules: ["Individual or team of 2 members", "Posters must be original and created by participants", "Standard poster size: A1 or A2", "Digital and hand-drawn posters both accepted", "Presentation time: 5 minutes per team"],
+    rulebookUrl: "",
   },
   {
     emoji: "🧭", name: "Code Compass", desc: "Navigate coding challenges and prove your skills", category: "technical",
     teamSize: "Solo",
     detailedDesc: "Code Compass is a competitive programming event that puts your algorithmic thinking and coding speed to the test. Solve a series of increasingly difficult problems across data structures, algorithms, and logic. The fastest and most accurate coder takes the crown.",
     rules: ["Solo participation only", "Languages allowed: C, C++, Java, Python", "Online judge will auto-evaluate submissions", "No internet access during the contest", "Time limit: 2 hours for all problems"],
+    rulebookUrl: "",
   },
   {
     emoji: "🔍", name: "Myth Busters", desc: "Bust the myths with facts and logic", category: "technical",
     teamSize: "Solo",
     detailedDesc: "Myth Busters is a unique event where participants are presented with common tech and science myths. Your job? Research, analyze, and either bust or confirm them with solid evidence and logical reasoning. It's a battle of wits, critical thinking, and presentation skills.",
     rules: ["Solo participation only", "Topics will be assigned on the spot", "Preparation time: 15 minutes", "Presentation time: 5 minutes per participant", "Judging based on logic, evidence, and delivery"],
+    rulebookUrl: "",
   },
   {
     emoji: "🔥", name: "Battle Ground", desc: "BGMI tournament – last team standing wins!", category: "gaming",
     teamSize: "4 members (squad)",
     detailedDesc: "Battle Ground brings the ultimate BGMI (Battlegrounds Mobile India) esports experience to Tech Carnival. Assemble your squad, strategize your drops, and fight your way to the chicken dinner. Multiple rounds of intense battle royale action await — only the best squad survives.",
     rules: ["Squad of exactly 4 members required", "Players must use their own mobile devices", "Emulators and triggers are strictly prohibited", "Multiple match rounds; points-based scoring", "Fair play policy enforced — cheating leads to disqualification"],
+    rulebookUrl: "",
   },
   {
     emoji: "💃", name: "Dance Mania", desc: "Group dance competition to set the stage on fire", category: "cultural",
     teamSize: "6-12 members",
     detailedDesc: "Dance Mania is the ultimate group dance showdown at Tech Carnival. Bring your crew, choreograph a stunning routine, and set the stage ablaze with your moves. Any dance style is welcome — Bollywood, hip-hop, contemporary, folk, or fusion. Energy, synchronization, and creativity are what the judges are looking for.",
     rules: ["Group size: 6-12 members", "Performance duration: 5-8 minutes", "Music track must be submitted 24 hours prior", "Props are allowed but must be managed by the team", "Vulgarity or offensive content leads to disqualification"],
+    rulebookUrl: "",
   },
   {
     emoji: "🎬", name: "Scitopia", desc: "Skit play – drama, comedy, and creativity combined", category: "cultural",
     teamSize: "5-10 members",
     detailedDesc: "Scitopia is a theatrical extravaganza where teams perform short skits blending drama, comedy, and social commentary. Choose a theme, write your script, and bring your characters to life on stage. Whether it's a hilarious parody or a thought-provoking narrative — the stage is yours.",
     rules: ["Team size: 5-10 members", "Skit duration: 8-12 minutes", "Scripts must be original", "Basic stage props and costumes are allowed", "Content must be appropriate for all audiences"],
+    rulebookUrl: "",
   },
 ];
 
@@ -151,17 +161,20 @@ const Events = () => {
                         {categoryBadge[e.category].label}
                       </Badge>
                       <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-                          onClick={(ev) => {
-                            ev.stopPropagation();
-                            setSelectedEvent(e);
-                          }}
-                        >
-                          Rule Book
-                        </Button>
+                        {e.rulebookUrl && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-border text-muted-foreground hover:text-foreground hover:border-primary/30 gap-1"
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              window.open(e.rulebookUrl, "_blank", "noopener,noreferrer");
+                            }}
+                          >
+                            <FileText className="h-3.5 w-3.5" />
+                            Rule Book
+                          </Button>
+                        )}
                         <Button
                           size="sm"
                           variant="outline"
