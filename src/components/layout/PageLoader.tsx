@@ -2,16 +2,27 @@ import { useState, useEffect } from "react";
 
 const PageLoader = () => {
   const [visible, setVisible] = useState(true);
+  const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 2500);
-    return () => clearTimeout(timer);
+    const fadeTimer = setTimeout(() => setFading(true), 2000);
+    const hideTimer = setTimeout(() => setVisible(false), 2500);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center gap-6 animate-out fade-out duration-500 fill-mode-forwards pointer-events-none" style={{ animationDelay: "2s" }}>
+    <div
+      className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center gap-6 pointer-events-none"
+      style={{
+        opacity: fading ? 0 : 1,
+        transition: "opacity 0.5s ease-out",
+      }}
+    >
       <div className="loader-wrapper">
         <div className="packman" />
         <div className="dots">
