@@ -82,6 +82,15 @@ const AdminSettings = () => {
     setLoginLogs(data || []);
   }, []);
 
+  const fetchActiveSessions = useCallback(async () => {
+    const { data } = await supabase
+      .from("admin_sessions")
+      .select("*")
+      .eq("is_active", true)
+      .order("login_at", { ascending: false });
+    setActiveSessions(data || []);
+  }, []);
+
   const fetchTimeout = useCallback(async () => {
     const { data } = await supabase
       .from("admin_settings")
