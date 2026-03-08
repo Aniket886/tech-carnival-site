@@ -38,6 +38,30 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_login_logs: {
+        Row: {
+          action_type: string
+          email: string
+          id: string
+          logged_in_at: string
+          user_id: string
+        }
+        Insert: {
+          action_type?: string
+          email: string
+          id?: string
+          logged_in_at?: string
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          email?: string
+          id?: string
+          logged_in_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_settings: {
         Row: {
           id: string
@@ -568,18 +592,54 @@ export type Database = {
       user_roles: {
         Row: {
           id: string
+          is_owner: boolean
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
           id?: string
+          is_owner?: boolean
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
           id?: string
+          is_owner?: boolean
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      visibility_log: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          changed_from: boolean
+          changed_to: boolean
+          id: string
+          target_key: string
+          target_name: string
+          target_type: string
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          changed_from?: boolean
+          changed_to?: boolean
+          id?: string
+          target_key: string
+          target_name: string
+          target_type: string
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          changed_from?: boolean
+          changed_to?: boolean
+          id?: string
+          target_key?: string
+          target_name?: string
+          target_type?: string
         }
         Relationships: []
       }
