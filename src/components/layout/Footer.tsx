@@ -4,82 +4,74 @@ const Footer = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer className="relative border-t border-border/40">
-      <div className="absolute inset-0 bg-card/60 backdrop-blur-sm" />
+    <footer className="relative">
+      {/* Top glow line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
-      <div className="relative z-10 container mx-auto px-4">
-        {/* Main row */}
-        <div className="py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="space-y-3">
-            <h3 className="font-display text-lg font-bold text-foreground tracking-wide">
-              Tech Carnival <span className="text-primary">2K26</span>
-            </h3>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-[240px]">
-              Innovation meets celebration.<br />
-              GM University, Davangere.
-            </p>
-            <div className="flex gap-2 pt-1">
-              <a href="https://instagram.com/techcarnival2k26" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 rounded-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200">
-                <Instagram size={14} />
-              </a>
-              <a href="https://techcarnival.online" target="_blank" rel="noopener noreferrer" aria-label="Website" className="w-8 h-8 rounded-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200">
-                <Globe size={14} />
-              </a>
-            </div>
-          </div>
-
-          {/* Navigate */}
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">Navigate</p>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
-              {["Events", "Schedule", "Leaderboard", "Register", "Contact", "FAQ"].map((item) => (
-                <a key={item} href={`#${item.toLowerCase()}`} className="text-xs text-muted-foreground hover:text-foreground transition-colors py-0.5">
-                  {item}
+      <div className="bg-card/40 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-12">
+          {/* Two-column layout */}
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10">
+            {/* Left — Brand + tagline */}
+            <div className="space-y-4 max-w-xs">
+              <h3 className="font-display text-xl font-bold tracking-wide">
+                Tech Carnival <span className="text-primary">2K26</span>
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Where innovation meets celebration — a multi-day inter-college tech fest by GM University, Davangere.
+              </p>
+              <div className="flex gap-2">
+                <a href="https://instagram.com/techcarnival2k26" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200">
+                  <Instagram size={15} />
                 </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">Contact</p>
-            <div className="space-y-2.5">
-              <a href="mailto:info@techcarnival.online" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                <Mail size={13} className="text-primary/70 shrink-0" />
-                info@techcarnival.online
-              </a>
-              <a href="tel:+918073491988" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                <Phone size={13} className="text-primary/70 shrink-0" />
-                +91 80734 91988
-              </a>
-              <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                <MapPin size={13} className="text-primary/70 shrink-0 mt-0.5" />
-                P.B. Road, Davangere<br />577006, Karnataka
+                <a href="https://techcarnival.online" target="_blank" rel="noopener noreferrer" aria-label="Website" className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200">
+                  <Globe size={15} />
+                </a>
               </div>
             </div>
+
+            {/* Right — Contact + back to top */}
+            <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 items-start">
+              <div className="space-y-3">
+                <a href="mailto:info@techcarnival.online" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Mail size={14} className="text-primary" />
+                  </div>
+                  info@techcarnival.online
+                </a>
+                <a href="tel:+918073491988" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Phone size={14} className="text-primary" />
+                  </div>
+                  +91 80734 91988
+                </a>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <MapPin size={14} className="text-accent" />
+                  </div>
+                  P.B. Road, Davangere – 577006
+                </div>
+              </div>
+
+              <button
+                onClick={scrollToTop}
+                aria-label="Back to top"
+                className="hidden md:flex w-10 h-10 rounded-full border border-border/40 items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-200 mt-1"
+              >
+                <ArrowUp size={16} />
+              </button>
+            </div>
           </div>
 
-          {/* Back to top */}
-          <div className="flex flex-col items-start lg:items-end justify-between">
-            <button
-              onClick={scrollToTop}
-              className="group w-9 h-9 rounded-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200"
-              aria-label="Back to top"
-            >
-              <ArrowUp size={14} className="group-hover:-translate-y-0.5 transition-transform" />
-            </button>
+          {/* Bottom bar */}
+          <div className="mt-10 pt-5 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p className="text-[11px] text-muted-foreground/50">
+              © {new Date().getFullYear()} Tech Carnival 2K26 · GM University · All Rights Reserved
+            </p>
+            <p className="text-[11px] text-muted-foreground/35">
+              Built with <span className="text-destructive/50">♥</span> by FCIT Tech Team
+            </p>
           </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="border-t border-border/30 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-[11px] text-muted-foreground/50">
-            © {new Date().getFullYear()} Tech Carnival 2K26 · GM University
-          </p>
-          <p className="text-[11px] text-muted-foreground/40">
-            Built with <span className="text-destructive/60">♥</span> by FCIT Tech Team
-          </p>
         </div>
       </div>
     </footer>
