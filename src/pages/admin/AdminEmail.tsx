@@ -193,13 +193,17 @@ const AdminEmail = () => {
   // load participants when event selected
   useEffect(() => {
     if (recipientMode !== "event" || !selectedEventId) { setParticipants([]); return; }
-    supabase.from("registrations").select("leader_email,leader_name").eq("event_id", selectedEventId).then(({ data }) => {
+    supabase.from("registrations").select("leader_email,leader_name,leader_phone,team_name,college_name").eq("event_id", selectedEventId).then(({ data }) => {
       if (data) {
-        const unique = Array.from(new Map(data.map(d => [d.leader_email, { email: d.leader_email, name: d.leader_name }])).values());
+        const evtName = events.find(e => e.id === selectedEventId)?.name || "";
+        const unique = Array.from(new Map(data.map(d => [d.leader_email, {
+          email: d.leader_email, name: d.leader_name,
+          phone: d.leader_phone, team_name: d.team_name || "", college: d.college_name, event: evtName,
+        }])).values());
         setParticipants(unique);
       }
     });
-  }, [selectedEventId, recipientMode]);
+  }, [selectedEventId, recipientMode, events]);
 
   // update subject when template changes
   useEffect(() => {
