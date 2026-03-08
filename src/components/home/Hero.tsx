@@ -75,22 +75,18 @@ const Hero = () => {
 
         <div className="animate-fade-in-up [animation-delay:0.6s] opacity-0 flex flex-col sm:flex-row gap-5 justify-center">
           <MagneticWrapper>
-            <Button
-              variant="neon"
-              size="lg"
+            <button
               onClick={scrollToRegister}
-              className="text-base px-12 py-6 text-lg font-bold shadow-lg shadow-primary/25">
-              🚀 Register Now
-            </Button>
+              className="btn-golden h-14 px-12 text-lg font-bold inline-flex items-center justify-center">
+              <span>🚀 Register Now</span>
+            </button>
           </MagneticWrapper>
           <MagneticWrapper>
-            <Button
-              variant="neon-outline"
-              size="lg"
-              className="text-base px-12 py-6 text-lg"
+            <button
+              className="btn-golden h-14 px-12 text-lg inline-flex items-center justify-center"
               onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}>
-              Learn More →
-            </Button>
+              <span>Learn More →</span>
+            </button>
           </MagneticWrapper>
         </div>
       </div>
