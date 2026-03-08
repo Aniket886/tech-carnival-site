@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users, CalendarDays, Building2, Trophy, MessageSquare,
   CreditCard, TrendingUp, ArrowUpRight, ArrowDownRight, Clock,
+  Cpu, Gamepad2, Palette,
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -18,6 +19,7 @@ interface Stats {
   totalMessages: number;
   pendingPayments: number;
   confirmedPayments: number;
+  categoryBreakdown: { name: string; count: number }[];
   recentRegistrations: any[];
   registrationsByEvent: { name: string; count: number }[];
   registrationsByDay: { date: string; count: number }[];
@@ -46,7 +48,7 @@ const AdminOverview = () => {
         { data: registrations },
       ] = await Promise.all([
         supabase.from("registrations").select("*", { count: "exact", head: true }),
-        supabase.from("events").select("id, name, is_active"),
+        supabase.from("events").select("id, name, is_active, category"),
         supabase.from("colleges").select("*", { count: "exact", head: true }),
         supabase.from("contacts").select("*", { count: "exact", head: true }),
         supabase.from("registrations").select("id, event_id, registration_status, created_at, leader_name, leader_email, college_name, amount_paid").order("created_at", { ascending: false }).limit(200),
@@ -54,6 +56,16 @@ const AdminOverview = () => {
 
       const totalEvents = events?.length || 0;
       const activeEvents = events?.filter(e => e.is_active).length || 0;
+
+      // Category breakdown
+      const catMap: Record<string, number> = {};
+      events?.forEach(e => {
+        const cat = e.category || "Other";
+        catMap[cat] = (catMap[cat] || 0) + 1;
+      });
+      const categoryBreakdown = Object.entries(catMap)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count);
 
       const pendingPayments = registrations?.filter(r => r.registration_status === "pending").length || 0;
       const confirmedPayments = registrations?.filter(r => r.registration_status === "confirmed").length || 0;
@@ -114,6 +126,7 @@ const AdminOverview = () => {
         registrationsByEvent,
         registrationsByDay,
         statusBreakdown,
+        categoryBreakdown,
       });
       setLoading(false);
     };
@@ -170,6 +183,32 @@ const AdminOverview = () => {
           </Card>
         ))}
       </div>
+
+      {/* Category Breakdown */}
+      {stats.categoryBreakdown.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {stats.categoryBreakdown.map((cat) => {
+            const iconMap: Record<string, { icon: typeof Cpu; color: string }> = {
+              technical: { icon: Cpu, color: "text-primary" },
+              gaming: { icon: Gamepad2, color: "text-destructive" },
+              cultural: { icon: Palette, color: "text-secondary" },
+            };
+            const match = iconMap[cat.name.toLowerCase()] || { icon: CalendarDays, color: "text-muted-foreground" };
+            const Icon = match.icon;
+            return (
+              <Card key={cat.name} className="bg-card border-border hover:border-primary/30 transition-colors">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon size={18} className={match.color} />
+                    <span className="text-sm font-medium text-foreground">{cat.name}</span>
+                  </div>
+                  <p className="text-2xl font-bold text-foreground">{cat.count}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
