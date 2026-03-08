@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EventDetailModal from "@/components/events/EventDetailModal";
+import RegistrationModal from "@/components/RegistrationModal";
 import { supabase } from "@/integrations/supabase/client";
 import { fallbackEvents } from "@/data/events";
 
@@ -44,18 +45,15 @@ const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: 
   },
 };
 
-interface EventsSectionProps {
-  onRegisterEvent: (eventName: string) => void;
-}
-
 const formatTeamSize = (min: number, max: number): string => {
   if (min === max) return min === 1 ? "Solo" : `${min} members`;
   return `${min}-${max} members`;
 };
 
-const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
+const EventsSection = () => {
   const [active, setActive] = useState<Category>("all");
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const [registerEventName, setRegisterEventName] = useState<string | null>(null);
   const [events, setEvents] = useState<EventData[]>(fallbackEvents);
   const [loading, setLoading] = useState(false);
 
@@ -98,7 +96,6 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
       }
     };
 
-    // Timeout fallback — stop loading after 8 seconds even if fetch hangs
     const timeout = setTimeout(() => {
       if (!cancelled) setLoading(false);
     }, 8000);
@@ -172,7 +169,7 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onRegisterEvent(event.name);
+                        setRegisterEventName(event.name);
                       }}
                     >
                       Register
@@ -190,9 +187,14 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
         onClose={() => setSelectedEvent(null)}
         onRegister={(name) => {
           setSelectedEvent(null);
-          onRegisterEvent(name);
+          setRegisterEventName(name);
         }}
         categoryStyles={categoryStyles}
+      />
+
+      <RegistrationModal
+        eventName={registerEventName}
+        onClose={() => setRegisterEventName(null)}
       />
     </section>
   );
