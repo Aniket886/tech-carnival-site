@@ -36,18 +36,27 @@ const tabs: { label: string; value: Category; icon: string; btnClass: string; ri
   { label: "Cultural", value: "cultural", icon: "🎭", btnClass: "btn-purple", ringColor: "ring-[hsl(270_80%_60%/0.5)]" },
 ];
 
-const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string }> = {
+const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string; border: string; glow: string; iconBg: string }> = {
   technical: {
     badge: "bg-primary/15 text-primary border-primary/30",
-    accent: "group-hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]",
+    accent: "group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]",
+    border: "border-primary/20 hover:border-primary/40",
+    glow: "bg-primary/5",
+    iconBg: "bg-primary/10 ring-1 ring-primary/20",
   },
   gaming: {
     badge: "bg-red-500/15 text-red-400 border-red-500/30",
-    accent: "group-hover:shadow-[0_0_25px_hsl(0_80%_55%/0.2)]",
+    accent: "group-hover:shadow-[0_0_30px_hsl(0_80%_55%/0.25)]",
+    border: "border-red-500/20 hover:border-red-500/40",
+    glow: "bg-red-500/5",
+    iconBg: "bg-red-500/10 ring-1 ring-red-500/20",
   },
   cultural: {
     badge: "bg-accent/15 text-accent border-accent/30",
-    accent: "group-hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]",
+    accent: "group-hover:shadow-[0_0_30px_hsl(var(--accent)/0.25)]",
+    border: "border-accent/20 hover:border-accent/40",
+    glow: "bg-accent/5",
+    iconBg: "bg-accent/10 ring-1 ring-accent/20",
   },
 };
 
@@ -170,9 +179,13 @@ const EventsSection = () => {
                     }}
                     data-cursor-card
                     onClick={() => setSelectedEvent(event)}
-                    className={`glass rounded-xl p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer ${style.accent}`}
+                    className={`relative overflow-hidden rounded-xl border p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer bg-card/40 backdrop-blur-sm ${style.border} ${style.accent}`}
                   >
-                    <div className="text-4xl mb-4">{event.emoji}</div>
+                    {/* Category glow accent */}
+                    <div className={`absolute top-0 left-0 right-0 h-1 ${style.badge.includes("primary") ? "bg-primary/60" : style.badge.includes("red") ? "bg-red-500/60" : "bg-accent/60"}`} />
+                    <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-30 ${style.glow}`} />
+                    
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-4 ${style.iconBg}`}>{event.emoji}</div>
                     <h3 className="font-display font-semibold text-foreground text-lg mb-2">
                       {event.name}
                     </h3>
