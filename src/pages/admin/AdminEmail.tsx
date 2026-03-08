@@ -125,7 +125,7 @@ const AdminEmail = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("announcement");
   const [subject, setSubject] = useState(templates[0].subject);
   const [message, setMessage] = useState("");
-  const [recipientMode, setRecipientMode] = useState<"manual" | "event">("manual");
+  const [recipientMode, setRecipientMode] = useState<"manual" | "event" | "table">("manual");
   const [manualEmails, setManualEmails] = useState("");
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [events, setEvents] = useState<{ id: string; name: string }[]>([]);
