@@ -161,17 +161,20 @@ const Events = () => {
                         {categoryBadge[e.category].label}
                       </Badge>
                       <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-                          onClick={(ev) => {
-                            ev.stopPropagation();
-                            setSelectedEvent(e);
-                          }}
-                        >
-                          Rule Book
-                        </Button>
+                        {e.rulebookUrl && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-border text-muted-foreground hover:text-foreground hover:border-primary/30 gap-1"
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              window.open(e.rulebookUrl, "_blank", "noopener,noreferrer");
+                            }}
+                          >
+                            <FileText className="h-3.5 w-3.5" />
+                            Rule Book
+                          </Button>
+                        )}
                         <Button
                           size="sm"
                           variant="outline"
