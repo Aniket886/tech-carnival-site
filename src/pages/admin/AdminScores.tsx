@@ -109,9 +109,12 @@ const AdminScores = () => {
 
   const openEdit = (s: Score) => {
     setEditingId(s.id);
+    // If the stored position matches a manual value, use it; otherwise default to "auto"
+    const manualPositions = ["1st", "2nd", "3rd"];
+    const posValue = manualPositions.includes(s.position || "") ? s.position! : "auto";
     setForm({
       college_name: s.college_name, event_id: s.event_id, team_name: s.team_name || "",
-      points: s.points,
+      points: s.points, position: posValue,
     });
     setDialogOpen(true);
   };
