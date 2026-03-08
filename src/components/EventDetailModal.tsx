@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
-import { type EventItem, handleRegisterClick } from "@/components/Events";
+import { type EventItem } from "@/components/Events";
 
 const categoryGlow: Record<string, string> = {
   technical: "shadow-[0_0_40px_hsl(217_90%_60%/0.2)]",
