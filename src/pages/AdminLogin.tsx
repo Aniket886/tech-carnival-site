@@ -44,12 +44,12 @@ const AdminLogin = () => {
         throw new Error("Access denied. Admin privileges required.");
       }
 
-      // Log the login
-      await supabase.from("admin_login_logs").insert({
+      // Log the login (don't await to avoid blocking navigation)
+      supabase.from("admin_login_logs").insert({
         user_id: data.user.id,
         email: data.user.email || email,
         action_type: "login",
-      });
+      }).then(() => {});
 
       navigate("/admin/overview");
     } catch (err: any) {
