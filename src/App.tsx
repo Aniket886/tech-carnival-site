@@ -14,8 +14,6 @@ import AdminRegistrations from "./pages/admin/AdminRegistrations";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminColleges from "./pages/admin/AdminColleges";
-import AdminApiKeys from "./pages/admin/AdminApiKeys";
-import AdminApiDocs from "./pages/admin/AdminApiDocs";
 
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminScores from "./pages/admin/AdminScores";
@@ -23,7 +21,7 @@ import AdminSponsors from "./pages/admin/AdminSponsors";
 import AdminPageManager from "./pages/admin/AdminPageManager";
 import AdminBotSettings from "./pages/admin/AdminBotSettings";
 import AdminSettings from "./pages/admin/AdminSettings";
-import AdminStarterTemplate from "./pages/admin/AdminStarterTemplate";
+
 
 const queryClient = new QueryClient();
 
@@ -46,10 +44,6 @@ const App = () => (
                 <Route path="/admin/events" element={<AdminEvents />} />
                 <Route path="/admin/sponsors" element={<AdminSponsors />} />
                 <Route path="/admin/colleges" element={<AdminColleges />} />
-                <Route path="/admin/api-keys" element={<AdminApiKeys />} />
-                <Route path="/admin/api-docs" element={<AdminApiDocs />} />
-                <Route path="/admin/starter-template" element={<AdminStarterTemplate />} />
-                
                 <Route path="/admin/scores" element={<AdminScores />} />
                 <Route path="/admin/messages" element={<AdminMessages />} />
                 <Route path="/admin/bot-settings" element={<AdminBotSettings />} />

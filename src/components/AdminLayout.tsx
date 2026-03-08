@@ -4,8 +4,8 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
-  LogOut, Menu, X, Settings, CreditCard, Key, Building2,
-  Trophy, Handshake, BookOpen, FileCode, Layers, Bot,
+  LogOut, Menu, X, Settings, CreditCard, Building2,
+  Trophy, Handshake, Bot, Layers,
 } from "lucide-react";
 
 const links = [
@@ -17,9 +17,6 @@ const links = [
   { label: "Colleges", to: "/admin/colleges", icon: Building2 },
   { label: "Sponsors", to: "/admin/sponsors", icon: Handshake },
   { label: "Scores", to: "/admin/scores", icon: Trophy },
-  { label: "API Keys", to: "/admin/api-keys", icon: Key },
-  { label: "API Docs", to: "/admin/api-docs", icon: BookOpen },
-  { label: "Starter Kit", to: "/admin/starter-template", icon: FileCode },
   { label: "CarniBOT", to: "/admin/bot-settings", icon: Bot },
   { label: "Messages", to: "/admin/messages", icon: MessageSquare },
   { label: "Settings", to: "/admin/settings", icon: Settings },
