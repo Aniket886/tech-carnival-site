@@ -183,19 +183,21 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
   const goNext = () => {
     const errs = validateStep(step);
     setErrors(errs);
-    setTouched(new Set(Object.keys(errs).length > 0
-      ? [...touched, ...["leader_name", "leader_email", "leader_phone", "college_name", ...(isTeamEvent ? ["team_name"] : [])]]
-      : touched));
+    if (step === 0) {
+      setTouched(new Set(Object.keys(errs).length > 0
+        ? [...touched, ...["leader_name", "leader_email", "leader_phone", "college_name", ...(isTeamEvent ? ["team_name"] : [])]]
+        : touched));
+    }
     if (countErrors(errs) > 0) {
       setShake(true);
       setTimeout(() => setShake(false), 500);
       toast({ title: `Please fix ${countErrors(errs)} error${countErrors(errs) > 1 ? "s" : ""} before continuing`, variant: "destructive" });
       return;
     }
-    setStep(1);
+    setStep((s) => s + 1);
   };
 
-  const goBack = () => setStep(0);
+  const goBack = () => setStep((s) => s - 1);
 
   const addMember = () => {
     if (!event) return;
