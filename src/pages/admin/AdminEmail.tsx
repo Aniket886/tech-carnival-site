@@ -219,7 +219,7 @@ const AdminEmail = () => {
     setPreviewHtml(html);
   };
 
-  const getRecipients = (): { email: string; name: string }[] => {
+  const getRecipients = (): { email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[] => {
     if (recipientMode === "event") return selectedParticipants;
     return manualEmails.split(/[,;\n]/).map(e => e.trim()).filter(Boolean).map(e => ({ email: e, name: e.split("@")[0] }));
   };
