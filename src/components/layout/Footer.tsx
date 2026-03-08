@@ -35,7 +35,7 @@ const Footer = () => {
               <Mail size={16} className="text-primary" />
             </div>
             <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-              aniket.gmu@gmail.com
+              info@techcarnival.online
             </span>
           </a>
 
