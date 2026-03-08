@@ -6,9 +6,10 @@ import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 
 const allNavLinks = [
   { label: "Home", href: "#home", sectionKey: "hero" },
+  { label: "About", href: "#about", sectionKey: "about" },
   { label: "Events", href: "#events", sectionKey: "events" },
   { label: "Schedule", href: "#schedule", sectionKey: "schedule" },
-  { label: "Register", href: "#register", sectionKey: "registration" },
+  { label: "FAQ", href: "#faq", sectionKey: "faq" },
   { label: "Contact", href: "#contact", sectionKey: "contact" },
 ];
 
@@ -48,7 +49,7 @@ const Navbar = () => {
             </a>
           ))}
           {isSectionVisible("registration") && (
-            <Button asChild size="sm" className="neon-glow">
+            <Button asChild size="sm" className="neon-glow rounded-full px-5">
               <a href="#register">Register</a>
             </Button>
           )}
@@ -75,7 +76,7 @@ const Navbar = () => {
                 </a>
               ))}
               {isSectionVisible("registration") && (
-                <Button asChild className="neon-glow mt-4">
+                <Button asChild className="neon-glow mt-4 rounded-full">
                   <a href="#register" onClick={() => setOpen(false)}>
                     Register Now
                   </a>
