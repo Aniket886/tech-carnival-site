@@ -191,11 +191,31 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchTimeout]);
 
   const signOut = useCallback(async () => {
+    // Mark session as inactive
+    const sessionId = localStorage.getItem(SESSION_ID_KEY);
+    if (sessionId) {
+      await supabase.from("admin_sessions").update({
+        is_active: false,
+        logged_out_at: new Date().toISOString(),
+        logout_reason: "manual_logout",
+      }).eq("id", sessionId);
+      localStorage.removeItem(SESSION_ID_KEY);
+    }
+
+    // Log the logout
+    if (user) {
+      await supabase.from("admin_login_logs").insert({
+        user_id: user.id,
+        email: user.email || "",
+        action_type: "logout",
+      });
+    }
+
     await supabase.auth.signOut();
     setUser(null);
     setIsAdmin(false);
     signedInRef.current = false;
-  }, []);
+  }, [user]);
 
   const dismissIdleWarning = useCallback(() => {
     lastActivityRef.current = Date.now();
