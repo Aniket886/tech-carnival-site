@@ -173,6 +173,9 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
         });
       }
       if (s === 1) {
+        // Payment step - no validation needed for now (coming soon)
+      }
+      if (s === 2) {
         if (!form.agreed) e.agreed = "You must agree to the terms";
       }
       return e;
