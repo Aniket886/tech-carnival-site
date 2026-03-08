@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
+import MagneticWrapper from "@/components/ui/magnetic-wrapper";
 import type { EventData } from "@/components/events/EventsSection";
 
 interface EventDetailModalProps {
