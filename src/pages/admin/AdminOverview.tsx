@@ -48,7 +48,7 @@ const AdminOverview = () => {
         { data: registrations },
       ] = await Promise.all([
         supabase.from("registrations").select("*", { count: "exact", head: true }),
-        supabase.from("events").select("id, name, is_active"),
+        supabase.from("events").select("id, name, is_active, category"),
         supabase.from("colleges").select("*", { count: "exact", head: true }),
         supabase.from("contacts").select("*", { count: "exact", head: true }),
         supabase.from("registrations").select("id, event_id, registration_status, created_at, leader_name, leader_email, college_name, amount_paid").order("created_at", { ascending: false }).limit(200),
