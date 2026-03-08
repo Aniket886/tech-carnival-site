@@ -59,6 +59,7 @@ const events: EventItem[] = [
     teamSize: "4 members (squad)",
     detailedDesc: "Battle Ground brings the ultimate BGMI (Battlegrounds Mobile India) esports experience to Tech Carnival. Assemble your squad, strategize your drops, and fight your way to the chicken dinner. Multiple rounds of intense battle royale action await — only the best squad survives.",
     rules: ["Squad of exactly 4 members required", "Players must use their own mobile devices", "Emulators and triggers are strictly prohibited", "Multiple match rounds; points-based scoring", "Fair play policy enforced — cheating leads to disqualification"],
+    rulebookUrl: "",
   },
   {
     emoji: "💃", name: "Dance Mania", desc: "Group dance competition to set the stage on fire", category: "cultural",
