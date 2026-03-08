@@ -312,8 +312,23 @@ const AdminEmail = () => {
                 <Input value={subject} onChange={e => setSubject(e.target.value)} className="bg-background border-border" />
               </div>
               <div>
-                <Label className="text-muted-foreground text-xs uppercase tracking-wider mb-1.5 block">Message</Label>
-                <Textarea rows={6} placeholder="Write your message here…" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label className="text-muted-foreground text-xs uppercase tracking-wider">Message</Label>
+                  <div className="flex items-center gap-1 flex-wrap">
+                    <span className="text-muted-foreground text-[10px] mr-1">Insert:</span>
+                    {PLACEHOLDERS.map(p => (
+                      <button
+                        key={p.value}
+                        type="button"
+                        onClick={() => insertPlaceholder(p.value)}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium hover:bg-primary/20 transition-colors"
+                      >
+                        <Plus size={10} /> {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <Textarea id="email-message-textarea" rows={6} placeholder="Write your message here… Use {{name}}, {{team_name}}, etc. for personalization" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
               </div>
 
               {selectedTemplate === "reminder" && (
