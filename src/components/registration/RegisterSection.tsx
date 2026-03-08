@@ -25,6 +25,7 @@ import {
   sanitizeInput,
   checkDuplicateEmails,
 } from "@/lib/validators";
+import OtherCollegeDialog from "@/components/registration/OtherCollegeDialog";
 
 type EventRow = Tables<"events">;
 
