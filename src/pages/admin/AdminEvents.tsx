@@ -20,7 +20,8 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /* ─── types ─── */
 interface Event {
@@ -165,75 +166,193 @@ const AdminEvents = () => {
 
   const autoSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
+  /* ─── Event Links state ─── */
+  const [editLinkEvent, setEditLinkEvent] = useState<Event | null>(null);
+  const [editLinkUrl, setEditLinkUrl] = useState("");
+  const [savingLink, setSavingLink] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleSaveLink = async () => {
+    if (!editLinkEvent) return;
+    setSavingLink(true);
+    const url = editLinkUrl.trim() || null;
+    const { error } = await supabase.from("events").update({ website_url: url }).eq("id", editLinkEvent.id);
+    setSavingLink(false);
+    if (error) { toast.error("Failed to update link"); return; }
+    toast.success(`Link updated for ${editLinkEvent.name}`);
+    setEditLinkEvent(null);
+    fetchData();
+  };
+
+  const clearLink = async (ev: Event) => {
+    const { error } = await supabase.from("events").update({ website_url: null }).eq("id", ev.id);
+    if (error) { toast.error("Failed to remove link"); return; }
+    toast.success(`Link removed for ${ev.name}`);
+    fetchData();
+  };
+
+  const copyUrl = (id: string, url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 1500);
+  };
+
+  const linkedCount = events.filter(e => e.website_url).length;
+
   if (loading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-display font-bold text-foreground">Event Management</h2>
-        <Button size="sm" className="gap-2" onClick={openCreate}>
-          <Plus size={14} /> Add Event
-        </Button>
-      </div>
-
-      {/* Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-border hover:bg-transparent">
-                <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
-                <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
-                <TableHead className="text-xs text-muted-foreground font-medium">Team Size</TableHead>
-                <TableHead className="text-xs text-muted-foreground font-medium">Registrations</TableHead>
-                <TableHead className="text-xs text-muted-foreground font-medium">Active</TableHead>
-                <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {events.map(ev => (
-                <TableRow key={ev.id} className="border-border">
-                  <TableCell>
-                    <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                      <span className="text-base">{ev.icon || "🎯"}</span>
-                      {ev.name}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={`text-[10px] capitalize ${categoryStyles[ev.category] || "bg-muted text-muted-foreground border-border"}`}>
-                      {ev.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{teamSizeLabel(ev.team_size_min, ev.team_size_max)}</TableCell>
-                  <TableCell>
-                    <span className={`text-sm font-semibold ${(regCounts.get(ev.id) || 0) > 0 ? "text-primary" : "text-emerald-400"}`}>
-                      {regCounts.get(ev.id) || 0}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Switch checked={ev.is_active} onCheckedChange={() => toggleActive(ev)} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => openEdit(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
-                        <Pencil size={15} />
-                      </button>
-                      <button onClick={() => setDeleteId(ev.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {events.length === 0 && (
-                <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-10">No events yet.</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
+      <Tabs defaultValue="events">
+        <div className="flex items-center justify-between">
+          <TabsList>
+            <TabsTrigger value="events">Events</TabsTrigger>
+            <TabsTrigger value="links" className="gap-1.5">
+              <Link2 size={14} /> Event Links
+            </TabsTrigger>
+          </TabsList>
         </div>
-      </div>
 
-      {/* Create / Edit Dialog */}
+        {/* ════ Events Tab ════ */}
+        <TabsContent value="events" className="space-y-4 mt-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-display font-bold text-foreground">Event Management</h2>
+            <Button size="sm" className="gap-2" onClick={openCreate}>
+              <Plus size={14} /> Add Event
+            </Button>
+          </div>
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-border hover:bg-transparent">
+                    <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-medium">Team Size</TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-medium">Registrations</TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-medium">Active</TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {events.map(ev => (
+                    <TableRow key={ev.id} className="border-border">
+                      <TableCell>
+                        <span className="flex items-center gap-2 text-sm font-medium text-foreground">
+                          <span className="text-base">{ev.icon || "🎯"}</span>
+                          {ev.name}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={`text-[10px] capitalize ${categoryStyles[ev.category] || "bg-muted text-muted-foreground border-border"}`}>
+                          {ev.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{teamSizeLabel(ev.team_size_min, ev.team_size_max)}</TableCell>
+                      <TableCell>
+                        <span className={`text-sm font-semibold ${(regCounts.get(ev.id) || 0) > 0 ? "text-primary" : "text-muted-foreground"}`}>
+                          {regCounts.get(ev.id) || 0}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Switch checked={ev.is_active} onCheckedChange={() => toggleActive(ev)} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => openEdit(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                            <Pencil size={15} />
+                          </button>
+                          <button onClick={() => setDeleteId(ev.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {events.length === 0 && (
+                    <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-10">No events yet.</TableCell></TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* ════ Event Links Tab ════ */}
+        <TabsContent value="links" className="space-y-4 mt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-display font-bold text-foreground">Event Links</h2>
+              <p className="text-sm text-muted-foreground mt-1">Manage external website URLs for each event</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1"><Link2 size={14} /> {linkedCount} linked</Badge>
+              <Badge variant="outline" className="gap-1"><Link2Off size={14} /> {events.length - linkedCount} unlinked</Badge>
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Website URL</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Status</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {events.map(ev => (
+                  <TableRow key={ev.id} className="border-border">
+                    <TableCell className="font-medium text-foreground text-sm">{ev.icon} {ev.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={`text-[10px] capitalize ${categoryStyles[ev.category] || ""}`}>{ev.category}</Badge>
+                    </TableCell>
+                    <TableCell className="max-w-[300px]">
+                      {ev.website_url ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground truncate">{ev.website_url}</span>
+                          <button onClick={() => copyUrl(ev.id, ev.website_url!)} className="text-muted-foreground hover:text-foreground shrink-0">
+                            {copiedId === ev.id ? <Check size={14} className="text-primary" /> : <Copy size={14} />}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground/50 italic">No link set</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {ev.website_url ? (
+                        <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">Linked</Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-xs text-muted-foreground">Unlinked</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => { setEditLinkEvent(ev); setEditLinkUrl(ev.website_url || ""); }} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                          <Pencil size={15} />
+                        </button>
+                        {ev.website_url && (
+                          <>
+                            <a href={ev.website_url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                              <ExternalLink size={15} />
+                            </a>
+                            <button onClick={() => clearLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                              <Link2Off size={15} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Create / Edit Event Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -311,6 +430,24 @@ const AdminEvents = () => {
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleSave} disabled={saving}>{saving ? "Saving…" : editingId ? "Update" : "Create"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Link Dialog */}
+      <Dialog open={!!editLinkEvent} onOpenChange={open => !open && setEditLinkEvent(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Link — {editLinkEvent?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Label className="text-sm font-medium text-foreground">Website URL</Label>
+            <Input placeholder="https://event-website.com" value={editLinkUrl} onChange={e => setEditLinkUrl(e.target.value)} />
+            <p className="text-xs text-muted-foreground">Leave empty to remove the link. Use full URL including https://</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditLinkEvent(null)}>Cancel</Button>
+            <Button onClick={handleSaveLink} disabled={savingLink}>{savingLink ? "Saving…" : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
