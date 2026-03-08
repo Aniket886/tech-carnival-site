@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-const eventOptions = ["Hackathon", "Tech Talks", "Workshop", "Gaming Arena", "Idea Pitch", "Code Wars"];
+const eventOptions = [
+  "Hack Momentum",
+  "Brain Quest",
+  "Pixel Perfect",
+  "Code Compass",
+  "Myth Busters",
+  "Battle Ground",
+  "Dance Mania",
+  "Scitopia",
+];
 
 const Registration = () => {
   const { toast } = useToast();
@@ -19,6 +28,18 @@ const Registration = () => {
     college: "",
     selected_event: "",
   });
+
+  // Listen for preselect-event from Events section
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const eventName = (e as CustomEvent).detail;
+      if (eventOptions.includes(eventName)) {
+        setForm((prev) => ({ ...prev, selected_event: eventName }));
+      }
+    };
+    window.addEventListener("preselect-event", handler);
+    return () => window.removeEventListener("preselect-event", handler);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
