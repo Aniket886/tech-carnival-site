@@ -29,11 +29,11 @@ export interface EventData {
   rulebookUrl: string | null;
 }
 
-const tabs: { label: string; value: Category; icon: string }[] = [
-  { label: "All Events", value: "all", icon: "🎯" },
-  { label: "Technical", value: "technical", icon: "💻" },
-  { label: "Gaming", value: "gaming", icon: "🎮" },
-  { label: "Cultural", value: "cultural", icon: "🎭" },
+const tabs: { label: string; value: Category; icon: string; btnClass: string; ringColor: string }[] = [
+  { label: "All Events", value: "all", icon: "🎯", btnClass: "btn-gold", ringColor: "ring-[hsl(45_90%_55%/0.5)]" },
+  { label: "Technical", value: "technical", icon: "💻", btnClass: "btn-golden", ringColor: "ring-primary/50" },
+  { label: "Gaming", value: "gaming", icon: "🎮", btnClass: "btn-red", ringColor: "ring-[hsl(0_80%_55%/0.5)]" },
+  { label: "Cultural", value: "cultural", icon: "🎭", btnClass: "btn-purple", ringColor: "ring-[hsl(270_80%_60%/0.5)]" },
 ];
 
 const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string }> = {
