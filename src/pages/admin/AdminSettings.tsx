@@ -184,7 +184,7 @@ const AdminSettings = () => {
       setSavingTimeout(false);
     }
   };
-
+  const isCurrentUser = (userId: string) => userId === user?.id;
 
   return (
     <div className="space-y-8 max-w-4xl">
