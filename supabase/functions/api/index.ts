@@ -67,24 +67,65 @@ Deno.serve(async (req) => {
   const { eventId, apiKeyId } = auth;
 
   try {
+    // ── Shared validation helpers ──
+    const nameRe = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
+    const phoneRe = /^[6-9]\d{9}$/;
+    const emailRe = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const sanitize = (s: string) => s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
+    function validateRegistration(body: Record<string, unknown>) {
+      const errors: { field: string; message: string }[] = [];
+      const ln = sanitize(String(body.leader_name || ""));
+      if (!ln || ln.length < 2 || ln.length > 20 || !nameRe.test(ln))
+        errors.push({ field: "leader_name", message: "Name must be 2-20 characters, letters and spaces only" });
+      const le = String(body.leader_email || "").trim().toLowerCase();
+      if (!le || le.length > 50 || !emailRe.test(le))
+        errors.push({ field: "leader_email", message: "Enter a valid email (max 50 chars)" });
+      const lp = String(body.leader_phone || "").trim();
+      if (!lp || !phoneRe.test(lp))
+        errors.push({ field: "leader_phone", message: "Enter a valid 10-digit Indian mobile number" });
+      const cn = sanitize(String(body.college_name || ""));
+      if (!cn || cn.length < 3 || cn.length > 100)
+        errors.push({ field: "college_name", message: "College name must be 3-100 characters" });
+      if (body.team_name) {
+        const tn = sanitize(String(body.team_name));
+        if (tn.length < 3 || tn.length > 30 || !/^[A-Za-z0-9][A-Za-z0-9 -]*$/.test(tn))
+          errors.push({ field: "team_name", message: "Team name must be 3-30 chars, alphanumeric/spaces/hyphens" });
+      }
+      if (Array.isArray(body.members)) {
+        (body.members as Record<string, unknown>[]).forEach((m, i) => {
+          const mn = sanitize(String(m.name || ""));
+          if (!mn || mn.length < 2 || mn.length > 20 || !nameRe.test(mn))
+            errors.push({ field: `members[${i}].name`, message: "Member name invalid" });
+          const me = String(m.email || "").trim().toLowerCase();
+          if (!me || me.length > 50 || !emailRe.test(me))
+            errors.push({ field: `members[${i}].email`, message: "Member email invalid" });
+          const mp = String(m.phone || "").trim();
+          if (!mp || !phoneRe.test(mp))
+            errors.push({ field: `members[${i}].phone`, message: "Member phone invalid" });
+        });
+      }
+      return errors;
+    }
+
     // ── POST /register ──
     if (endpoint === "register" && req.method === "POST") {
       const body = await req.json();
-      const { team_name, leader_name, leader_email, leader_phone, college_name, semester, members, college_id } = body;
-      if (!leader_name || !leader_email || !leader_phone || !college_name) {
-        return json({ error: "Missing required fields: leader_name, leader_email, leader_phone, college_name" }, 400);
+      const valErrors = validateRegistration(body);
+      if (valErrors.length > 0) {
+        return json({ success: false, errors: valErrors }, 400);
       }
 
       const { data, error } = await supabase.from("registrations").insert({
         event_id: eventId,
-        team_name: team_name || null,
-        leader_name,
-        leader_email,
-        leader_phone,
-        college_name,
-        college_id: college_id || null,
-        semester: semester || null,
-        members: members || null,
+        team_name: body.team_name ? sanitize(String(body.team_name)) : null,
+        leader_name: sanitize(String(body.leader_name)),
+        leader_email: String(body.leader_email).trim().toLowerCase(),
+        leader_phone: String(body.leader_phone).trim(),
+        college_name: sanitize(String(body.college_name)),
+        college_id: body.college_id || null,
+        semester: body.semester || null,
+        members: body.members || null,
         source: "event_site",
       }).select("id").single();
 
@@ -95,7 +136,7 @@ Deno.serve(async (req) => {
         event_id: eventId,
         api_key_id: apiKeyId,
         update_type: "registration",
-        payload: { registration_id: data.id, team_name, leader_name },
+        payload: { registration_id: data.id, team_name: body.team_name, leader_name: body.leader_name },
       });
 
       return json({ success: true, registration_id: data.id, message: "Registration submitted successfully" });
