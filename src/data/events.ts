@@ -69,7 +69,7 @@ export const fallbackEvents: EventData[] = [
     category: "gaming",
     teamSize: "4 members (squad)",
     detailedDescription: "Battle Ground brings the ultimate Free Fire esports experience to Tech Carnival. Assemble your squad and fight your way to victory.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-dance-mania",
