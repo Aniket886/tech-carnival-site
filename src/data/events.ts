@@ -9,7 +9,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "2-4 members",
     detailedDescription: "Hack Momentum is a high-energy 6-hour hackathon where teams race against the clock to ideate, design, and build innovative tech solutions.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-brain-quest",
