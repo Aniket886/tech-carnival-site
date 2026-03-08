@@ -1,12 +1,13 @@
 import { User } from "lucide-react";
 import aniketImg from "@/assets/team/aniket.png";
+import sonaliImg from "@/assets/team/sonali.png";
 
 const coreTeam = [
   { name: "Adarsh Gouda D", image: null },
   { name: "Aniket Tegginamath", image: aniketImg },
   { name: "Bhanuprakash K S", image: null },
   { name: "K Vishwasheetal", image: null },
-  { name: "Sonali Meharwade", image: null },
+  { name: "Sonali Meharwade", image: sonaliImg },
 ];
 
 const CoreTeam = () => {
