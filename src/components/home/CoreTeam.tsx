@@ -2,7 +2,7 @@ import { User } from "lucide-react";
 
 const coreTeam = [
   "Adarsh Gouda D",
-  "Aniket C Tegginamath",
+  "Aniket Tegginamath",
   "Bhanuprakash K S",
   "K Vishwasheetal Sintalkar",
   "Sonali V Meharwade",
