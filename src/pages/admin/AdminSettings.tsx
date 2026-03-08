@@ -46,6 +46,7 @@ interface ActiveSession {
 
 const AdminSettings = () => {
   const { user } = useAdminAuth();
+  const [isOwner, setIsOwner] = useState(false);
 
   // Invite form
   const [email, setEmail] = useState("");
