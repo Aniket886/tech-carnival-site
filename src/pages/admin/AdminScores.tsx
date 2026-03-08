@@ -18,7 +18,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Search, Plus, Pencil, Trash2, Upload, Trophy } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Upload, Trophy, Download } from "lucide-react";
 
 interface Score {
   id: string;
@@ -224,6 +224,24 @@ const AdminScores = () => {
 
   const updateField = (key: keyof FormData, value: any) => setForm(f => ({ ...f, [key]: value }));
 
+  const exportCSV = () => {
+    const header = "College,Event,Category,Team,Points,Position";
+    const rows = filtered.map(s =>
+      [s.college_name, s.event_name, s.category, s.team_name || "", s.points, s.position || "participant"]
+        .map(v => `"${String(v).replace(/"/g, '""')}"`)
+        .join(",")
+    );
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `scores_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exported ${filtered.length} scores`);
+  };
+
   if (loading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
 
   return (
@@ -233,6 +251,9 @@ const AdminScores = () => {
           <Trophy size={22} className="text-primary" /> Score Management ({scores.length})
         </h2>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={exportCSV}>
+            <Download size={14} /> Export CSV
+          </Button>
           <Button variant="outline" size="sm" className="gap-2" onClick={importCSV}>
             <Upload size={14} /> Import CSV
           </Button>
