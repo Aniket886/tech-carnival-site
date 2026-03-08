@@ -135,9 +135,16 @@ const AdminEmail = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
-  const [customField, setCustomField] = useState("");
+  const messageRef = { current: null as HTMLTextAreaElement | null };
 
-  const QUICK_FIELDS = ["name", "team_name", "email", "phone", "college", "event"];
+  const PLACEHOLDERS = [
+    { label: "Name", value: "{{name}}" },
+    { label: "Team Name", value: "{{team_name}}" },
+    { label: "Email", value: "{{email}}" },
+    { label: "Phone", value: "{{phone}}" },
+    { label: "College", value: "{{college}}" },
+    { label: "Event", value: "{{event}}" },
+  ];
 
   const insertPlaceholder = (placeholder: string) => {
     const el = document.querySelector<HTMLTextAreaElement>("#email-message-textarea");
@@ -314,51 +321,23 @@ const AdminEmail = () => {
                 <Input value={subject} onChange={e => setSubject(e.target.value)} className="bg-background border-border" />
               </div>
               <div>
-                <Label className="text-muted-foreground text-xs uppercase tracking-wider mb-1.5 block">Message</Label>
-                <Textarea id="email-message-textarea" rows={6} placeholder="Write your message here… Use {{field_name}} for personalization" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
-                <div className="flex items-center gap-2 mt-2">
-                  <div className="relative flex-1">
-                    <Input
-                      placeholder="Type field name (e.g. name, team_name, college)"
-                      value={customField}
-                      onChange={e => setCustomField(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === "Enter" && customField.trim()) {
-                          e.preventDefault();
-                          insertPlaceholder(`{{${customField.trim().toLowerCase().replace(/\s+/g, "_")}}}`);
-                          setCustomField("");
-                        }
-                      }}
-                      className="bg-background border-border text-xs h-8 pr-20"
-                    />
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label className="text-muted-foreground text-xs uppercase tracking-wider">Message</Label>
+                  <div className="flex items-center gap-1 flex-wrap">
+                    <span className="text-muted-foreground text-[10px] mr-1">Insert:</span>
+                    {PLACEHOLDERS.map(p => (
+                      <button
+                        key={p.value}
+                        type="button"
+                        onClick={() => insertPlaceholder(p.value)}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium hover:bg-primary/20 transition-colors"
+                      >
+                        <Plus size={10} /> {p.label}
+                      </button>
+                    ))}
                   </div>
-                  <Button
-                    type="button"
-                    variant="neon-outline"
-                    size="sm"
-                    className="h-8 text-xs gap-1 shrink-0"
-                    disabled={!customField.trim()}
-                    onClick={() => {
-                      insertPlaceholder(`{{${customField.trim().toLowerCase().replace(/\s+/g, "_")}}}`);
-                      setCustomField("");
-                    }}
-                  >
-                    <Plus size={12} /> Insert Field
-                  </Button>
                 </div>
-                <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                  <span className="text-muted-foreground text-[10px]">Quick:</span>
-                  {QUICK_FIELDS.map(f => (
-                    <button
-                      key={f}
-                      type="button"
-                      onClick={() => insertPlaceholder(`{{${f}}}`)}
-                      className="px-2 py-0.5 rounded bg-muted/50 border border-border text-[10px] text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors"
-                    >
-                      {`{{${f}}}`}
-                    </button>
-                  ))}
-                </div>
+                <Textarea id="email-message-textarea" rows={6} placeholder="Write your message here… Use {{name}}, {{team_name}}, etc. for personalization" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
               </div>
 
               {selectedTemplate === "reminder" && (
