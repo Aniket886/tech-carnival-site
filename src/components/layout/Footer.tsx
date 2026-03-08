@@ -68,7 +68,7 @@ const Footer = () => {
             <p className="text-xs text-foreground">
               © {new Date().getFullYear()} Tech Carnival 2K26 · GM University · All Rights Reserved
             </p>
-            <p className="text-sm font-display text-foreground/70 tracking-wide">
+            <p className="text-sm font-sans font-medium text-foreground/70 tracking-wider uppercase">
               Built with <span className="text-destructive">♥</span> by FCIT Tech Team
             </p>
           </div>
