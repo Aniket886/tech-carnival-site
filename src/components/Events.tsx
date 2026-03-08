@@ -45,6 +45,7 @@ const events: EventItem[] = [
     teamSize: "Solo",
     detailedDesc: "Code Compass is a competitive programming event that puts your algorithmic thinking and coding speed to the test. Solve a series of increasingly difficult problems across data structures, algorithms, and logic. The fastest and most accurate coder takes the crown.",
     rules: ["Solo participation only", "Languages allowed: C, C++, Java, Python", "Online judge will auto-evaluate submissions", "No internet access during the contest", "Time limit: 2 hours for all problems"],
+    rulebookUrl: "",
   },
   {
     emoji: "🔍", name: "Myth Busters", desc: "Bust the myths with facts and logic", category: "technical",
