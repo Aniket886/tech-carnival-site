@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle,
+  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2,
 } from "lucide-react";
 
 /* ─── types ─── */
@@ -315,6 +315,9 @@ const AdminRegistrations = () => {
                           <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
                             <button title="Confirm" onClick={() => updateStatus(r.id, "confirmed")} disabled={r.registration_status === "confirmed"} className={`p-1.5 rounded-md transition-colors ${r.registration_status === "confirmed" ? "text-emerald-400/40 cursor-not-allowed" : "text-emerald-400 hover:bg-emerald-500/10"}`}><Check size={15} /></button>
                             <button title="Reject" onClick={() => updateStatus(r.id, "rejected")} disabled={r.registration_status === "confirmed"} className={`p-1.5 rounded-md transition-colors ${r.registration_status === "confirmed" ? "text-muted-foreground/30 cursor-not-allowed" : "text-destructive hover:bg-destructive/10"}`}><XCircle size={15} /></button>
+                            {r.registration_status === "confirmed" && (
+                              <button title="Undo (set back to pending)" onClick={() => updateStatus(r.id, "pending")} className="p-1.5 rounded-md text-amber-400 hover:bg-amber-500/10 transition-colors"><Undo2 size={15} /></button>
+                            )}
                             <button title="Delete" onClick={() => setDeleteConfirm({ type: "single", id: r.id })} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><Trash2 size={15} /></button>
                           </div>
                         </TableCell>

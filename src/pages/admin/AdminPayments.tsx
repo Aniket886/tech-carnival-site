@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee,
+  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2,
 } from "lucide-react";
 
 /* ─── types ─── */
@@ -347,6 +347,9 @@ const AdminPayments = () => {
                           >
                             <XCircle size={16} />
                           </button>
+                          {r.registration_status === "confirmed" && (
+                            <button title="Undo (set back to pending)" onClick={() => updateStatus(r.id, "pending")} className="p-1.5 rounded-md text-amber-400 hover:bg-amber-500/10 transition-colors"><Undo2 size={16} /></button>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
