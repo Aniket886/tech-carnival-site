@@ -36,18 +36,27 @@ const tabs: { label: string; value: Category; icon: string; btnClass: string; ri
   { label: "Cultural", value: "cultural", icon: "🎭", btnClass: "btn-purple", ringColor: "ring-[hsl(270_80%_60%/0.5)]" },
 ];
 
-const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string }> = {
+const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string; border: string; glow: string; iconBg: string }> = {
   technical: {
     badge: "bg-primary/15 text-primary border-primary/30",
-    accent: "group-hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]",
+    accent: "group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]",
+    border: "border-primary/20 hover:border-primary/40",
+    glow: "bg-primary/5",
+    iconBg: "bg-primary/10 ring-1 ring-primary/20",
   },
   gaming: {
     badge: "bg-red-500/15 text-red-400 border-red-500/30",
-    accent: "group-hover:shadow-[0_0_25px_hsl(0_80%_55%/0.2)]",
+    accent: "group-hover:shadow-[0_0_30px_hsl(0_80%_55%/0.25)]",
+    border: "border-red-500/20 hover:border-red-500/40",
+    glow: "bg-red-500/5",
+    iconBg: "bg-red-500/10 ring-1 ring-red-500/20",
   },
   cultural: {
     badge: "bg-accent/15 text-accent border-accent/30",
-    accent: "group-hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]",
+    accent: "group-hover:shadow-[0_0_30px_hsl(var(--accent)/0.25)]",
+    border: "border-accent/20 hover:border-accent/40",
+    glow: "bg-accent/5",
+    iconBg: "bg-accent/10 ring-1 ring-accent/20",
   },
 };
 
