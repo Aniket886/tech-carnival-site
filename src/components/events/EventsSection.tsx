@@ -167,16 +167,32 @@ const EventsSection = () => {
                     <Badge variant="outline" className={`text-xs capitalize ${style.badge}`}>
                       {event.category}
                     </Badge>
-                    <Button
-                      variant="neon-outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setRegisterEventName(event.name);
-                      }}
-                    >
-                      Register
-                    </Button>
+                    <div className="flex gap-2">
+                      {event.rulebookUrl && (
+                        <Button
+                          variant="neon-outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(event.rulebookUrl!, "_blank", "noopener,noreferrer");
+                          }}
+                          className="gap-1"
+                        >
+                          <FileText className="h-3.5 w-3.5" />
+                          Rule Book
+                        </Button>
+                      )}
+                      <Button
+                        variant="neon-outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRegisterEventName(event.name);
+                        }}
+                      >
+                        Register
+                      </Button>
+                    </div>
                   </div>
                 </div>
               );
