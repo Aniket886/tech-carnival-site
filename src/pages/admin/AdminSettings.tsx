@@ -183,11 +183,19 @@ const AdminSettings = () => {
     }
   };
 
-  // Active sessions = logs with action_type "login" from last N hours
-  const activeLogs = loginLogs.filter((l) => {
-    const age = Date.now() - new Date(l.logged_in_at).getTime();
-    return l.action_type === "login" && age < parseInt(sessionTimeout) * 60 * 1000;
-  });
+  // Kick a session
+  const handleKickSession = async (sessionId: string) => {
+    try {
+      await supabase
+        .from("admin_sessions")
+        .update({ is_active: false, logged_out_at: new Date().toISOString(), logout_reason: "kicked" })
+        .eq("id", sessionId);
+      toast.success("Session terminated");
+      fetchActiveSessions();
+    } catch {
+      toast.error("Failed to kick session");
+    }
+  };
 
   const isCurrentUser = (userId: string) => userId === user?.id;
 
