@@ -46,6 +46,7 @@ interface ActiveSession {
 
 const AdminSettings = () => {
   const { user } = useAdminAuth();
+  const [isOwner, setIsOwner] = useState(false);
 
   // Invite form
   const [email, setEmail] = useState("");
@@ -88,6 +89,11 @@ const AdminSettings = () => {
       if (user && !emailMap.has(user.id) && user.email) emailMap.set(user.id, user.email);
       
       adminRoles.forEach(a => { if (!a.email) a.email = emailMap.get(a.user_id); });
+    }
+    // Check if current user is owner
+    if (user) {
+      const ownerRole = adminRoles.find(a => a.user_id === user.id);
+      setIsOwner(ownerRole?.is_owner || false);
     }
     setAdmins(adminRoles);
   }, [user]);
@@ -359,7 +365,7 @@ const AdminSettings = () => {
                           {new Date(s.login_at).toLocaleString("en-IN")}
                         </TableCell>
                         <TableCell className="text-right">
-                          {!isCurrentUser(s.user_id) && (
+                          {isOwner && !isCurrentUser(s.user_id) && (
                             <button
                               onClick={() => handleKickSession(s.id)}
                               className="text-xs text-destructive flex items-center justify-end gap-1 cursor-pointer hover:underline ml-auto"
