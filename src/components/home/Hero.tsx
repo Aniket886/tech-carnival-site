@@ -3,8 +3,8 @@ import CountdownTimer from "@/components/home/CountdownTimer";
 import StarField from "@/components/home/StarField";
 
 const Hero = () => {
-  const scrollToRegister = () => {
-    document.querySelector("#register")?.scrollIntoView({ behavior: "smooth" });
+  const scrollToEvents = () => {
+    document.querySelector("#events")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
