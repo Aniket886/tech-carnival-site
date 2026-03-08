@@ -281,7 +281,12 @@ const AdminScores = () => {
           <div className="space-y-3">
             <div>
               <Label className="text-xs text-muted-foreground">College Name *</Label>
-              <Input value={form.college_name} onChange={e => updateField("college_name", e.target.value)} className="bg-card border-border" />
+              <Select value={form.college_name} onValueChange={v => updateField("college_name", v)}>
+                <SelectTrigger className="bg-card border-border"><SelectValue placeholder="Select college" /></SelectTrigger>
+                <SelectContent>
+                  {colleges.map(c => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Event *</Label>
