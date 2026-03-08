@@ -85,6 +85,8 @@ const EventsSection = () => {
               description: e.description ? (e.description.length > 60 ? e.description.substring(0, 60) + "..." : e.description) : "No description available",
               category: e.category as Exclude<Category, "all">,
               teamSize: formatTeamSize(e.team_size_min || 1, e.team_size_max || 1),
+              team_size_min: e.team_size_min || 1,
+              team_size_max: e.team_size_max || 1,
               detailedDescription: e.description || "",
               date: e.date,
               time: e.time,
