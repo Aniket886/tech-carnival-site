@@ -322,23 +322,35 @@ const AdminEmail = () => {
                 <Input value={subject} onChange={e => setSubject(e.target.value)} className="bg-background border-border" />
               </div>
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <Label className="text-muted-foreground text-xs uppercase tracking-wider">Message</Label>
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-muted-foreground text-[10px] mr-0.5">Insert field:</span>
-                    {PLACEHOLDERS.map(p => (
-                      <button
-                        key={p.value}
-                        type="button"
-                        onClick={() => insertPlaceholder(p.value)}
-                        className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium hover:bg-primary/20 transition-colors cursor-pointer"
-                      >
-                        <Plus size={10} /> {p.label}
-                      </button>
-                    ))}
+                <Label className="text-muted-foreground text-xs uppercase tracking-wider mb-1.5 block">Message</Label>
+                <Textarea id="email-message-textarea" rows={6} placeholder="Write your message here… Use {{name}}, {{team_name}}, etc. for personalization" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
+              </div>
+
+              {/* Custom detail fields — used to fill placeholders for manual recipients */}
+              <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Recipient Details <span className="text-[10px] font-normal normal-case">(auto-filled when sending to event / table recipients)</span></p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-muted-foreground text-[11px] mb-1 block">Name</Label>
+                    <Input placeholder="Recipient name" value={customFields.name} onChange={e => setCustomFields(f => ({ ...f, name: e.target.value }))} className="bg-background border-border h-9 text-sm" />
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-[11px] mb-1 block">Team Name</Label>
+                    <Input placeholder="Team name" value={customFields.team_name} onChange={e => setCustomFields(f => ({ ...f, team_name: e.target.value }))} className="bg-background border-border h-9 text-sm" />
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-[11px] mb-1 block">Phone</Label>
+                    <Input placeholder="Phone number" value={customFields.phone} onChange={e => setCustomFields(f => ({ ...f, phone: e.target.value }))} className="bg-background border-border h-9 text-sm" />
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-[11px] mb-1 block">College</Label>
+                    <Input placeholder="College name" value={customFields.college} onChange={e => setCustomFields(f => ({ ...f, college: e.target.value }))} className="bg-background border-border h-9 text-sm" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <Label className="text-muted-foreground text-[11px] mb-1 block">Event</Label>
+                    <Input placeholder="Event name" value={customFields.event} onChange={e => setCustomFields(f => ({ ...f, event: e.target.value }))} className="bg-background border-border h-9 text-sm" />
                   </div>
                 </div>
-                <Textarea id="email-message-textarea" rows={6} placeholder="Write your message here… Use {{name}}, {{team_name}}, etc. for personalization" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
               </div>
 
               {selectedTemplate === "reminder" && (
