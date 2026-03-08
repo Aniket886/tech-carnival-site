@@ -92,15 +92,10 @@ const categoryBadge: Record<string, { label: string; className: string }> = {
   cultural: { label: "Cultural", className: "bg-purple-500/15 text-purple-400 border-purple-500/30" },
 };
 
-export const handleRegisterClick = (eventName: string) => {
-  const el = document.getElementById("register");
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-  window.dispatchEvent(new CustomEvent("preselect-event", { detail: eventName }));
-};
-
 const Events = () => {
   const [active, setActive] = useState<Category>("all");
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [registerEventId, setRegisterEventId] = useState<string | null>(null);
   const filtered = active === "all" ? events : events.filter((e) => e.category === active);
 
   return (
