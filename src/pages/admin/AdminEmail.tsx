@@ -137,16 +137,7 @@ const AdminEmail = () => {
   const [previewHtml, setPreviewHtml] = useState("");
   const [customField, setCustomField] = useState("");
 
-  const PLACEHOLDERS = [
-    { label: "Name", value: "{{name}}" },
-    { label: "Team Name", value: "{{team_name}}" },
-    { label: "Email", value: "{{email}}" },
-    { label: "Phone", value: "{{phone}}" },
-    { label: "College", value: "{{college}}" },
-    { label: "Event", value: "{{event}}" },
-  ];
-
-  const insertPlaceholder = (placeholder: string) => {
+  const QUICK_FIELDS = ["name", "team_name", "email", "phone", "college", "event"];
     const el = document.querySelector<HTMLTextAreaElement>("#email-message-textarea");
     if (el) {
       const start = el.selectionStart ?? message.length;
