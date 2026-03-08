@@ -88,6 +88,15 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [successData, setSuccessData] = useState<{ id: string; eventName: string } | null>(null);
   const [shakeSubmit, setShakeSubmit] = useState(false);
+  const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
+  const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
+
+  const fetchColleges = () => {
+    supabase.from("colleges").select("id, name, short_name").eq("is_active", true).order("name")
+      .then(({ data }) => { if (data) setColleges(data); });
+  };
+
+  useEffect(() => { fetchColleges(); }, []);
 
   useEffect(() => {
     supabase
