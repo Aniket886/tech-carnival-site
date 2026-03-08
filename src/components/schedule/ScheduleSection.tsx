@@ -34,14 +34,14 @@ const days: DaySchedule[] = [
     endHour: 20,
     events: [
       { name: "Assemble", icon: "🏁", startHour: 8.75, endHour: 9, category: "ceremony", venue: "Main Gate" },
-      { name: "Inauguration + Flash Mob", icon: "🎤", startHour: 9, endHour: 10, category: "ceremony", venue: "Main Auditorium" },
-      { name: "Hack Momentum (6hr)", icon: "⚡", startHour: 10.5, endHour: 17.5, category: "technical", venue: "Main Auditorium" },
-      { name: "Brain Quest", icon: "🧠", startHour: 10.5, endHour: 13.5, category: "technical", venue: "Seminar Hall A" },
+      { name: "Inauguration + Flash Mob + Banner Drop", icon: "🎤", startHour: 9, endHour: 10, category: "ceremony", venue: "Main Auditorium" },
+      { name: "Hack Momentum (6hr Hackathon)", icon: "⚡", startHour: 10.5, endHour: 17.5, category: "technical", venue: "Main Auditorium" },
+      { name: "Brain Quest (Mega Quiz)", icon: "🧠", startHour: 10.5, endHour: 13.5, category: "technical", venue: "Seminar Hall A" },
       { name: "Poster Presentation", icon: "📊", startHour: 10.5, endHour: 13.5, category: "technical", venue: "Exhibition Hall" },
       { name: "Lunch Break", icon: "🍽️", startHour: 13.5, endHour: 14.5, category: "break", venue: "Food Court" },
-      { name: "Pitch Perfect", icon: "📝", startHour: 14.5, endHour: 17.5, category: "technical", venue: "Seminar Hall B" },
+      { name: "Pitch Perfect", icon: "🎯", startHour: 14.5, endHour: 17, category: "technical", venue: "Seminar Hall B" },
       { name: "Battle Ground – Free Fire", icon: "🎮", startHour: 14.5, endHour: 17.5, category: "gaming", venue: "Gaming Arena" },
-      { name: "Dance Mania", icon: "💃", startHour: 17.5, endHour: 19.5, category: "cultural", venue: "Main Stage" },
+      { name: "Dance Mania (Group Dance)", icon: "💃", startHour: 17, endHour: 20, category: "cultural", venue: "Main Stage" },
     ],
   },
   {
@@ -49,11 +49,10 @@ const days: DaySchedule[] = [
     startHour: 9,
     endHour: 18,
     events: [
-      { name: "Myth Busters", icon: "🔍", startHour: 9, endHour: 11, category: "technical", venue: "Seminar Hall A" },
       { name: "Code Compass", icon: "🧭", startHour: 9, endHour: 11, category: "technical", venue: "Computer Lab 1" },
-      { name: "Act Arena / Scitopia", icon: "🎬", startHour: 11.5, endHour: 14, category: "cultural", venue: "Main Stage" },
+      { name: "Scitopia (Skit Play)", icon: "🎬", startHour: 11.5, endHour: 14, category: "cultural", venue: "Main Stage" },
       { name: "Lunch Break", icon: "🍽️", startHour: 14, endHour: 15, category: "break", venue: "Food Court" },
-      { name: "Valedictory + Band", icon: "🏆", startHour: 15.25, endHour: 18, category: "ceremony", venue: "Main Auditorium" },
+      { name: "Valedictory + Special Band Performance", icon: "🏆", startHour: 15.25, endHour: 18, category: "ceremony", venue: "Main Auditorium" },
     ],
   },
 ];
