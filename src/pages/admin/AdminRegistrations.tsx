@@ -116,6 +116,28 @@ const AdminRegistrations = () => {
     const { error } = await supabase.from("registrations").update({ registration_status: status }).eq("id", id);
     if (error) { toast.error("Failed to update status"); return; }
     toast.success(`Status updated to ${status}`);
+
+    // Send email notification on confirm/reject
+    if (status === "confirmed" || status === "rejected") {
+      const reg = registrations.find(r => r.id === id);
+      if (reg) {
+        const ev = eventMap.get(reg.event_id);
+        supabase.functions.invoke("send-email", {
+          body: {
+            type: status === "confirmed" ? "registration_confirmed" : "registration_rejected",
+            to: reg.leader_email,
+            leader_name: reg.leader_name,
+            team_name: reg.team_name || undefined,
+            registration_id: reg.id,
+            event_name: ev?.name || "Event",
+            event_date: ev ? undefined : undefined,
+            event_venue: undefined,
+          },
+        }).catch(() => {});
+        toast.info(`${status === "confirmed" ? "Confirmation" : "Rejection"} email sent to ${reg.leader_email}`);
+      }
+    }
+
     fetchData();
   };
 
