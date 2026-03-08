@@ -10,7 +10,8 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const body = await req.json();
+    const messages = body.messages || body.history || [];
     const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY");
     if (!GROQ_API_KEY) throw new Error("GROQ_API_KEY is not configured");
 

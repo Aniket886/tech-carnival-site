@@ -25,7 +25,7 @@ const INITIAL_SUGGESTIONS = [
   "📞 Contact Team",
 ];
 
-const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/carnibot-chat`;
+const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/carnibot`;
 
 const CarniBotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
