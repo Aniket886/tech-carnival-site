@@ -37,6 +37,15 @@ interface EventOption {
   team_size_max: number;
 }
 
+interface PassedEventData {
+  id: string;
+  name: string;
+  emoji: string;
+  category: string;
+  team_size_min: number;
+  team_size_max: number;
+}
+
 interface TeamMember {
   name: string;
   email: string;
