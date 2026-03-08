@@ -8,6 +8,7 @@ import ScheduleSection from "@/components/schedule/ScheduleSection";
 import Leaderboard from "@/components/home/Leaderboard";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
+import OrganizingCommittee from "@/components/home/OrganizingCommittee";
 import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import CarniBotWidget from "@/components/chatbot/CarniBotWidget";
