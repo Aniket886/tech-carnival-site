@@ -645,18 +645,21 @@ export type Database = {
       }
       user_roles: {
         Row: {
+          email: string | null
           id: string
           is_owner: boolean
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
+          email?: string | null
           id?: string
           is_owner?: boolean
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
+          email?: string | null
           id?: string
           is_owner?: boolean
           role?: Database["public"]["Enums"]["app_role"]
