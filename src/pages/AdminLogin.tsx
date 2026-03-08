@@ -34,14 +34,12 @@ const AdminLogin = () => {
       if (error) throw error;
 
       // Check admin role
-      const { data: role } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", data.user.id)
-        .eq("role", "admin")
-        .maybeSingle();
+      const { data: isAdmin } = await supabase.rpc("has_role", {
+        _user_id: data.user.id,
+        _role: "admin",
+      });
 
-      if (!role) {
+      if (!isAdmin) {
         await supabase.auth.signOut();
         throw new Error("Access denied. Admin privileges required.");
       }
