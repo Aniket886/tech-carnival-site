@@ -94,7 +94,10 @@ const Registration = () => {
   const [events, setEvents] = useState<EventOption[]>([]);
   const [form, setForm] = useState<FormData>({ ...initialForm });
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
+  const [shake, setShake] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
   const [successData, setSuccessData] = useState<{
     id: string;
     eventName: string;
@@ -102,6 +105,22 @@ const Registration = () => {
 
   const selectedEvent = events.find((e) => e.id === form.event_id);
   const isTeamEvent = selectedEvent ? selectedEvent.team_size_max > 1 : false;
+
+  const onBlur = (field: string) => {
+    setTouched((prev) => new Set(prev).add(field));
+    const errs = validateStep(step);
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (errs[field]) next[field] = errs[field];
+      else delete next[field];
+      return next;
+    });
+  };
+
+  const fieldClass = (field: string) => {
+    if (!touched.has(field)) return "";
+    return errors[field] ? "border-destructive focus-visible:ring-destructive" : "border-green-500/50 focus-visible:ring-green-500/50";
+  };
 
   // Fetch events
   useEffect(() => {
