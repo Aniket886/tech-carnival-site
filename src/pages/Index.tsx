@@ -8,7 +8,6 @@ import About from "@/components/About";
 import Sponsors from "@/components/Sponsors";
 import Events from "@/components/Events";
 import EventFlow from "@/components/EventFlow";
-import Registration from "@/components/Registration";
 import Leaderboard from "@/components/Leaderboard";
 import Contact from "@/components/Contact";
 import FAQ from "@/components/FAQ";
