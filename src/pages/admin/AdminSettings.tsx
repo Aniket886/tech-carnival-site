@@ -89,7 +89,7 @@ const AdminSettings = () => {
       
       adminRoles.forEach(a => { (a as AdminRole).email = emailMap.get(a.user_id); });
     }
-    setAdmins(adminRoles);
+    setAdmins(adminRoles as unknown as AdminRole[]);
   }, []);
 
   const fetchLogs = useCallback(async () => {
