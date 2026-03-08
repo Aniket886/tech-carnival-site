@@ -95,7 +95,7 @@ const AdminLogin = () => {
               className="bg-muted/50 border-border focus:border-primary"
             />
           </div>
-          <Button variant="default" className="w-full" type="submit" disabled={loading || authLoading}>
+          <Button variant="default" className="w-full" type="submit" disabled={loading}>
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
