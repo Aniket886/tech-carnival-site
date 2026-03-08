@@ -27,12 +27,14 @@ import {
   LogOut,
   Globe,
   Trophy,
+  Handshake,
 } from "lucide-react";
 
 const navItems = [
   { title: "Overview", url: "/admin/overview", icon: LayoutDashboard },
   { title: "Registrations", url: "/admin/registrations", icon: ClipboardList },
   { title: "Events", url: "/admin/events", icon: Calendar },
+  { title: "Sponsors", url: "/admin/sponsors", icon: Handshake },
   { title: "Colleges", url: "/admin/colleges", icon: GraduationCap },
   { title: "API Keys", url: "/admin/api-keys", icon: Key },
   { title: "Event Links", url: "/admin/event-links", icon: Globe },
