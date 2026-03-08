@@ -90,6 +90,11 @@ const AdminSettings = () => {
       
       adminRoles.forEach(a => { if (!a.email) a.email = emailMap.get(a.user_id); });
     }
+    // Check if current user is owner
+    if (user) {
+      const ownerRole = adminRoles.find(a => a.user_id === user.id);
+      setIsOwner(ownerRole?.is_owner || false);
+    }
     setAdmins(adminRoles);
   }, [user]);
 
