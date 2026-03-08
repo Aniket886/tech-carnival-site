@@ -27,7 +27,7 @@ const links = [
 ];
 
 const AdminLayout = () => {
-  const { user, isAdmin, loading, signOut } = useAdminAuth();
+  const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
