@@ -92,9 +92,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
 
-  const fetchColleges = () => {
-    supabase.from("colleges").select("id, name, short_name").eq("is_active", true).order("name")
-      .then(({ data }) => { if (data) setColleges(data); });
+  const fetchColleges = async () => {
+    const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
+    if (data) setColleges(data.filter((c: any) => c.approval_status === "approved"));
   };
 
   useEffect(() => { fetchColleges(); }, []);
