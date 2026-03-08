@@ -33,16 +33,23 @@ interface Score {
 }
 
 interface EventInfo { id: string; name: string; category: string; }
+interface CollegeInfo { id: string; name: string; }
 
 interface FormData {
   college_name: string;
   event_id: string;
   team_name: string;
   points: number;
-  position: string;
 }
 
-const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0, position: "participant" };
+const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0 };
+
+const getPositionFromPoints = (points: number): string => {
+  if (points >= 100) return "1st";
+  if (points >= 75) return "2nd";
+  if (points >= 50) return "3rd";
+  return "participant";
+};
 
 const positionStyles: Record<string, { label: string; cls: string }> = {
   "1st": { label: "🥇 1st", cls: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
@@ -54,6 +61,7 @@ const positionStyles: Record<string, { label: string; cls: string }> = {
 const AdminScores = () => {
   const [scores, setScores] = useState<Score[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
+  const [colleges, setColleges] = useState<CollegeInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -63,12 +71,14 @@ const AdminScores = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
-    const [{ data: sc }, { data: evts }] = await Promise.all([
+    const [{ data: sc }, { data: evts }, { data: cols }] = await Promise.all([
       supabase.from("college_scores").select("*").order("points", { ascending: false }),
       supabase.from("events").select("id, name, category"),
+      supabase.from("colleges").select("id, name").eq("is_active", true).order("name"),
     ]);
     setScores(sc || []);
     setEvents(evts || []);
+    setColleges((cols || []) as CollegeInfo[]);
     setLoading(false);
   }, []);
 
@@ -100,7 +110,7 @@ const AdminScores = () => {
     setEditingId(s.id);
     setForm({
       college_name: s.college_name, event_id: s.event_id, team_name: s.team_name || "",
-      points: s.points, position: s.position || "participant",
+      points: s.points,
     });
     setDialogOpen(true);
   };
@@ -117,7 +127,7 @@ const AdminScores = () => {
       category: ev.category,
       team_name: form.team_name.trim() || null,
       points: form.points,
-      position: form.position || "participant",
+      position: getPositionFromPoints(form.points),
       updated_at: new Date().toISOString(),
     };
     let error;
@@ -271,7 +281,12 @@ const AdminScores = () => {
           <div className="space-y-3">
             <div>
               <Label className="text-xs text-muted-foreground">College Name *</Label>
-              <Input value={form.college_name} onChange={e => updateField("college_name", e.target.value)} className="bg-card border-border" />
+              <Select value={form.college_name} onValueChange={v => updateField("college_name", v)}>
+                <SelectTrigger className="bg-card border-border"><SelectValue placeholder="Select college" /></SelectTrigger>
+                <SelectContent>
+                  {colleges.map(c => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Event *</Label>
@@ -292,16 +307,10 @@ const AdminScores = () => {
                 <Input type="number" min={0} value={form.points} onChange={e => updateField("points", parseInt(e.target.value) || 0)} className="bg-card border-border" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Position</Label>
-                <Select value={form.position} onValueChange={v => updateField("position", v)}>
-                  <SelectTrigger className="bg-card border-border"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1st">🥇 1st</SelectItem>
-                    <SelectItem value="2nd">2nd</SelectItem>
-                    <SelectItem value="3rd">3rd</SelectItem>
-                    <SelectItem value="participant">Participant</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="text-xs text-muted-foreground">Position (auto)</Label>
+                <div className="h-9 flex items-center px-3 rounded-md border border-border bg-muted/50 text-sm text-muted-foreground">
+                  {(positionStyles[getPositionFromPoints(form.points)] || positionStyles.participant).label}
+                </div>
               </div>
             </div>
           </div>
