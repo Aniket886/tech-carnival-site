@@ -88,6 +88,7 @@ const EventsSection = () => {
               venue: e.venue,
               prize_pool: e.prize_pool,
               rules: e.rules,
+              rulebookUrl: e.website_url || null,
             }))
           );
         }
