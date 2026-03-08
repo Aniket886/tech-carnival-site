@@ -252,10 +252,10 @@ const AdminScores = () => {
         </h2>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="gap-2" onClick={exportCSV}>
-            <Download size={14} /> Export CSV
+            <Upload size={14} /> Export CSV
           </Button>
           <Button variant="outline" size="sm" className="gap-2" onClick={importCSV}>
-            <Upload size={14} /> Import CSV
+            <Download size={14} /> Import CSV
           </Button>
           <Button size="sm" className="gap-2" onClick={openCreate}>
             <Plus size={14} /> Add Score
