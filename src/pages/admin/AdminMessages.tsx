@@ -35,7 +35,11 @@ const AdminMessages = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetch_(); }, []);
+  useEffect(() => {
+    fetch_();
+    const interval = setInterval(fetch_, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleRead = async (m: Contact) => {
     const { error } = await supabase.from("contacts").update({ is_read: !m.is_read }).eq("id", m.id);

@@ -68,7 +68,11 @@ const AdminPayments = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const eventMap = useMemo(() => {
     const m = new Map<string, EventInfo>();
