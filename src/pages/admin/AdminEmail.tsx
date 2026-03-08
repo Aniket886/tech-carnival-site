@@ -369,10 +369,11 @@ const AdminEmail = () => {
               <CardDescription className="text-xs">Choose who receives this email</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Tabs value={recipientMode} onValueChange={v => setRecipientMode(v as "manual" | "event")}>
+              <Tabs value={recipientMode} onValueChange={v => setRecipientMode(v as "manual" | "event" | "table")}>
                 <TabsList className="w-full">
                   <TabsTrigger value="manual" className="flex-1 text-xs">Manual</TabsTrigger>
                   <TabsTrigger value="event" className="flex-1 text-xs">By Event</TabsTrigger>
+                  <TabsTrigger value="table" className="flex-1 text-xs">From Table</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="manual" className="mt-3">
