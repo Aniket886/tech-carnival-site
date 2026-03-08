@@ -194,9 +194,7 @@ const EventsSection = () => {
                         {event.category}
                       </Badge>
                       <div className="flex gap-2">
-                        <Button
-                          variant="neon-outline"
-                          size="sm"
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             if (event.rulebookUrl) {
@@ -205,21 +203,19 @@ const EventsSection = () => {
                               toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
                             }
                           }}
-                          className="gap-1"
+                          className="btn-golden h-9 px-3 text-sm font-medium inline-flex items-center justify-center gap-1"
                         >
-                          <FileText className="h-3.5 w-3.5" />
-                          Rule Book
-                        </Button>
-                        <Button
-                          variant="neon-outline"
-                          size="sm"
+                          <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> Rule Book</span>
+                        </button>
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setRegisterEvent(event);
                           }}
+                          className="btn-golden h-9 px-3 text-sm font-medium inline-flex items-center justify-center"
                         >
-                          Register
-                        </Button>
+                          <span>Register</span>
+                        </button>
                       </div>
                     </div>
                   </motion.div>
