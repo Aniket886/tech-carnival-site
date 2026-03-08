@@ -5,7 +5,7 @@ const coreTeam = [
   "Aniket Tegginamath",
   "Bhanuprakash K S",
   "K Vishwasheetal",
-  "Sonali V Meharwade",
+  "Sonali Meharwade",
 ];
 
 const CoreTeam = () => {
