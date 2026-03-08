@@ -66,12 +66,30 @@ const AdminSettings = () => {
   const [logTab, setLogTab] = useState("active");
 
   const fetchAdmins = useCallback(async () => {
-    const { data } = await supabase
+    const { data: roles } = await supabase
       .from("user_roles")
       .select("*")
       .eq("role", "admin")
       .order("is_owner", { ascending: false });
-    setAdmins(data || []);
+
+    // Fetch emails from login logs for each admin
+    const adminRoles = roles || [];
+    if (adminRoles.length > 0) {
+      const userIds = adminRoles.map(a => a.user_id);
+      const { data: logs } = await supabase
+        .from("admin_login_logs")
+        .select("user_id, email")
+        .in("user_id", userIds)
+        .order("logged_in_at", { ascending: false });
+      
+      const emailMap = new Map<string, string>();
+      logs?.forEach(l => {
+        if (!emailMap.has(l.user_id)) emailMap.set(l.user_id, l.email);
+      });
+      
+      adminRoles.forEach(a => { a.email = emailMap.get(a.user_id); });
+    }
+    setAdmins(adminRoles);
   }, []);
 
   const fetchLogs = useCallback(async () => {
