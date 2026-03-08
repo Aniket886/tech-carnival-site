@@ -10,18 +10,12 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Eye,
+  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle,
 } from "lucide-react";
 
 /* ─── types ─── */
@@ -65,7 +59,7 @@ const AdminRegistrations = () => {
   const [eventFilter, setEventFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: "single" | "bulk"; id?: string } | null>(null);
-  const [detailReg, setDetailReg] = useState<Registration | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     const [{ data: regs }, { data: evts }] = await Promise.all([
@@ -179,7 +173,7 @@ const AdminRegistrations = () => {
   };
 
   /* ─── members display ─── */
-  const getMembers = (members: any): { name: string; phone?: string }[] => {
+  const getMembers = (members: any): { name: string; phone?: string; email?: string }[] => {
     if (!members || !Array.isArray(members)) return [];
     return members;
   };
@@ -270,79 +264,70 @@ const AdminRegistrations = () => {
                 {filtered.map((r, idx) => {
                   const ev = eventMap.get(r.event_id);
                   const sc = statusConfig[r.registration_status] || statusConfig.pending;
+                  const isExpanded = expandedId === r.id;
+                  const members = getMembers(r.members);
                   return (
-                    <TableRow key={r.id} className="border-border">
-                      <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
-                            {r.team_name || r.leader_name}
-                            <ChevronDown size={14} className="text-muted-foreground" />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="w-56">
-                            <div className="px-3 py-2 space-y-1 text-sm">
-                              <p className="font-medium text-foreground">{r.leader_name}</p>
-                              <p className="text-muted-foreground text-xs">{r.leader_phone}</p>
-                              {r.team_name && <p className="text-xs text-muted-foreground">Team: {r.team_name}</p>}
-                              {r.semester && <p className="text-xs text-muted-foreground">Sem: {r.semester}</p>}
-                              {getMembers(r.members).length > 0 && (
-                                <div className="pt-1 border-t border-border mt-1">
-                                  <p className="text-xs font-medium text-foreground mb-0.5">Members:</p>
-                                  {getMembers(r.members).map((m, i) => (
-                                    <p key={i} className="text-xs text-muted-foreground">{m.name}{m.phone ? ` · ${m.phone}` : ""}</p>
+                    <>
+                      <TableRow key={r.id} className="border-border cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : r.id)}>
+                        <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-medium text-foreground">{r.team_name || r.leader_name}</span>
+                            <ChevronDown size={14} className={`text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                            <span>{ev?.icon || categoryConfig[ev?.category || ""] || "🎯"}</span>
+                            <span className="truncate max-w-[130px]">{ev?.name || "—"}</span>
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">{r.leader_email}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground max-w-[120px] truncate">{r.college_name}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className={`text-[10px] capitalize ${sc.class}`}>
+                            {sc.label}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
+                            <button title="Confirm" onClick={() => updateStatus(r.id, "confirmed")} className="p-1.5 rounded-md text-emerald-400 hover:bg-emerald-500/10 transition-colors"><Check size={15} /></button>
+                            <button title="Reject" onClick={() => updateStatus(r.id, "rejected")} className="p-1.5 rounded-md text-destructive hover:bg-destructive/10 transition-colors"><XCircle size={15} /></button>
+                            <button title="Delete" onClick={() => setDeleteConfirm({ type: "single", id: r.id })} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><Trash2 size={15} /></button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      {isExpanded && (
+                        <TableRow key={`${r.id}-detail`} className="border-border bg-muted/30 hover:bg-muted/30">
+                          <TableCell colSpan={7} className="py-4 px-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 text-sm">
+                              <p><span className="text-muted-foreground">Leader:</span> <span className="font-medium text-foreground">{r.leader_name}</span></p>
+                              <p><span className="text-muted-foreground">Phone:</span> <span className="font-medium text-foreground">{r.leader_phone}</span></p>
+                              <p><span className="text-muted-foreground">Email:</span> <span className="font-medium text-foreground">{r.leader_email}</span></p>
+                              <p><span className="text-muted-foreground">Semester:</span> <span className="font-medium text-foreground">{r.semester || "—"}</span></p>
+                              <p><span className="text-muted-foreground">Event:</span> <span className="font-medium text-foreground">{ev?.icon || ""} {ev?.name || "—"}</span></p>
+                              <p><span className="text-muted-foreground">Category:</span> <span className="font-medium text-foreground capitalize">{ev?.category || "—"}</span></p>
+                              <p><span className="text-muted-foreground">Date:</span> <span className="font-medium text-foreground">{new Date(r.created_at).toLocaleString("en-IN")}</span></p>
+                              <p><span className="text-muted-foreground">Amount Paid:</span> <span className="font-medium text-foreground">{r.amount_paid ? `₹${r.amount_paid}` : "—"}</span></p>
+                              <p><span className="text-muted-foreground">UTR Number:</span> <span className="font-medium text-foreground">{r.utr_number || "—"}</span></p>
+                              <p><span className="text-muted-foreground">Transaction ID:</span> <span className="font-medium text-foreground">{r.transaction_id || "—"}</span></p>
+                            </div>
+                            {members.length > 0 && (
+                              <div className="mt-3 pt-3 border-t border-border">
+                                <p className="text-xs text-muted-foreground mb-1.5">Team Members:</p>
+                                <div className="space-y-0.5">
+                                  {members.map((m, i) => (
+                                    <p key={i} className="text-sm text-foreground">
+                                      {i + 1}. {m.name}{m.email ? ` — ${m.email}` : ""}{m.phone ? ` — ${m.phone}` : ""}
+                                    </p>
                                   ))}
                                 </div>
-                              )}
-                            </div>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                      <TableCell>
-                        <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                          <span>{ev?.icon || categoryConfig[ev?.category || ""] || "🎯"}</span>
-                          <span className="truncate max-w-[130px]">{ev?.name || "—"}</span>
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">{r.leader_email}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground max-w-[120px] truncate">{r.college_name}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={`text-[10px] capitalize ${sc.class}`}>
-                          {sc.label}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            title="Confirm"
-                            onClick={() => updateStatus(r.id, "confirmed")}
-                            className="p-1.5 rounded-md text-emerald-400 hover:bg-emerald-500/10 transition-colors"
-                          >
-                            <Check size={15} />
-                          </button>
-                          <button
-                            title="Reject"
-                            onClick={() => updateStatus(r.id, "rejected")}
-                            className="p-1.5 rounded-md text-destructive hover:bg-destructive/10 transition-colors"
-                          >
-                            <XCircle size={15} />
-                          </button>
-                          <button
-                            title="View details"
-                            onClick={() => setDetailReg(r)}
-                            className="p-1.5 rounded-md text-muted-foreground hover:bg-muted/50 transition-colors"
-                          >
-                            <Eye size={15} />
-                          </button>
-                          <button
-                            title="Delete"
-                            onClick={() => setDeleteConfirm({ type: "single", id: r.id })}
-                            className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                              </div>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </>
                   );
                 })}
               </TableBody>
@@ -363,22 +348,10 @@ const AdminRegistrations = () => {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button
-            variant="destructive"
-            size="sm"
-            className="gap-2"
-            onClick={() => { exportCSV(true); }}
-            disabled={filtered.length === 0}
-          >
+          <Button variant="destructive" size="sm" className="gap-2" onClick={() => exportCSV(true)} disabled={filtered.length === 0}>
             <Download size={14} /> Export & Delete All ({filtered.length})
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10"
-            onClick={() => setDeleteConfirm({ type: "bulk" })}
-            disabled={filtered.length === 0}
-          >
+          <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setDeleteConfirm({ type: "bulk" })} disabled={filtered.length === 0}>
             <Trash2 size={14} /> Delete Filtered ({filtered.length})
           </Button>
         </div>
@@ -409,49 +382,8 @@ const AdminRegistrations = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Detail Dialog */}
-      <Dialog open={!!detailReg} onOpenChange={() => setDetailReg(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Registration Details</DialogTitle>
-          </DialogHeader>
-          {detailReg && (
-            <div className="space-y-3 text-sm">
-              <Row label="Name" value={detailReg.leader_name} />
-              <Row label="Email" value={detailReg.leader_email} />
-              <Row label="Phone" value={detailReg.leader_phone} />
-              <Row label="College" value={detailReg.college_name} />
-              <Row label="Event" value={eventMap.get(detailReg.event_id)?.name || "—"} />
-              <Row label="Team" value={detailReg.team_name || "—"} />
-              <Row label="Status" value={detailReg.registration_status} />
-              <Row label="Amount" value={detailReg.amount_paid ? `₹${detailReg.amount_paid}` : "—"} />
-              <Row label="UTR" value={detailReg.utr_number || "—"} />
-              <Row label="Transaction ID" value={detailReg.transaction_id || "—"} />
-              <Row label="Source" value={detailReg.source} />
-              <Row label="Semester" value={detailReg.semester || "—"} />
-              <Row label="Date" value={new Date(detailReg.created_at).toLocaleString()} />
-              {getMembers(detailReg.members).length > 0 && (
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-1">Team Members</p>
-                  {getMembers(detailReg.members).map((m, i) => (
-                    <p key={i} className="text-foreground">{m.name}{m.phone ? ` · ${m.phone}` : ""}</p>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
-
-const Row = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between gap-4">
-    <span className="text-muted-foreground shrink-0">{label}</span>
-    <span className="text-foreground text-right truncate">{value}</span>
-  </div>
-);
 
 export default AdminRegistrations;
