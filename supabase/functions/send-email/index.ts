@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Tech Carnival <onboarding@resend.dev>",
+        from: "Tech Carnival <noreply@techcarnival.online>",
         to: [to],
         subject: subjects[type] || "Tech Carnival – 2K26",
         html,
