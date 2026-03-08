@@ -119,11 +119,13 @@ const EventsSection = () => {
     <section id="events" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       <div className="relative z-10 container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text mb-4">
+        <div className="text-center mb-16">
+          <span className="inline-block text-xs font-display uppercase tracking-[0.3em] text-primary/70 mb-3">⚡ What's Happening</span>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black gradient-text mb-5 leading-tight">
             Explore Our Events
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <div className="w-24 h-1 mx-auto rounded-full bg-gradient-to-r from-primary to-secondary mb-5" />
+          <p className="text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
             From high-intensity hackathons to electrifying cultural performances — there's something for everyone.
           </p>
         </div>
