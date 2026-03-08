@@ -129,6 +129,7 @@
     color: hsl(var(--primary));
     overflow: hidden;
     transition: background-position 1s;
+    z-index: 0;
   }
 
   .btn-golden::before {
@@ -137,13 +138,8 @@
     inset: 2px;
     border-radius: 8px;
     background-color: hsl(var(--background) / 0.9);
-    z-index: 0;
+    z-index: -1;
     transition: background-position 1s;
-  }
-
-  .btn-golden > * {
-    position: relative;
-    z-index: 1;
   }
 
   .btn-golden:hover {
