@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,10 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, Plus, Trash2, Users, User, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  validateName, validateEmail, validatePhone,
+  validateTeamName, validateCollegeName, sanitizeInput, countErrors,
+} from "@/lib/validators";
 
 // ── Types ──
 interface EventOption {
