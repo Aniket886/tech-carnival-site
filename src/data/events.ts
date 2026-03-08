@@ -59,7 +59,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "Solo",
     detailedDescription: "Myth Busters is a unique event where participants are presented with common tech and science myths to bust or confirm.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-battle-ground",
