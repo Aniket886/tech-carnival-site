@@ -182,7 +182,12 @@ const EventsSection = () => {
                     className={`relative overflow-hidden rounded-xl border p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer bg-card/40 backdrop-blur-sm ${style.border} ${style.accent}`}
                   >
                     {/* Category glow accent */}
-                    <div className={`absolute top-0 left-0 right-0 h-1 ${style.badge.includes("primary") ? "bg-primary/60" : style.badge.includes("red") ? "bg-red-500/60" : "bg-accent/60"}`} />
+                    <motion.div
+                      className={`absolute top-0 left-0 right-0 h-1 origin-left ${style.badge.includes("primary") ? "bg-primary/60" : style.badge.includes("red") ? "bg-red-500/60" : "bg-accent/60"}`}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: 0.6, delay: index * 0.08 + 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                    />
                     <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-30 ${style.glow}`} />
                     
                     <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-4 ${style.iconBg}`}>{event.emoji}</div>
