@@ -40,9 +40,10 @@ interface FormData {
   event_id: string;
   team_name: string;
   points: number;
+  position: string; // "auto" | "1st" | "2nd" | "3rd"
 }
 
-const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0 };
+const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0, position: "auto" };
 
 const getPositionFromPoints = (points: number): string => {
   if (points >= 100) return "1st";
@@ -108,11 +109,31 @@ const AdminScores = () => {
 
   const openEdit = (s: Score) => {
     setEditingId(s.id);
+    // If the stored position matches a manual value, use it; otherwise default to "auto"
+    const manualPositions = ["1st", "2nd", "3rd"];
+    const posValue = manualPositions.includes(s.position || "") ? s.position! : "auto";
     setForm({
       college_name: s.college_name, event_id: s.event_id, team_name: s.team_name || "",
-      points: s.points,
+      points: s.points, position: posValue,
     });
     setDialogOpen(true);
+  };
+
+  // Compute position: if "auto", rank by points within the same event (unique ranks, no ties)
+  const computePosition = (eventId: string, points: number, excludeId: string | null): string => {
+    // Get all scores for this event, excluding the current one being edited
+    const eventScores = scores
+      .filter(s => s.event_id === eventId && s.id !== excludeId)
+      .map(s => s.points);
+    // Add current points
+    eventScores.push(points);
+    // Sort descending and deduplicate is NOT needed — we rank by sorted index
+    eventScores.sort((a, b) => b - a);
+    const rank = eventScores.indexOf(points) + 1;
+    if (rank === 1) return "1st";
+    if (rank === 2) return "2nd";
+    if (rank === 3) return "3rd";
+    return "participant";
   };
 
   const handleSave = async () => {
@@ -120,6 +141,9 @@ const AdminScores = () => {
     const ev = eventMap.get(form.event_id);
     if (!ev) { toast.error("Invalid event"); return; }
     setSaving(true);
+    const resolvedPosition = form.position === "auto"
+      ? computePosition(form.event_id, form.points, editingId)
+      : form.position;
     const payload = {
       college_name: form.college_name.trim(),
       event_id: form.event_id,
@@ -127,7 +151,7 @@ const AdminScores = () => {
       category: ev.category,
       team_name: form.team_name.trim() || null,
       points: form.points,
-      position: getPositionFromPoints(form.points),
+      position: resolvedPosition,
       updated_at: new Date().toISOString(),
     };
     let error;
@@ -307,10 +331,16 @@ const AdminScores = () => {
                 <Input type="number" min={0} value={form.points} onChange={e => updateField("points", parseInt(e.target.value) || 0)} className="bg-card border-border" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Position (auto)</Label>
-                <div className="h-9 flex items-center px-3 rounded-md border border-border bg-muted/50 text-sm text-muted-foreground">
-                  {(positionStyles[getPositionFromPoints(form.points)] || positionStyles.participant).label}
-                </div>
+                <Label className="text-xs text-muted-foreground">Position</Label>
+                <Select value={form.position} onValueChange={v => updateField("position", v)}>
+                  <SelectTrigger className="bg-card border-border"><SelectValue placeholder="Select position" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="auto">Auto (by rank)</SelectItem>
+                    <SelectItem value="1st">🥇 1st Place</SelectItem>
+                    <SelectItem value="2nd">🥈 2nd Place</SelectItem>
+                    <SelectItem value="3rd">🥉 3rd Place</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
