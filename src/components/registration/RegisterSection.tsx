@@ -474,7 +474,28 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 </AlertDescription>
               </Alert>
               <div className="glass rounded-lg p-5 space-y-4">
-                <p className="text-sm text-muted-foreground text-center">Complete the payment using the details provided by the organizers, then fill in the details below.</p>
+                <p className="text-sm font-medium text-foreground text-center mb-2">Scan QR or use the payment link below to pay</p>
+                <div className="flex flex-col items-center gap-3">
+                  <div className="bg-white rounded-xl p-3 shadow-md">
+                    <img
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=example@upi&pn=TechCarnival&cu=INR"
+                      alt="Payment QR Code"
+                      width={180}
+                      height={180}
+                      className="rounded-lg"
+                    />
+                  </div>
+                  <a
+                    href="upi://pay?pa=example@upi&pn=TechCarnival&cu=INR"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4 transition-colors"
+                  >
+                    💳 Pay via UPI Payment Link
+                  </a>
+                  <p className="text-xs text-muted-foreground text-center">UPI ID: <span className="font-mono text-foreground select-all">example@upi</span></p>
+                </div>
+                <p className="text-sm text-muted-foreground text-center pt-2 border-t border-border">After payment, fill in the details below.</p>
               </div>
               <div className="space-y-4">
                 {renderField("amountPaid", "Amount Paid (₹)", form.amountPaid, (v) => setForm((f) => ({ ...f, amountPaid: v })), { placeholder: "e.g. 200" })}
