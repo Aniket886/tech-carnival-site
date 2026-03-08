@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, useRef, ReactNode, useC
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
+const SESSION_ID_KEY = "admin_session_id";
+
 interface AdminAuthCtx {
   user: User | null;
   isAdmin: boolean;
@@ -122,9 +124,17 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
       const remaining = timeoutMs - elapsed;
 
       if (remaining <= 0) {
-        // Auto logout
+        // Auto logout — mark session inactive
         setShowIdleWarning(false);
         setIdleMinutesLeft(0);
+        const sessionId = localStorage.getItem(SESSION_ID_KEY);
+        if (sessionId) {
+          supabase.from("admin_sessions").update({
+            is_active: false,
+            logged_out_at: new Date().toISOString(),
+            logout_reason: "idle_timeout",
+          }).eq("id", sessionId).then(() => localStorage.removeItem(SESSION_ID_KEY));
+        }
         supabase.auth.signOut().then(() => {
           setUser(null);
           setIsAdmin(false);
@@ -161,6 +171,25 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
       return "Access denied — admin privileges required.";
     }
 
+    // Create active session record
+    const { data: session } = await supabase.from("admin_sessions").insert({
+      user_id: data.user.id,
+      email: email,
+      is_active: true,
+      user_agent: navigator.userAgent,
+    }).select("id").maybeSingle();
+
+    if (session?.id) {
+      localStorage.setItem(SESSION_ID_KEY, session.id);
+    }
+
+    // Also log to login_logs
+    await supabase.from("admin_login_logs").insert({
+      user_id: data.user.id,
+      email: email,
+      action_type: "login",
+    });
+
     setUser(data.user);
     setIsAdmin(true);
     signedInRef.current = true;
@@ -170,11 +199,31 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchTimeout]);
 
   const signOut = useCallback(async () => {
+    // Mark session as inactive
+    const sessionId = localStorage.getItem(SESSION_ID_KEY);
+    if (sessionId) {
+      await supabase.from("admin_sessions").update({
+        is_active: false,
+        logged_out_at: new Date().toISOString(),
+        logout_reason: "manual_logout",
+      }).eq("id", sessionId);
+      localStorage.removeItem(SESSION_ID_KEY);
+    }
+
+    // Log the logout
+    if (user) {
+      await supabase.from("admin_login_logs").insert({
+        user_id: user.id,
+        email: user.email || "",
+        action_type: "logout",
+      });
+    }
+
     await supabase.auth.signOut();
     setUser(null);
     setIsAdmin(false);
     signedInRef.current = false;
-  }, []);
+  }, [user]);
 
   const dismissIdleWarning = useCallback(() => {
     lastActivityRef.current = Date.now();

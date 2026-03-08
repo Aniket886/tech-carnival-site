@@ -34,6 +34,15 @@ interface LoginLog {
   logged_in_at: string;
 }
 
+interface ActiveSession {
+  id: string;
+  user_id: string;
+  email: string;
+  is_active: boolean;
+  login_at: string;
+  last_active_at: string;
+}
+
 const AdminSettings = () => {
   const { user } = useAdminAuth();
 
@@ -50,8 +59,9 @@ const AdminSettings = () => {
   const [sessionTimeout, setSessionTimeout] = useState("30");
   const [savingTimeout, setSavingTimeout] = useState(false);
 
-  // Login logs
+  // Login logs & active sessions
   const [loginLogs, setLoginLogs] = useState<LoginLog[]>([]);
+  const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
   const [logTab, setLogTab] = useState("active");
 
   const fetchAdmins = useCallback(async () => {
@@ -72,6 +82,15 @@ const AdminSettings = () => {
     setLoginLogs(data || []);
   }, []);
 
+  const fetchActiveSessions = useCallback(async () => {
+    const { data } = await supabase
+      .from("admin_sessions")
+      .select("*")
+      .eq("is_active", true)
+      .order("login_at", { ascending: false });
+    setActiveSessions(data || []);
+  }, []);
+
   const fetchTimeout = useCallback(async () => {
     const { data } = await supabase
       .from("admin_settings")
@@ -84,8 +103,9 @@ const AdminSettings = () => {
   useEffect(() => {
     fetchAdmins();
     fetchLogs();
+    fetchActiveSessions();
     fetchTimeout();
-  }, [fetchAdmins, fetchLogs, fetchTimeout]);
+  }, [fetchAdmins, fetchLogs, fetchActiveSessions, fetchTimeout]);
 
   // Create admin
   const handleCreateAdmin = async () => {
@@ -163,11 +183,19 @@ const AdminSettings = () => {
     }
   };
 
-  // Active sessions = logs with action_type "login" from last N hours
-  const activeLogs = loginLogs.filter((l) => {
-    const age = Date.now() - new Date(l.logged_in_at).getTime();
-    return l.action_type === "login" && age < parseInt(sessionTimeout) * 60 * 1000;
-  });
+  // Kick a session
+  const handleKickSession = async (sessionId: string) => {
+    try {
+      await supabase
+        .from("admin_sessions")
+        .update({ is_active: false, logged_out_at: new Date().toISOString(), logout_reason: "kicked" })
+        .eq("id", sessionId);
+      toast.success("Session terminated");
+      fetchActiveSessions();
+    } catch {
+      toast.error("Failed to kick session");
+    }
+  };
 
   const isCurrentUser = (userId: string) => userId === user?.id;
 
@@ -279,13 +307,13 @@ const AdminSettings = () => {
         </h2>
         <Tabs value={logTab} onValueChange={setLogTab}>
           <TabsList className="mb-3">
-            <TabsTrigger value="active">Active Sessions ({activeLogs.length})</TabsTrigger>
+            <TabsTrigger value="active">Active Sessions ({activeSessions.length})</TabsTrigger>
             <TabsTrigger value="history">History ({loginLogs.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="active">
             <div className="rounded-xl border border-border bg-card overflow-hidden">
-              {activeLogs.length === 0 ? (
+              {activeSessions.length === 0 ? (
                 <p className="p-6 text-center text-muted-foreground text-sm">No active sessions.</p>
               ) : (
                 <Table>
@@ -299,23 +327,26 @@ const AdminSettings = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {activeLogs.map((l, i) => (
-                      <TableRow key={l.id} className="border-border">
+                    {activeSessions.map((s, i) => (
+                      <TableRow key={s.id} className="border-border">
                         <TableCell className="text-sm text-muted-foreground">{i + 1}</TableCell>
-                        <TableCell className="text-sm text-foreground">{l.email}</TableCell>
+                        <TableCell className="text-sm text-foreground">{s.email}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30 text-[10px]">
                             Online
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          {new Date(l.logged_in_at).toLocaleString("en-IN")}
+                          {new Date(s.login_at).toLocaleString("en-IN")}
                         </TableCell>
                         <TableCell className="text-right">
-                          {!isCurrentUser(l.user_id) && (
-                            <span className="text-xs text-destructive flex items-center justify-end gap-1 cursor-pointer hover:underline">
+                          {!isCurrentUser(s.user_id) && (
+                            <button
+                              onClick={() => handleKickSession(s.id)}
+                              className="text-xs text-destructive flex items-center justify-end gap-1 cursor-pointer hover:underline ml-auto"
+                            >
                               <LogOut size={12} /> Kick
-                            </span>
+                            </button>
                           )}
                         </TableCell>
                       </TableRow>
