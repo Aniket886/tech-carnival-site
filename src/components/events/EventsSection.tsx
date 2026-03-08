@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EventDetailModal from "@/components/events/EventDetailModal";
 import { supabase } from "@/integrations/supabase/client";
+import { fallbackEvents } from "@/data/events";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
 
