@@ -24,6 +24,7 @@ const events: EventItem[] = [
     teamSize: "2-4 members",
     detailedDesc: "Hack Momentum is a high-energy 6-hour hackathon where teams race against the clock to ideate, design, and build innovative tech solutions. Whether it's a web app, mobile tool, or an AI-powered prototype — bring your A-game and compete for glory. Mentors and industry experts will be on-site to guide you through the process.",
     rules: ["Teams must consist of 2-4 members", "All code must be written during the event", "Pre-built templates or boilerplates are not allowed", "Projects must be submitted before the deadline", "Judges' decision is final and binding"],
+    rulebookUrl: "", // Add Google Drive PDF link here
   },
   {
     emoji: "🧠", name: "Brain Quest", desc: "A Quiz to test your tech knowledge", category: "technical",
