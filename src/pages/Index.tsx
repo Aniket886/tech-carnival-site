@@ -22,7 +22,6 @@ const sectionComponents: { key: string; Component: React.ComponentType }[] = [
   { key: "events", Component: Events },
   { key: "schedule", Component: EventFlow },
   { key: "leaderboard", Component: Leaderboard },
-  { key: "leaderboard", Component: Leaderboard },
   { key: "faq", Component: FAQ },
   { key: "contact", Component: Contact },
   { key: "footer", Component: Footer },
