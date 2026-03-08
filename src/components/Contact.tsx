@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, User, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, User, CheckCircle2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,8 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { validateName, validateEmail, validateMessage, sanitizeInput, countErrors } from "@/lib/validators";
 
 const coordinators = [
-  { name: "Rahul Sharma", role: "Event Coordinator", phone: "+91 98765 43210", email: "rahul.coordinator@college.edu" },
-  { name: "Priya Patel", role: "Event Coordinator", phone: "+91 87654 32109", email: "priya.coordinator@college.edu" },
+  { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com" },
+  { name: "NAME", role: "Event Coordinator", phone: "+911234567890", email: "xyz@college.edu" },
 ];
 
 interface FieldErrors { [key: string]: string }
@@ -19,7 +19,7 @@ interface FieldErrors { [key: string]: string }
 const Contact = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [shake, setShake] = useState(false);
@@ -69,7 +69,6 @@ const Contact = () => {
       return;
     }
 
-    // Rate limit: check last submission by this email
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
     const { data: recent } = await supabase
       .from("contacts")
@@ -92,7 +91,7 @@ const Contact = () => {
       toast({ title: "Failed to send message", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "✉️ Message sent!", description: "We'll get back to you soon." });
-      setForm({ name: "", email: "", message: "" });
+      setForm({ name: "", email: "", phone: "", message: "" });
       setTouched(new Set());
       setErrors({});
     }
@@ -111,11 +110,12 @@ const Contact = () => {
         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-3xl sm:text-4xl font-bold text-gradient text-center mb-4">
           Get in Touch
         </motion.h2>
-        <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-center text-muted-foreground mb-12">
-          Have questions? Reach out to us or our coordinators
+        <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-center text-muted-foreground mb-12 max-w-xl mx-auto">
+          Have questions? Reach out to us and we'll get back to you as soon as possible.
         </motion.p>
 
         <div className="grid lg:grid-cols-2 gap-10">
+          {/* Form */}
           <motion.form
             ref={formRef}
             initial={{ opacity: 0, x: -20 }}
@@ -126,30 +126,36 @@ const Contact = () => {
             className="rounded-xl border border-border bg-card/50 p-8 space-y-5"
           >
             <div className="space-y-1.5" data-invalid={errors.name ? true : undefined}>
-              <Label htmlFor="contact-name">Name *</Label>
+              <Label htmlFor="contact-name">Name</Label>
               <Input id="contact-name" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} onBlur={() => onBlur("name")} maxLength={20} className={fieldClass("name")} />
               <FieldError field="name" />
             </div>
             <div className="space-y-1.5" data-invalid={errors.email ? true : undefined}>
-              <Label htmlFor="contact-email">Email *</Label>
+              <Label htmlFor="contact-email">Email</Label>
               <Input id="contact-email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} onBlur={() => onBlur("email")} maxLength={50} className={fieldClass("email")} />
               <FieldError field="email" />
             </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="contact-phone">Phone</Label>
+              <Input id="contact-phone" type="tel" placeholder="9876543210" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} maxLength={15} />
+            </div>
             <div className="space-y-1.5" data-invalid={errors.message ? true : undefined}>
               <div className="flex items-center justify-between">
-                <Label htmlFor="contact-message">Message *</Label>
+                <Label htmlFor="contact-message">Message</Label>
                 <span className="text-xs text-muted-foreground">{sanitizeInput(form.message).length}/500</span>
               </div>
-              <Textarea id="contact-message" placeholder="Your message (min 10 characters)..." rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} onBlur={() => onBlur("message")} maxLength={500} className={fieldClass("message")} />
+              <Textarea id="contact-message" placeholder="Your message..." rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} onBlur={() => onBlur("message")} maxLength={500} className={fieldClass("message")} />
               <FieldError field="message" />
             </div>
             <motion.div animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : {}} transition={{ duration: 0.4 }}>
-              <Button type="submit" className="w-full neon-glow" disabled={loading || !isFormValid}>
+              <Button type="submit" className="w-full neon-glow gap-2" disabled={loading || !isFormValid}>
+                <Send className="h-4 w-4" />
                 {loading ? "Sending..." : "Send Message"}
               </Button>
             </motion.div>
           </motion.form>
 
+          {/* Right column: contacts + address */}
           <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="space-y-5">
             {coordinators.map((c) => (
               <div key={c.email} className="rounded-xl border border-border bg-card/50 p-6 flex items-start gap-4">
@@ -168,20 +174,27 @@ const Contact = () => {
                 </div>
               </div>
             ))}
+
+            {/* College Address with Google Maps */}
             <div className="rounded-xl border border-border bg-card/50 p-6 space-y-4">
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-foreground">GM University</p>
-                  <p className="text-sm text-muted-foreground">GM University P.B. Road, Davanagere<br />Davangere – 577006 Karnataka,</p>
+                  <p className="font-semibold text-foreground">College Address</p>
+                  <p className="text-sm text-muted-foreground">GM University P.B. Road, Davanagere,<br />Davangere – 577006 Karnataka,</p>
                 </div>
               </div>
-              <div className="rounded-lg overflow-hidden border border-border aspect-video bg-muted/20 flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <MapPin className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                  <p className="text-sm">Google Maps Embed</p>
-                  <p className="text-xs opacity-60">Replace with actual embed iframe</p>
-                </div>
+              <div className="rounded-lg overflow-hidden border border-border aspect-video">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3848.5!2d75.9217!3d14.4426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bba2548e1a2b9e7%3A0x83a6d6aae152c5b3!2sGM%20University!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="GM University Location"
+                />
               </div>
             </div>
           </motion.div>
