@@ -24,7 +24,7 @@ const Footer = () => {
                 <a href="https://instagram.com/techcarnival2k26" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200">
                   <Instagram size={15} />
                 </a>
-                <a href="https://techcarnival.online" target="_blank" rel="noopener noreferrer" aria-label="Website" className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200">
+                <a href="https://www.gmu.ac.in" target="_blank" rel="noopener noreferrer" aria-label="GM University" className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200">
                   <Globe size={15} />
                 </a>
               </div>
