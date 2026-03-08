@@ -26,6 +26,11 @@ import {
   Mail,
   LogOut,
   Globe,
+  Trophy,
+  Key,
+  Mail,
+  LogOut,
+  Globe,
 } from "lucide-react";
 
 const navItems = [
