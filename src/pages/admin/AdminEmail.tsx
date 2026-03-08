@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { Mail, Send, Eye, Users, Search, X, Loader2, CheckCircle2, Table2 } from "lucide-react";
+import { Mail, Send, Eye, Users, Search, X, Loader2, CheckCircle2, Table2, Plus } from "lucide-react";
 
 /* ─── email template definitions ─── */
 interface EmailTemplate {
@@ -129,12 +129,45 @@ const AdminEmail = () => {
   const [manualEmails, setManualEmails] = useState("");
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [events, setEvents] = useState<{ id: string; name: string }[]>([]);
-  const [participants, setParticipants] = useState<{ email: string; name: string }[]>([]);
-  const [selectedParticipants, setSelectedParticipants] = useState<{ email: string; name: string }[]>([]);
+  const [participants, setParticipants] = useState<{ email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[]>([]);
+  const [selectedParticipants, setSelectedParticipants] = useState<{ email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[]>([]);
   const [search, setSearch] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
+  const messageRef = { current: null as HTMLTextAreaElement | null };
+
+  const PLACEHOLDERS = [
+    { label: "Name", value: "{{name}}" },
+    { label: "Team Name", value: "{{team_name}}" },
+    { label: "Email", value: "{{email}}" },
+    { label: "Phone", value: "{{phone}}" },
+    { label: "College", value: "{{college}}" },
+    { label: "Event", value: "{{event}}" },
+  ];
+
+  const insertPlaceholder = (placeholder: string) => {
+    const el = document.querySelector<HTMLTextAreaElement>("#email-message-textarea");
+    if (el) {
+      const start = el.selectionStart ?? message.length;
+      const end = el.selectionEnd ?? message.length;
+      const newMsg = message.slice(0, start) + placeholder + message.slice(end);
+      setMessage(newMsg);
+      setTimeout(() => { el.focus(); el.selectionStart = el.selectionEnd = start + placeholder.length; }, 0);
+    } else {
+      setMessage(prev => prev + placeholder);
+    }
+  };
+
+  const resolveMessage = (msg: string, recipient: { name: string; email: string; phone?: string; team_name?: string; college?: string; event?: string }) => {
+    return msg
+      .replace(/\{\{name\}\}/gi, recipient.name || "")
+      .replace(/\{\{team_name\}\}/gi, recipient.team_name || "")
+      .replace(/\{\{email\}\}/gi, recipient.email || "")
+      .replace(/\{\{phone\}\}/gi, recipient.phone || "")
+      .replace(/\{\{college\}\}/gi, recipient.college || "")
+      .replace(/\{\{event\}\}/gi, recipient.event || eventName || "");
+  };
   const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string }[]>([]);
   const [regSearch, setRegSearch] = useState("");
 
@@ -160,13 +193,17 @@ const AdminEmail = () => {
   // load participants when event selected
   useEffect(() => {
     if (recipientMode !== "event" || !selectedEventId) { setParticipants([]); return; }
-    supabase.from("registrations").select("leader_email,leader_name").eq("event_id", selectedEventId).then(({ data }) => {
+    supabase.from("registrations").select("leader_email,leader_name,leader_phone,team_name,college_name").eq("event_id", selectedEventId).then(({ data }) => {
       if (data) {
-        const unique = Array.from(new Map(data.map(d => [d.leader_email, { email: d.leader_email, name: d.leader_name }])).values());
+        const evtName = events.find(e => e.id === selectedEventId)?.name || "";
+        const unique = Array.from(new Map(data.map(d => [d.leader_email, {
+          email: d.leader_email, name: d.leader_name,
+          phone: d.leader_phone, team_name: d.team_name || "", college: d.college_name, event: evtName,
+        }])).values());
         setParticipants(unique);
       }
     });
-  }, [selectedEventId, recipientMode]);
+  }, [selectedEventId, recipientMode, events]);
 
   // update subject when template changes
   useEffect(() => {
@@ -182,7 +219,7 @@ const AdminEmail = () => {
     setPreviewHtml(html);
   };
 
-  const getRecipients = (): { email: string; name: string }[] => {
+  const getRecipients = (): { email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[] => {
     if (recipientMode === "event") return selectedParticipants;
     return manualEmails.split(/[,;\n]/).map(e => e.trim()).filter(Boolean).map(e => ({ email: e, name: e.split("@")[0] }));
   };
@@ -197,7 +234,8 @@ const AdminEmail = () => {
     let failCount = 0;
 
     for (const r of recipients) {
-      const html = currentTemplate.buildHtml({ recipientName: r.name, customMessage: message, eventName });
+      const resolvedMsg = resolveMessage(message, r);
+      const html = currentTemplate.buildHtml({ recipientName: r.name, customMessage: resolvedMsg, eventName: r.event || eventName });
       try {
         const { error } = await supabase.functions.invoke("send-email", {
           body: { type: "custom", to: r.email, leader_name: r.name, registration_id: "-", event_name: eventName || "Tech Carnival 2K26", custom_html: html, custom_subject: subject },
@@ -275,8 +313,23 @@ const AdminEmail = () => {
                 <Input value={subject} onChange={e => setSubject(e.target.value)} className="bg-background border-border" />
               </div>
               <div>
-                <Label className="text-muted-foreground text-xs uppercase tracking-wider mb-1.5 block">Message</Label>
-                <Textarea rows={6} placeholder="Write your message here…" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label className="text-muted-foreground text-xs uppercase tracking-wider">Message</Label>
+                  <div className="flex items-center gap-1 flex-wrap">
+                    <span className="text-muted-foreground text-[10px] mr-1">Insert:</span>
+                    {PLACEHOLDERS.map(p => (
+                      <button
+                        key={p.value}
+                        type="button"
+                        onClick={() => insertPlaceholder(p.value)}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium hover:bg-primary/20 transition-colors"
+                      >
+                        <Plus size={10} /> {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <Textarea id="email-message-textarea" rows={6} placeholder="Write your message here… Use {{name}}, {{team_name}}, etc. for personalization" value={message} onChange={e => setMessage(e.target.value)} className="bg-background border-border resize-none" />
               </div>
 
               {selectedTemplate === "reminder" && (
