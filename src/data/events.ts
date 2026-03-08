@@ -39,7 +39,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "1-2 members",
     detailedDescription: "Pitch Perfect is your chance to present a startup idea to a panel of judges and win recognition for your entrepreneurial thinking.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-code-compass",
