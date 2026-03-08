@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CollegePicker from "@/components/registration/CollegePicker";
 import {
   Dialog,
   DialogContent,
@@ -431,27 +432,16 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                     <Label className="text-xs">College *</Label>
                     {colleges.length > 0 ? (
                       <>
-                      <Select
-                          value={colleges.some(c => c.name === form.college_name) ? form.college_name : form.college_name ? "__other" : ""}
-                          onValueChange={(v) => {
-                            if (v === "__other") {
-                              setOtherCollegeOpen(true);
-                            } else {
-                              setForm((p) => ({ ...p, college_name: v }));
-                              onBlur("college_name");
-                            }
+                        <CollegePicker
+                          colleges={colleges}
+                          value={form.college_name}
+                          onChange={(name) => {
+                            setForm((p) => ({ ...p, college_name: name }));
+                            onBlur("college_name");
                           }}
-                        >
-                          <SelectTrigger className={fieldClass("college_name")}><SelectValue placeholder="Select college" /></SelectTrigger>
-                          <SelectContent>
-                            {colleges.map((c) => (
-                              <SelectItem key={c.id} value={c.name}>
-                                {c.name}{c.short_name ? ` (${c.short_name})` : ""}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value="__other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          onOtherClick={() => setOtherCollegeOpen(true)}
+                          className={fieldClass("college_name")}
+                        />
                         <OtherCollegeDialog
                           open={otherCollegeOpen}
                           onClose={() => setOtherCollegeOpen(false)}

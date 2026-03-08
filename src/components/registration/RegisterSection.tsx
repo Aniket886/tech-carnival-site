@@ -26,6 +26,7 @@ import {
   checkDuplicateEmails,
 } from "@/lib/validators";
 import OtherCollegeDialog from "@/components/registration/OtherCollegeDialog";
+import CollegePicker from "@/components/registration/CollegePicker";
 
 type EventRow = Tables<"events">;
 
@@ -398,27 +399,16 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                   <Label htmlFor="collegeName" className="text-sm text-foreground font-medium">College / Organization *</Label>
                   {colleges.length > 0 ? (
                     <>
-                      <Select
-                        value={colleges.some(c => c.name === form.collegeName) ? form.collegeName : form.collegeName ? "__other" : ""}
-                        onValueChange={(v) => {
-                          if (v === "__other") {
-                            setOtherCollegeOpen(true);
-                          } else {
-                            setForm((f) => ({ ...f, collegeName: v }));
-                            handleBlur("collegeName");
-                          }
+                      <CollegePicker
+                        colleges={colleges}
+                        value={form.collegeName}
+                        onChange={(name) => {
+                          setForm((f) => ({ ...f, collegeName: name }));
+                          handleBlur("collegeName");
                         }}
-                      >
-                        <SelectTrigger className={getFieldClass("collegeName")}><SelectValue placeholder="Select college" /></SelectTrigger>
-                        <SelectContent>
-                          {colleges.map((c) => (
-                            <SelectItem key={c.id} value={c.name}>
-                              {c.name}{c.short_name ? ` (${c.short_name})` : ""}
-                            </SelectItem>
-                          ))}
-                          <SelectItem value="__other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        onOtherClick={() => setOtherCollegeOpen(true)}
+                        className={getFieldClass("collegeName")}
+                      />
                       <OtherCollegeDialog
                         open={otherCollegeOpen}
                         onClose={() => setOtherCollegeOpen(false)}
