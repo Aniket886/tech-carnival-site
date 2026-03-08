@@ -3,12 +3,13 @@ import adarshImg from "@/assets/team/adarsh.jpeg";
 import aniketImg from "@/assets/team/aniket.png";
 import sonaliImg from "@/assets/team/sonali.png";
 import bhanuImg from "@/assets/team/bhanuprakash.png";
+import vishwasheetal from "@/assets/team/vishwasheetal.png";
 
 const coreTeam = [
   { name: "Adarsh Gouda D", image: adarshImg },
   { name: "Aniket Tegginamath", image: aniketImg },
   { name: "Bhanuprakash K S", image: bhanuImg },
-  { name: "K Vishwasheetal", image: null },
+  { name: "K Vishwasheetal", image: vishwasheetal },
   { name: "Sonali Meharwade", image: sonaliImg },
 ];
 
