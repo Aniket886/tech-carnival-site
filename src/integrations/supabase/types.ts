@@ -100,6 +100,77 @@ export type Database = {
           },
         ]
       }
+      bot_contacts: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          email: string | null
+          event_id: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          phone: string
+          role: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          email?: string | null
+          event_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          phone: string
+          role?: string
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          email?: string | null
+          event_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          phone?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_contacts_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bot_faqs: {
+        Row: {
+          answer: string
+          category: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          question_pattern: string
+        }
+        Insert: {
+          answer: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          question_pattern: string
+        }
+        Update: {
+          answer?: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          question_pattern?: string
+        }
+        Relationships: []
+      }
       college_scores: {
         Row: {
           category: string
