@@ -201,7 +201,7 @@ const EventsSection = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setRegisterEventName(event.name);
+                          setRegisterEvent(event);
                         }}
                       >
                         Register
