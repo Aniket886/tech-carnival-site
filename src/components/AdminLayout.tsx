@@ -4,8 +4,8 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
-  LogOut, Menu, X, Settings, CreditCard, Key, Building2,
-  Trophy, Handshake, Bot,
+  LogOut, Menu, X, Settings, CreditCard, Building2,
+  Trophy, Handshake, Bot, Layers,
 } from "lucide-react";
 
 const links = [
