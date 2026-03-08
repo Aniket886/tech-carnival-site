@@ -3,6 +3,10 @@ import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog, AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
   Trophy, Handshake, Bot, Layers,
