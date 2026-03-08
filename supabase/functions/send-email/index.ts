@@ -22,92 +22,105 @@ function buildHtml(payload: EmailPayload): string {
   const displayName = team_name || leader_name;
 
   const header = `
-    <div style="background: linear-gradient(135deg, #0ea5e9, #8b5cf6); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">
-      <h1 style="color: #ffffff; font-size: 24px; margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">⚡ Tech Carnival – 2K26</h1>
+    <div style="background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #a855f7 100%); padding: 40px 24px; text-align: center;">
+      <p style="margin: 0 0 8px; font-size: 28px; line-height: 1;">⚡</p>
+      <h1 style="color: #ffffff; font-size: 26px; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; font-weight: 800; letter-spacing: 0.5px;">Tech Carnival – 2K26</h1>
     </div>`;
 
   const footer = `
-    <div style="padding: 24px; text-align: center; color: #94a3b8; font-size: 12px; border-top: 1px solid #1e293b;">
-      <p style="margin: 0;">Tech Carnival – 2K26 | XYZ College of Engineering</p>
-      <p style="margin: 4px 0 0;">techcarnival@college.edu | +91 98765 43210</p>
+    <div style="padding: 20px 24px; text-align: center; border-top: 1px solid #1e293b;">
+      <p style="color: #64748b; font-size: 12px; margin: 0; line-height: 1.6;">Tech Carnival – 2K26 | GM University, Davangere</p>
+      <p style="color: #64748b; font-size: 12px; margin: 4px 0 0;">
+        <a href="mailto:support@techcarnival.online" style="color: #38bdf8; text-decoration: none;">support@techcarnival.online</a> | +91 8073491988
+      </p>
     </div>`;
+
+  const detailsCard = (title: string, rows: string) => `
+    <div style="background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 20px; margin: 0 0 24px;">
+      <p style="color: #94a3b8; font-size: 11px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">${title}</p>
+      ${rows}
+    </div>`;
+
+  const detailRow = (label: string, value: string) =>
+    `<p style="color: #e2e8f0; margin: 6px 0; font-size: 14px;"><strong style="color: #f8fafc;">${label}:</strong> ${value}</p>`;
+
+  const regIdTag = `<code style="background: #334155; padding: 3px 10px; border-radius: 6px; font-size: 12px; color: #e2e8f0; font-family: 'SF Mono', 'Consolas', monospace;">${registration_id}</code>`;
 
   let body = "";
 
   if (type === "registration_received") {
     body = `
-      <div style="padding: 32px 24px;">
-        <h2 style="color: #f1f5f9; font-size: 20px; margin: 0 0 16px;">Registration Received! 📋</h2>
-        <p style="color: #cbd5e1; line-height: 1.6; margin: 0 0 16px;">
-          Hi <strong style="color: #f1f5f9;">${leader_name}</strong>,
+      <div style="padding: 32px 28px;">
+        <h2 style="color: #f8fafc; font-size: 22px; margin: 0 0 20px; font-weight: 700;">Registration Received! 📋</h2>
+        <p style="color: #cbd5e1; line-height: 1.7; margin: 0 0 12px; font-size: 15px;">
+          Hi <strong style="color: #f8fafc;">${leader_name}</strong>,
         </p>
-        <p style="color: #cbd5e1; line-height: 1.6; margin: 0 0 24px;">
-          Your registration for <strong style="color: #0ea5e9;">${event_name}</strong> has been received successfully!
+        <p style="color: #cbd5e1; line-height: 1.7; margin: 0 0 28px; font-size: 15px;">
+          Your registration for <strong style="color: #38bdf8;">${event_name}</strong> has been received successfully!
         </p>
-        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin: 0 0 24px;">
-          <p style="color: #94a3b8; font-size: 12px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px;">Registration Details</p>
-          <p style="color: #f1f5f9; margin: 4px 0;"><strong>Event:</strong> ${event_name}</p>
-          <p style="color: #f1f5f9; margin: 4px 0;"><strong>Team/Name:</strong> ${displayName}</p>
-          <p style="color: #f1f5f9; margin: 4px 0;"><strong>Registration ID:</strong> <code style="background: #334155; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${registration_id}</code></p>
-        </div>
-        <div style="background: #1e3a5f; border-left: 4px solid #0ea5e9; padding: 16px; border-radius: 0 8px 8px 0; margin: 0 0 24px;">
-          <p style="color: #7dd3fc; margin: 0; font-size: 14px;">
-            ⏳ Your registration is under review. You'll receive a confirmation email soon.
+        ${detailsCard("Registration Details",
+          detailRow("Event", event_name) +
+          detailRow("Team/Name", displayName) +
+          `<p style="color: #e2e8f0; margin: 6px 0; font-size: 14px;"><strong style="color: #f8fafc;">Reg ID:</strong> ${regIdTag}</p>`
+        )}
+        <div style="background: linear-gradient(135deg, #0c4a6e, #1e3a5f); border-left: 4px solid #0ea5e9; padding: 18px 20px; border-radius: 0 10px 10px 0;">
+          <p style="color: #7dd3fc; margin: 0; font-size: 14px; line-height: 1.6;">
+            ⏳ Your registration is under review. You'll receive a confirmation email once it's approved.
           </p>
         </div>
       </div>`;
   } else if (type === "registration_confirmed") {
     body = `
-      <div style="padding: 32px 24px;">
-        <h2 style="color: #f1f5f9; font-size: 20px; margin: 0 0 16px;">Registration Confirmed! 🎉</h2>
-        <p style="color: #cbd5e1; line-height: 1.6; margin: 0 0 16px;">
-          Hi <strong style="color: #f1f5f9;">${leader_name}</strong>,
+      <div style="padding: 32px 28px;">
+        <h2 style="color: #f8fafc; font-size: 22px; margin: 0 0 20px; font-weight: 700;">Registration Confirmed! 🎉</h2>
+        <p style="color: #cbd5e1; line-height: 1.7; margin: 0 0 12px; font-size: 15px;">
+          Hi <strong style="color: #f8fafc;">${leader_name}</strong>,
         </p>
-        <p style="color: #cbd5e1; line-height: 1.6; margin: 0 0 24px;">
-          Great news! Your registration for <strong style="color: #22c55e;">${event_name}</strong> has been <strong style="color: #22c55e;">confirmed</strong>!
+        <p style="color: #cbd5e1; line-height: 1.7; margin: 0 0 28px; font-size: 15px;">
+          Great news! Your registration for <strong style="color: #4ade80;">${event_name}</strong> has been <strong style="color: #4ade80;">confirmed</strong>!
         </p>
-        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin: 0 0 24px;">
-          <p style="color: #94a3b8; font-size: 12px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px;">Event Details</p>
-          <p style="color: #f1f5f9; margin: 4px 0;"><strong>Event:</strong> ${event_name}</p>
-          ${event_date ? `<p style="color: #f1f5f9; margin: 4px 0;"><strong>Date:</strong> ${event_date}</p>` : ""}
-          ${event_time ? `<p style="color: #f1f5f9; margin: 4px 0;"><strong>Time:</strong> ${event_time}</p>` : ""}
-          ${event_venue ? `<p style="color: #f1f5f9; margin: 4px 0;"><strong>Venue:</strong> ${event_venue}</p>` : ""}
-          <p style="color: #f1f5f9; margin: 4px 0;"><strong>Team/Name:</strong> ${displayName}</p>
-          <p style="color: #f1f5f9; margin: 4px 0;"><strong>Reg ID:</strong> <code style="background: #334155; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${registration_id}</code></p>
-        </div>
-        <div style="background: #14532d; border-left: 4px solid #22c55e; padding: 16px; border-radius: 0 8px 8px 0; margin: 0 0 24px;">
-          <p style="color: #86efac; margin: 0 0 8px; font-size: 14px; font-weight: bold;">📋 What to bring:</p>
-          <ul style="color: #86efac; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+        ${detailsCard("Event Details",
+          detailRow("Event", event_name) +
+          (event_date ? detailRow("Date", event_date) : "") +
+          (event_time ? detailRow("Time", event_time) : "") +
+          (event_venue ? detailRow("Venue", event_venue) : "") +
+          detailRow("Team/Name", displayName) +
+          `<p style="color: #e2e8f0; margin: 6px 0; font-size: 14px;"><strong style="color: #f8fafc;">Reg ID:</strong> ${regIdTag}</p>`
+        )}
+        <div style="background: linear-gradient(135deg, #14532d, #166534); border-left: 4px solid #4ade80; padding: 18px 20px; border-radius: 0 10px 10px 0;">
+          <p style="color: #86efac; margin: 0 0 10px; font-size: 15px; font-weight: 700;">📋 What to bring:</p>
+          <ul style="color: #bbf7d0; margin: 0; padding-left: 20px; font-size: 14px; line-height: 2;">
             <li>Valid College ID</li>
-            <li>Laptop & charger (for coding/hackathon events)</li>
+            <li>Laptop &amp; charger (for coding/hackathon events)</li>
+            <li>Contact your specific event coordinator for more important details</li>
             <li>Your enthusiasm! 🚀</li>
           </ul>
         </div>
       </div>`;
   } else if (type === "registration_rejected") {
     body = `
-      <div style="padding: 32px 24px;">
-        <h2 style="color: #f1f5f9; font-size: 20px; margin: 0 0 16px;">Registration Update</h2>
-        <p style="color: #cbd5e1; line-height: 1.6; margin: 0 0 16px;">
-          Hi <strong style="color: #f1f5f9;">${leader_name}</strong>,
+      <div style="padding: 32px 28px;">
+        <h2 style="color: #f8fafc; font-size: 22px; margin: 0 0 20px; font-weight: 700;">Registration Update ⚠️</h2>
+        <p style="color: #cbd5e1; line-height: 1.7; margin: 0 0 12px; font-size: 15px;">
+          Hi <strong style="color: #f8fafc;">${leader_name}</strong>,
         </p>
-        <p style="color: #cbd5e1; line-height: 1.6; margin: 0 0 24px;">
-          We're sorry, but your registration for <strong style="color: #ef4444;">${event_name}</strong> could not be confirmed at this time.
+        <p style="color: #cbd5e1; line-height: 1.7; margin: 0 0 28px; font-size: 15px;">
+          We're sorry, but your registration for <strong style="color: #f87171;">${event_name}</strong> could not be confirmed at this time.
         </p>
         ${rejection_reason ? `
-        <div style="background: #451a1a; border-left: 4px solid #ef4444; padding: 16px; border-radius: 0 8px 8px 0; margin: 0 0 24px;">
-          <p style="color: #fca5a5; margin: 0; font-size: 14px;"><strong>Reason:</strong> ${rejection_reason}</p>
+        <div style="background: linear-gradient(135deg, #450a0a, #7f1d1d); border-left: 4px solid #f87171; padding: 18px 20px; border-radius: 0 10px 10px 0; margin: 0 0 24px;">
+          <p style="color: #fca5a5; margin: 0; font-size: 14px; line-height: 1.6;"><strong>Reason:</strong> ${rejection_reason}</p>
         </div>` : ""}
-        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin: 0 0 24px;">
-          <p style="color: #94a3b8; margin: 0 0 8px; font-size: 14px;">You can try re-registering or contact us for more information.</p>
-          <p style="color: #f1f5f9; margin: 4px 0;"><strong>Reg ID:</strong> <code style="background: #334155; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${registration_id}</code></p>
-        </div>
+        ${detailsCard("Details",
+          `<p style="color: #94a3b8; margin: 0 0 8px; font-size: 14px; line-height: 1.6;">You can try re-registering or contact us for more information.</p>` +
+          `<p style="color: #e2e8f0; margin: 6px 0; font-size: 14px;"><strong style="color: #f8fafc;">Reg ID:</strong> ${regIdTag}</p>`
+        )}
       </div>`;
   }
 
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-    <body style="margin: 0; padding: 0; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-      <div style="max-width: 600px; margin: 40px auto; background: #0f172a; border-radius: 12px; overflow: hidden; border: 1px solid #1e293b;">
+    <body style="margin: 0; padding: 0; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <div style="max-width: 600px; margin: 40px auto; background: #0f172a; border-radius: 16px; overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
         ${header}${body}${footer}
       </div>
     </body></html>`;
