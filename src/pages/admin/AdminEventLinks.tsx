@@ -50,7 +50,7 @@ const AdminEventLinks = () => {
       <div>
         <h2 className="text-2xl font-bold text-foreground mb-2">Event Websites</h2>
         <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-2 text-sm">
-          🌐 Main Website: <a href="https://testmyproject.space/" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">https://testmyproject.space/</a>
+          🌐 Main Website: <a href="https://techcarnival.online/" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">https://techcarnival.online/</a>
         </div>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
