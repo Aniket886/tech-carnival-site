@@ -43,11 +43,11 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="animate-fade-in-up [animation-delay:0.3s] opacity-0 flex justify-center mb-14">
+        <div className="animate-fade-in-up [animation-delay:0.3s] flex justify-center mb-14" style={{ animationFillMode: 'forwards', opacity: 0 }}>
           <CountdownTimer />
         </div>
 
-        <div className="animate-fade-in-up [animation-delay:0.6s] opacity-0 flex flex-col sm:flex-row gap-5 justify-center">
+        <div className="animate-fade-in-up [animation-delay:0.6s] flex flex-col sm:flex-row gap-5 justify-center" style={{ animationFillMode: 'forwards', opacity: 0 }}>
           <Button variant="neon" size="lg" onClick={scrollToRegister} className="text-base px-12 py-6 text-lg font-bold shadow-lg shadow-primary/25">
             🚀 Register Now
           </Button>
