@@ -119,11 +119,31 @@ const AdminScores = () => {
     setDialogOpen(true);
   };
 
+  // Compute position: if "auto", rank by points within the same event (unique ranks, no ties)
+  const computePosition = (eventId: string, points: number, excludeId: string | null): string => {
+    // Get all scores for this event, excluding the current one being edited
+    const eventScores = scores
+      .filter(s => s.event_id === eventId && s.id !== excludeId)
+      .map(s => s.points);
+    // Add current points
+    eventScores.push(points);
+    // Sort descending and deduplicate is NOT needed — we rank by sorted index
+    eventScores.sort((a, b) => b - a);
+    const rank = eventScores.indexOf(points) + 1;
+    if (rank === 1) return "1st";
+    if (rank === 2) return "2nd";
+    if (rank === 3) return "3rd";
+    return "participant";
+  };
+
   const handleSave = async () => {
     if (!form.college_name.trim() || !form.event_id) { toast.error("College and event are required"); return; }
     const ev = eventMap.get(form.event_id);
     if (!ev) { toast.error("Invalid event"); return; }
     setSaving(true);
+    const resolvedPosition = form.position === "auto"
+      ? computePosition(form.event_id, form.points, editingId)
+      : form.position;
     const payload = {
       college_name: form.college_name.trim(),
       event_id: form.event_id,
@@ -131,7 +151,7 @@ const AdminScores = () => {
       category: ev.category,
       team_name: form.team_name.trim() || null,
       points: form.points,
-      position: getPositionFromPoints(form.points),
+      position: resolvedPosition,
       updated_at: new Date().toISOString(),
     };
     let error;
