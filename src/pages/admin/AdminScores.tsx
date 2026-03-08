@@ -110,7 +110,7 @@ const AdminScores = () => {
     setEditingId(s.id);
     setForm({
       college_name: s.college_name, event_id: s.event_id, team_name: s.team_name || "",
-      points: s.points, position: s.position || "participant",
+      points: s.points,
     });
     setDialogOpen(true);
   };
