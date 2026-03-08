@@ -106,8 +106,6 @@ const AdminSettings = () => {
 
   useEffect(() => {
     fetchAdmins();
-    fetchLogs();
-    fetchActiveSessions();
     fetchTimeout();
   }, [fetchAdmins, fetchLogs, fetchActiveSessions, fetchTimeout]);
 
