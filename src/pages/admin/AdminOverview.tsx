@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users, CalendarDays, Building2, Trophy, MessageSquare,
   CreditCard, TrendingUp, ArrowUpRight, ArrowDownRight, Clock,
+  Cpu, Gamepad2, Palette,
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
