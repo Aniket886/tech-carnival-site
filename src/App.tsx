@@ -21,6 +21,7 @@ import AdminScores from "./pages/admin/AdminScores";
 import AdminSponsors from "./pages/admin/AdminSponsors";
 import AdminPageManager from "./pages/admin/AdminPageManager";
 import AdminBotSettings from "./pages/admin/AdminBotSettings";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/admin/scores" element={<AdminScores />} />
                 <Route path="/admin/messages" element={<AdminMessages />} />
                 <Route path="/admin/bot-settings" element={<AdminBotSettings />} />
+                <Route path="/admin/settings" element={<AdminSettings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
