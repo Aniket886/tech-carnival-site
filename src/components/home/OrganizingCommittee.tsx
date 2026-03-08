@@ -26,7 +26,7 @@ const OrganizingCommittee = () => {
           {committee.map((member) => (
             <div
               key={member.name}
-              className="flex flex-col items-center text-center group w-40 sm:w-48"
+              className="flex flex-col items-center text-center group w-40 sm:w-48 min-w-0"
             >
               {/* Circle photo placeholder */}
               <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 border-primary/40 bg-muted/60 flex items-center justify-center mb-4 overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.15)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] group-hover:border-primary/70 transition-all duration-300">
