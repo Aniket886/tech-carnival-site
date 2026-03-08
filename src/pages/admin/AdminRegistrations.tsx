@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle,
+  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2,
 } from "lucide-react";
 
 /* ─── types ─── */
