@@ -419,6 +419,28 @@ const AdminEmail = () => {
                     </>
                   )}
                 </TabsContent>
+
+                <TabsContent value="table" className="mt-3">
+                  <p className="text-xs text-muted-foreground mb-2">Select participants from the table below, then come back here to send.</p>
+                  <p className="text-sm text-foreground font-medium">{tableSelected.size} participant(s) selected</p>
+                  {tableSelected.size > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {Array.from(tableSelected).slice(0, 8).map(idx => {
+                        const r = allRegistrations[Number(idx)];
+                        return r ? (
+                          <Badge key={idx} variant="secondary" className="text-xs gap-1 pr-1">
+                            {r.leader_name}
+                            <button onClick={() => setTableSelected(prev => { const n = new Set(prev); n.delete(idx); return n; })} className="hover:text-destructive"><X size={12} /></button>
+                          </Badge>
+                        ) : null;
+                      })}
+                      {tableSelected.size > 8 && <Badge variant="outline" className="text-xs">+{tableSelected.size - 8} more</Badge>}
+                    </div>
+                  )}
+                  {tableSelected.size > 0 && (
+                    <Button variant="ghost" size="sm" className="text-xs h-7 mt-2" onClick={() => setTableSelected(new Set())}>Clear All</Button>
+                  )}
+                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
