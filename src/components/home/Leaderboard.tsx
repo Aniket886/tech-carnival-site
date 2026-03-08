@@ -160,8 +160,14 @@ const Leaderboard = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.04 }}
-                    className={`rounded-xl border p-4 sm:p-5 flex items-center gap-4 transition-all ${rankStyle(rank)}`}
+                    className={`relative overflow-hidden rounded-xl border p-4 sm:p-5 flex items-center gap-4 transition-all ${rankStyle(rank)}`}
                   >
+                    <motion.div
+                      className={`absolute top-0 left-0 right-0 h-1 origin-left ${rank === 1 ? "bg-yellow-500/60" : rank === 2 ? "bg-gray-400/60" : rank === 3 ? "bg-amber-600/60" : "bg-primary/60"}`}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: 0.6, delay: i * 0.06 + 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                    />
                     <div className="text-2xl font-display font-bold w-12 text-center shrink-0">
                       {rankIcon(rank)}
                     </div>
