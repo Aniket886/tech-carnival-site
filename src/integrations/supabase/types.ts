@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action: string
+          admin_email: string | null
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          admin_email?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          admin_email?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
+      admin_settings: {
+        Row: {
+          id: string
+          setting_key: string
+          setting_value: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          setting_key: string
+          setting_value: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          setting_key?: string
+          setting_value?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
           api_key: string
