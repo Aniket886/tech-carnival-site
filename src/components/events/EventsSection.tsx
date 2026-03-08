@@ -220,7 +220,8 @@ const EventsSection = () => {
         onClose={() => setSelectedEvent(null)}
         onRegister={(name) => {
           setSelectedEvent(null);
-          setRegisterEventName(name);
+          const ev = events.find(e => e.name === name);
+          if (ev) setRegisterEvent(ev);
         }}
         categoryStyles={categoryStyles}
       />
