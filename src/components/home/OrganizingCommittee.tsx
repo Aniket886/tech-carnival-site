@@ -1,11 +1,15 @@
-import { User } from "lucide-react";
+import shwetaImg from "@/assets/team/shweta.png";
+import rajashekharImg from "@/assets/team/rajashekhar.png";
+import shaminaImg from "@/assets/team/shamina.png";
+import manjulaImg from "@/assets/team/manjula.png";
+import sugandhaImg from "@/assets/team/sugandha.png";
 
 const committee = [
-  { name: "Dr. Shweta Marigoudar", role: "Dean, FCIT" },
-  { name: "Prof. Rajashekhar G. C", role: "Director, SCA, FCIT" },
-  { name: "Prof. Shamina Attar", role: "Director, SCS, FCIT" },
-  { name: "Prof. Manjula K", role: "Organizing Secretary" },
-  { name: "Prof. Sugandha M S", role: "Program Co-ordinator" },
+  { name: "Dr. Shweta Marigoudar", role: "Dean, FCIT", image: shwetaImg },
+  { name: "Prof. Rajashekhar G. C", role: "Director, SCA, FCIT", image: rajashekharImg },
+  { name: "Prof. Shamina Attar", role: "Director, SCS, FCIT", image: shaminaImg },
+  { name: "Prof. Manjula K", role: "Organizing Secretary", image: manjulaImg },
+  { name: "Prof. Sugandha M S", role: "Program Co-ordinator", image: sugandhaImg },
 ];
 
 const OrganizingCommittee = () => {
@@ -28,10 +32,8 @@ const OrganizingCommittee = () => {
               key={member.name}
               className="flex flex-col items-center text-center group w-40 sm:w-48 min-w-0"
             >
-              {/* Circle photo placeholder */}
               <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 border-primary/40 bg-muted/60 flex items-center justify-center mb-4 overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.15)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] group-hover:border-primary/70 transition-all duration-300">
-                <User className="w-12 h-12 sm:w-14 sm:h-14 text-muted-foreground/50" />
-                {/* Replace User icon with <img src="..." className="w-full h-full object-cover" /> when photos are ready */}
+                <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
               </div>
 
               <h3 className="text-sm sm:text-base font-semibold text-foreground leading-tight whitespace-nowrap">
