@@ -8,9 +8,9 @@ const corsHeaders = {
 
 // ── Hardcoded schedule (single source of truth, mirrors src/data/schedule.ts) ──
 const SCHEDULE_TEXT = `FULL EVENT SCHEDULE:
-Tech Carnival 2K26 dates: Day 1 = 15th September 2026, Day 2 = 16th September 2026.
+Tech Carnival 2K26 dates: Day 1 = 28th March 2026, Day 2 = 29th March 2026.
 
-Day 1 (15th September 2026):
+Day 1 (28th March 2026):
   🏁 Assemble — 8:45 AM – 9:00 AM — 📍 Main Gate [ceremony]
   🎤 Inauguration + Flash Mob + Banner Drop — 9:00 AM – 10:00 AM — 📍 Main Auditorium [ceremony]
   🔍 Myth Busters — 9:00 AM – 11:00 AM — 📍 Seminar Hall B | Team: Solo [technical]
