@@ -224,6 +224,11 @@ const AdminEmail = () => {
 
   const getRecipients = (): { email: string; name: string; phone?: string; team_name?: string; college?: string; event?: string }[] => {
     if (recipientMode === "event") return selectedParticipants;
+    if (recipientMode === "table") {
+      return allRegistrations
+        .filter((_, i) => tableSelected.has(String(i)))
+        .map(r => ({ email: r.leader_email, name: r.leader_name, phone: r.leader_phone, team_name: r.team_name, college: r.college_name, event: r.event_name }));
+    }
     return manualEmails.split(/[,;\n]/).map(e => e.trim()).filter(Boolean).map(e => ({ email: e, name: e.split("@")[0] }));
   };
 
