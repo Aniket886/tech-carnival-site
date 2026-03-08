@@ -66,6 +66,7 @@ const events: EventItem[] = [
     teamSize: "6-12 members",
     detailedDesc: "Dance Mania is the ultimate group dance showdown at Tech Carnival. Bring your crew, choreograph a stunning routine, and set the stage ablaze with your moves. Any dance style is welcome — Bollywood, hip-hop, contemporary, folk, or fusion. Energy, synchronization, and creativity are what the judges are looking for.",
     rules: ["Group size: 6-12 members", "Performance duration: 5-8 minutes", "Music track must be submitted 24 hours prior", "Props are allowed but must be managed by the team", "Vulgarity or offensive content leads to disqualification"],
+    rulebookUrl: "",
   },
   {
     emoji: "🎬", name: "Scitopia", desc: "Skit play – drama, comedy, and creativity combined", category: "cultural",
