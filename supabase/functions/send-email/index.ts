@@ -5,7 +5,7 @@ const corsHeaders = {
 };
 
 interface EmailPayload {
-  type: "registration_received" | "registration_confirmed" | "registration_rejected";
+  type: "registration_received" | "registration_confirmed" | "registration_rejected" | "custom";
   to: string;
   leader_name: string;
   team_name?: string;
@@ -15,6 +15,8 @@ interface EmailPayload {
   event_time?: string;
   event_venue?: string;
   rejection_reason?: string;
+  custom_html?: string;
+  custom_subject?: string;
 }
 
 function buildHtml(payload: EmailPayload): string {
