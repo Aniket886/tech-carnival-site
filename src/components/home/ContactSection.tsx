@@ -10,7 +10,7 @@ import { validateName, validateEmail, validatePhone, validateMessage, sanitizeIn
 
 const coordinators = [
   { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com" },
-  { name: "NAME", role: "Core Organizer", phone: "+91 8073 289 015", email: "xyz@college.edu" },
+  { name: "Sonali V Meharwade", role: "Core Organizer", phone: "+91 8073 289 015", email: "xyz@college.edu" },
 ];
 
 const RATE_LIMIT_KEY = "contact_last_submit";
