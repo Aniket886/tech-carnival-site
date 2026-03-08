@@ -59,34 +59,51 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchEvents = async () => {
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .eq("is_active", true)
-        .order("name");
+      try {
+        const { data, error } = await supabase
+          .from("events")
+          .select("*")
+          .eq("is_active", true)
+          .order("name");
 
-      if (!error && data) {
-        setEvents(
-          data.map((e: any) => ({
-            id: e.id,
-            emoji: e.icon || "🎯",
-            name: e.name,
-            description: e.description?.substring(0, 60) + "..." || "",
-            category: e.category as Exclude<Category, "all">,
-            teamSize: formatTeamSize(e.team_size_min || 1, e.team_size_max || 1),
-            detailedDescription: e.description || "",
-            date: e.date,
-            time: e.time,
-            venue: e.venue,
-            prize_pool: e.prize_pool,
-            rules: e.rules,
-          }))
-        );
+        if (cancelled) return;
+        if (error) {
+          console.error("Failed to fetch events:", error);
+        }
+        if (data && data.length > 0) {
+          setEvents(
+            data.map((e: any) => ({
+              id: e.id,
+              emoji: e.icon || "🎯",
+              name: e.name,
+              description: e.description ? (e.description.length > 60 ? e.description.substring(0, 60) + "..." : e.description) : "No description available",
+              category: e.category as Exclude<Category, "all">,
+              teamSize: formatTeamSize(e.team_size_min || 1, e.team_size_max || 1),
+              detailedDescription: e.description || "",
+              date: e.date,
+              time: e.time,
+              venue: e.venue,
+              prize_pool: e.prize_pool,
+              rules: e.rules,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error("Events fetch exception:", err);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      setLoading(false);
     };
+
+    // Timeout fallback — stop loading after 8 seconds even if fetch hangs
+    const timeout = setTimeout(() => {
+      if (!cancelled) setLoading(false);
+    }, 8000);
+
     fetchEvents();
+    return () => { cancelled = true; clearTimeout(timeout); };
   }, []);
 
   const filtered = active === "all" ? events : events.filter((e) => e.category === active);
@@ -125,6 +142,8 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
         {/* Grid */}
         {loading ? (
           <div className="text-center text-muted-foreground py-12">Loading events...</div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center text-muted-foreground py-12">No events found. Check back soon!</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((event) => {

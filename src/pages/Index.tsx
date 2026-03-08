@@ -29,7 +29,6 @@ const Index = () => {
     }, 50);
   }, []);
 
-  if (loading) return <PageLoader />;
   if (maintenanceMode) return <MaintenancePage />;
 
   return (
