@@ -354,6 +354,8 @@ const AnalyticsTab = () => {
       setLoading(false);
     };
     fetch_();
+    const interval = setInterval(fetch_, 10_000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) return <p className="text-muted-foreground">Loading analytics…</p>;
