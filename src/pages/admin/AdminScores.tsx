@@ -127,7 +127,7 @@ const AdminScores = () => {
       category: ev.category,
       team_name: form.team_name.trim() || null,
       points: form.points,
-      position: form.position || "participant",
+      position: getPositionFromPoints(form.points),
       updated_at: new Date().toISOString(),
     };
     let error;
