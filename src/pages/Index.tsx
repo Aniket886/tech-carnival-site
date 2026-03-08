@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Events from "@/components/Events";
-import Schedule from "@/components/Schedule";
+import EventFlow from "@/components/EventFlow";
 import Sponsors from "@/components/Sponsors";
 import Registration from "@/components/Registration";
 import Contact from "@/components/Contact";
@@ -15,7 +15,7 @@ const Index = () => (
     <Hero />
     <About />
     <Events />
-    <Schedule />
+    <EventFlow />
     <Sponsors />
     <Registration />
     <FAQ />
