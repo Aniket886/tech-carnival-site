@@ -423,7 +423,24 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">College *</Label>
-                    <Input placeholder="XYZ College of Engineering" value={form.college_name} onChange={(e) => setForm((p) => ({ ...p, college_name: e.target.value }))} onBlur={() => onBlur("college_name")} maxLength={100} className={fieldClass("college_name")} />
+                    {colleges.length > 0 ? (
+                      <Select value={form.college_name} onValueChange={(v) => { setForm((p) => ({ ...p, college_name: v })); onBlur("college_name"); }}>
+                        <SelectTrigger className={fieldClass("college_name")}><SelectValue placeholder="Select college" /></SelectTrigger>
+                        <SelectContent>
+                          {colleges.map((c) => (
+                            <SelectItem key={c.id} value={c.name}>
+                              {c.name}{c.short_name ? ` (${c.short_name})` : ""}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="__other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input placeholder="College name" value={form.college_name} onChange={(e) => setForm((p) => ({ ...p, college_name: e.target.value }))} onBlur={() => onBlur("college_name")} maxLength={100} className={fieldClass("college_name")} />
+                    )}
+                    {form.college_name === "__other" && (
+                      <Input placeholder="Enter college name" value="" onChange={(e) => setForm((p) => ({ ...p, college_name: e.target.value }))} onBlur={() => onBlur("college_name")} maxLength={100} className={`mt-1.5 ${fieldClass("college_name")}`} />
+                    )}
                     <FieldError field="college_name" />
                   </div>
                   <div className="space-y-1">
