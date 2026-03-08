@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
@@ -151,67 +152,81 @@ const EventsSection = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center text-muted-foreground py-12">No events found. Check back soon!</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((event) => {
-              const style = categoryStyles[event.category];
-              return (
-                <div
-                  key={event.id}
-                  data-cursor-card
-                  onClick={() => setSelectedEvent(event)}
-                  className={`glass rounded-xl p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer ${style.accent}`}
-                >
-                  <div className="text-4xl mb-4">{event.emoji}</div>
-                  <h3 className="font-display font-semibold text-foreground text-lg mb-2">
-                    {event.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                    {event.description}
-                  </p>
-                  <p className="text-xs text-muted-foreground/70 mb-4">
-                    {event.team_size_min === 1 && event.team_size_max === 1
-                      ? "👤 Solo"
-                      : event.team_size_min === event.team_size_max
-                        ? `👥 Team of ${event.team_size_min}`
-                        : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge variant="outline" className={`text-xs capitalize ${style.badge}`}>
-                      {event.category}
-                    </Badge>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="neon-outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (event.rulebookUrl) {
-                            window.open(event.rulebookUrl, "_blank", "noopener,noreferrer");
-                          } else {
-                            toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
-                          }
-                        }}
-                        className="gap-1"
-                      >
-                        <FileText className="h-3.5 w-3.5" />
-                        Rule Book
-                      </Button>
-                      <Button
-                        variant="neon-outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setRegisterEvent(event);
-                        }}
-                      >
-                        Register
-                      </Button>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            layout
+          >
+            <AnimatePresence mode="popLayout">
+              {filtered.map((event, index) => {
+                const style = categoryStyles[event.category];
+                return (
+                  <motion.div
+                    key={event.id}
+                    layout
+                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: index * 0.08,
+                      ease: [0.25, 0.1, 0.25, 1],
+                    }}
+                    data-cursor-card
+                    onClick={() => setSelectedEvent(event)}
+                    className={`glass rounded-xl p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer ${style.accent}`}
+                  >
+                    <div className="text-4xl mb-4">{event.emoji}</div>
+                    <h3 className="font-display font-semibold text-foreground text-lg mb-2">
+                      {event.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                      {event.description}
+                    </p>
+                    <p className="text-xs text-muted-foreground/70 mb-4">
+                      {event.team_size_min === 1 && event.team_size_max === 1
+                        ? "👤 Solo"
+                        : event.team_size_min === event.team_size_max
+                          ? `👥 Team of ${event.team_size_min}`
+                          : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className={`text-xs capitalize ${style.badge}`}>
+                        {event.category}
+                      </Badge>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="neon-outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (event.rulebookUrl) {
+                              window.open(event.rulebookUrl, "_blank", "noopener,noreferrer");
+                            } else {
+                              toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
+                            }
+                          }}
+                          className="gap-1"
+                        >
+                          <FileText className="h-3.5 w-3.5" />
+                          Rule Book
+                        </Button>
+                        <Button
+                          variant="neon-outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRegisterEvent(event);
+                          }}
+                        >
+                          Register
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
         )}
       </div>
 
