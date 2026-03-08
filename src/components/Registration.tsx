@@ -274,14 +274,14 @@ const Registration = () => {
       .insert([
         {
           event_id: form.event_id,
-          leader_name: form.leader_name.trim(),
-          leader_email: form.leader_email.trim(),
+          leader_name: sanitizeInput(form.leader_name),
+          leader_email: form.leader_email.trim().toLowerCase(),
           leader_phone: form.leader_phone.trim(),
-          college_name: form.college_name.trim(),
+          college_name: sanitizeInput(form.college_name),
           semester: form.semester || null,
-          team_name: isTeamEvent ? form.team_name.trim() : null,
+          team_name: isTeamEvent ? sanitizeInput(form.team_name) : null,
           members: isTeamEvent && form.members.length > 0
-            ? form.members.map((m) => ({ name: m.name, email: m.email, phone: m.phone } as Record<string, string>))
+            ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
             : null,
         },
       ])
