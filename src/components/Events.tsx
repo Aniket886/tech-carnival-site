@@ -15,6 +15,7 @@ export interface EventItem {
   teamSize: string;
   detailedDesc: string;
   rules: string[];
+  rulebookUrl?: string;
 }
 
 const events: EventItem[] = [
