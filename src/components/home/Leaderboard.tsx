@@ -105,9 +105,9 @@ const Leaderboard = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background" />
       <div className="relative z-10 container mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="inline-block text-xs font-display uppercase tracking-[0.3em] text-primary/70 mb-3">🏆 Rankings</span>
+          <span className="inline-block text-xs font-display uppercase tracking-[0.3em] text-muted-foreground mb-3">Rankings</span>
           <div className="flex items-center justify-center gap-3 mb-5">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black gradient-text leading-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black text-foreground leading-tight">
               Live College Leaderboard
             </h2>
             <Badge className="bg-green-500/20 text-green-400 border-green-500/40 text-xs gap-1.5">
@@ -119,7 +119,7 @@ const Leaderboard = () => {
             </Badge>
           </div>
           <div className="w-24 h-1 mx-auto rounded-full bg-gradient-to-r from-primary to-secondary mb-5" />
-          <p className="text-muted-foreground max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
+          <p className="text-muted-foreground/80 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
             Real-time rankings across all events — updated live!
           </p>
         </div>
