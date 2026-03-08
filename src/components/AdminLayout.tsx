@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Key, Building2,
-  Trophy, Handshake, BookOpen, FileCode, Layers, Bot,
+  Trophy, Handshake, Bot,
 } from "lucide-react";
 
 const links = [

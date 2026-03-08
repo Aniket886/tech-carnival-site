@@ -43,7 +43,7 @@ const App = () => (
                 <Route path="/admin/payments" element={<AdminPayments />} />
                 <Route path="/admin/events" element={<AdminEvents />} />
                 <Route path="/admin/sponsors" element={<AdminSponsors />} />
-                <Route path="/admin/starter-template" element={<AdminStarterTemplate />} />
+                
                 
                 <Route path="/admin/scores" element={<AdminScores />} />
                 <Route path="/admin/messages" element={<AdminMessages />} />
