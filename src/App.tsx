@@ -21,7 +21,7 @@ import AdminSponsors from "./pages/admin/AdminSponsors";
 import AdminPageManager from "./pages/admin/AdminPageManager";
 import AdminBotSettings from "./pages/admin/AdminBotSettings";
 import AdminSettings from "./pages/admin/AdminSettings";
-import AdminStarterTemplate from "./pages/admin/AdminStarterTemplate";
+
 
 const queryClient = new QueryClient();
 
