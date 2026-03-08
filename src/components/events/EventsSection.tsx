@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FileText } from "lucide-react";
 import EventDetailModal from "@/components/events/EventDetailModal";
 import RegistrationModal from "@/components/RegistrationModal";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,6 +22,7 @@ export interface EventData {
   venue: string | null;
   prize_pool: string | null;
   rules: string[] | null;
+  rulebookUrl: string | null;
 }
 
 const tabs: { label: string; value: Category; icon: string }[] = [
@@ -86,6 +88,7 @@ const EventsSection = () => {
               venue: e.venue,
               prize_pool: e.prize_pool,
               rules: e.rules,
+              rulebookUrl: e.website_url || null,
             }))
           );
         }
@@ -164,16 +167,32 @@ const EventsSection = () => {
                     <Badge variant="outline" className={`text-xs capitalize ${style.badge}`}>
                       {event.category}
                     </Badge>
-                    <Button
-                      variant="neon-outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setRegisterEventName(event.name);
-                      }}
-                    >
-                      Register
-                    </Button>
+                    <div className="flex gap-2">
+                      {event.rulebookUrl && (
+                        <Button
+                          variant="neon-outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(event.rulebookUrl!, "_blank", "noopener,noreferrer");
+                          }}
+                          className="gap-1"
+                        >
+                          <FileText className="h-3.5 w-3.5" />
+                          Rule Book
+                        </Button>
+                      )}
+                      <Button
+                        variant="neon-outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRegisterEventName(event.name);
+                        }}
+                      >
+                        Register
+                      </Button>
+                    </div>
                   </div>
                 </div>
               );

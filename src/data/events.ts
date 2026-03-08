@@ -9,7 +9,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "2-4 members",
     detailedDescription: "Hack Momentum is a high-energy 6-hour hackathon where teams race against the clock to ideate, design, and build innovative tech solutions.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-brain-quest",
@@ -19,7 +19,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "2 members",
     detailedDescription: "Brain Quest is a thrilling multi-round quiz competition that tests your knowledge across technology, science, current affairs, and general trivia.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-poster-presentation",
@@ -29,7 +29,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "1-2 members",
     detailedDescription: "Pixel Perfect challenges you to present complex technical ideas through visually compelling posters.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-pitch-perfect",
@@ -39,7 +39,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "1-2 members",
     detailedDescription: "Pitch Perfect is your chance to present a startup idea to a panel of judges and win recognition for your entrepreneurial thinking.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-code-compass",
@@ -49,7 +49,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "Solo",
     detailedDescription: "Code Compass is a competitive programming event that puts your algorithmic thinking and coding speed to the test.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-myth-busters",
@@ -59,7 +59,7 @@ export const fallbackEvents: EventData[] = [
     category: "technical",
     teamSize: "Solo",
     detailedDescription: "Myth Busters is a unique event where participants are presented with common tech and science myths to bust or confirm.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-battle-ground",
@@ -69,7 +69,7 @@ export const fallbackEvents: EventData[] = [
     category: "gaming",
     teamSize: "4 members (squad)",
     detailedDescription: "Battle Ground brings the ultimate Free Fire esports experience to Tech Carnival. Assemble your squad and fight your way to victory.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-dance-mania",
@@ -79,7 +79,7 @@ export const fallbackEvents: EventData[] = [
     category: "cultural",
     teamSize: "6-12 members",
     detailedDescription: "Dance Mania is the ultimate group dance showdown. Bring your crew, choreograph a stunning routine, and set the stage ablaze.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
   {
     id: "fallback-scitopia",
@@ -89,6 +89,6 @@ export const fallbackEvents: EventData[] = [
     category: "cultural",
     teamSize: "5-10 members",
     detailedDescription: "Scitopia is a theatrical extravaganza where teams perform short skits blending drama, comedy, and social commentary.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
 ];
