@@ -5,7 +5,6 @@ import About from "@/components/home/About";
 import SponsorsSection from "@/components/home/SponsorsSection";
 import EventsSection from "@/components/events/EventsSection";
 import ScheduleSection from "@/components/schedule/ScheduleSection";
-import RegisterSection from "@/components/registration/RegisterSection";
 import Leaderboard from "@/components/home/Leaderboard";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
@@ -19,15 +18,7 @@ import MaintenancePage from "@/components/home/MaintenancePage";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 
 const Index = () => {
-  const [selectedEvent, setSelectedEvent] = useState<string>("");
   const { isSectionVisible, maintenanceMode, loading } = useSiteVisibility();
-
-  const handleRegisterEvent = useCallback((eventName: string) => {
-    setSelectedEvent(eventName);
-    setTimeout(() => {
-      document.querySelector("#register")?.scrollIntoView({ behavior: "smooth" });
-    }, 50);
-  }, []);
 
   if (maintenanceMode) return <MaintenancePage />;
 
@@ -39,9 +30,8 @@ const Index = () => {
       {isSectionVisible("hero") && <Hero />}
       {isSectionVisible("about") && <ScrollAnimate><About /></ScrollAnimate>}
       {isSectionVisible("sponsors") && <ScrollAnimate><SponsorsSection /></ScrollAnimate>}
-      {isSectionVisible("events") && <ScrollAnimate><EventsSection onRegisterEvent={handleRegisterEvent} /></ScrollAnimate>}
+      {isSectionVisible("events") && <ScrollAnimate><EventsSection /></ScrollAnimate>}
       {isSectionVisible("schedule") && <ScrollAnimate><ScheduleSection /></ScrollAnimate>}
-      {isSectionVisible("registration") && <ScrollAnimate><RegisterSection selectedEvent={selectedEvent} /></ScrollAnimate>}
       {isSectionVisible("leaderboard") && <ScrollAnimate><Leaderboard /></ScrollAnimate>}
       {isSectionVisible("faq") && <ScrollAnimate><FAQSection /></ScrollAnimate>}
       {isSectionVisible("contact") && <ScrollAnimate><ContactSection /></ScrollAnimate>}
