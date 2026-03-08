@@ -219,7 +219,13 @@ const AdminEmail = () => {
   const eventName = events.find(e => e.id === selectedEventId)?.name;
 
   const generatePreview = () => {
-    const html = currentTemplate.buildHtml({ recipientName: "Participant", customMessage: message || "Your message will appear here…", eventName });
+    const previewName = customFields.name || "Participant";
+    const previewMsg = resolveMessage(message || "Your message will appear here…", {
+      name: previewName, email: "example@email.com",
+      phone: customFields.phone, team_name: customFields.team_name,
+      college: customFields.college, event: customFields.event || eventName,
+    });
+    const html = currentTemplate.buildHtml({ recipientName: previewName, customMessage: previewMsg, eventName: customFields.event || eventName });
     setPreviewHtml(html);
   };
 
