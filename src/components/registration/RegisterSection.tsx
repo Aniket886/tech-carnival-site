@@ -405,7 +405,8 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                         value={form.collegeName}
                         onChange={(name) => {
                           setForm((f) => ({ ...f, collegeName: name }));
-                          handleBlur("collegeName");
+                          setTouched((t) => ({ ...t, collegeName: true }));
+                          setErrors((e) => { const n = { ...e }; delete n.collegeName; return n; });
                         }}
                         onOtherClick={() => setOtherCollegeOpen(true)}
                         className={getFieldClass("collegeName")}
