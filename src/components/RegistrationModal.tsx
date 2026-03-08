@@ -357,9 +357,15 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
             Register for {event?.icon} {event?.name}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            {isTeamEvent
-              ? `Team of ${event?.team_size_min}-${event?.team_size_max} members`
-              : "Solo participation"}
+            {event && event.team_size_min === 1 && event.team_size_max === 1
+              ? "👤 Solo participation"
+              : event && event.team_size_min === 1 && event.team_size_max === 2
+              ? "👥 Solo or Duo participation"
+              : event && event.team_size_min === event.team_size_max
+              ? `👥 Team of ${event.team_size_min} members`
+              : event
+              ? `👥 Team of ${event.team_size_min}–${event.team_size_max} members`
+              : "Loading..."}
           </DialogDescription>
         </DialogHeader>
 
