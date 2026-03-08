@@ -4,7 +4,7 @@ import StarField from "@/components/home/StarField";
 
 const Hero = () => {
   const scrollToRegister = () => {
-    document.querySelector("#register")?.scrollIntoView({ behavior: "smooth" });
+    window.open("https://erp.gmit.info/kotak/payments.php", "_blank");
   };
 
   return (
