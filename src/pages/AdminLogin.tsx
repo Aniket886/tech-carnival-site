@@ -45,8 +45,15 @@ const AdminLogin = () => {
     e.preventDefault();
     setError("");
     setShowExpiredBanner(false);
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail) { setError("Email is required"); return; }
+    if (trimmedEmail.length > 50) { setError("Email must not exceed 50 characters"); return; }
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmedEmail)) {
+      setError("Enter a valid email address (e.g., name@example.com)"); return;
+    }
+    if (!password) { setError("Password is required"); return; }
     setSubmitting(true);
-    const err = await signIn(email, password);
+    const err = await signIn(trimmedEmail, password);
     setSubmitting(false);
     if (err) {
       setError(err);

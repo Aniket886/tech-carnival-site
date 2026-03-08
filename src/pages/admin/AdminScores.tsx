@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Search, Upload } from "lucide-react";
+import { validateCollegeName, sanitizeInput } from "@/lib/validators";
 
 interface ScoreRow {
   id: string;
@@ -68,20 +69,25 @@ const AdminScores = () => {
   };
 
   const handleSave = async () => {
-    if (!form.college_name.trim() || !form.event_id) {
-      toast({ title: "College and Event are required", variant: "destructive" });
+    const collegeV = validateCollegeName(form.college_name);
+    if (!collegeV.valid) {
+      toast({ title: collegeV.error!, variant: "destructive" });
+      return;
+    }
+    if (!form.event_id) {
+      toast({ title: "Event is required", variant: "destructive" });
       return;
     }
     setSaving(true);
     const ev = events.find((e) => e.id === form.event_id);
     const payload = {
-      college_name: form.college_name,
+      college_name: sanitizeInput(form.college_name),
       event_id: form.event_id,
       event_name: ev?.name || "",
       category: ev?.category || "",
       points: form.points,
       position: form.position,
-      team_name: form.team_name || null,
+      team_name: form.team_name ? sanitizeInput(form.team_name) : null,
       updated_at: new Date().toISOString(),
     };
 

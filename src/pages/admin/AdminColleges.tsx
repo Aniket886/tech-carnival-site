@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Search, Upload } from "lucide-react";
+import { validateName, validateEmail, validatePhone, validateCollegeName, sanitizeInput } from "@/lib/validators";
 
 interface College {
   id: string;
@@ -21,6 +22,8 @@ interface College {
   regCount?: number;
 }
 
+interface FieldErrors { [key: string]: string }
+
 const emptyForm = { name: "", short_name: "", city: "", state: "", contact_person: "", contact_email: "", contact_phone: "" };
 
 const AdminColleges = () => {
@@ -31,6 +34,7 @@ const AdminColleges = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [formErrors, setFormErrors] = useState<FieldErrors>({});
   const [saving, setSaving] = useState(false);
 
   const fetchData = async () => {
@@ -61,22 +65,56 @@ const AdminColleges = () => {
     );
   }, [colleges, search]);
 
-  const openAdd = () => { setEditId(null); setForm(emptyForm); setDialogOpen(true); };
+  const openAdd = () => { setEditId(null); setForm(emptyForm); setFormErrors({}); setDialogOpen(true); };
   const openEdit = (c: College) => {
     setEditId(c.id);
     setForm({ name: c.name, short_name: c.short_name || "", city: c.city || "", state: c.state || "", contact_person: c.contact_person || "", contact_email: c.contact_email || "", contact_phone: c.contact_phone || "" });
+    setFormErrors({});
     setDialogOpen(true);
   };
 
+  const validateForm = (): FieldErrors => {
+    const e: FieldErrors = {};
+    const nameV = validateCollegeName(form.name);
+    if (!nameV.valid) e.name = nameV.error!;
+    if (form.contact_person) {
+      const cpV = validateName(form.contact_person);
+      if (!cpV.valid) e.contact_person = cpV.error!;
+    }
+    if (form.contact_email) {
+      const ceV = validateEmail(form.contact_email);
+      if (!ceV.valid) e.contact_email = ceV.error!;
+    }
+    if (form.contact_phone) {
+      const cpV = validatePhone(form.contact_phone);
+      if (!cpV.valid) e.contact_phone = cpV.error!;
+    }
+    return e;
+  };
+
   const handleSave = async () => {
-    if (!form.name.trim()) { toast({ title: "Name is required", variant: "destructive" }); return; }
+    const errs = validateForm();
+    setFormErrors(errs);
+    if (Object.keys(errs).length > 0) {
+      toast({ title: `Please fix ${Object.keys(errs).length} error(s)`, variant: "destructive" });
+      return;
+    }
     setSaving(true);
+    const payload = {
+      name: sanitizeInput(form.name),
+      short_name: form.short_name.trim() || null,
+      city: form.city.trim() || null,
+      state: form.state.trim() || null,
+      contact_person: form.contact_person ? sanitizeInput(form.contact_person) : null,
+      contact_email: form.contact_email ? form.contact_email.trim().toLowerCase() : null,
+      contact_phone: form.contact_phone ? form.contact_phone.trim() : null,
+    };
     if (editId) {
-      const { error } = await supabase.from("colleges").update(form).eq("id", editId);
+      const { error } = await supabase.from("colleges").update(payload).eq("id", editId);
       if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
       else toast({ title: "College updated" });
     } else {
-      const { error } = await supabase.from("colleges").insert([form]);
+      const { error } = await supabase.from("colleges").insert([payload]);
       if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
       else toast({ title: "College added" });
     }
@@ -108,7 +146,6 @@ const AdminColleges = () => {
       headers.forEach((h, i) => { obj[h] = values[i] || ""; });
       return { name: obj.name || "", short_name: obj.short_name || "", city: obj.city || "", state: obj.state || "" };
     }).filter((r) => r.name);
-
     if (rows.length === 0) { toast({ title: "No valid rows found", variant: "destructive" }); return; }
     const { error } = await supabase.from("colleges").upsert(rows, { onConflict: "name" });
     if (error) toast({ title: "Import failed", description: error.message, variant: "destructive" });
@@ -179,13 +216,29 @@ const AdminColleges = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5 col-span-2"><Label>College Name *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+              <div className="space-y-1.5 col-span-2">
+                <Label>College Name *</Label>
+                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} maxLength={100} className={formErrors.name ? "border-destructive" : ""} />
+                {formErrors.name && <p className="text-xs text-destructive">{formErrors.name}</p>}
+              </div>
               <div className="space-y-1.5"><Label>Short Name</Label><Input value={form.short_name} onChange={(e) => setForm({ ...form, short_name: e.target.value })} /></div>
               <div className="space-y-1.5"><Label>City</Label><Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} /></div>
               <div className="space-y-1.5"><Label>State</Label><Input value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label>Contact Person</Label><Input value={form.contact_person} onChange={(e) => setForm({ ...form, contact_person: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label>Email</Label><Input value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label>Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} /></div>
+              <div className="space-y-1.5">
+                <Label>Contact Person</Label>
+                <Input value={form.contact_person} onChange={(e) => setForm({ ...form, contact_person: e.target.value })} maxLength={20} className={formErrors.contact_person ? "border-destructive" : ""} />
+                {formErrors.contact_person && <p className="text-xs text-destructive">{formErrors.contact_person}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <Label>Email</Label>
+                <Input value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} maxLength={50} className={formErrors.contact_email ? "border-destructive" : ""} />
+                {formErrors.contact_email && <p className="text-xs text-destructive">{formErrors.contact_email}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <Label>Phone</Label>
+                <Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value.replace(/\D/g, "").slice(0, 10) })} maxLength={10} className={formErrors.contact_phone ? "border-destructive" : ""} />
+                {formErrors.contact_phone && <p className="text-xs text-destructive">{formErrors.contact_phone}</p>}
+              </div>
             </div>
             <Button onClick={handleSave} className="w-full" disabled={saving}>{saving ? "Saving..." : "Save"}</Button>
           </div>

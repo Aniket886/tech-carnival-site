@@ -67,15 +67,23 @@ const AdminSponsors = () => {
   };
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.logo_url.trim()) {
-      toast({ title: "Name and Logo URL are required", variant: "destructive" });
+    if (!form.name.trim()) {
+      toast({ title: "Sponsor name is required", variant: "destructive" });
+      return;
+    }
+    if (form.name.trim().length < 2) {
+      toast({ title: "Sponsor name must be at least 2 characters", variant: "destructive" });
+      return;
+    }
+    if (!form.logo_url.trim()) {
+      toast({ title: "Logo URL is required", variant: "destructive" });
       return;
     }
     setSaving(true);
     const payload = {
-      name: form.name,
-      logo_url: form.logo_url,
-      website_url: form.website_url || null,
+      name: form.name.trim(),
+      logo_url: form.logo_url.trim(),
+      website_url: form.website_url.trim() || null,
       tier: form.tier,
       display_order: form.display_order,
     };

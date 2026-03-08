@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,10 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, Plus, Trash2, Users, User, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  validateName, validateEmail, validatePhone,
+  validateTeamName, validateCollegeName, sanitizeInput, countErrors,
+} from "@/lib/validators";
 
 // ── Types ──
 interface EventOption {
@@ -90,7 +94,10 @@ const Registration = () => {
   const [events, setEvents] = useState<EventOption[]>([]);
   const [form, setForm] = useState<FormData>({ ...initialForm });
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
+  const [shake, setShake] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
   const [successData, setSuccessData] = useState<{
     id: string;
     eventName: string;
@@ -98,6 +105,22 @@ const Registration = () => {
 
   const selectedEvent = events.find((e) => e.id === form.event_id);
   const isTeamEvent = selectedEvent ? selectedEvent.team_size_max > 1 : false;
+
+  const onBlur = (field: string) => {
+    setTouched((prev) => new Set(prev).add(field));
+    const errs = validateStep(step);
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (errs[field]) next[field] = errs[field];
+      else delete next[field];
+      return next;
+    });
+  };
+
+  const fieldClass = (field: string) => {
+    if (!touched.has(field)) return "";
+    return errors[field] ? "border-destructive focus-visible:ring-destructive" : "border-green-500/50 focus-visible:ring-green-500/50";
+  };
 
   // Fetch events
   useEffect(() => {
@@ -149,15 +172,32 @@ const Registration = () => {
         if (!form.event_id) e.event_id = "Please select an event";
       }
       if (s === 1) {
-        if (!form.leader_name.trim()) e.leader_name = "Name is required";
-        if (!isValidEmail(form.leader_email)) e.leader_email = "Valid email required";
-        if (!isValidPhone(form.leader_phone)) e.leader_phone = "Valid 10-digit phone required";
-        if (!form.college_name.trim()) e.college_name = "College is required";
-        if (isTeamEvent && !form.team_name.trim()) e.team_name = "Team name is required";
+        const nameV = validateName(form.leader_name);
+        if (!nameV.valid) e.leader_name = nameV.error!;
+        const emailV = validateEmail(form.leader_email);
+        if (!emailV.valid) e.leader_email = emailV.error!;
+        const phoneV = validatePhone(form.leader_phone);
+        if (!phoneV.valid) e.leader_phone = phoneV.error!;
+        const collegeV = validateCollegeName(form.college_name);
+        if (!collegeV.valid) e.college_name = collegeV.error!;
+        if (isTeamEvent) {
+          const teamV = validateTeamName(form.team_name);
+          if (!teamV.valid) e.team_name = teamV.error!;
+        }
+        // Check duplicate emails within team
+        const allEmails = [form.leader_email.trim().toLowerCase()];
         form.members.forEach((m, i) => {
-          if (!m.name.trim()) e[`member_${i}_name`] = "Required";
-          if (!isValidEmail(m.email)) e[`member_${i}_email`] = "Valid email required";
-          if (!isValidPhone(m.phone)) e[`member_${i}_phone`] = "Valid 10-digit phone required";
+          const mnV = validateName(m.name);
+          if (!mnV.valid) e[`member_${i}_name`] = mnV.error!;
+          const meV = validateEmail(m.email);
+          if (!meV.valid) e[`member_${i}_email`] = meV.error!;
+          const mpV = validatePhone(m.phone);
+          if (!mpV.valid) e[`member_${i}_phone`] = mpV.error!;
+          const memberEmail = m.email.trim().toLowerCase();
+          if (memberEmail && allEmails.includes(memberEmail)) {
+            e[`member_${i}_email`] = "Duplicate email found in team members";
+          }
+          allEmails.push(memberEmail);
         });
       }
       if (s === 2) {
@@ -171,7 +211,13 @@ const Registration = () => {
   const goNext = () => {
     const errs = validateStep(step);
     setErrors(errs);
-    if (Object.keys(errs).length === 0) setStep((s) => Math.min(s + 1, 2));
+    if (countErrors(errs) > 0) {
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+      toast({ title: `Please fix ${countErrors(errs)} error${countErrors(errs) > 1 ? "s" : ""} before continuing`, variant: "destructive" });
+      return;
+    }
+    setStep((s) => Math.min(s + 1, 2));
   };
 
   const goBack = () => setStep((s) => Math.max(s - 1, 0));
@@ -228,14 +274,14 @@ const Registration = () => {
       .insert([
         {
           event_id: form.event_id,
-          leader_name: form.leader_name.trim(),
-          leader_email: form.leader_email.trim(),
+          leader_name: sanitizeInput(form.leader_name),
+          leader_email: form.leader_email.trim().toLowerCase(),
           leader_phone: form.leader_phone.trim(),
-          college_name: form.college_name.trim(),
+          college_name: sanitizeInput(form.college_name),
           semester: form.semester || null,
-          team_name: isTeamEvent ? form.team_name.trim() : null,
+          team_name: isTeamEvent ? sanitizeInput(form.team_name) : null,
           members: isTeamEvent && form.members.length > 0
-            ? form.members.map((m) => ({ name: m.name, email: m.email, phone: m.phone } as Record<string, string>))
+            ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
             : null,
         },
       ])
@@ -285,7 +331,9 @@ const Registration = () => {
   // ── Render helpers ──
   const FieldError = ({ field }: { field: string }) =>
     errors[field] ? (
-      <p className="text-sm text-destructive mt-1">{errors[field]}</p>
+      <p className="text-xs text-destructive mt-1">{errors[field]}</p>
+    ) : touched.has(field) ? (
+      <p className="text-xs text-green-400 mt-1 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> Valid</p>
     ) : null;
 
   const stepVariants = {
@@ -483,7 +531,9 @@ const Registration = () => {
                         onChange={(e) =>
                           setForm((p) => ({ ...p, leader_name: e.target.value }))
                         }
-                        maxLength={100}
+                        onBlur={() => onBlur("leader_name")}
+                        maxLength={20}
+                        className={fieldClass("leader_name")}
                       />
                       <FieldError field="leader_name" />
                     </div>
@@ -496,7 +546,9 @@ const Registration = () => {
                         onChange={(e) =>
                           setForm((p) => ({ ...p, leader_email: e.target.value }))
                         }
-                        maxLength={255}
+                        onBlur={() => onBlur("leader_email")}
+                        maxLength={50}
+                        className={fieldClass("leader_email")}
                       />
                       <FieldError field="leader_email" />
                     </div>
@@ -506,9 +558,11 @@ const Registration = () => {
                         placeholder="9876543210"
                         value={form.leader_phone}
                         onChange={(e) =>
-                          setForm((p) => ({ ...p, leader_phone: e.target.value }))
+                          setForm((p) => ({ ...p, leader_phone: e.target.value.replace(/\D/g, "").slice(0, 10) }))
                         }
-                        maxLength={15}
+                        onBlur={() => onBlur("leader_phone")}
+                        maxLength={10}
+                        className={fieldClass("leader_phone")}
                       />
                       <FieldError field="leader_phone" />
                     </div>
@@ -520,7 +574,9 @@ const Registration = () => {
                         onChange={(e) =>
                           setForm((p) => ({ ...p, college_name: e.target.value }))
                         }
-                        maxLength={200}
+                        onBlur={() => onBlur("college_name")}
+                        maxLength={100}
+                        className={fieldClass("college_name")}
                       />
                       <FieldError field="college_name" />
                     </div>
@@ -551,7 +607,9 @@ const Registration = () => {
                           onChange={(e) =>
                             setForm((p) => ({ ...p, team_name: e.target.value }))
                           }
-                          maxLength={100}
+                          onBlur={() => onBlur("team_name")}
+                          maxLength={30}
+                          className={fieldClass("team_name")}
                         />
                         <FieldError field="team_name" />
                       </div>
