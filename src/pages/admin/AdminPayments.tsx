@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee,
+  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2,
 } from "lucide-react";
 
 /* ─── types ─── */
