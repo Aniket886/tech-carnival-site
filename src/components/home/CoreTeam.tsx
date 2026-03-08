@@ -7,7 +7,7 @@ const coreTeam = [
   { name: "Aniket Tegginamath", image: aniketImg },
   { name: "Bhanuprakash K S", image: null },
   { name: "K Vishwasheetal", image: null },
-  { name: "Sonali Meharwade", image: null },
+  { name: "Sonali Meharwade", image: sonaliImg },
 ];
 
 const CoreTeam = () => {
