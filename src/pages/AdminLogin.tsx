@@ -20,6 +20,11 @@ const AdminLogin = () => {
   useEffect(() => {
     if (!authLoading && user && isAdmin) {
       navigate("/admin/overview");
+    } else if (!authLoading && user && !isAdmin) {
+      // Signed in but not admin
+      toast.error("Access denied. Admin privileges required.");
+      supabase.auth.signOut();
+      setLoading(false);
     }
   }, [authLoading, user, isAdmin, navigate]);
 
