@@ -531,7 +531,9 @@ const Registration = () => {
                         onChange={(e) =>
                           setForm((p) => ({ ...p, leader_name: e.target.value }))
                         }
-                        maxLength={100}
+                        onBlur={() => onBlur("leader_name")}
+                        maxLength={20}
+                        className={fieldClass("leader_name")}
                       />
                       <FieldError field="leader_name" />
                     </div>
@@ -544,7 +546,9 @@ const Registration = () => {
                         onChange={(e) =>
                           setForm((p) => ({ ...p, leader_email: e.target.value }))
                         }
-                        maxLength={255}
+                        onBlur={() => onBlur("leader_email")}
+                        maxLength={50}
+                        className={fieldClass("leader_email")}
                       />
                       <FieldError field="leader_email" />
                     </div>
@@ -554,9 +558,11 @@ const Registration = () => {
                         placeholder="9876543210"
                         value={form.leader_phone}
                         onChange={(e) =>
-                          setForm((p) => ({ ...p, leader_phone: e.target.value }))
+                          setForm((p) => ({ ...p, leader_phone: e.target.value.replace(/\D/g, "").slice(0, 10) }))
                         }
-                        maxLength={15}
+                        onBlur={() => onBlur("leader_phone")}
+                        maxLength={10}
+                        className={fieldClass("leader_phone")}
                       />
                       <FieldError field="leader_phone" />
                     </div>
@@ -568,7 +574,9 @@ const Registration = () => {
                         onChange={(e) =>
                           setForm((p) => ({ ...p, college_name: e.target.value }))
                         }
-                        maxLength={200}
+                        onBlur={() => onBlur("college_name")}
+                        maxLength={100}
+                        className={fieldClass("college_name")}
                       />
                       <FieldError field="college_name" />
                     </div>
@@ -599,7 +607,9 @@ const Registration = () => {
                           onChange={(e) =>
                             setForm((p) => ({ ...p, team_name: e.target.value }))
                           }
-                          maxLength={100}
+                          onBlur={() => onBlur("team_name")}
+                          maxLength={30}
+                          className={fieldClass("team_name")}
                         />
                         <FieldError field="team_name" />
                       </div>
