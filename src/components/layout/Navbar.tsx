@@ -49,7 +49,7 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
           {navLinks.map((link) => (
             <button key={link.href} onClick={() => handleNav(link.href)} className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 tracking-wide">{link.label}</button>
           ))}
-          {showRegister && <Button variant="neon" size="sm" magnetic onClick={() => handleNav("#events")}>Register</Button>}
+          {showRegister && <Button variant="neon" size="sm" onClick={() => handleNav("#events")}>Register</Button>}
         </div>
         <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
