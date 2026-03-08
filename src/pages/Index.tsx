@@ -101,6 +101,7 @@ const Index = () => {
         ) : null
       )}
       <ScrollToTop />
+      <CarniBOT />
     </div>
   );
 };
