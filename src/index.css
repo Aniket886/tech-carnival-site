@@ -428,13 +428,16 @@
   cursor: pointer;
 }
 
-.btt-btn > div,
-.btt-btn > svg {
+.btt-btn > div {
   position: absolute;
-  width: 100%;
+  width: calc(100% - 22px);
   height: 100%;
   display: flex;
   align-items: center;
+}
+
+.btt-btn > svg {
+  position: absolute;
 }
 
 .btt-btn::before {
