@@ -87,7 +87,7 @@ const AdminSettings = () => {
         if (!emailMap.has(l.user_id)) emailMap.set(l.user_id, l.email);
       });
       
-      adminRoles.forEach(a => { a.email = emailMap.get(a.user_id); });
+      adminRoles.forEach(a => { (a as AdminRole).email = emailMap.get(a.user_id); });
     }
     setAdmins(adminRoles);
   }, []);
