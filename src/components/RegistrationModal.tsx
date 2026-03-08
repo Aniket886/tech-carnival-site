@@ -241,7 +241,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     setLoading(true);
 
     try {
-      const { error } = await supabase
+      const insertPromise = supabase
         .from("registrations")
         .insert([{
           event_id: event.id,
@@ -256,9 +256,16 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
             : null,
         }]);
 
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Request timed out")), 15000)
+      );
+
+      const result = await Promise.race([insertPromise, timeoutPromise]) as any;
+      
       setLoading(false);
 
-      if (error) {
+      if (result?.error) {
+        const error = result.error;
         if (error.message?.includes("duplicate") || error.code === "23505") {
           setErrors({ leader_email: "This email is already registered for this event" });
           setStep(0);
@@ -277,9 +284,9 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           },
         }).catch(() => {});
       }
-    } catch (err) {
+    } catch (err: any) {
       setLoading(false);
-      toast({ title: "Registration failed", description: "An unexpected error occurred. Please try again.", variant: "destructive" });
+      toast({ title: "Registration failed", description: err?.message || "An unexpected error occurred. Please try again.", variant: "destructive" });
     }
   };
 
