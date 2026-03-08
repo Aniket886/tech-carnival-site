@@ -92,6 +92,9 @@ const initialForm: FormData = {
   team_name: "",
   members: [],
   agreed: false,
+  amount_paid: "",
+  utr_number: "",
+  transaction_id: "",
 };
 
 const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
