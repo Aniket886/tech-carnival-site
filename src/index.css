@@ -74,11 +74,77 @@
   }
 
   .glass {
-    @apply bg-background/60 backdrop-blur-xl border-border/50;
+    @apply bg-background/80 backdrop-blur-xl border-border/50;
   }
+
+  .section-heading {
+    @apply text-3xl sm:text-4xl font-bold text-gradient text-center mb-4;
+  }
+
+  .section-subtext {
+    @apply text-center text-muted-foreground mb-12 max-w-xl mx-auto;
+  }
+}
+
+/* Starfield background */
+.starfield {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.starfield::before,
+.starfield::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, hsl(210 40% 98% / 0.6), transparent),
+    radial-gradient(1px 1px at 25% 60%, hsl(210 40% 98% / 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 40% 15%, hsl(190 100% 50% / 0.5), transparent),
+    radial-gradient(1px 1px at 55% 45%, hsl(210 40% 98% / 0.3), transparent),
+    radial-gradient(1px 1px at 70% 75%, hsl(210 40% 98% / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 85% 35%, hsl(270 91% 65% / 0.4), transparent),
+    radial-gradient(1px 1px at 90% 85%, hsl(210 40% 98% / 0.4), transparent),
+    radial-gradient(1px 1px at 15% 80%, hsl(210 40% 98% / 0.3), transparent),
+    radial-gradient(1px 1px at 50% 90%, hsl(190 100% 50% / 0.3), transparent),
+    radial-gradient(1px 1px at 75% 10%, hsl(210 40% 98% / 0.5), transparent),
+    radial-gradient(1px 1px at 35% 35%, hsl(210 40% 98% / 0.4), transparent),
+    radial-gradient(1px 1px at 60% 65%, hsl(210 40% 98% / 0.3), transparent);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+.starfield::after {
+  background-image:
+    radial-gradient(1px 1px at 5% 50%, hsl(210 40% 98% / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 20% 90%, hsl(190 100% 50% / 0.4), transparent),
+    radial-gradient(1px 1px at 30% 10%, hsl(210 40% 98% / 0.4), transparent),
+    radial-gradient(1px 1px at 45% 70%, hsl(210 40% 98% / 0.3), transparent),
+    radial-gradient(1px 1px at 65% 25%, hsl(210 40% 98% / 0.5), transparent),
+    radial-gradient(1px 1px at 80% 55%, hsl(270 91% 65% / 0.3), transparent),
+    radial-gradient(1.5px 1.5px at 95% 40%, hsl(190 100% 50% / 0.5), transparent),
+    radial-gradient(1px 1px at 12% 42%, hsl(210 40% 98% / 0.3), transparent),
+    radial-gradient(1px 1px at 58% 12%, hsl(210 40% 98% / 0.4), transparent),
+    radial-gradient(1px 1px at 82% 92%, hsl(210 40% 98% / 0.3), transparent);
+  animation: twinkle 5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
 }
 
 @keyframes marquee-scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
 }
