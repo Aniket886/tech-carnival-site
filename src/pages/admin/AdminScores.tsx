@@ -61,6 +61,7 @@ const positionStyles: Record<string, { label: string; cls: string }> = {
 const AdminScores = () => {
   const [scores, setScores] = useState<Score[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
+  const [colleges, setColleges] = useState<CollegeInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
