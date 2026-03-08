@@ -331,10 +331,16 @@ const AdminScores = () => {
                 <Input type="number" min={0} value={form.points} onChange={e => updateField("points", parseInt(e.target.value) || 0)} className="bg-card border-border" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Position (auto)</Label>
-                <div className="h-9 flex items-center px-3 rounded-md border border-border bg-muted/50 text-sm text-muted-foreground">
-                  {(positionStyles[getPositionFromPoints(form.points)] || positionStyles.participant).label}
-                </div>
+                <Label className="text-xs text-muted-foreground">Position</Label>
+                <Select value={form.position} onValueChange={v => updateField("position", v)}>
+                  <SelectTrigger className="bg-card border-border"><SelectValue placeholder="Select position" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="auto">Auto (by rank)</SelectItem>
+                    <SelectItem value="1st">🥇 1st Place</SelectItem>
+                    <SelectItem value="2nd">🥈 2nd Place</SelectItem>
+                    <SelectItem value="3rd">🥉 3rd Place</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
