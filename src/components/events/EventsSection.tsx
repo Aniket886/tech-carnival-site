@@ -17,6 +17,8 @@ export interface EventData {
   description: string;
   category: Exclude<Category, "all">;
   teamSize: string;
+  team_size_min: number;
+  team_size_max: number;
   detailedDescription: string;
   date: string | null;
   time: string | null;
@@ -83,6 +85,8 @@ const EventsSection = () => {
               description: e.description ? (e.description.length > 60 ? e.description.substring(0, 60) + "..." : e.description) : "No description available",
               category: e.category as Exclude<Category, "all">,
               teamSize: formatTeamSize(e.team_size_min || 1, e.team_size_max || 1),
+              team_size_min: e.team_size_min || 1,
+              team_size_max: e.team_size_max || 1,
               detailedDescription: e.description || "",
               date: e.date,
               time: e.time,
@@ -163,6 +167,13 @@ const EventsSection = () => {
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                     {event.description}
+                  </p>
+                  <p className="text-xs text-muted-foreground/70 mb-4">
+                    {event.team_size_min === 1 && event.team_size_max === 1
+                      ? "👤 Solo"
+                      : event.team_size_min === event.team_size_max
+                        ? `👥 Team of ${event.team_size_min}`
+                        : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
                   </p>
                   <div className="flex items-center justify-between">
                     <Badge variant="outline" className={`text-xs capitalize ${style.badge}`}>
