@@ -28,14 +28,14 @@ const Footer = () => {
         {/* Contact cards */}
         <div className="flex flex-wrap justify-center gap-4 mb-10">
           <a
-            href="mailto:aniket.gmu@gmail.com"
+            href="mailto:info@techcarnival.online"
             className="group flex items-center gap-3 px-5 py-3 rounded-xl bg-white/[0.04] border border-white/10 backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
           >
             <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <Mail size={16} className="text-primary" />
             </div>
             <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-              aniket.gmu@gmail.com
+              info@techcarnival.online
             </span>
           </a>
 
