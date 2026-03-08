@@ -53,13 +53,6 @@ const Footer = () => {
                 </div>
               </div>
 
-              <button
-                onClick={scrollToTop}
-                aria-label="Back to top"
-                className="hidden md:flex w-10 h-10 rounded-full border border-border/40 items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-200 mt-1"
-              >
-                <ArrowUp size={16} />
-              </button>
             </div>
           </div>
 
