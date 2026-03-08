@@ -1,0 +1,1 @@
+ALTER TABLE public.registrations ADD CONSTRAINT registrations_event_id_leader_email_unique UNIQUE (event_id, leader_email);
