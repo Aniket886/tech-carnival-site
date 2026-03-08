@@ -19,6 +19,7 @@ interface Stats {
   totalMessages: number;
   pendingPayments: number;
   confirmedPayments: number;
+  categoryBreakdown: { name: string; count: number }[];
   recentRegistrations: any[];
   registrationsByEvent: { name: string; count: number }[];
   registrationsByDay: { date: string; count: number }[];
