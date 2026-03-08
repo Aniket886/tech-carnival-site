@@ -69,6 +69,17 @@ export function validateMessage(msg: string): ValidationResult {
   return { valid: true };
 }
 
+/** Check for duplicate emails between leader and team members */
+export function checkDuplicateEmails(leaderEmail: string, members: { email: string }[]): string | null {
+  const emails = [leaderEmail.trim().toLowerCase(), ...members.map((m) => m.email.trim().toLowerCase())];
+  const seen = new Set<string>();
+  for (const e of emails) {
+    if (e && seen.has(e)) return "Duplicate email addresses found. Each participant must have a unique email.";
+    if (e) seen.add(e);
+  }
+  return null;
+}
+
 /** Count errors in a record */
 export function countErrors(errors: Record<string, string>): number {
   return Object.keys(errors).length;
