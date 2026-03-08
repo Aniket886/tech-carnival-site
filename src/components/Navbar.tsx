@@ -2,18 +2,22 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Events", href: "#events" },
-  { label: "Schedule", href: "#schedule" },
-  { label: "Register", href: "#register" },
-  { label: "Contact", href: "#contact" },
+const allNavLinks = [
+  { label: "Home", href: "#home", sectionKey: "hero" },
+  { label: "Events", href: "#events", sectionKey: "events" },
+  { label: "Schedule", href: "#schedule", sectionKey: "schedule" },
+  { label: "Register", href: "#register", sectionKey: "registration" },
+  { label: "Contact", href: "#contact", sectionKey: "contact" },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { isSectionVisible } = useSiteVisibility();
+
+  const navLinks = allNavLinks.filter((link) => isSectionVisible(link.sectionKey));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -43,9 +47,11 @@ const Navbar = () => {
               {link.label}
             </a>
           ))}
-          <Button asChild size="sm" className="neon-glow">
-            <a href="#register">Register</a>
-          </Button>
+          {isSectionVisible("registration") && (
+            <Button asChild size="sm" className="neon-glow">
+              <a href="#register">Register</a>
+            </Button>
+          )}
         </div>
 
         {/* Mobile */}
@@ -68,11 +74,13 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
-              <Button asChild className="neon-glow mt-4">
-                <a href="#register" onClick={() => setOpen(false)}>
-                  Register Now
-                </a>
-              </Button>
+              {isSectionVisible("registration") && (
+                <Button asChild className="neon-glow mt-4">
+                  <a href="#register" onClick={() => setOpen(false)}>
+                    Register Now
+                  </a>
+                </Button>
+              )}
             </div>
           </SheetContent>
         </Sheet>

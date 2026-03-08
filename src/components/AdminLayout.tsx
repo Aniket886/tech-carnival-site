@@ -28,10 +28,12 @@ import {
   Globe,
   Trophy,
   Handshake,
+  Layers,
 } from "lucide-react";
 
 const navItems = [
   { title: "Overview", url: "/admin/overview", icon: LayoutDashboard },
+  { title: "Page Manager", url: "/admin/page-manager", icon: Layers },
   { title: "Registrations", url: "/admin/registrations", icon: ClipboardList },
   { title: "Events", url: "/admin/events", icon: Calendar },
   { title: "Sponsors", url: "/admin/sponsors", icon: Handshake },
