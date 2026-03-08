@@ -225,7 +225,7 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
   };
 
   const handleSubmit = async () => {
-    const errs = validateStep(1);
+    const errs = validateStep(2);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     if (!event) return;
