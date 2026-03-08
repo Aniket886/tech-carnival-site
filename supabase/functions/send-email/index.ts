@@ -158,9 +158,10 @@ Deno.serve(async (req) => {
       registration_received: "Registration Received – Tech Carnival 2K26",
       registration_confirmed: "Registration Confirmed – Tech Carnival 2K26 🎉",
       registration_rejected: "Registration Update – Tech Carnival 2K26",
+      custom: payload.custom_subject || "Tech Carnival – 2K26",
     };
 
-    const html = buildHtml(payload);
+    const html = type === "custom" && payload.custom_html ? payload.custom_html : buildHtml(payload);
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
