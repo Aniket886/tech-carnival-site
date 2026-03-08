@@ -1,19 +1,30 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronLeft, ChevronRight, Users, Filter, X,
+  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Eye,
 } from "lucide-react";
 
+/* ─── types ─── */
 interface Registration {
   id: string;
   leader_name: string;
@@ -25,18 +36,25 @@ interface Registration {
   registration_status: string;
   amount_paid: string | null;
   utr_number: string | null;
+  transaction_id: string | null;
   source: string;
   semester: string | null;
   created_at: string;
   members: any;
 }
 
-interface EventInfo {
-  id: string;
-  name: string;
-}
+interface EventInfo { id: string; name: string; icon: string | null; category: string; }
 
-const PAGE_SIZE = 20;
+/* ─── helpers ─── */
+const statusConfig: Record<string, { label: string; class: string }> = {
+  confirmed: { label: "Confirmed", class: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
+  pending: { label: "Pending", class: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
+  rejected: { label: "Rejected", class: "bg-destructive/15 text-destructive border-destructive/30" },
+};
+
+const categoryConfig: Record<string, string> = {
+  technical: "💻", gaming: "🎮", cultural: "🎭",
+};
 
 const AdminRegistrations = () => {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
@@ -45,38 +63,41 @@ const AdminRegistrations = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [eventFilter, setEventFilter] = useState("all");
-  const [page, setPage] = useState(0);
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [deleteConfirm, setDeleteConfirm] = useState<{ type: "single" | "bulk"; id?: string } | null>(null);
+  const [detailReg, setDetailReg] = useState<Registration | null>(null);
 
-  useEffect(() => {
-    const fetch = async () => {
-      const [{ data: regs }, { data: evts }] = await Promise.all([
-        supabase
-          .from("registrations")
-          .select("id, leader_name, leader_email, leader_phone, college_name, team_name, event_id, registration_status, amount_paid, utr_number, source, semester, created_at, members")
-          .order("created_at", { ascending: false }),
-        supabase.from("events").select("id, name"),
-      ]);
-      setRegistrations(regs || []);
-      setEvents(evts || []);
-      setLoading(false);
-    };
-    fetch();
+  const fetchData = useCallback(async () => {
+    const [{ data: regs }, { data: evts }] = await Promise.all([
+      supabase.from("registrations").select("*").order("created_at", { ascending: false }),
+      supabase.from("events").select("id, name, icon, category"),
+    ]);
+    setRegistrations(regs || []);
+    setEvents(evts || []);
+    setLoading(false);
   }, []);
 
+  useEffect(() => { fetchData(); }, [fetchData]);
+
   const eventMap = useMemo(() => {
-    const m = new Map<string, string>();
-    events.forEach(e => m.set(e.id, e.name));
+    const m = new Map<string, EventInfo>();
+    events.forEach(e => m.set(e.id, e));
     return m;
   }, [events]);
 
+  const categories = useMemo(() => {
+    const set = new Set(events.map(e => e.category));
+    return Array.from(set).sort();
+  }, [events]);
+
+  /* ─── filtering ─── */
   const filtered = useMemo(() => {
     let data = registrations;
-
-    if (statusFilter !== "all") {
-      data = data.filter(r => r.registration_status === statusFilter);
-    }
-    if (eventFilter !== "all") {
-      data = data.filter(r => r.event_id === eventFilter);
+    if (statusFilter !== "all") data = data.filter(r => r.registration_status === statusFilter);
+    if (eventFilter !== "all") data = data.filter(r => r.event_id === eventFilter);
+    if (categoryFilter !== "all") {
+      const catEventIds = new Set(events.filter(e => e.category === categoryFilter).map(e => e.id));
+      data = data.filter(r => catEventIds.has(r.event_id));
     }
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -90,45 +111,53 @@ const AdminRegistrations = () => {
       );
     }
     return data;
-  }, [registrations, search, statusFilter, eventFilter]);
+  }, [registrations, search, statusFilter, eventFilter, categoryFilter, events]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paged = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
-  useEffect(() => { setPage(0); }, [search, statusFilter, eventFilter]);
-
-  const statuses = useMemo(() => {
-    const set = new Set(registrations.map(r => r.registration_status));
-    return Array.from(set).sort();
-  }, [registrations]);
-
-  const getMemberCount = (members: any): number => {
-    if (!members) return 0;
-    if (Array.isArray(members)) return members.length;
-    return 0;
+  /* ─── status update ─── */
+  const updateStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("registrations").update({ registration_status: status }).eq("id", id);
+    if (error) { toast.error("Failed to update status"); return; }
+    toast.success(`Status updated to ${status}`);
+    fetchData();
   };
 
-  const exportCSV = () => {
-    const headers = [
-      "Leader Name", "Email", "Phone", "College", "Team Name", "Event",
-      "Status", "Amount Paid", "UTR", "Source", "Semester", "Members", "Date",
-    ];
-    const rows = filtered.map(r => [
-      r.leader_name,
-      r.leader_email,
-      r.leader_phone,
-      r.college_name,
-      r.team_name || "",
-      eventMap.get(r.event_id) || r.event_id,
-      r.registration_status,
-      r.amount_paid || "",
-      r.utr_number || "",
-      r.source,
-      r.semester || "",
-      getMemberCount(r.members),
-      new Date(r.created_at).toLocaleDateString(),
-    ]);
+  /* ─── delete single ─── */
+  const deleteSingle = async (id: string) => {
+    const { error } = await supabase.from("registrations").delete().eq("id", id);
+    if (error) { toast.error("Failed to delete"); return; }
+    toast.success("Registration deleted");
+    setDeleteConfirm(null);
+    fetchData();
+  };
 
+  /* ─── delete filtered ─── */
+  const deleteFiltered = async () => {
+    const ids = filtered.map(r => r.id);
+    if (ids.length === 0) return;
+    const { error } = await supabase.from("registrations").delete().in("id", ids);
+    if (error) { toast.error("Failed to delete"); return; }
+    toast.success(`${ids.length} registrations deleted`);
+    setDeleteConfirm(null);
+    fetchData();
+  };
+
+  /* ─── CSV export ─── */
+  const exportCSV = (andDelete = false) => {
+    const headers = [
+      "S.No", "Leader Name", "Email", "Phone", "College", "Team Name", "Event", "Category",
+      "Status", "Amount Paid", "UTR", "Transaction ID", "Source", "Semester", "Members", "Date",
+    ];
+    const rows = filtered.map((r, i) => {
+      const ev = eventMap.get(r.event_id);
+      const memberCount = Array.isArray(r.members) ? r.members.length : 0;
+      return [
+        i + 1, r.leader_name, r.leader_email, r.leader_phone, r.college_name,
+        r.team_name || "", ev?.name || "", ev?.category || "",
+        r.registration_status, r.amount_paid || "", r.utr_number || "",
+        r.transaction_id || "", r.source, r.semester || "", memberCount,
+        new Date(r.created_at).toLocaleDateString(),
+      ];
+    });
     const csv = [headers, ...rows].map(row =>
       row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")
     ).join("\n");
@@ -141,149 +170,284 @@ const AdminRegistrations = () => {
     a.click();
     URL.revokeObjectURL(url);
     toast.success(`Exported ${filtered.length} registrations`);
+
+    if (andDelete) deleteFiltered();
   };
 
-  const statusBadge = (status: string) => {
-    const styles: Record<string, string> = {
-      confirmed: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-      pending: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-      rejected: "bg-destructive/10 text-destructive border-destructive/20",
-    };
-    return (
-      <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-medium border ${styles[status] || "bg-muted text-muted-foreground border-border"}`}>
-        {status}
-      </span>
-    );
+  /* ─── members display ─── */
+  const getMembers = (members: any): { name: string; phone?: string }[] => {
+    if (!members || !Array.isArray(members)) return [];
+    return members;
   };
 
-  const hasActiveFilters = statusFilter !== "all" || eventFilter !== "all" || search.trim() !== "";
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
+  }
 
   return (
     <div className="space-y-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-            <Users size={20} className="text-primary" /> Registrations
-          </h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            {filtered.length} of {registrations.length} registrations
-          </p>
-        </div>
-        <Button variant="outline" size="sm" onClick={exportCSV} disabled={filtered.length === 0} className="gap-2">
+        <h2 className="text-2xl font-display font-bold text-foreground">
+          Registrations ({registrations.length})
+        </h2>
+        <Button variant="outline" size="sm" onClick={() => exportCSV(false)} disabled={filtered.length === 0} className="gap-2">
           <Download size={14} /> Export CSV
         </Button>
       </div>
 
       {/* Filters */}
-      <Card className="bg-card border-border">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search name, email, phone, college, UTR…"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="pl-9 bg-muted/30"
-              />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-40 bg-muted/30">
-                <Filter size={14} className="mr-2 text-muted-foreground" />
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                {statuses.map(s => (
-                  <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={eventFilter} onValueChange={setEventFilter}>
-              <SelectTrigger className="w-full sm:w-48 bg-muted/30">
-                <SelectValue placeholder="Event" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Events</SelectItem>
-                {events.map(e => (
-                  <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => { setSearch(""); setStatusFilter("all"); setEventFilter("all"); }}>
-                <X size={14} className="mr-1" /> Clear
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 min-w-0">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search name, email, team…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="pl-9 bg-card border-border"
+          />
+        </div>
+        <Select value={eventFilter} onValueChange={setEventFilter}>
+          <SelectTrigger className="w-full sm:w-44 bg-card border-border">
+            <SelectValue placeholder="All Events" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Events</SelectItem>
+            {events.map(e => (
+              <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full sm:w-40 bg-card border-border">
+            <SelectValue placeholder="All Categories" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {categories.map(c => (
+              <SelectItem key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-36 bg-card border-border">
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="confirmed">Confirmed</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       {/* Table */}
-      <Card className="bg-card border-border overflow-hidden">
-        {loading ? (
-          <CardContent className="p-10 text-center text-muted-foreground">Loading…</CardContent>
-        ) : paged.length === 0 ? (
-          <CardContent className="p-10 text-center text-muted-foreground">
-            {hasActiveFilters ? "No registrations match your filters." : "No registrations yet."}
-          </CardContent>
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        {filtered.length === 0 ? (
+          <div className="p-10 text-center text-muted-foreground">
+            No registrations found.
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="border-border hover:bg-transparent">
-                  <TableHead className="text-xs text-muted-foreground font-medium">Name</TableHead>
-                  <TableHead className="text-xs text-muted-foreground font-medium">Email</TableHead>
-                  <TableHead className="text-xs text-muted-foreground font-medium">Phone</TableHead>
-                  <TableHead className="text-xs text-muted-foreground font-medium">College</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium w-10">#</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Team / Name</TableHead>
                   <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
-                  <TableHead className="text-xs text-muted-foreground font-medium">Team</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Email</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">College</TableHead>
                   <TableHead className="text-xs text-muted-foreground font-medium">Status</TableHead>
-                  <TableHead className="text-xs text-muted-foreground font-medium">Amount</TableHead>
-                  <TableHead className="text-xs text-muted-foreground font-medium">Date</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paged.map(r => (
-                  <TableRow key={r.id} className="border-border">
-                    <TableCell className="text-sm font-medium text-foreground whitespace-nowrap">{r.leader_name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{r.leader_email}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{r.leader_phone}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground max-w-[150px] truncate">{r.college_name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground max-w-[120px] truncate">{eventMap.get(r.event_id) || "—"}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{r.team_name || "—"}</TableCell>
-                    <TableCell>{statusBadge(r.registration_status)}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{r.amount_paid ? `₹${r.amount_paid}` : "—"}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                      {new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {filtered.map((r, idx) => {
+                  const ev = eventMap.get(r.event_id);
+                  const sc = statusConfig[r.registration_status] || statusConfig.pending;
+                  return (
+                    <TableRow key={r.id} className="border-border">
+                      <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
+                            {r.team_name || r.leader_name}
+                            <ChevronDown size={14} className="text-muted-foreground" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="w-56">
+                            <div className="px-3 py-2 space-y-1 text-sm">
+                              <p className="font-medium text-foreground">{r.leader_name}</p>
+                              <p className="text-muted-foreground text-xs">{r.leader_phone}</p>
+                              {r.team_name && <p className="text-xs text-muted-foreground">Team: {r.team_name}</p>}
+                              {r.semester && <p className="text-xs text-muted-foreground">Sem: {r.semester}</p>}
+                              {getMembers(r.members).length > 0 && (
+                                <div className="pt-1 border-t border-border mt-1">
+                                  <p className="text-xs font-medium text-foreground mb-0.5">Members:</p>
+                                  {getMembers(r.members).map((m, i) => (
+                                    <p key={i} className="text-xs text-muted-foreground">{m.name}{m.phone ? ` · ${m.phone}` : ""}</p>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                      <TableCell>
+                        <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                          <span>{ev?.icon || categoryConfig[ev?.category || ""] || "🎯"}</span>
+                          <span className="truncate max-w-[130px]">{ev?.name || "—"}</span>
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">{r.leader_email}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground max-w-[120px] truncate">{r.college_name}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={`text-[10px] capitalize ${sc.class}`}>
+                          {sc.label}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            title="Confirm"
+                            onClick={() => updateStatus(r.id, "confirmed")}
+                            className="p-1.5 rounded-md text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+                          >
+                            <Check size={15} />
+                          </button>
+                          <button
+                            title="Reject"
+                            onClick={() => updateStatus(r.id, "rejected")}
+                            className="p-1.5 rounded-md text-destructive hover:bg-destructive/10 transition-colors"
+                          >
+                            <XCircle size={15} />
+                          </button>
+                          <button
+                            title="View details"
+                            onClick={() => setDetailReg(r)}
+                            className="p-1.5 rounded-md text-muted-foreground hover:bg-muted/50 transition-colors"
+                          >
+                            <Eye size={15} />
+                          </button>
+                          <button
+                            title="Delete"
+                            onClick={() => setDeleteConfirm({ type: "single", id: r.id })}
+                            className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
         )}
+      </div>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-            <p className="text-xs text-muted-foreground">
-              Page {page + 1} of {totalPages}
+      {/* Danger Zone */}
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 space-y-3">
+        <div className="flex items-start gap-2">
+          <AlertTriangle size={18} className="text-destructive mt-0.5" />
+          <div>
+            <h3 className="text-sm font-semibold text-destructive">Data Management — Danger Zone</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Cloud storage is limited. Export your data as CSV before deleting to keep a local backup. Deleted data cannot be recovered.
             </p>
-            <div className="flex gap-1">
-              <Button variant="ghost" size="sm" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
-                <ChevronLeft size={14} />
-              </Button>
-              <Button variant="ghost" size="sm" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>
-                <ChevronRight size={14} />
-              </Button>
-            </div>
           </div>
-        )}
-      </Card>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="destructive"
+            size="sm"
+            className="gap-2"
+            onClick={() => { exportCSV(true); }}
+            disabled={filtered.length === 0}
+          >
+            <Download size={14} /> Export & Delete All ({filtered.length})
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10"
+            onClick={() => setDeleteConfirm({ type: "bulk" })}
+            disabled={filtered.length === 0}
+          >
+            <Trash2 size={14} /> Delete Filtered ({filtered.length})
+          </Button>
+        </div>
+      </div>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteConfirm?.type === "single"
+                ? "This registration will be permanently deleted."
+                : `${filtered.length} registrations will be permanently deleted. This cannot be undone.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteConfirm?.type === "single" && deleteConfirm.id) deleteSingle(deleteConfirm.id);
+                else deleteFiltered();
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Detail Dialog */}
+      <Dialog open={!!detailReg} onOpenChange={() => setDetailReg(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Registration Details</DialogTitle>
+          </DialogHeader>
+          {detailReg && (
+            <div className="space-y-3 text-sm">
+              <Row label="Name" value={detailReg.leader_name} />
+              <Row label="Email" value={detailReg.leader_email} />
+              <Row label="Phone" value={detailReg.leader_phone} />
+              <Row label="College" value={detailReg.college_name} />
+              <Row label="Event" value={eventMap.get(detailReg.event_id)?.name || "—"} />
+              <Row label="Team" value={detailReg.team_name || "—"} />
+              <Row label="Status" value={detailReg.registration_status} />
+              <Row label="Amount" value={detailReg.amount_paid ? `₹${detailReg.amount_paid}` : "—"} />
+              <Row label="UTR" value={detailReg.utr_number || "—"} />
+              <Row label="Transaction ID" value={detailReg.transaction_id || "—"} />
+              <Row label="Source" value={detailReg.source} />
+              <Row label="Semester" value={detailReg.semester || "—"} />
+              <Row label="Date" value={new Date(detailReg.created_at).toLocaleString()} />
+              {getMembers(detailReg.members).length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Team Members</p>
+                  {getMembers(detailReg.members).map((m, i) => (
+                    <p key={i} className="text-foreground">{m.name}{m.phone ? ` · ${m.phone}` : ""}</p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+const Row = ({ label, value }: { label: string; value: string }) => (
+  <div className="flex justify-between gap-4">
+    <span className="text-muted-foreground shrink-0">{label}</span>
+    <span className="text-foreground text-right truncate">{value}</span>
+  </div>
+);
 
 export default AdminRegistrations;
