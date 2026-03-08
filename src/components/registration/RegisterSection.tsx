@@ -275,7 +275,16 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       setForm(initialForm);
       setTouched({});
       setStep(0);
-      supabase.functions.invoke("send-email", { body: { type: "registration_received", registrationId: regId } }).catch((err) => console.error("Email send error:", err));
+      supabase.functions.invoke("send-email", {
+        body: {
+          type: "registration_received",
+          to: leaderEmail,
+          leader_name: sanitizeInput(form.leaderName),
+          team_name: isSolo ? undefined : sanitizeInput(form.teamName),
+          registration_id: regId,
+          event_name: selectedEventData?.name || "",
+        },
+      }).catch((err) => console.error("Email send error:", err));
     } catch (err: any) {
       toast.error(err.message || "Registration failed. Please try again.");
     } finally {
