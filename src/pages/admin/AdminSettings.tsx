@@ -255,6 +255,7 @@ const AdminSettings = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="1">1 minute (testing)</SelectItem>
                 <SelectItem value="15">15 minutes</SelectItem>
                 <SelectItem value="30">30 minutes</SelectItem>
                 <SelectItem value="60">1 hour</SelectItem>

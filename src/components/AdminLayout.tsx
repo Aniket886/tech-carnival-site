@@ -3,6 +3,10 @@ import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog, AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
   Trophy, Handshake, Bot, Layers,
@@ -23,7 +27,7 @@ const links = [
 ];
 
 const AdminLayout = () => {
-  const { user, isAdmin, loading, signOut } = useAdminAuth();
+  const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,6 +101,32 @@ const AdminLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Idle Warning Dialog */}
+      <AlertDialog open={showIdleWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Session Expiring Soon</AlertDialogTitle>
+            <AlertDialogDescription>
+              You've been inactive. Your session will expire in{" "}
+              <span className="font-bold text-foreground">
+                {idleMinutesLeft !== null && idleMinutesLeft <= 1
+                  ? "less than a minute"
+                  : `${idleMinutesLeft} minutes`}
+              </span>
+              . Click below to stay logged in.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="default" onClick={dismissIdleWarning}>
+              Stay Logged In
+            </Button>
+            <Button variant="ghost" onClick={handleLogout}>
+              Logout Now
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
