@@ -33,13 +33,13 @@ interface Score {
 }
 
 interface EventInfo { id: string; name: string; category: string; }
+interface CollegeInfo { id: string; name: string; }
 
 interface FormData {
   college_name: string;
   event_id: string;
   team_name: string;
   points: number;
-  position: string;
 }
 
 const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0, position: "participant" };
