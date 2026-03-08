@@ -59,6 +59,7 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchEvents = async () => {
       try {
         const { data, error } = await supabase
@@ -67,16 +68,17 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
           .eq("is_active", true)
           .order("name");
 
+        if (cancelled) return;
         if (error) {
           console.error("Failed to fetch events:", error);
         }
-        if (data) {
+        if (data && data.length > 0) {
           setEvents(
             data.map((e: any) => ({
               id: e.id,
               emoji: e.icon || "🎯",
               name: e.name,
-              description: e.description?.substring(0, 60) + "..." || "",
+              description: e.description ? (e.description.length > 60 ? e.description.substring(0, 60) + "..." : e.description) : "No description available",
               category: e.category as Exclude<Category, "all">,
               teamSize: formatTeamSize(e.team_size_min || 1, e.team_size_max || 1),
               detailedDescription: e.description || "",
@@ -91,10 +93,17 @@ const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
       } catch (err) {
         console.error("Events fetch exception:", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
+
+    // Timeout fallback — stop loading after 8 seconds even if fetch hangs
+    const timeout = setTimeout(() => {
+      if (!cancelled) setLoading(false);
+    }, 8000);
+
     fetchEvents();
+    return () => { cancelled = true; clearTimeout(timeout); };
   }, []);
 
   const filtered = active === "all" ? events : events.filter((e) => e.category === active);
