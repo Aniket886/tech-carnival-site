@@ -172,15 +172,32 @@ const Registration = () => {
         if (!form.event_id) e.event_id = "Please select an event";
       }
       if (s === 1) {
-        if (!form.leader_name.trim()) e.leader_name = "Name is required";
-        if (!isValidEmail(form.leader_email)) e.leader_email = "Valid email required";
-        if (!isValidPhone(form.leader_phone)) e.leader_phone = "Valid 10-digit phone required";
-        if (!form.college_name.trim()) e.college_name = "College is required";
-        if (isTeamEvent && !form.team_name.trim()) e.team_name = "Team name is required";
+        const nameV = validateName(form.leader_name);
+        if (!nameV.valid) e.leader_name = nameV.error!;
+        const emailV = validateEmail(form.leader_email);
+        if (!emailV.valid) e.leader_email = emailV.error!;
+        const phoneV = validatePhone(form.leader_phone);
+        if (!phoneV.valid) e.leader_phone = phoneV.error!;
+        const collegeV = validateCollegeName(form.college_name);
+        if (!collegeV.valid) e.college_name = collegeV.error!;
+        if (isTeamEvent) {
+          const teamV = validateTeamName(form.team_name);
+          if (!teamV.valid) e.team_name = teamV.error!;
+        }
+        // Check duplicate emails within team
+        const allEmails = [form.leader_email.trim().toLowerCase()];
         form.members.forEach((m, i) => {
-          if (!m.name.trim()) e[`member_${i}_name`] = "Required";
-          if (!isValidEmail(m.email)) e[`member_${i}_email`] = "Valid email required";
-          if (!isValidPhone(m.phone)) e[`member_${i}_phone`] = "Valid 10-digit phone required";
+          const mnV = validateName(m.name);
+          if (!mnV.valid) e[`member_${i}_name`] = mnV.error!;
+          const meV = validateEmail(m.email);
+          if (!meV.valid) e[`member_${i}_email`] = meV.error!;
+          const mpV = validatePhone(m.phone);
+          if (!mpV.valid) e[`member_${i}_phone`] = mpV.error!;
+          const memberEmail = m.email.trim().toLowerCase();
+          if (memberEmail && allEmails.includes(memberEmail)) {
+            e[`member_${i}_email`] = "Duplicate email found in team members";
+          }
+          allEmails.push(memberEmail);
         });
       }
       if (s === 2) {
@@ -194,7 +211,13 @@ const Registration = () => {
   const goNext = () => {
     const errs = validateStep(step);
     setErrors(errs);
-    if (Object.keys(errs).length === 0) setStep((s) => Math.min(s + 1, 2));
+    if (countErrors(errs) > 0) {
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+      toast({ title: `Please fix ${countErrors(errs)} error${countErrors(errs) > 1 ? "s" : ""} before continuing`, variant: "destructive" });
+      return;
+    }
+    setStep((s) => Math.min(s + 1, 2));
   };
 
   const goBack = () => setStep((s) => Math.max(s - 1, 0));
