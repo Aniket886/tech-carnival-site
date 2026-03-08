@@ -7,18 +7,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { scheduleData, formatTime, type ScheduleCategory, type ScheduleEvent } from "@/data/schedule";
 
-type Category = "technical" | "gaming" | "cultural" | "ceremony" | "break";
-type FilterCategory = "all" | Category;
-
-interface ScheduleEvent {
-  name: string;
-  icon: string;
-  startHour: number;
-  endHour: number;
-  category: Category;
-  venue: string;
-}
+type FilterCategory = "all" | ScheduleCategory;
 
 interface DaySchedule {
   label: string;
@@ -27,33 +18,19 @@ interface DaySchedule {
   events: ScheduleEvent[];
 }
 
+// Derive day schedule from shared data
 const days: DaySchedule[] = [
   {
     label: "Day 1",
     startHour: 8,
     endHour: 20,
-    events: [
-      { name: "Assemble", icon: "🏁", startHour: 8.75, endHour: 9, category: "ceremony", venue: "Main Gate" },
-      { name: "Inauguration + Flash Mob + Banner Drop", icon: "🎤", startHour: 9, endHour: 10, category: "ceremony", venue: "Main Auditorium" },
-      { name: "Hack Momentum (6hr Hackathon)", icon: "⚡", startHour: 10.5, endHour: 17.5, category: "technical", venue: "Main Auditorium" },
-      { name: "Brain Quest (Mega Quiz)", icon: "🧠", startHour: 10.5, endHour: 13.5, category: "technical", venue: "Seminar Hall A" },
-      { name: "Poster Presentation", icon: "📊", startHour: 10.5, endHour: 13.5, category: "technical", venue: "Exhibition Hall" },
-      { name: "Lunch Break", icon: "🍽️", startHour: 13.5, endHour: 14.5, category: "break", venue: "Food Court" },
-      { name: "Pitch Perfect", icon: "🎯", startHour: 14.5, endHour: 17, category: "technical", venue: "Seminar Hall B" },
-      { name: "Battle Ground – Free Fire", icon: "🎮", startHour: 14.5, endHour: 17.5, category: "gaming", venue: "Gaming Arena" },
-      { name: "Dance Mania (Group Dance)", icon: "💃", startHour: 17, endHour: 20, category: "cultural", venue: "Main Stage" },
-    ],
+    events: scheduleData.filter((e) => e.day === 1),
   },
   {
     label: "Day 2",
     startHour: 9,
     endHour: 18,
-    events: [
-      { name: "Code Compass", icon: "🧭", startHour: 9, endHour: 11, category: "technical", venue: "Computer Lab 1" },
-      { name: "Scitopia (Skit Play)", icon: "🎬", startHour: 11.5, endHour: 14, category: "cultural", venue: "Main Stage" },
-      { name: "Lunch Break", icon: "🍽️", startHour: 14, endHour: 15, category: "break", venue: "Food Court" },
-      { name: "Valedictory + Special Band Performance", icon: "🏆", startHour: 15.25, endHour: 18, category: "ceremony", venue: "Main Auditorium" },
-    ],
+    events: scheduleData.filter((e) => e.day === 2),
   },
 ];
 
@@ -66,21 +43,13 @@ const filters: { label: string; value: FilterCategory; icon: string }[] = [
   { label: "Breaks", value: "break", icon: "🍽️" },
 ];
 
-const categoryColors: Record<Category, { bg: string; border: string; text: string }> = {
+const categoryColors: Record<ScheduleCategory, { bg: string; border: string; text: string }> = {
   technical: { bg: "bg-primary/20", border: "border-primary/50", text: "text-primary" },
   gaming: { bg: "bg-red-500/20", border: "border-red-500/50", text: "text-red-400" },
   cultural: { bg: "bg-accent/20", border: "border-accent/50", text: "text-accent" },
   ceremony: { bg: "bg-amber-400/20", border: "border-amber-400/50", text: "text-amber-400" },
   break: { bg: "bg-foreground/10", border: "border-foreground/30", text: "text-muted-foreground" },
 };
-
-function formatHour(h: number): string {
-  const hr = Math.floor(h);
-  const min = Math.round((h - hr) * 60);
-  const ampm = hr >= 12 ? "PM" : "AM";
-  const display = hr > 12 ? hr - 12 : hr === 0 ? 12 : hr;
-  return min > 0 ? `${display}:${min.toString().padStart(2, "0")} ${ampm}` : `${display} ${ampm}`;
-}
 
 function assignLanes(events: ScheduleEvent[]): { event: ScheduleEvent; lane: number }[] {
   const sorted = [...events].sort((a, b) => a.startHour - b.startHour || a.endHour - b.endHour);
@@ -141,33 +110,19 @@ function DesktopTimetable({ day, activeCategory }: { day: DaySchedule; activeCat
     <div ref={sectionRef} className="hidden md:block">
       <div className="relative h-8 mb-1">
         {hours.map((h) => (
-          <span
-            key={h}
-            className="absolute text-[11px] font-mono text-muted-foreground -translate-x-1/2"
-            style={{ left: `${pct(h)}%` }}
-          >
-            {formatHour(h)}
+          <span key={h} className="absolute text-[11px] font-mono text-muted-foreground -translate-x-1/2" style={{ left: `${pct(h)}%` }}>
+            {formatTime(h)}
           </span>
         ))}
       </div>
 
-      <div
-        className="relative schedule-grid-bg rounded-xl border border-border/40 overflow-hidden"
-        style={{ height: laneCount * LANE_H + 8 }}
-      >
+      <div className="relative schedule-grid-bg rounded-xl border border-border/40 overflow-hidden" style={{ height: laneCount * LANE_H + 8 }}>
         {hours.map((h) => (
-          <div
-            key={h}
-            className="absolute top-0 bottom-0 w-px bg-foreground/[0.06]"
-            style={{ left: `${pct(h)}%` }}
-          />
+          <div key={h} className="absolute top-0 bottom-0 w-px bg-foreground/[0.06]" style={{ left: `${pct(h)}%` }} />
         ))}
 
         {nowPct !== null && (
-          <div
-            className="absolute top-0 bottom-0 z-30 flex flex-col items-center pointer-events-none"
-            style={{ left: `${nowPct}%` }}
-          >
+          <div className="absolute top-0 bottom-0 z-30 flex flex-col items-center pointer-events-none" style={{ left: `${nowPct}%` }}>
             <span className="text-[9px] font-bold text-red-500 bg-red-500/20 px-1.5 rounded-b-md">NOW</span>
             <div className="w-0.5 flex-1 bg-red-500/80 animate-pulse" />
           </div>
@@ -199,14 +154,14 @@ function DesktopTimetable({ day, activeCategory }: { day: DaySchedule; activeCat
                       transitionDelay: `${i * 40}ms`,
                     }}
                   >
-                    <span className="shrink-0">{ev.icon}</span>
+                    <span className="shrink-0">{ev.emoji}</span>
                     <span className="truncate">{ev.name}</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="glass-strong text-xs max-w-[220px]">
-                  <p className="font-semibold">{ev.icon} {ev.name}</p>
+                  <p className="font-semibold">{ev.emoji} {ev.name}</p>
                   <p className="text-muted-foreground mt-0.5">
-                    {formatHour(ev.startHour)} – {formatHour(ev.endHour)}
+                    {formatTime(ev.startHour)} – {formatTime(ev.endHour)}
                   </p>
                   <p className="text-muted-foreground">📍 {ev.venue}</p>
                   <Badge variant="outline" className={`mt-1 text-[10px] capitalize ${colors.text} ${colors.border}`}>
@@ -237,24 +192,18 @@ function MobileScheduleList({ day, activeCategory }: { day: DaySchedule; activeC
         const barWidth = ((ev.endHour - ev.startHour) / maxDuration) * 100;
 
         return (
-          <div
-            key={`${ev.name}-${i}`}
-            className={`transition-opacity duration-300 ${dimmed ? "opacity-20" : "opacity-100"}`}
-          >
+          <div key={`${ev.name}-${i}`} className={`transition-opacity duration-300 ${dimmed ? "opacity-20" : "opacity-100"}`}>
             <div className="flex items-center justify-between gap-2 py-1.5 px-1">
               <div className="flex items-center gap-2 min-w-0">
-                <span className="text-base shrink-0">{ev.icon}</span>
+                <span className="text-base shrink-0">{ev.emoji}</span>
                 <span className={`text-sm font-medium truncate ${colors.text}`}>{ev.name}</span>
               </div>
               <span className="text-[11px] font-mono text-muted-foreground whitespace-nowrap">
-                {formatHour(ev.startHour)} – {formatHour(ev.endHour)}
+                {formatTime(ev.startHour)} – {formatTime(ev.endHour)}
               </span>
             </div>
             <div className="h-1 rounded-full bg-foreground/5 ml-8 mr-1">
-              <div
-                className={`h-full rounded-full ${colors.bg} ${colors.border} border`}
-                style={{ width: `${barWidth}%` }}
-              />
+              <div className={`h-full rounded-full ${colors.bg} ${colors.border} border`} style={{ width: `${barWidth}%` }} />
             </div>
           </div>
         );
@@ -274,12 +223,8 @@ const ScheduleSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       <div className="relative z-10 container mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text mb-3">
-            ⚡ Event Flow
-          </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">
-            Your 2-day schedule at a glance
-          </p>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text mb-3">⚡ Event Flow</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">Your 2-day schedule at a glance</p>
         </div>
 
         <div className="flex justify-center gap-3 mb-6">

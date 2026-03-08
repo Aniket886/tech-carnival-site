@@ -6,6 +6,27 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// ── Hardcoded schedule (single source of truth, mirrors src/data/schedule.ts) ──
+const SCHEDULE_TEXT = `FULL EVENT SCHEDULE:
+
+Day 1:
+  🏁 Assemble — 8:45 AM – 9:00 AM — 📍 Main Gate [ceremony]
+  🎤 Inauguration + Flash Mob + Banner Drop — 9:00 AM – 10:00 AM — 📍 Main Auditorium [ceremony]
+  🔍 Myth Busters — 9:00 AM – 11:00 AM — 📍 Seminar Hall B | Team: Solo [technical]
+  ⚡ Hack Momentum (6hr Hackathon) — 10:30 AM – 5:30 PM — 📍 Main Auditorium | Team: 2-4 [technical]
+  🧠 Brain Quest (Mega Quiz) — 10:30 AM – 1:30 PM — 📍 Seminar Hall A | Team: 2 [technical]
+  📊 Poster Presentation — 10:30 AM – 1:30 PM — 📍 Exhibition Hall | Team: 1-2 [technical]
+  🍽️ Lunch Break — 1:30 PM – 2:30 PM — 📍 Food Court [break]
+  🎯 Pitch Perfect — 2:30 PM – 5:00 PM — 📍 Seminar Hall B | Team: 1-2 [technical]
+  🎮 Battle Ground – Free Fire — 2:30 PM – 5:30 PM — 📍 Gaming Arena | Team: 4 (squad) [gaming]
+  💃 Dance Mania (Group Dance) — 6:00 PM – 8:00 PM — 📍 Main Stage | Team: 6-12 [cultural]
+
+Day 2:
+  🧭 Code Compass — 9:00 AM – 11:00 AM — 📍 Computer Lab 1 | Team: Solo [technical]
+  🎬 Scitopia (Skit Play) — 11:30 AM – 2:00 PM — 📍 Main Auditorium | Team: 5-10 [cultural]
+  🍽️ Lunch Break — 2:00 PM – 3:00 PM — 📍 Food Court [break]
+  🏆 Valedictory + Special Band Performance — 3:15 PM – 6:00 PM — 📍 Main Auditorium [ceremony]`;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -52,7 +73,9 @@ serve(async (req) => {
 
 PERSONALITY: Be warm, use emojis, carnival/tech-themed language. Keep answers concise but informative.
 
-EVENTS DATA:
+${SCHEDULE_TEXT}
+
+EVENTS DATA (from database):
 ${eventList}
 
 CONTACTS:
@@ -65,14 +88,15 @@ LEADERBOARD (Top colleges):
 ${topColleges || 'No scores yet'}
 
 RULES:
-1. Answer questions about events, registration, schedule, venue, prizes, rules, and team sizes using the data above.
-2. For registration help, tell users to scroll to the Registration section on the website.
-3. When users ask for contact info, phone numbers, or say "help", "talk to someone", "coordinator" — show the relevant contacts from the list above.
-4. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
-5. For leaderboard/scores questions, use the leaderboard data.
-6. Always end responses with a helpful suggestion or follow-up question.
-7. Keep responses under 200 words unless detailed info is specifically requested.
-8. Use markdown formatting for readability (bold, lists, etc.)`;
+1. For schedule/timing questions, ALWAYS use the FULL EVENT SCHEDULE above. It is the exact schedule shown on the website.
+2. Answer questions about events, registration, schedule, venue, prizes, rules, and team sizes using the data above.
+3. For registration help, tell users to scroll to the Registration section on the website.
+4. When users ask for contact info, phone numbers, or say "help", "talk to someone", "coordinator" — show the relevant contacts from the list above.
+5. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
+6. For leaderboard/scores questions, use the leaderboard data.
+7. Always end responses with a helpful suggestion or follow-up question.
+8. Keep responses under 200 words unless detailed info is specifically requested.
+9. Use markdown formatting for readability (bold, lists, etc.)`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
