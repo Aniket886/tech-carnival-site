@@ -37,6 +37,15 @@ interface EventOption {
   team_size_max: number;
 }
 
+interface PassedEventData {
+  id: string;
+  name: string;
+  emoji: string;
+  category: string;
+  team_size_min: number;
+  team_size_max: number;
+}
+
 interface TeamMember {
   name: string;
   email: string;
@@ -59,7 +68,7 @@ interface FieldErrors {
 }
 
 interface RegistrationModalProps {
-  eventName: string | null;
+  eventData: PassedEventData | null;
   onClose: () => void;
 }
 
@@ -80,7 +89,7 @@ const initialForm: FormData = {
   agreed: false,
 };
 
-const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
+const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const { toast } = useToast();
   const [step, setStep] = useState(0);
   const [event, setEvent] = useState<EventOption | null>(null);
@@ -92,11 +101,11 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
   const [successData, setSuccessData] = useState<{ id: string; eventName: string } | null>(null);
 
   const isTeamEvent = event ? event.team_size_max > 1 : false;
-  const isOpen = !!eventName;
+  const isOpen = !!eventData;
 
-  // Fetch event details when eventId changes
+  // Set event from passed data or fetch from Supabase as fallback
   useEffect(() => {
-    if (!eventName) {
+    if (!eventData) {
       setEvent(null);
       setForm({ ...initialForm });
       setStep(0);
@@ -105,25 +114,24 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
       setSuccessData(null);
       return;
     }
-    supabase
-      .from("events")
-      .select("id, name, icon, category, team_size_min, team_size_max")
-      .eq("name", eventName)
-      .eq("is_active", true)
-      .single()
-      .then(({ data }) => {
-        if (data) {
-          setEvent(data);
-          if (data.team_size_max > 1) {
-            const minExtra = Math.max(0, data.team_size_min - 1);
-            setForm((prev) => ({
-              ...prev,
-              members: Array.from({ length: minExtra }, emptyMember),
-            }));
-          }
-        }
-      });
-  }, [eventName]);
+    // Use passed data directly — no async fetch needed
+    const ev: EventOption = {
+      id: eventData.id,
+      name: eventData.name,
+      icon: eventData.emoji || null,
+      category: eventData.category,
+      team_size_min: eventData.team_size_min,
+      team_size_max: eventData.team_size_max,
+    };
+    setEvent(ev);
+    if (ev.team_size_max > 1) {
+      const minExtra = Math.max(0, ev.team_size_min - 1);
+      setForm((prev) => ({
+        ...prev,
+        members: Array.from({ length: minExtra }, emptyMember),
+      }));
+    }
+  }, [eventData]);
 
   const onBlur = (field: string) => {
     setTouched((prev) => new Set(prev).add(field));
@@ -349,9 +357,15 @@ const RegistrationModal = ({ eventName, onClose }: RegistrationModalProps) => {
             Register for {event?.icon} {event?.name}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            {isTeamEvent
-              ? `Team of ${event?.team_size_min}-${event?.team_size_max} members`
-              : "Solo participation"}
+            {event && event.team_size_min === 1 && event.team_size_max === 1
+              ? "👤 Solo participation"
+              : event && event.team_size_min === 1 && event.team_size_max === 2
+              ? "👥 Solo or Duo participation"
+              : event && event.team_size_min === event.team_size_max
+              ? `👥 Team of ${event.team_size_min} members`
+              : event
+              ? `👥 Team of ${event.team_size_min}–${event.team_size_max} members`
+              : "Loading..."}
           </DialogDescription>
         </DialogHeader>
 

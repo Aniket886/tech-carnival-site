@@ -58,7 +58,7 @@ const formatTeamSize = (min: number, max: number): string => {
 const EventsSection = () => {
   const [active, setActive] = useState<Category>("all");
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [registerEventName, setRegisterEventName] = useState<string | null>(null);
+  const [registerEvent, setRegisterEvent] = useState<EventData | null>(null);
   const [events, setEvents] = useState<EventData[]>(fallbackEvents);
   const [loading, setLoading] = useState(false);
 
@@ -201,7 +201,7 @@ const EventsSection = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setRegisterEventName(event.name);
+                          setRegisterEvent(event);
                         }}
                       >
                         Register
@@ -220,14 +220,15 @@ const EventsSection = () => {
         onClose={() => setSelectedEvent(null)}
         onRegister={(name) => {
           setSelectedEvent(null);
-          setRegisterEventName(name);
+          const ev = events.find(e => e.name === name);
+          if (ev) setRegisterEvent(ev);
         }}
         categoryStyles={categoryStyles}
       />
 
       <RegistrationModal
-        eventName={registerEventName}
-        onClose={() => setRegisterEventName(null)}
+        eventData={registerEvent}
+        onClose={() => setRegisterEvent(null)}
       />
     </section>
   );
