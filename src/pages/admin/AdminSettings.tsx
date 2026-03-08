@@ -208,14 +208,19 @@ const AdminSettings = () => {
     }
   };
 
-  // Kick a session
+  // Kick a session (calls edge function to also revoke auth)
   const handleKickSession = async (sessionId: string) => {
+    // Find the user_id for this session
+    const session = activeSessions.find(s => s.id === sessionId);
+    if (!session) return;
+
     try {
-      await supabase
-        .from("admin_sessions")
-        .update({ is_active: false, logged_out_at: new Date().toISOString(), logout_reason: "kicked" })
-        .eq("id", sessionId);
-      toast.success("Session terminated");
+      const { data: { session: authSession } } = await supabase.auth.getSession();
+      const resp = await supabase.functions.invoke("kick-session", {
+        body: { session_id: sessionId, user_id: session.user_id },
+      });
+      if (resp.error) throw resp.error;
+      toast.success("Session terminated & user signed out");
       fetchActiveSessions();
     } catch {
       toast.error("Failed to kick session");
