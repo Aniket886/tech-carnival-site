@@ -307,13 +307,13 @@ const AdminSettings = () => {
         </h2>
         <Tabs value={logTab} onValueChange={setLogTab}>
           <TabsList className="mb-3">
-            <TabsTrigger value="active">Active Sessions ({activeLogs.length})</TabsTrigger>
+            <TabsTrigger value="active">Active Sessions ({activeSessions.length})</TabsTrigger>
             <TabsTrigger value="history">History ({loginLogs.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="active">
             <div className="rounded-xl border border-border bg-card overflow-hidden">
-              {activeLogs.length === 0 ? (
+              {activeSessions.length === 0 ? (
                 <p className="p-6 text-center text-muted-foreground text-sm">No active sessions.</p>
               ) : (
                 <Table>
@@ -327,23 +327,26 @@ const AdminSettings = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {activeLogs.map((l, i) => (
-                      <TableRow key={l.id} className="border-border">
+                    {activeSessions.map((s, i) => (
+                      <TableRow key={s.id} className="border-border">
                         <TableCell className="text-sm text-muted-foreground">{i + 1}</TableCell>
-                        <TableCell className="text-sm text-foreground">{l.email}</TableCell>
+                        <TableCell className="text-sm text-foreground">{s.email}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30 text-[10px]">
                             Online
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          {new Date(l.logged_in_at).toLocaleString("en-IN")}
+                          {new Date(s.login_at).toLocaleString("en-IN")}
                         </TableCell>
                         <TableCell className="text-right">
-                          {!isCurrentUser(l.user_id) && (
-                            <span className="text-xs text-destructive flex items-center justify-end gap-1 cursor-pointer hover:underline">
+                          {!isCurrentUser(s.user_id) && (
+                            <button
+                              onClick={() => handleKickSession(s.id)}
+                              className="text-xs text-destructive flex items-center justify-end gap-1 cursor-pointer hover:underline ml-auto"
+                            >
                               <LogOut size={12} /> Kick
-                            </span>
+                            </button>
                           )}
                         </TableCell>
                       </TableRow>
