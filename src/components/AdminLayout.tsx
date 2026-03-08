@@ -30,8 +30,15 @@ const links = [
 const AdminLayout = () => {
   const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Auto-refresh admin data every 10 seconds
+  useEffect(() => {
+    const id = setInterval(() => setRefreshKey(k => k + 1), 10_000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (loading) return;
