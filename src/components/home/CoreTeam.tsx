@@ -1,11 +1,12 @@
 import { User } from "lucide-react";
+import aniketImg from "@/assets/team/aniket.png";
 
 const coreTeam = [
-  "Adarsh Gouda D",
-  "Aniket Tegginamath",
-  "Bhanuprakash K S",
-  "K Vishwasheetal",
-  "Sonali Meharwade",
+  { name: "Adarsh Gouda D", image: null },
+  { name: "Aniket Tegginamath", image: aniketImg },
+  { name: "Bhanuprakash K S", image: null },
+  { name: "K Vishwasheetal", image: null },
+  { name: "Sonali Meharwade", image: null },
 ];
 
 const CoreTeam = () => {
@@ -23,16 +24,20 @@ const CoreTeam = () => {
         </div>
 
         <div className="flex flex-wrap justify-center gap-10 md:gap-14">
-          {coreTeam.map((name) => (
+          {coreTeam.map((member) => (
             <div
-              key={name}
+              key={member.name}
               className="flex flex-col items-center text-center group w-40 sm:w-52"
             >
               <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-primary/40 bg-muted/60 flex items-center justify-center mb-5 overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.15)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] group-hover:border-primary/70 transition-all duration-300">
-                <User className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/50" />
+                {member.image ? (
+                  <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/50" />
+                )}
               </div>
               <h3 className="text-base sm:text-lg font-semibold text-foreground leading-tight whitespace-nowrap">
-                {name}
+                {member.name}
               </h3>
             </div>
           ))}
