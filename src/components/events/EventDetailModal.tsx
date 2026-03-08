@@ -140,15 +140,13 @@ const EventDetailModal = ({ event, onClose, onRegister, categoryStyles }: EventD
             </ul>
           </div>
 
-          <MagneticWrapper className="w-full">
-            <Button
-              variant="neon"
-              className="w-full"
-              onClick={() => onRegister(event.name)}
-            >
-              Register for {event.name}
-            </Button>
-          </MagneticWrapper>
+          <Button
+            variant="neon"
+            className="w-full"
+            onClick={() => onRegister(event.name)}
+          >
+            Register for {event.name}
+          </Button>
         </div>
       </div>
     </div>
