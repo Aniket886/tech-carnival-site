@@ -100,6 +100,50 @@ export type Database = {
           },
         ]
       }
+      college_scores: {
+        Row: {
+          category: string
+          college_name: string
+          event_id: string
+          event_name: string
+          id: string
+          points: number
+          position: string | null
+          team_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          college_name: string
+          event_id: string
+          event_name: string
+          id?: string
+          points?: number
+          position?: string | null
+          team_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          college_name?: string
+          event_id?: string
+          event_name?: string
+          id?: string
+          points?: number
+          position?: string | null
+          team_name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "college_scores_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       colleges: {
         Row: {
           city: string | null
