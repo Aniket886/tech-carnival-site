@@ -1,0 +1,1 @@
+UPDATE public.user_roles SET email = 'aniket.gmu@gmail.com' WHERE user_id = 'fd376ebb-d914-4aa7-9fff-61e8b2732800' AND email IS NULL;
