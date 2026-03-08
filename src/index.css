@@ -52,6 +52,50 @@
   }
 }
 
+.light-theme {
+  --background: 210 40% 96%;
+  --foreground: 230 25% 10%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 230 25% 10%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 230 25% 10%;
+
+  --primary: 195 100% 40%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 270 60% 55%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 210 20% 90%;
+  --muted-foreground: 215 15% 40%;
+
+  --accent: 270 60% 55%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84.2% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 210 15% 85%;
+  --input: 210 15% 85%;
+  --ring: 195 100% 40%;
+
+  --neon-blue: 195 100% 40%;
+  --neon-purple: 270 60% 55%;
+  --neon-glow: 0 0 10px hsl(195 100% 40% / 0.3), 0 0 30px hsl(195 100% 40% / 0.1);
+  --purple-glow: 0 0 10px hsl(270 60% 55% / 0.3), 0 0 30px hsl(270 60% 55% / 0.1);
+
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 230 25% 10%;
+  --sidebar-primary: 195 100% 40%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 270 60% 55%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 210 15% 85%;
+  --sidebar-ring: 195 100% 40%;
+}
+
 @layer base {
   * {
     @apply border-border;

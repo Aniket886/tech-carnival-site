@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 interface VisibleSection {
   section_key: string;
@@ -49,6 +50,7 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
           {navLinks.map((link) => (
             <button key={link.href} onClick={() => handleNav(link.href)} className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 tracking-wide">{link.label}</button>
           ))}
+          <ThemeToggle />
           {showRegister && <Button variant="neon" size="sm" onClick={() => handleNav("#events")}>Register</Button>}
         </div>
         <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
@@ -61,6 +63,7 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
             {navLinks.map((link) => (
               <button key={link.href} onClick={() => handleNav(link.href)} className="text-sm text-muted-foreground hover:text-primary transition-colors py-2 text-left tracking-wide">{link.label}</button>
             ))}
+            <ThemeToggle />
             {showRegister && <Button variant="neon" size="sm" onClick={() => handleNav("#events")}>Register</Button>}
           </div>
         </div>
