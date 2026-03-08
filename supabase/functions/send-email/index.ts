@@ -22,9 +22,19 @@ function buildHtml(payload: EmailPayload): string {
   const displayName = team_name || leader_name;
 
   const header = `
-    <div style="background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #a855f7 100%); padding: 40px 24px; text-align: center;">
-      <p style="margin: 0 0 8px; font-size: 28px; line-height: 1;">⚡</p>
-      <h1 style="color: #ffffff; font-size: 26px; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; font-weight: 800; letter-spacing: 0.5px;">Tech Carnival – 2K26</h1>
+    <div style="position: relative; background: #0a0e1a; padding: 48px 24px 40px; text-align: center; overflow: hidden;">
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 70% 60% at 50% 20%, rgba(14,165,233,0.15) 0%, transparent 70%);"></div>
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 50% 70% at 75% 80%, rgba(168,85,247,0.12) 0%, transparent 70%);"></div>
+      <div style="position: relative; z-index: 1;">
+        <p style="margin: 0 0 4px; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #38bdf8; font-family: 'Segoe UI', Arial, sans-serif;">📅 MARCH 27-28, 2026</p>
+        <h1 style="font-size: 36px; margin: 8px 0 0; font-family: 'Segoe UI', Arial, sans-serif; font-weight: 900; letter-spacing: 1px; line-height: 1.1; background: linear-gradient(135deg, #38bdf8, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Tech Carnival</h1>
+        <p style="font-size: 28px; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; font-weight: 700; color: rgba(248,250,252,0.9); letter-spacing: 6px;">2K26</p>
+        <div style="margin: 12px auto 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span style="display: inline-block; width: 40px; height: 1px; background: rgba(56,189,248,0.4);"></span>
+          <span style="font-size: 11px; color: #94a3b8; letter-spacing: 1px;">Innovation Meets Celebration</span>
+          <span style="display: inline-block; width: 40px; height: 1px; background: rgba(56,189,248,0.4);"></span>
+        </div>
+      </div>
     </div>`;
 
   const footer = `
