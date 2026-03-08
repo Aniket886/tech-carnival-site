@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { Mail, Send, Eye, Users, Search, X, Loader2, CheckCircle2 } from "lucide-react";
+import { Mail, Send, Eye, Users, Search, X, Loader2, CheckCircle2, Table2 } from "lucide-react";
 
 /* ─── email template definitions ─── */
 interface EmailTemplate {
@@ -135,11 +135,25 @@ const AdminEmail = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
+  const [allRegistrations, setAllRegistrations] = useState<{ leader_name: string; leader_email: string; leader_phone: string; event_name: string }[]>([]);
+  const [regSearch, setRegSearch] = useState("");
 
-  // load events
+  // load events + all registrations
   useEffect(() => {
     supabase.from("events").select("id,name").eq("is_active", true).order("name").then(({ data }) => {
       if (data) setEvents(data);
+      // load registrations with event names
+      supabase.from("registrations").select("leader_name,leader_email,leader_phone,event_id").order("created_at", { ascending: false }).then(({ data: regs }) => {
+        if (regs && data) {
+          const eventMap = new Map(data.map(e => [e.id, e.name]));
+          setAllRegistrations(regs.map(r => ({
+            leader_name: r.leader_name,
+            leader_email: r.leader_email,
+            leader_phone: r.leader_phone,
+            event_name: eventMap.get(r.event_id) || "Unknown",
+          })));
+        }
+      });
     });
   }, []);
 
@@ -375,6 +389,61 @@ const AdminEmail = () => {
           )}
         </div>
       </div>
+      {/* ─── Registered Participants Table ─── */}
+      <Card className="border-border bg-card">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2">
+              <Table2 size={18} className="text-primary" />
+              <CardTitle className="text-base">Registered Participants</CardTitle>
+              <Badge variant="secondary" className="text-xs">{allRegistrations.length}</Badge>
+            </div>
+            <div className="relative w-full sm:w-64">
+              <Search size={14} className="absolute left-2.5 top-2.5 text-muted-foreground" />
+              <Input placeholder="Search name, email, event…" value={regSearch} onChange={e => setRegSearch(e.target.value)} className="pl-8 bg-background border-border text-xs h-9" />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto rounded-lg border border-border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/50 border-b border-border">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">#</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Phone</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Event</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allRegistrations
+                  .filter(r => {
+                    if (!regSearch.trim()) return true;
+                    const q = regSearch.toLowerCase();
+                    return r.leader_name.toLowerCase().includes(q) || r.leader_email.toLowerCase().includes(q) || r.event_name.toLowerCase().includes(q) || r.leader_phone.includes(q);
+                  })
+                  .map((r, i) => (
+                    <tr key={`${r.leader_email}-${r.event_name}-${i}`} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3 text-muted-foreground text-xs">{i + 1}</td>
+                      <td className="px-4 py-3 text-foreground font-medium">{r.leader_name}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{r.leader_email}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{r.leader_phone}</td>
+                      <td className="px-4 py-3"><Badge variant="outline" className="text-xs">{r.event_name}</Badge></td>
+                    </tr>
+                  ))}
+                {allRegistrations.filter(r => {
+                  if (!regSearch.trim()) return true;
+                  const q = regSearch.toLowerCase();
+                  return r.leader_name.toLowerCase().includes(q) || r.leader_email.toLowerCase().includes(q) || r.event_name.toLowerCase().includes(q) || r.leader_phone.includes(q);
+                }).length === 0 && (
+                  <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground text-sm">No registrations found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
