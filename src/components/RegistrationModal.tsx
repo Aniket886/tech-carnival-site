@@ -240,52 +240,46 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
 
     setLoading(true);
 
-    const { data: existing } = await supabase
-      .from("registrations")
-      .select("id")
-      .eq("event_id", event.id)
-      .eq("leader_email", form.leader_email);
+    try {
+      const { error } = await supabase
+        .from("registrations")
+        .insert([{
+          event_id: event.id,
+          leader_name: sanitizeInput(form.leader_name),
+          leader_email: form.leader_email.trim().toLowerCase(),
+          leader_phone: form.leader_phone.trim(),
+          college_name: sanitizeInput(form.college_name),
+          semester: form.semester || null,
+          team_name: isTeamEvent ? sanitizeInput(form.team_name) : null,
+          members: isTeamEvent && form.members.length > 0
+            ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
+            : null,
+        }]);
 
-    if (existing && existing.length > 0) {
-      setErrors({ leader_email: "This email is already registered for this event" });
       setLoading(false);
-      setStep(0);
-      return;
-    }
 
-    const { data, error } = await supabase
-      .from("registrations")
-      .insert([{
-        event_id: event.id,
-        leader_name: sanitizeInput(form.leader_name),
-        leader_email: form.leader_email.trim().toLowerCase(),
-        leader_phone: form.leader_phone.trim(),
-        college_name: sanitizeInput(form.college_name),
-        semester: form.semester || null,
-        team_name: isTeamEvent ? sanitizeInput(form.team_name) : null,
-        members: isTeamEvent && form.members.length > 0
-          ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
-          : null,
-      }])
-      .select("id")
-      .single();
-
-    setLoading(false);
-
-    if (error) {
-      toast({ title: "Registration failed", description: error.message, variant: "destructive" });
-    } else if (data) {
-      setSuccessData({ id: data.id, eventName: event.name });
-      supabase.functions.invoke("send-email", {
-        body: {
-          type: "registration_received",
-          to: form.leader_email.trim(),
-          leader_name: form.leader_name.trim(),
-          team_name: isTeamEvent ? form.team_name.trim() : undefined,
-          registration_id: data.id,
-          event_name: event.name,
-        },
-      }).catch(() => {});
+      if (error) {
+        if (error.message?.includes("duplicate") || error.code === "23505") {
+          setErrors({ leader_email: "This email is already registered for this event" });
+          setStep(0);
+        } else {
+          toast({ title: "Registration failed", description: error.message, variant: "destructive" });
+        }
+      } else {
+        setSuccessData({ id: crypto.randomUUID().slice(0, 8), eventName: event.name });
+        supabase.functions.invoke("send-email", {
+          body: {
+            type: "registration_received",
+            to: form.leader_email.trim(),
+            leader_name: form.leader_name.trim(),
+            team_name: isTeamEvent ? form.team_name.trim() : undefined,
+            event_name: event.name,
+          },
+        }).catch(() => {});
+      }
+    } catch (err) {
+      setLoading(false);
+      toast({ title: "Registration failed", description: "An unexpected error occurred. Please try again.", variant: "destructive" });
     }
   };
 
