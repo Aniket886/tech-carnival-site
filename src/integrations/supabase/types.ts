@@ -381,6 +381,77 @@ export type Database = {
           },
         ]
       }
+      section_cards: {
+        Row: {
+          card_key: string
+          card_name: string
+          display_order: number
+          id: string
+          is_visible: boolean
+          section_key: string
+          updated_at: string
+        }
+        Insert: {
+          card_key: string
+          card_name: string
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_key: string
+          updated_at?: string
+        }
+        Update: {
+          card_key?: string
+          card_name?: string
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "section_cards_section_key_fkey"
+            columns: ["section_key"]
+            isOneToOne: false
+            referencedRelation: "site_sections"
+            referencedColumns: ["section_key"]
+          },
+        ]
+      }
+      site_sections: {
+        Row: {
+          description: string | null
+          display_order: number
+          id: string
+          is_visible: boolean
+          section_key: string
+          section_name: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_key: string
+          section_name: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_key?: string
+          section_name?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       sponsors: {
         Row: {
           created_at: string
