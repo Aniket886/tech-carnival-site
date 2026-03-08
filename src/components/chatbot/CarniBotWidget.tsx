@@ -217,10 +217,10 @@ const CarniBotWidget = () => {
             )}
             <button
               onClick={openChat}
-              className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-purple-600 text-white flex items-center justify-center shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all duration-300 animate-pulse hover:animate-none"
+              className="btn-golden w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:shadow-primary/50 transition-all duration-300"
               aria-label="Open CarniBOT"
             >
-              <Bot size={28} />
+              <span className="flex items-center justify-center"><Bot size={28} /></span>
             </button>
           </motion.div>
         )}
