@@ -76,6 +76,33 @@ const AdminRegistrations = () => {
     else {
       setRegs((prev) => prev.map((r) => (r.id === id ? { ...r, registration_status: status } : r)));
       toast({ title: `Registration ${status}` });
+
+      // Send email notification
+      const reg = regs.find((r) => r.id === id);
+      if (reg && (status === "confirmed" || status === "rejected")) {
+        // Fetch event details for confirmed emails
+        let eventDate: string | undefined;
+        let eventTime: string | undefined;
+        let eventVenue: string | undefined;
+        if (status === "confirmed") {
+          const { data: ev } = await supabase.from("events").select("date, time, venue").eq("id", reg.event_id).single();
+          if (ev) { eventDate = ev.date || undefined; eventTime = ev.time || undefined; eventVenue = ev.venue || undefined; }
+        }
+
+        supabase.functions.invoke("send-email", {
+          body: {
+            type: status === "confirmed" ? "registration_confirmed" : "registration_rejected",
+            to: reg.leader_email,
+            leader_name: reg.leader_name,
+            team_name: reg.team_name || undefined,
+            registration_id: id,
+            event_name: reg.events?.name || "",
+            event_date: eventDate,
+            event_time: eventTime,
+            event_venue: eventVenue,
+          },
+        }).catch(() => {});
+      }
     }
   };
 

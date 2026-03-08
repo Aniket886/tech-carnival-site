@@ -248,6 +248,17 @@ const Registration = () => {
       toast({ title: "Registration failed", description: error.message, variant: "destructive" });
     } else if (data) {
       setSuccessData({ id: data.id, eventName: selectedEvent?.name || "" });
+      // Send confirmation email (fire-and-forget)
+      supabase.functions.invoke("send-email", {
+        body: {
+          type: "registration_received",
+          to: form.leader_email.trim(),
+          leader_name: form.leader_name.trim(),
+          team_name: isTeamEvent ? form.team_name.trim() : undefined,
+          registration_id: data.id,
+          event_name: selectedEvent?.name || "",
+        },
+      }).catch(() => {});
     }
   };
 
