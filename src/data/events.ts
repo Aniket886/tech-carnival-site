@@ -89,6 +89,6 @@ export const fallbackEvents: EventData[] = [
     category: "cultural",
     teamSize: "5-10 members",
     detailedDescription: "Scitopia is a theatrical extravaganza where teams perform short skits blending drama, comedy, and social commentary.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null,
   },
 ];
