@@ -233,6 +233,9 @@ const AdminScores = () => {
           <Trophy size={22} className="text-primary" /> Score Management ({scores.length})
         </h2>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={exportCSV}>
+            <Download size={14} /> Export CSV
+          </Button>
           <Button variant="outline" size="sm" className="gap-2" onClick={importCSV}>
             <Upload size={14} /> Import CSV
           </Button>
