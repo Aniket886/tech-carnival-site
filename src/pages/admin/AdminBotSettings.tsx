@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
   Users, MessageCircle, BarChart3, Save, Trash2, Plus,
-  Phone, Bot,
+  Phone, Bot, Mail,
 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -110,7 +110,7 @@ const ContactsTab = () => {
       <Input
         value={getEdit(c.id, "name", c.name) as string}
         onChange={e => setEdit(c.id, "name", e.target.value)}
-        className="flex-1 min-w-[180px] bg-muted/50"
+        className="flex-1 min-w-[140px] bg-muted/50"
         placeholder="Name"
       />
       <div className="relative shrink-0">
@@ -118,8 +118,17 @@ const ContactsTab = () => {
         <Input
           value={getEdit(c.id, "phone", c.phone) as string}
           onChange={e => setEdit(c.id, "phone", e.target.value)}
-          className="pl-9 w-44 bg-muted/50"
+          className="pl-9 w-40 bg-muted/50"
           placeholder="+91 XXXXX XXXXX"
+        />
+      </div>
+      <div className="relative shrink-0">
+        <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={getEdit(c.id, "email", c.email || "") as string}
+          onChange={e => setEdit(c.id, "email", e.target.value || null)}
+          className="pl-9 w-52 bg-muted/50"
+          placeholder="email@example.com"
         />
       </div>
       <Button
