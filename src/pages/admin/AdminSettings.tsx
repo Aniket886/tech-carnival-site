@@ -34,6 +34,15 @@ interface LoginLog {
   logged_in_at: string;
 }
 
+interface ActiveSession {
+  id: string;
+  user_id: string;
+  email: string;
+  is_active: boolean;
+  login_at: string;
+  last_active_at: string;
+}
+
 const AdminSettings = () => {
   const { user } = useAdminAuth();
 
