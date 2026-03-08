@@ -17,7 +17,7 @@ const ScrollToTop = () => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-16 right-6 z-40">
+    <div className="fixed bottom-20 right-6 z-40">
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         className="btt-btn"

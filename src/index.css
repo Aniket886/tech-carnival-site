@@ -417,14 +417,14 @@
 
 /* Back to top button */
 .btt-btn {
-  width: 140px;
-  height: 56px;
+  width: 100px;
+  height: 36px;
   overflow: hidden;
   border: none;
   color: hsl(var(--foreground));
   background: none;
   position: relative;
-  padding-bottom: 2em;
+  padding-bottom: 1.4em;
   cursor: pointer;
 }
 
@@ -434,12 +434,13 @@
   width: 100%;
   height: 100%;
   display: flex;
+  align-items: center;
 }
 
 .btt-btn::before {
   content: "";
   position: absolute;
-  height: 2px;
+  height: 1.5px;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -457,13 +458,14 @@
 .btt-clone > *,
 .btt-text > * {
   opacity: 1;
-  font-size: 1.3rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   transition: 0.2s;
-  margin-left: 4px;
+  margin-left: 3px;
 }
 
 .btt-clone > * {
-  transform: translateY(60px);
+  transform: translateY(40px);
 }
 
 .btt-btn:hover .btt-clone > * {
@@ -474,7 +476,7 @@
 
 .btt-btn:hover .btt-text > * {
   opacity: 1;
-  transform: translateY(-60px);
+  transform: translateY(-40px);
   transition: all 0.2s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
 }
 
@@ -483,7 +485,7 @@
 .btt-btn:hover .btt-clone > :nth-child(3) { transition-delay: 0.25s; }
 
 .btt-icon {
-  width: 20px;
+  width: 14px;
   right: 0;
   top: 50%;
   transform: translateY(-50%) rotate(-50deg);
