@@ -35,6 +35,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <PageLoader />
+      <CustomCursor />
       <Navbar />
       {isSectionVisible("hero") && <Hero />}
       {isSectionVisible("about") && <ScrollAnimate><About /></ScrollAnimate>}
@@ -48,7 +49,6 @@ const Index = () => {
       {isSectionVisible("footer") && <Footer />}
       <ScrollToTop />
       <CarniBotWidget />
-      <CustomCursor />
     </div>
   );
 };
