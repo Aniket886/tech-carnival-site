@@ -234,7 +234,8 @@ const AdminEmail = () => {
     let failCount = 0;
 
     for (const r of recipients) {
-      const html = currentTemplate.buildHtml({ recipientName: r.name, customMessage: message, eventName });
+      const resolvedMsg = resolveMessage(message, r);
+      const html = currentTemplate.buildHtml({ recipientName: r.name, customMessage: resolvedMsg, eventName: r.event || eventName });
       try {
         const { error } = await supabase.functions.invoke("send-email", {
           body: { type: "custom", to: r.email, leader_name: r.name, registration_id: "-", event_name: eventName || "Tech Carnival 2K26", custom_html: html, custom_subject: subject },
