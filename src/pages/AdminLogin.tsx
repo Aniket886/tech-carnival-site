@@ -1,118 +1,119 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Mail } from "lucide-react";
+import { toast } from "sonner";
+import { Lock } from "lucide-react";
 
 const AdminLogin = () => {
-  const { signIn, loading, isAdmin } = useAdminAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [showExpiredBanner, setShowExpiredBanner] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
+  const navigate = useNavigate();
 
-  // Check if redirected due to session expiry
   useEffect(() => {
-    const state = location.state as { sessionExpired?: boolean } | null;
-    if (state?.sessionExpired) {
-      setShowExpiredBanner(true);
-      // Clear the state so refresh doesn't re-show
-      window.history.replaceState({}, "", "/admin");
-      const timer = setTimeout(() => setShowExpiredBanner(false), 10_000);
-      return () => clearTimeout(timer);
-    }
-  }, [location.state]);
+    try {
+      if (sessionStorage.getItem("session_expired") === "1") {
+        setSessionExpired(true);
+        sessionStorage.removeItem("session_expired");
+        const t = setTimeout(() => setSessionExpired(false), 10000);
+        return () => clearTimeout(t);
+      }
+    } catch {}
+  }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
-      </div>
-    );
-  }
-
-  if (isAdmin) {
-    navigate("/admin/overview", { replace: true });
-    return null;
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setShowExpiredBanner(false);
-    const trimmedEmail = email.trim().toLowerCase();
-    if (!trimmedEmail) { setError("Email is required"); return; }
-    if (trimmedEmail.length > 50) { setError("Email must not exceed 50 characters"); return; }
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmedEmail)) {
-      setError("Enter a valid email address (e.g., name@example.com)"); return;
-    }
-    if (!password) { setError("Password is required"); return; }
-    setSubmitting(true);
-    const err = await signIn(trimmedEmail, password);
-    setSubmitting(false);
-    if (err) {
-      setError(err);
-    } else {
-      navigate("/admin/overview", { replace: true });
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+
+      // Check admin role
+      const { data: role } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (!role) {
+        await supabase.auth.signOut();
+        throw new Error("Access denied. Admin privileges required.");
+      }
+
+      // Log the login
+      await supabase.from("admin_login_logs").insert({
+        user_id: data.user.id,
+        email: data.user.email || email,
+        action_type: "login",
+      });
+
+      navigate("/admin/overview");
+    } catch (err: any) {
+      toast.error(err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm space-y-4">
-        {/* Session expired banner */}
-        {showExpiredBanner && (
-          <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
-            <Lock className="h-4 w-4 text-yellow-400 shrink-0" />
-            <p className="text-sm text-yellow-300">
-              Your session has expired due to inactivity. Please log in again.
-            </p>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        {sessionExpired && (
+          <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center gap-2 text-sm text-amber-300 animate-in fade-in duration-300">
+            <Lock size={16} className="shrink-0" />
+            <span>Your session expired due to inactivity. Please log in again.</span>
           </div>
         )}
 
-        <div className="rounded-xl border border-border bg-card/50 p-8 neon-glow">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gradient mb-1">Admin Login</h1>
-            <p className="text-sm text-muted-foreground">Tech Carnival – 2K26</p>
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 rounded-full bg-primary/10 neon-border flex items-center justify-center mx-auto mb-4">
+            <Lock className="text-primary" size={28} />
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center gap-2">
-                <Mail className="h-3.5 w-3.5" /> Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@example.com"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="flex items-center gap-2">
-                <Lock className="h-3.5 w-3.5" /> Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full neon-glow" disabled={submitting}>
-              {submitting ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
+          <h1 className="font-display text-2xl font-bold gradient-text mb-2">Admin Login</h1>
+          <p className="text-sm text-muted-foreground">Tech Carnival – 2K26 Dashboard</p>
         </div>
+
+        <form onSubmit={handleLogin} className="glass-strong rounded-xl p-6 space-y-5">
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-sm text-foreground font-medium">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@techcarnival.com"
+              className="bg-muted/50 border-border focus:border-primary"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="password" className="text-sm text-foreground font-medium">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="bg-muted/50 border-border focus:border-primary"
+            />
+          </div>
+          <Button variant="default" className="w-full" type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </Button>
+        </form>
+
+        <p className="text-center text-xs text-muted-foreground mt-6">
+          <button onClick={() => navigate("/")} className="hover:text-primary transition-colors">
+            ← Back to site
+          </button>
+        </p>
       </div>
     </div>
   );
