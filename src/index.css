@@ -489,7 +489,7 @@
 
 .btt-icon {
   width: 14px;
-  right: 0;
+  right: 4px;
   top: 50%;
   transform: translateY(-50%) rotate(-50deg);
   transition: 0.2s ease-out;
