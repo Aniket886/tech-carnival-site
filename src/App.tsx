@@ -14,6 +14,7 @@ import AdminRegistrations from "./pages/admin/AdminRegistrations";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminColleges from "./pages/admin/AdminColleges";
 import AdminApiKeys from "./pages/admin/AdminApiKeys";
+import AdminApiDocs from "./pages/admin/AdminApiDocs";
 import AdminEventLinks from "./pages/admin/AdminEventLinks";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminScores from "./pages/admin/AdminScores";
@@ -41,6 +42,7 @@ const App = () => (
                 <Route path="/admin/sponsors" element={<AdminSponsors />} />
                 <Route path="/admin/colleges" element={<AdminColleges />} />
                 <Route path="/admin/api-keys" element={<AdminApiKeys />} />
+                <Route path="/admin/api-docs" element={<AdminApiDocs />} />
                 <Route path="/admin/event-links" element={<AdminEventLinks />} />
                 <Route path="/admin/scores" element={<AdminScores />} />
                 <Route path="/admin/messages" element={<AdminMessages />} />

@@ -29,6 +29,7 @@ import {
   Trophy,
   Handshake,
   Layers,
+  BookOpen,
 } from "lucide-react";
 
 const navItems = [
@@ -39,6 +40,7 @@ const navItems = [
   { title: "Sponsors", url: "/admin/sponsors", icon: Handshake },
   { title: "Colleges", url: "/admin/colleges", icon: GraduationCap },
   { title: "API Keys", url: "/admin/api-keys", icon: Key },
+  { title: "API Docs", url: "/admin/api-docs", icon: BookOpen },
   { title: "Event Links", url: "/admin/event-links", icon: Globe },
   { title: "Scores", url: "/admin/scores", icon: Trophy },
   { title: "Messages", url: "/admin/messages", icon: Mail },
