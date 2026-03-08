@@ -266,7 +266,7 @@ const AdminSettings = () => {
                 <Badge variant="outline" className="bg-primary/15 text-primary border-primary/30 text-[10px] shrink-0">
                   Admin
                 </Badge>
-                <span className="text-sm text-foreground truncate">{a.user_id}</span>
+                <span className="text-sm text-foreground truncate">{a.email || a.user_id}</span>
                 {a.is_owner && (
                   <Badge variant="outline" className="bg-amber-500/15 text-amber-400 border-amber-500/30 text-[10px]">
                     Owner
