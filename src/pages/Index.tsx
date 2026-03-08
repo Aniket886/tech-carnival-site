@@ -40,7 +40,7 @@ const Index = () => {
       <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>
       <ScrollAnimate><CoreTeam /></ScrollAnimate>
       {isSectionVisible("footer") && <Footer />}
-      <ScrollToTop />
+      
       <CarniBotWidget />
     </div>
   );
