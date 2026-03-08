@@ -265,6 +265,7 @@ export type Database = {
           is_read: boolean
           message: string
           name: string
+          phone: string | null
         }
         Insert: {
           created_at?: string
@@ -273,6 +274,7 @@ export type Database = {
           is_read?: boolean
           message: string
           name: string
+          phone?: string | null
         }
         Update: {
           created_at?: string
@@ -281,6 +283,7 @@ export type Database = {
           is_read?: boolean
           message?: string
           name?: string
+          phone?: string | null
         }
         Relationships: []
       }
@@ -388,6 +391,7 @@ export type Database = {
       }
       registrations: {
         Row: {
+          amount_paid: string | null
           college_id: string | null
           college_name: string
           created_at: string
@@ -402,8 +406,10 @@ export type Database = {
           source: string
           team_name: string | null
           transaction_id: string | null
+          utr_number: string | null
         }
         Insert: {
+          amount_paid?: string | null
           college_id?: string | null
           college_name: string
           created_at?: string
@@ -418,8 +424,10 @@ export type Database = {
           source?: string
           team_name?: string | null
           transaction_id?: string | null
+          utr_number?: string | null
         }
         Update: {
+          amount_paid?: string | null
           college_id?: string | null
           college_name?: string
           created_at?: string
@@ -434,6 +442,7 @@ export type Database = {
           source?: string
           team_name?: string | null
           transaction_id?: string | null
+          utr_number?: string | null
         }
         Relationships: [
           {
