@@ -1,15 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Users, CalendarDays, Building2, Trophy, MessageSquare,
   CreditCard, TrendingUp, ArrowUpRight, ArrowDownRight, Clock,
-  Cpu, Gamepad2, Palette,
+  Cpu, Gamepad2, Palette, Download, Trash2, AlertTriangle,
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
+import { toast } from "sonner";
 
 interface Stats {
   totalRegistrations: number;
@@ -34,9 +40,36 @@ const COLORS = [
   "hsl(0, 84%, 60%)",
 ];
 
+const toCsvString = (headers: string[], rows: string[][]) => {
+  const escape = (v: string) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  return [headers.map(escape).join(","), ...rows.map(r => r.map(escape).join(","))].join("\n");
+};
+
+const downloadCsv = (filename: string, csv: string) => {
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+const RESET_TABLES = [
+  { key: "registrations", label: "Registrations", description: "All team registrations and payment data" },
+  { key: "college_scores", label: "Scores", description: "All college/event score entries" },
+  { key: "contacts", label: "Messages", description: "All contact form submissions" },
+  { key: "admin_login_logs", label: "Login Logs", description: "Admin login/logout history" },
+  { key: "admin_sessions", label: "Sessions", description: "Admin session records" },
+  { key: "activity_log", label: "Activity Log", description: "Admin activity log entries" },
+] as const;
+
 const AdminOverview = () => {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const [resetTarget, setResetTarget] = useState<typeof RESET_TABLES[number] | null>(null);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -136,6 +169,99 @@ const AdminOverview = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleExportAll = useCallback(async () => {
+    setExporting(true);
+    try {
+      const [
+        { data: regs },
+        { data: events },
+        { data: colleges },
+        { data: scores },
+        { data: contacts },
+      ] = await Promise.all([
+        supabase.from("registrations").select("*").order("created_at", { ascending: false }),
+        supabase.from("events").select("*").order("name"),
+        supabase.from("colleges").select("*").order("name"),
+        supabase.from("college_scores").select("*").order("points", { ascending: false }),
+        supabase.from("contacts").select("*").order("created_at", { ascending: false }),
+      ]);
+
+      const date = new Date().toISOString().slice(0, 10);
+
+      // Registrations
+      if (regs?.length) {
+        const csv = toCsvString(
+          ["ID", "Leader Name", "Leader Email", "Leader Phone", "College", "Event ID", "Team Name", "Semester", "Members", "Status", "Amount Paid", "UTR Number", "Transaction ID", "Source", "Created At"],
+          regs.map(r => [r.id, r.leader_name, r.leader_email, r.leader_phone, r.college_name, r.event_id, r.team_name || "", r.semester || "", JSON.stringify(r.members || []), r.registration_status, r.amount_paid || "", r.utr_number || "", r.transaction_id || "", r.source, r.created_at])
+        );
+        downloadCsv(`registrations_${date}.csv`, csv);
+      }
+
+      // Events
+      if (events?.length) {
+        const csv = toCsvString(
+          ["ID", "Name", "Slug", "Category", "Description", "Date", "Time", "Venue", "Team Min", "Team Max", "Prize Pool", "Active", "Created At"],
+          events.map(e => [e.id, e.name, e.slug, e.category, e.description || "", e.date || "", e.time || "", e.venue || "", String(e.team_size_min), String(e.team_size_max), e.prize_pool || "", String(e.is_active), e.created_at])
+        );
+        downloadCsv(`events_${date}.csv`, csv);
+      }
+
+      // Colleges
+      if (colleges?.length) {
+        const csv = toCsvString(
+          ["ID", "Name", "Short Name", "City", "State", "University", "Source", "Status", "Active", "Created At"],
+          colleges.map(c => [c.id, c.name, c.short_name || "", c.city || "", c.state || "", c.affiliated_university || "", c.source, c.approval_status, String(c.is_active), c.created_at])
+        );
+        downloadCsv(`colleges_${date}.csv`, csv);
+      }
+
+      // Scores
+      if (scores?.length) {
+        const csv = toCsvString(
+          ["ID", "College", "Event Name", "Category", "Team Name", "Points", "Position", "Updated At"],
+          scores.map(s => [s.id, s.college_name, s.event_name, s.category, s.team_name || "", String(s.points), s.position || "", s.updated_at])
+        );
+        downloadCsv(`scores_${date}.csv`, csv);
+      }
+
+      // Contacts
+      if (contacts?.length) {
+        const csv = toCsvString(
+          ["ID", "Name", "Email", "Phone", "Message", "Read", "Created At"],
+          contacts.map(c => [c.id, c.name, c.email, c.phone || "", c.message, String(c.is_read), c.created_at])
+        );
+        downloadCsv(`contacts_${date}.csv`, csv);
+      }
+
+      const total = (regs?.length || 0) + (events?.length || 0) + (colleges?.length || 0) + (scores?.length || 0) + (contacts?.length || 0);
+      toast.success(`Exported ${total} records across 5 CSV files`);
+    } catch (err: any) {
+      toast.error(err.message || "Export failed");
+    } finally {
+      setExporting(false);
+    }
+  }, []);
+
+  const handleReset = useCallback(async () => {
+    if (!resetTarget) return;
+    setResetting(true);
+    try {
+      // Delete all rows — use a filter that matches all
+      const { error } = await supabase
+        .from(resetTarget.key as any)
+        .delete()
+        .neq("id", "00000000-0000-0000-0000-000000000000");
+
+      if (error) throw error;
+      toast.success(`${resetTarget.label} data has been reset`);
+      setResetTarget(null);
+    } catch (err: any) {
+      toast.error(err.message || "Reset failed");
+    } finally {
+      setResetting(false);
+    }
+  }, [resetTarget]);
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -163,6 +289,13 @@ const AdminOverview = () => {
 
   return (
     <div className="space-y-6">
+      {/* Action Bar */}
+      <div className="flex flex-wrap items-center gap-3">
+        <Button variant="outline" size="sm" className="gap-2" onClick={handleExportAll} disabled={exporting}>
+          <Download size={14} /> {exporting ? "Exporting…" : "Export All Data"}
+        </Button>
+      </div>
+
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {statCards.map((s, i) => (
@@ -363,6 +496,62 @@ const AdminOverview = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Data Reset */}
+      <Card className="bg-card border-destructive/30">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium text-destructive flex items-center gap-2">
+            <AlertTriangle size={16} /> Data Reset
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-xs text-muted-foreground mb-4">
+            Permanently delete all records from a specific table. This action cannot be undone.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {RESET_TABLES.map((t) => (
+              <div key={t.key} className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-foreground">{t.label}</p>
+                  <p className="text-[11px] text-muted-foreground">{t.description}</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="shrink-0 ml-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={() => setResetTarget(t)}
+                >
+                  <Trash2 size={14} />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Reset Confirmation */}
+      <AlertDialog open={!!resetTarget} onOpenChange={() => setResetTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle size={18} className="text-destructive" /> Reset {resetTarget?.label}?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete <strong>all {resetTarget?.label.toLowerCase()}</strong> data. This action cannot be undone. Make sure you have exported a backup first.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={resetting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={handleReset}
+              disabled={resetting}
+            >
+              {resetting ? "Resetting…" : "Yes, Delete All"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
