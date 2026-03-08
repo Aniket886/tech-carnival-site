@@ -40,9 +40,10 @@ interface FormData {
   event_id: string;
   team_name: string;
   points: number;
+  position: string; // "auto" | "1st" | "2nd" | "3rd"
 }
 
-const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0 };
+const emptyForm: FormData = { college_name: "", event_id: "", team_name: "", points: 0, position: "auto" };
 
 const getPositionFromPoints = (points: number): string => {
   if (points >= 100) return "1st";
