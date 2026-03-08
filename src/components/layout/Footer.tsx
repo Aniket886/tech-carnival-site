@@ -65,11 +65,11 @@ const Footer = () => {
 
           {/* Bottom bar */}
           <div className="mt-10 pt-5 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-[11px] text-muted-foreground/50">
+            <p className="text-xs text-foreground">
               © {new Date().getFullYear()} Tech Carnival 2K26 · GM University · All Rights Reserved
             </p>
-            <p className="text-[11px] text-muted-foreground/35">
-              Built with <span className="text-destructive/50">♥</span> by FCIT Tech Team
+            <p className="text-xs text-foreground/70">
+              Built with <span className="text-destructive">♥</span> by FCIT Tech Team
             </p>
           </div>
         </div>
