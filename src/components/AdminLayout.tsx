@@ -101,6 +101,32 @@ const AdminLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Idle Warning Dialog */}
+      <AlertDialog open={showIdleWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Session Expiring Soon</AlertDialogTitle>
+            <AlertDialogDescription>
+              You've been inactive. Your session will expire in{" "}
+              <span className="font-bold text-foreground">
+                {idleMinutesLeft !== null && idleMinutesLeft <= 1
+                  ? "less than a minute"
+                  : `${idleMinutesLeft} minutes`}
+              </span>
+              . Click below to stay logged in.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="default" onClick={dismissIdleWarning}>
+              Stay Logged In
+            </Button>
+            <Button variant="ghost" onClick={handleLogout}>
+              Logout Now
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
