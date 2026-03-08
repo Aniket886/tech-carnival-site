@@ -39,7 +39,7 @@ const AdminLogin = () => {
         _role: "admin",
       });
 
-      if (!role) {
+      if (!isAdmin) {
         await supabase.auth.signOut();
         throw new Error("Access denied. Admin privileges required.");
       }
