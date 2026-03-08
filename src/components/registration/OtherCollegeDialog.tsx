@@ -20,6 +20,8 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
   const [shortName, setShortName] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
+  const [affiliatedUniversity, setAffiliatedUniversity] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -31,6 +33,9 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
     else if (trimmed.length > 100) errs.name = "Must not exceed 100 characters";
     if (!city.trim()) errs.city = "City is required";
     if (!state.trim()) errs.state = "State is required";
+    if (websiteUrl.trim() && !/^https?:\/\/.+/i.test(websiteUrl.trim())) {
+      errs.websiteUrl = "Must be a valid URL (https://...)";
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -49,7 +54,6 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
       .limit(1);
 
     if (existing && existing.length > 0) {
-      // College already exists, just use it
       onCollegeSaved(existing[0].name);
       resetAndClose();
       setSaving(false);
@@ -61,8 +65,12 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
       short_name: shortName.trim() || null,
       city: city.trim(),
       state: state.trim(),
+      affiliated_university: affiliatedUniversity.trim() || null,
+      website_url: websiteUrl.trim() || null,
+      source: "user_submitted",
+      approval_status: "pending",
       is_active: true,
-    });
+    } as any);
 
     setSaving(false);
 
@@ -71,7 +79,7 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
       return;
     }
 
-    toast.success("College added successfully!");
+    toast.success("College submitted! It will be available after admin review.");
     onCollegeSaved(collegeName);
     resetAndClose();
   };
@@ -81,6 +89,8 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
     setShortName("");
     setCity("");
     setState("");
+    setAffiliatedUniversity("");
+    setWebsiteUrl("");
     setErrors({});
     onClose();
   };
@@ -94,13 +104,13 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
             Add Your College
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Your college will be saved for future registrations
+            Fill in your college details. It will be reviewed and made available for future registrations.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">College Name *</Label>
+            <Label className="text-xs text-muted-foreground">College Full Name *</Label>
             <Input
               placeholder="e.g. ABC College of Engineering"
               value={name}
@@ -123,7 +133,7 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">City *</Label>
+              <Label className="text-xs text-muted-foreground">City / Location *</Label>
               <Input
                 placeholder="e.g. Mumbai"
                 value={city}
@@ -145,12 +155,34 @@ const OtherCollegeDialog = ({ open, onClose, onCollegeSaved }: OtherCollegeDialo
               {errors.state && <p className="text-xs text-destructive">{errors.state}</p>}
             </div>
           </div>
+
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Affiliated University</Label>
+            <Input
+              placeholder="e.g. Mumbai University"
+              value={affiliatedUniversity}
+              onChange={(e) => setAffiliatedUniversity(e.target.value)}
+              maxLength={100}
+            />
+          </div>
+
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">College Website</Label>
+            <Input
+              placeholder="e.g. https://abccollege.edu.in"
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              maxLength={200}
+              className={errors.websiteUrl ? "border-destructive" : ""}
+            />
+            {errors.websiteUrl && <p className="text-xs text-destructive">{errors.websiteUrl}</p>}
+          </div>
         </div>
 
         <DialogFooter>
           <Button variant="ghost" onClick={resetAndClose}>Cancel</Button>
           <Button onClick={handleSave} disabled={saving}>
-            {saving ? "Saving…" : "Save & Continue"}
+            {saving ? "Saving…" : "Submit & Continue"}
           </Button>
         </DialogFooter>
       </DialogContent>

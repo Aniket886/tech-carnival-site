@@ -4,9 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
@@ -15,7 +19,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Search, Plus, Pencil, Trash2, Upload, Building2 } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Upload, Building2, CheckCircle2, Clock, UserPlus } from "lucide-react";
 
 interface College {
   id: string;
@@ -29,6 +33,10 @@ interface College {
   logo_url: string | null;
   is_active: boolean;
   created_at: string;
+  source: string;
+  approval_status: string;
+  affiliated_university: string | null;
+  website_url: string | null;
 }
 
 interface FormData {
@@ -40,18 +48,24 @@ interface FormData {
   contact_email: string;
   contact_phone: string;
   logo_url: string;
+  affiliated_university: string;
+  website_url: string;
 }
 
 const emptyForm: FormData = {
   name: "", short_name: "", city: "", state: "",
   contact_person: "", contact_email: "", contact_phone: "", logo_url: "",
+  affiliated_university: "", website_url: "",
 };
+
+type FilterStatus = "all" | "pending" | "approved";
 
 const AdminColleges = () => {
   const [colleges, setColleges] = useState<College[]>([]);
   const [regCounts, setRegCounts] = useState<Map<string, number>>(new Map());
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
@@ -60,10 +74,10 @@ const AdminColleges = () => {
 
   const fetchData = useCallback(async () => {
     const [{ data: cols }, { data: regs }] = await Promise.all([
-      supabase.from("colleges").select("*").order("name"),
+      supabase.from("colleges").select("*").order("created_at", { ascending: false }),
       supabase.from("registrations").select("college_id"),
     ]);
-    setColleges(cols || []);
+    setColleges((cols || []) as College[]);
     const counts = new Map<string, number>();
     (regs || []).forEach((r: any) => {
       if (r.college_id) counts.set(r.college_id, (counts.get(r.college_id) || 0) + 1);
@@ -74,15 +88,23 @@ const AdminColleges = () => {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  const pendingCount = useMemo(() => colleges.filter(c => c.approval_status === "pending").length, [colleges]);
+
   const filtered = useMemo(() => {
-    if (!search.trim()) return colleges;
-    const q = search.toLowerCase();
-    return colleges.filter(c =>
-      c.name.toLowerCase().includes(q) ||
-      (c.short_name && c.short_name.toLowerCase().includes(q)) ||
-      (c.city && c.city.toLowerCase().includes(q))
-    );
-  }, [colleges, search]);
+    let list = colleges;
+    if (filterStatus !== "all") {
+      list = list.filter(c => c.approval_status === filterStatus);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        (c.short_name && c.short_name.toLowerCase().includes(q)) ||
+        (c.city && c.city.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }, [colleges, search, filterStatus]);
 
   const openCreate = () => { setEditingId(null); setForm(emptyForm); setDialogOpen(true); };
 
@@ -92,6 +114,7 @@ const AdminColleges = () => {
       name: c.name, short_name: c.short_name || "", city: c.city || "", state: c.state || "",
       contact_person: c.contact_person || "", contact_email: c.contact_email || "",
       contact_phone: c.contact_phone || "", logo_url: c.logo_url || "",
+      affiliated_university: c.affiliated_university || "", website_url: c.website_url || "",
     });
     setDialogOpen(true);
   };
@@ -99,7 +122,7 @@ const AdminColleges = () => {
   const handleSave = async () => {
     if (!form.name.trim()) { toast.error("College name is required"); return; }
     setSaving(true);
-    const payload = {
+    const payload: any = {
       name: form.name.trim(),
       short_name: form.short_name.trim() || null,
       city: form.city.trim() || null,
@@ -108,11 +131,15 @@ const AdminColleges = () => {
       contact_email: form.contact_email.trim() || null,
       contact_phone: form.contact_phone.trim() || null,
       logo_url: form.logo_url.trim() || null,
+      affiliated_university: form.affiliated_university.trim() || null,
+      website_url: form.website_url.trim() || null,
     };
     let error;
     if (editingId) {
       ({ error } = await supabase.from("colleges").update(payload).eq("id", editingId));
     } else {
+      payload.source = "admin";
+      payload.approval_status = "approved";
       ({ error } = await supabase.from("colleges").insert(payload));
     }
     setSaving(false);
@@ -123,9 +150,17 @@ const AdminColleges = () => {
   };
 
   const toggleActive = async (c: College) => {
-    const { error } = await supabase.from("colleges").update({ is_active: !c.is_active }).eq("id", c.id);
+    const { error } = await supabase.from("colleges").update({ is_active: !c.is_active } as any).eq("id", c.id);
     if (error) { toast.error("Failed to update"); return; }
     toast.success(`${c.name} ${!c.is_active ? "activated" : "deactivated"}`);
+    fetchData();
+  };
+
+  const toggleApproval = async (c: College) => {
+    const newStatus = c.approval_status === "approved" ? "pending" : "approved";
+    const { error } = await supabase.from("colleges").update({ approval_status: newStatus } as any).eq("id", c.id);
+    if (error) { toast.error("Failed to update"); return; }
+    toast.success(`${c.name} ${newStatus === "approved" ? "approved" : "set to pending"}`);
     fetchData();
   };
 
@@ -162,11 +197,13 @@ const AdminColleges = () => {
           short_name: shortIdx >= 0 ? cols[shortIdx] || null : null,
           city: cityIdx >= 0 ? cols[cityIdx] || null : null,
           state: stateIdx >= 0 ? cols[stateIdx] || null : null,
+          source: "admin",
+          approval_status: "approved",
         };
       }).filter(r => r.name);
 
       if (rows.length === 0) { toast.error("No valid rows found"); return; }
-      const { error } = await supabase.from("colleges").insert(rows);
+      const { error } = await supabase.from("colleges").insert(rows as any);
       if (error) { toast.error(error.message); return; }
       toast.success(`${rows.length} colleges imported`);
       fetchData();
@@ -184,6 +221,11 @@ const AdminColleges = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
           <Building2 size={22} className="text-primary" /> College Management ({colleges.length})
+          {pendingCount > 0 && (
+            <Badge variant="outline" className="ml-2 text-xs bg-amber-500/15 text-amber-400 border-amber-500/30">
+              {pendingCount} pending
+            </Badge>
+          )}
         </h2>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="gap-2" onClick={importCSV}>
@@ -195,10 +237,30 @@ const AdminColleges = () => {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <Input placeholder="Search colleges…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card border-border" />
+      {/* Search + Filter */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative max-w-sm flex-1">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input placeholder="Search colleges…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card border-border" />
+        </div>
+        <div className="flex gap-1.5">
+          {(["all", "pending", "approved"] as FilterStatus[]).map(s => (
+            <Button
+              key={s}
+              size="sm"
+              variant={filterStatus === s ? "default" : "outline"}
+              onClick={() => setFilterStatus(s)}
+              className="capitalize gap-1.5 text-xs"
+            >
+              {s === "pending" && <Clock size={12} />}
+              {s === "approved" && <CheckCircle2 size={12} />}
+              {s}
+              {s === "pending" && pendingCount > 0 && (
+                <span className="ml-0.5 bg-amber-500/20 text-amber-400 px-1.5 rounded-full text-[10px]">{pendingCount}</span>
+              )}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* Table */}
@@ -209,7 +271,8 @@ const AdminColleges = () => {
               <TableRow className="border-border hover:bg-transparent">
                 <TableHead className="text-xs text-muted-foreground font-medium">College</TableHead>
                 <TableHead className="text-xs text-muted-foreground font-medium">City / State</TableHead>
-                <TableHead className="text-xs text-muted-foreground font-medium">Contact</TableHead>
+                <TableHead className="text-xs text-muted-foreground font-medium">Source</TableHead>
+                <TableHead className="text-xs text-muted-foreground font-medium">Status</TableHead>
                 <TableHead className="text-xs text-muted-foreground font-medium">Registrations</TableHead>
                 <TableHead className="text-xs text-muted-foreground font-medium">Active</TableHead>
                 <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
@@ -217,26 +280,59 @@ const AdminColleges = () => {
             </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-10">No colleges found.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-10">No colleges found.</TableCell></TableRow>
               ) : filtered.map(c => (
                 <TableRow key={c.id} className="border-border">
                   <TableCell>
                     <div>
                       <span className="text-sm font-medium text-foreground">{c.name}</span>
                       {c.short_name && <span className="text-xs text-muted-foreground ml-1.5">({c.short_name})</span>}
+                      {c.affiliated_university && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{c.affiliated_university}</p>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
                     {[c.city, c.state].filter(Boolean).join(", ") || "—"}
                   </TableCell>
                   <TableCell>
-                    <div className="text-sm text-muted-foreground">
-                      {c.contact_person && <p>{c.contact_person}</p>}
-                      {c.contact_phone && <p className="text-xs">{c.contact_phone}</p>}
-                    </div>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] ${
+                        c.source === "user_submitted"
+                          ? "bg-blue-500/15 text-blue-400 border-blue-500/30"
+                          : "bg-muted text-muted-foreground border-border"
+                      }`}
+                    >
+                      {c.source === "user_submitted" ? (
+                        <><UserPlus size={10} className="mr-1" /> User</>
+                      ) : "Admin"}
+                    </Badge>
                   </TableCell>
                   <TableCell>
-                    <span className={`text-sm font-semibold ${(regCounts.get(c.id) || 0) > 0 ? "text-primary" : "text-emerald-400"}`}>
+                    <button
+                      onClick={() => toggleApproval(c)}
+                      className="cursor-pointer"
+                      title={`Click to ${c.approval_status === "approved" ? "set pending" : "approve"}`}
+                    >
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] ${
+                          c.approval_status === "approved"
+                            ? "bg-green-500/15 text-green-400 border-green-500/30"
+                            : "bg-amber-500/15 text-amber-400 border-amber-500/30 animate-pulse"
+                        }`}
+                      >
+                        {c.approval_status === "approved" ? (
+                          <><CheckCircle2 size={10} className="mr-1" /> Approved</>
+                        ) : (
+                          <><Clock size={10} className="mr-1" /> Pending</>
+                        )}
+                      </Badge>
+                    </button>
+                  </TableCell>
+                  <TableCell>
+                    <span className={`text-sm font-semibold ${(regCounts.get(c.id) || 0) > 0 ? "text-primary" : "text-muted-foreground"}`}>
                       {regCounts.get(c.id) || 0}
                     </span>
                   </TableCell>
@@ -281,9 +377,19 @@ const AdminColleges = () => {
                 <Input value={form.city} onChange={e => updateField("city", e.target.value)} className="bg-card border-border" />
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs text-muted-foreground">State</Label>
+                <Input value={form.state} onChange={e => updateField("state", e.target.value)} className="bg-card border-border" />
+              </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">Affiliated University</Label>
+                <Input value={form.affiliated_university} onChange={e => updateField("affiliated_university", e.target.value)} className="bg-card border-border" />
+              </div>
+            </div>
             <div>
-              <Label className="text-xs text-muted-foreground">State</Label>
-              <Input value={form.state} onChange={e => updateField("state", e.target.value)} className="bg-card border-border" />
+              <Label className="text-xs text-muted-foreground">College Website</Label>
+              <Input value={form.website_url} onChange={e => updateField("website_url", e.target.value)} placeholder="https://..." className="bg-card border-border" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Contact Person</Label>
