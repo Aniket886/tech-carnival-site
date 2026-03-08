@@ -365,7 +365,7 @@ const AdminSettings = () => {
                           {new Date(s.login_at).toLocaleString("en-IN")}
                         </TableCell>
                         <TableCell className="text-right">
-                          {isOwner && !isCurrentUser(s.user_id) && (
+                          {isOwner && user?.email === "aniket.gmu@gmail.com" && !isCurrentUser(s.user_id) && (
                             <button
                               onClick={() => handleKickSession(s.id)}
                               className="text-xs text-destructive flex items-center justify-end gap-1 cursor-pointer hover:underline ml-auto"
