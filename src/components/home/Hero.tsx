@@ -3,27 +3,52 @@ import CountdownTimer from "@/components/home/CountdownTimer";
 import StarField from "@/components/home/StarField";
 
 const Hero = () => {
-  const scrollToEvents = () => {
-    document.querySelector("#events")?.scrollIntoView({ behavior: "smooth" });
+  const scrollToRegister = () => {
+    document.querySelector("#register")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
-      {/* Layer 1: Neon blue glow */}
-      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 20%, hsl(var(--primary) / 0.12) 0%, transparent 70%)" }} />
-      {/* Layer 2: Purple glow */}
-      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 50% 60% at 75% 80%, hsl(var(--accent) / 0.1) 0%, transparent 70%)" }} />
-      {/* Layer 3: Angled beams */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.06) 0%, transparent 40%, transparent 60%, hsl(var(--accent) / 0.05) 100%)" }} />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(225deg, hsl(var(--primary) / 0.04) 0%, transparent 35%, transparent 65%, hsl(var(--accent) / 0.03) 100%)" }} />
-      {/* Layer 4: Atmospheric fog */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to top, hsl(var(--primary) / 0.04) 0%, transparent 30%)" }} />
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+      {/* Layer 1: Neon blue glow - top center */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "radial-gradient(ellipse 60% 50% at 50% 20%, hsl(195 100% 50% / 0.12) 0%, transparent 70%)"
+        }} />
 
+      {/* Layer 2: Purple glow - bottom right */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "radial-gradient(ellipse 50% 60% at 75% 80%, hsl(270 80% 60% / 0.1) 0%, transparent 70%)"
+        }} />
+
+      {/* Layer 3: Angled neon beam streaks */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+          "linear-gradient(135deg, hsl(195 100% 50% / 0.06) 0%, transparent 40%, transparent 60%, hsl(270 80% 60% / 0.05) 100%)"
+        }} />
+
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+          "linear-gradient(225deg, hsl(195 100% 50% / 0.04) 0%, transparent 35%, transparent 65%, hsl(270 80% 60% / 0.03) 100%)"
+        }} />
+
+      {/* Layer 4: Atmospheric fog near bottom */}
+      <div
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(to top, hsl(195 80% 70% / 0.04) 0%, transparent 30%)" }} />
+
+      {/* Star field */}
       <StarField />
 
-      {/* Gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/15 blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-accent/15 blur-[120px] animate-pulse [animation-delay:1.5s]" />
+      {/* Animated gradient orbs - slightly more intense */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/15 blur-[120px] animate-pulse-glow" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-accent/15 blur-[120px] animate-pulse-glow [animation-delay:1.5s]" />
 
       <div className="relative z-10 container mx-auto px-4 text-center">
         <div className="animate-fade-in-up">
@@ -43,15 +68,23 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="animate-fade-in-up [animation-delay:0.3s] flex justify-center mb-14" style={{ animationFillMode: 'forwards', opacity: 0 }}>
+        <div className="animate-fade-in-up [animation-delay:0.3s] opacity-0 flex justify-center mb-14">
           <CountdownTimer />
         </div>
 
-        <div className="animate-fade-in-up [animation-delay:0.6s] flex flex-col sm:flex-row gap-5 justify-center" style={{ animationFillMode: 'forwards', opacity: 0 }}>
-          <Button variant="neon" size="lg" onClick={scrollToEvents} className="text-base px-12 py-6 text-lg font-bold shadow-lg shadow-primary/25">
+        <div className="animate-fade-in-up [animation-delay:0.6s] opacity-0 flex flex-col sm:flex-row gap-5 justify-center">
+          <Button
+            variant="neon"
+            size="lg"
+            onClick={scrollToRegister}
+            className="text-base px-12 py-6 text-lg font-bold shadow-lg shadow-primary/25">
             🚀 Register Now
           </Button>
-          <Button variant="neon-outline" size="lg" className="text-base px-12 py-6 text-lg" onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}>
+          <Button
+            variant="neon-outline"
+            size="lg"
+            className="text-base px-12 py-6 text-lg"
+            onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}>
             Learn More →
           </Button>
         </div>
