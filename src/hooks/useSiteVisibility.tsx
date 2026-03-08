@@ -38,6 +38,12 @@ export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) =>
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Timeout fallback: stop loading after 5 seconds even if DB is slow
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const fetchData = useCallback(async () => {
     const [{ data: secs }, { data: crds }] = await Promise.all([
       supabase.from("site_sections").select("section_key, is_visible"),
