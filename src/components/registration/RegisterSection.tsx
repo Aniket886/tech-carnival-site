@@ -212,6 +212,17 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [checkingPayment, setCheckingPayment] = useState(false);
 
   const next = async () => {
+    // Mark all current step fields as touched so errors display
+    if (step === 1) {
+      const fields: Record<string, boolean> = { leaderName: true, leaderEmail: true, leaderPhone: true, collegeName: true, semester: true };
+      if (!isSolo) {
+        fields.teamName = true;
+        form.members.forEach((_, i) => { fields[`member_${i}_name`] = true; fields[`member_${i}_email`] = true; fields[`member_${i}_phone`] = true; });
+      }
+      setTouched(t => ({ ...t, ...fields }));
+    } else if (step === 2) {
+      setTouched(t => ({ ...t, amountPaid: true, utrNumber: true, transactionId: true }));
+    }
     if (!validateStep(step)) {
       setShakeSubmit(true);
       setTimeout(() => setShakeSubmit(false), 500);
