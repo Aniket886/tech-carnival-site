@@ -9,8 +9,8 @@ import { Mail, Phone, MapPin, User, Send } from "lucide-react";
 import { validateName, validateEmail, validatePhone, validateMessage, sanitizeInput } from "@/lib/validators";
 
 const coordinators = [
-  { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com" },
-  { name: "Sonali V Meharwade", role: "Core Organizer", phone: "+91 8073 289 015", email: "xyz@college.edu" },
+  { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com", initial: "A" },
+  { name: "Sonali V Meharwade", role: "Core Organizer", phone: "+91 8073 289 015", email: "xyz@college.edu", initial: "S" },
 ];
 
 const RATE_LIMIT_KEY = "contact_last_submit";
