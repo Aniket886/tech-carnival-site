@@ -69,7 +69,7 @@ const EventFlow = () => {
             ⚡ Event Flow
           </h2>
           <p className="text-muted-foreground text-lg">
-            Your 2-day schedule at a glance
+            27th & 28th March 2026 — Your 2-day schedule at a glance
           </p>
         </motion.div>
 

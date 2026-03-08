@@ -224,7 +224,7 @@ const ScheduleSection = () => {
       <div className="relative z-10 container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text mb-3">⚡ Event Flow</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">Your 2-day schedule at a glance</p>
+          <p className="text-muted-foreground max-w-lg mx-auto">27th & 28th March 2026 — Your 2-day schedule at a glance</p>
         </div>
 
         <div className="flex justify-center gap-3 mb-6">
