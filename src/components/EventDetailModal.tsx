@@ -123,7 +123,7 @@ const EventDetailModal = ({ event, onClose, onRegister, categoryBadge }: Props) 
               className="w-full neon-glow"
               onClick={() => {
                 onClose();
-                handleRegisterClick(event.name);
+                onRegister?.(event.name);
               }}
             >
               Register for {event.name}
