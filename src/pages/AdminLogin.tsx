@@ -21,7 +21,6 @@ const AdminLogin = () => {
     if (!authLoading && user && isAdmin) {
       navigate("/admin/overview");
     } else if (!authLoading && user && !isAdmin) {
-      // Signed in but not admin
       toast.error("Access denied. Admin privileges required.");
       supabase.auth.signOut();
       setLoading(false);
@@ -46,8 +45,7 @@ const AdminLogin = () => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      // The AdminAuthProvider will detect the auth change,
-      // check the admin role, and the useEffect above will redirect.
+      // The AdminAuthProvider will detect the auth change and the useEffect will redirect
     } catch (err: any) {
       toast.error(err.message || "Login failed");
       setLoading(false);

@@ -25,40 +25,56 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const checkAdmin = async (userId: string) => {
-    const { data } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    return !!data;
+  const checkAdmin = async (userId: string): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase.rpc("has_role", {
+        _user_id: userId,
+        _role: "admin",
+      });
+      if (error) {
+        console.error("has_role RPC error:", error);
+        return false;
+      }
+      return !!data;
+    } catch (e) {
+      console.error("checkAdmin error:", e);
+      return false;
+    }
   };
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    let mounted = true;
+
+    // Get initial session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!mounted) return;
       const u = session?.user ?? null;
       setUser(u);
       if (u) {
         const admin = await checkAdmin(u.id);
-        setIsAdmin(admin);
+        if (mounted) setIsAdmin(admin);
+      }
+      if (mounted) setLoading(false);
+    });
+
+    // Listen for changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        const admin = await checkAdmin(u.id);
+        if (mounted) setIsAdmin(admin);
       } else {
         setIsAdmin(false);
       }
-      setLoading(false);
+      if (mounted) setLoading(false);
     });
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const u = session?.user ?? null;
-      setUser(u);
-      if (u) {
-        const admin = await checkAdmin(u.id);
-        setIsAdmin(admin);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string): Promise<string | null> => {
