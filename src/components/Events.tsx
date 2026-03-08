@@ -31,6 +31,7 @@ const events: EventItem[] = [
     teamSize: "2 members",
     detailedDesc: "Brain Quest is a thrilling multi-round quiz competition that tests your knowledge across technology, science, current affairs, and general trivia. From rapid-fire buzzer rounds to tricky visual puzzles, each round brings a new challenge. Team up with a partner and prove you're the sharpest minds at Tech Carnival.",
     rules: ["Teams of exactly 2 members", "No electronic devices allowed during the quiz", "Multiple rounds with elimination", "Tie-breakers will be conducted if necessary", "Quiz master's decision is final"],
+    rulebookUrl: "",
   },
   {
     emoji: "📊", name: "Pixel Perfect", desc: "Present your ideas visually on a poster", category: "technical",
