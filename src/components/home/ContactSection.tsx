@@ -1,5 +1,4 @@
 import { useState } from "react";
-import MagneticWrapper from "@/components/ui/magnetic-wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
