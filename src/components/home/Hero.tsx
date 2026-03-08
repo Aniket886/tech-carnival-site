@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import CountdownTimer from "@/components/home/CountdownTimer";
 import StarField from "@/components/home/StarField";
+import MagneticWrapper from "@/components/ui/magnetic-wrapper";
 
 const Hero = () => {
   const scrollToRegister = () => {
@@ -73,20 +74,24 @@ const Hero = () => {
         </div>
 
         <div className="animate-fade-in-up [animation-delay:0.6s] opacity-0 flex flex-col sm:flex-row gap-5 justify-center">
-          <Button
-            variant="neon"
-            size="lg"
-            onClick={scrollToRegister}
-            className="text-base px-12 py-6 text-lg font-bold shadow-lg shadow-primary/25">
-            🚀 Register Now
-          </Button>
-          <Button
-            variant="neon-outline"
-            size="lg"
-            className="text-base px-12 py-6 text-lg"
-            onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}>
-            Learn More →
-          </Button>
+          <MagneticWrapper>
+            <Button
+              variant="neon"
+              size="lg"
+              onClick={scrollToRegister}
+              className="text-base px-12 py-6 text-lg font-bold shadow-lg shadow-primary/25">
+              🚀 Register Now
+            </Button>
+          </MagneticWrapper>
+          <MagneticWrapper>
+            <Button
+              variant="neon-outline"
+              size="lg"
+              className="text-base px-12 py-6 text-lg"
+              onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}>
+              Learn More →
+            </Button>
+          </MagneticWrapper>
         </div>
       </div>
     </section>
