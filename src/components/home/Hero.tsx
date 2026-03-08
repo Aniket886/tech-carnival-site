@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import CountdownTimer from "@/components/home/CountdownTimer";
 import StarField from "@/components/home/StarField";
-import MagneticWrapper from "@/components/ui/magnetic-wrapper";
 
 const Hero = () => {
   const scrollToRegister = () => {
