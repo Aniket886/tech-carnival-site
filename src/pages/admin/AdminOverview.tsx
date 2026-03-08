@@ -57,6 +57,16 @@ const AdminOverview = () => {
       const totalEvents = events?.length || 0;
       const activeEvents = events?.filter(e => e.is_active).length || 0;
 
+      // Category breakdown
+      const catMap: Record<string, number> = {};
+      events?.forEach(e => {
+        const cat = e.category || "Other";
+        catMap[cat] = (catMap[cat] || 0) + 1;
+      });
+      const categoryBreakdown = Object.entries(catMap)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count);
+
       const pendingPayments = registrations?.filter(r => r.registration_status === "pending").length || 0;
       const confirmedPayments = registrations?.filter(r => r.registration_status === "confirmed").length || 0;
 
