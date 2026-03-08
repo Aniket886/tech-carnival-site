@@ -6,6 +6,7 @@ import EventDetailModal from "@/components/events/EventDetailModal";
 import RegistrationModal from "@/components/RegistrationModal";
 import { supabase } from "@/integrations/supabase/client";
 import { fallbackEvents } from "@/data/events";
+import { toast } from "sonner";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
 
