@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EventDetailModal from "@/components/events/EventDetailModal";
 import { supabase } from "@/integrations/supabase/client";
+import { fallbackEvents } from "@/data/events";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
 
@@ -55,8 +56,8 @@ const formatTeamSize = (min: number, max: number): string => {
 const EventsSection = ({ onRegisterEvent }: EventsSectionProps) => {
   const [active, setActive] = useState<Category>("all");
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<EventData[]>(fallbackEvents);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
