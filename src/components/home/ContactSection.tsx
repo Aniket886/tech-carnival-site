@@ -127,9 +127,11 @@ const ContactSection = () => {
               <Textarea id="contact-msg" required rows={4} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} onBlur={() => handleBlur("message")} placeholder="Your message..." className={`${getFieldClass("message")} resize-none`} maxLength={500} />
               {errors.message && touched.message && <p className="text-xs text-destructive">{errors.message}</p>}
             </div>
-            <Button variant="neon" className="w-full" type="submit" disabled={loading}>
-              {loading ? "Sending..." : (<><Send size={16} className="mr-2" /> Send Message</>)}
-            </Button>
+            <button type="submit" disabled={loading} className="btn-golden h-10 w-full text-sm font-semibold tracking-wider inline-flex items-center justify-center disabled:pointer-events-none disabled:opacity-50 transition-all duration-300">
+              <span className="inline-flex items-center gap-2">
+                {loading ? "Sending..." : (<><Send size={16} /> Send Message</>)}
+              </span>
+            </button>
           </form>
 
           <div className="space-y-6">
