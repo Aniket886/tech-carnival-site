@@ -26,7 +26,7 @@ const Footer = () => {
         </div>
 
         {/* Contact cards */}
-        <div className="flex flex-wrap justify-center gap-4 mb-10">
+        <div className="flex flex-wrap justify-center gap-3 mb-6">
           <a
             href="mailto:info@techcarnival.online"
             className="group flex items-center gap-3 px-5 py-3 rounded-xl bg-white/[0.04] border border-white/10 backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
