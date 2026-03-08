@@ -61,7 +61,7 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
             {navLinks.map((link) => (
               <button key={link.href} onClick={() => handleNav(link.href)} className="text-sm text-muted-foreground hover:text-primary transition-colors py-2 text-left tracking-wide">{link.label}</button>
             ))}
-            {showRegister && <Button variant="neon" size="sm" onClick={() => handleNav("#register")}>Register</Button>}
+            {showRegister && <Button variant="neon" size="sm" onClick={() => handleNav("#events")}>Register</Button>}
           </div>
         </div>
       </div>
