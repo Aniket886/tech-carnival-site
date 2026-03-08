@@ -2,7 +2,7 @@ import { Mail, Phone, MapPin, Sparkles } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer id="contact-footer" className="relative py-8 overflow-hidden">
+    <footer id="contact-footer" className="relative py-5 overflow-hidden">
       {/* Glassmorphism background layers */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
       <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-2xl" />
@@ -12,7 +12,7 @@ const Footer = () => {
 
       <div className="relative z-10 container mx-auto px-4">
         {/* Main content */}
-        <div className="flex flex-col items-center text-center mb-10">
+        <div className="flex flex-col items-center text-center mb-6">
           <div className="inline-flex items-center gap-2 mb-4">
             <Sparkles className="h-5 w-5 text-primary" />
             <h3 className="font-display text-2xl font-bold gradient-text tracking-wide">
@@ -26,7 +26,7 @@ const Footer = () => {
         </div>
 
         {/* Contact cards */}
-        <div className="flex flex-wrap justify-center gap-4 mb-10">
+        <div className="flex flex-wrap justify-center gap-3 mb-6">
           <a
             href="mailto:info@techcarnival.online"
             className="group flex items-center gap-3 px-5 py-3 rounded-xl bg-white/[0.04] border border-white/10 backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
