@@ -104,10 +104,11 @@ const Leaderboard = () => {
     <section id="leaderboard" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background" />
       <div className="relative z-10 container mx-auto px-4">
-        <div className="text-center mb-10">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text">
-              🏆 Live College Leaderboard
+        <div className="text-center mb-16">
+          <span className="inline-block text-xs font-display uppercase tracking-[0.3em] text-primary/70 mb-3">🏆 Rankings</span>
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black gradient-text leading-tight">
+              Live College Leaderboard
             </h2>
             <Badge className="bg-green-500/20 text-green-400 border-green-500/40 text-xs gap-1.5">
               <span className="relative flex h-2 w-2">
@@ -117,7 +118,8 @@ const Leaderboard = () => {
               LIVE
             </Badge>
           </div>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <div className="w-24 h-1 mx-auto rounded-full bg-gradient-to-r from-primary to-secondary mb-5" />
+          <p className="text-muted-foreground max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
             Real-time rankings across all events — updated live!
           </p>
         </div>
