@@ -15,6 +15,7 @@ import AdminColleges from "./pages/admin/AdminColleges";
 import AdminApiKeys from "./pages/admin/AdminApiKeys";
 import AdminEventLinks from "./pages/admin/AdminEventLinks";
 import AdminMessages from "./pages/admin/AdminMessages";
+import AdminScores from "./pages/admin/AdminScores";
 
 const queryClient = new QueryClient();
 
