@@ -103,8 +103,9 @@ const AdminSettings = () => {
   useEffect(() => {
     fetchAdmins();
     fetchLogs();
+    fetchActiveSessions();
     fetchTimeout();
-  }, [fetchAdmins, fetchLogs, fetchTimeout]);
+  }, [fetchAdmins, fetchLogs, fetchActiveSessions, fetchTimeout]);
 
   // Create admin
   const handleCreateAdmin = async () => {
