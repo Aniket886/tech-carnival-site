@@ -71,12 +71,14 @@ const AdminScores = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
-    const [{ data: sc }, { data: evts }] = await Promise.all([
+    const [{ data: sc }, { data: evts }, { data: cols }] = await Promise.all([
       supabase.from("college_scores").select("*").order("points", { ascending: false }),
       supabase.from("events").select("id, name, category"),
+      supabase.from("colleges").select("id, name").eq("is_active", true).order("name"),
     ]);
     setScores(sc || []);
     setEvents(evts || []);
+    setColleges((cols || []) as CollegeInfo[]);
     setLoading(false);
   }, []);
 
