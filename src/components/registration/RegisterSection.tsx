@@ -93,6 +93,42 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
+  const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
+  const utrTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const txnTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const checkDuplicateField = useCallback(async (field: "utr_number" | "transaction_id", value: string, setStatus: (s: "idle" | "checking" | "valid" | "duplicate") => void) => {
+    const trimmed = value.trim();
+    if (!trimmed) { setStatus("idle"); return; }
+    setStatus("checking");
+    try {
+      const { data } = await supabase
+        .from("registrations")
+        .select("id")
+        .eq(field, trimmed)
+        .limit(1);
+      setStatus(data && data.length > 0 ? "duplicate" : "valid");
+    } catch {
+      setStatus("idle");
+    }
+  }, []);
+
+  const handleUtrChange = (v: string) => {
+    setForm((f) => ({ ...f, utrNumber: v }));
+    setErrors((e) => { const n = { ...e }; delete n.utrNumber; return n; });
+    clearTimeout(utrTimerRef.current);
+    if (!v.trim()) { setUtrStatus("idle"); return; }
+    utrTimerRef.current = setTimeout(() => checkDuplicateField("utr_number", v, setUtrStatus), 500);
+  };
+
+  const handleTxnChange = (v: string) => {
+    setForm((f) => ({ ...f, transactionId: v }));
+    setErrors((e) => { const n = { ...e }; delete n.transactionId; return n; });
+    clearTimeout(txnTimerRef.current);
+    if (!v.trim()) { setTxnStatus("idle"); return; }
+    txnTimerRef.current = setTimeout(() => checkDuplicateField("transaction_id", v, setTxnStatus), 500);
+  };
 
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
