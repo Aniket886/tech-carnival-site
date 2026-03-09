@@ -51,6 +51,7 @@ const statusConfig: Record<string, { label: string; cls: string }> = {
 const categoryIcon: Record<string, string> = { technical: "💻", gaming: "🎮", cultural: "🎭" };
 
 const AdminPayments = () => {
+  const isOwner = useIsOwner();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
