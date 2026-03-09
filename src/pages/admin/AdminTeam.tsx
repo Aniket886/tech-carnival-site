@@ -21,6 +21,7 @@ type TeamMember = {
 };
 
 const AdminTeam = () => {
+  const isOwner = useIsOwner();
   const refreshKey = useAdminRefresh();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
