@@ -400,6 +400,21 @@ const AdminPayments = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Screenshot Lightbox */}
+      {lightboxUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setLightboxUrl(null)}>
+          <div className="relative max-w-[90vw] max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setLightboxUrl(null)} className="absolute -top-10 right-0 text-white/80 hover:text-white transition-colors flex items-center gap-1 text-sm">
+              <X size={16} /> Close
+            </button>
+            <img src={lightboxUrl} alt="Payment screenshot" className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg border border-border" />
+            <a href={lightboxUrl} target="_blank" rel="noopener noreferrer" className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-xs text-white/60 hover:text-white transition-colors flex items-center gap-1">
+              <Download size={12} /> Open in new tab
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
