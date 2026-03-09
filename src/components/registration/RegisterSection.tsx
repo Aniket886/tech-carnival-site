@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import paymentQr from "@/assets/payment-qr.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -93,6 +93,42 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
+  const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
+  const utrTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const txnTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const checkDuplicateField = useCallback(async (field: "utr_number" | "transaction_id", value: string, setStatus: (s: "idle" | "checking" | "valid" | "duplicate") => void) => {
+    const trimmed = value.trim();
+    if (!trimmed) { setStatus("idle"); return; }
+    setStatus("checking");
+    try {
+      const { data } = await supabase
+        .from("registrations")
+        .select("id")
+        .eq(field, trimmed)
+        .limit(1);
+      setStatus(data && data.length > 0 ? "duplicate" : "valid");
+    } catch {
+      setStatus("idle");
+    }
+  }, []);
+
+  const handleUtrChange = (v: string) => {
+    setForm((f) => ({ ...f, utrNumber: v }));
+    setErrors((e) => { const n = { ...e }; delete n.utrNumber; return n; });
+    clearTimeout(utrTimerRef.current);
+    if (!v.trim()) { setUtrStatus("idle"); return; }
+    utrTimerRef.current = setTimeout(() => checkDuplicateField("utr_number", v, setUtrStatus), 500);
+  };
+
+  const handleTxnChange = (v: string) => {
+    setForm((f) => ({ ...f, transactionId: v }));
+    setErrors((e) => { const n = { ...e }; delete n.transactionId; return n; });
+    clearTimeout(txnTimerRef.current);
+    if (!v.trim()) { setTxnStatus("idle"); return; }
+    txnTimerRef.current = setTimeout(() => checkDuplicateField("transaction_id", v, setTxnStatus), 500);
+  };
 
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
@@ -199,7 +235,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (s === 2) {
       if (!form.amountPaid.trim()) errs.amountPaid = "Enter the amount you paid";
       if (!form.utrNumber.trim()) errs.utrNumber = "Enter your UTR number";
+      else if (utrStatus === "duplicate") errs.utrNumber = "This UTR number has already been used";
       if (!form.transactionId.trim()) errs.transactionId = "Enter your transaction ID";
+      else if (txnStatus === "duplicate") errs.transactionId = "This Transaction ID has already been used";
     }
     if (s === 3) { if (!form.agreedTerms) errs.terms = "You must accept the terms"; }
     setErrors(errs);
@@ -535,8 +573,40 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
               </div>
               <div className="space-y-4">
                 {renderField("amountPaid", "Amount Paid (₹)", form.amountPaid, (v) => setForm((f) => ({ ...f, amountPaid: v })), { placeholder: "e.g. 200" })}
-                {renderField("utrNumber", "UTR Number", form.utrNumber, (v) => setForm((f) => ({ ...f, utrNumber: v })), { placeholder: "Enter UTR number from payment confirmation" })}
-                {renderField("transactionId", "Transaction ID", form.transactionId, (v) => setForm((f) => ({ ...f, transactionId: v })), { placeholder: "Enter transaction ID" })}
+                
+                {/* UTR Number with live check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="utrNumber" className="text-sm text-foreground font-medium">UTR Number</Label>
+                  <div className="relative">
+                    <Input id="utrNumber" placeholder="Enter UTR number from payment confirmation" value={form.utrNumber} onChange={(e) => handleUtrChange(e.target.value)} onBlur={() => handleBlur("utrNumber")}
+                      className={`${utrStatus === "duplicate" || (errors.utrNumber && touched.utrNumber) ? "border-destructive focus:border-destructive focus:ring-destructive/30" : utrStatus === "valid" ? "border-green-500/50 focus:border-green-500 focus:ring-green-500/30" : ""} bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors pr-10`} />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {utrStatus === "checking" && <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
+                      {utrStatus === "valid" && <Check size={16} className="text-green-500" />}
+                      {utrStatus === "duplicate" && <AlertTriangle size={16} className="text-destructive" />}
+                    </div>
+                  </div>
+                  {utrStatus === "valid" && form.utrNumber.trim() && <p className="text-xs text-green-500 flex items-center gap-1"><Check size={12} /> UTR number is valid</p>}
+                  {utrStatus === "duplicate" && <p className="text-xs text-destructive flex items-center gap-1"><AlertTriangle size={12} /> This UTR number has already been used</p>}
+                  {errors.utrNumber && touched.utrNumber && utrStatus !== "duplicate" && <p className="text-xs text-destructive">{errors.utrNumber}</p>}
+                </div>
+
+                {/* Transaction ID with live check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="transactionId" className="text-sm text-foreground font-medium">Transaction ID</Label>
+                  <div className="relative">
+                    <Input id="transactionId" placeholder="Enter transaction ID" value={form.transactionId} onChange={(e) => handleTxnChange(e.target.value)} onBlur={() => handleBlur("transactionId")}
+                      className={`${txnStatus === "duplicate" || (errors.transactionId && touched.transactionId) ? "border-destructive focus:border-destructive focus:ring-destructive/30" : txnStatus === "valid" ? "border-green-500/50 focus:border-green-500 focus:ring-green-500/30" : ""} bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors pr-10`} />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {txnStatus === "checking" && <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
+                      {txnStatus === "valid" && <Check size={16} className="text-green-500" />}
+                      {txnStatus === "duplicate" && <AlertTriangle size={16} className="text-destructive" />}
+                    </div>
+                  </div>
+                  {txnStatus === "valid" && form.transactionId.trim() && <p className="text-xs text-green-500 flex items-center gap-1"><Check size={12} /> Transaction ID is valid</p>}
+                  {txnStatus === "duplicate" && <p className="text-xs text-destructive flex items-center gap-1"><AlertTriangle size={12} /> This Transaction ID has already been used</p>}
+                  {errors.transactionId && touched.transactionId && txnStatus !== "duplicate" && <p className="text-xs text-destructive">{errors.transactionId}</p>}
+                </div>
                 
                 {/* Payment Screenshot Upload */}
                 <div className="space-y-1.5">
