@@ -61,6 +61,7 @@ const fmtDate = (d: string) => {
 
 /* ─── main ─── */
 const AdminPageManager = () => {
+  const isOwner = useIsOwner();
   const [sections, setSections] = useState<Section[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
   const [logs, setLogs] = useState<LogEntry[]>([]);
