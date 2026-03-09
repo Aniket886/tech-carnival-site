@@ -124,13 +124,26 @@ const AdminSettings = () => {
   // Remove admin
   const handleRemoveAdmin = async () => {
     if (!deleteTarget) return;
+    const removedEmail = deleteTarget.email || "";
     try {
       const { data, error } = await supabase.functions.invoke("delete-admin", {
         body: { user_id: deleteTarget.user_id },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      toast.success("Admin removed");
+      toast.success("Admin removed — no longer has access", {
+        action: removedEmail
+          ? {
+              label: "Re-invite",
+              onClick: () => {
+                setEmail(removedEmail);
+                setPassword("");
+                setShowReinvite(true);
+              },
+            }
+          : undefined,
+        duration: 8000,
+      });
       setDeleteTarget(null);
       fetchAdmins();
     } catch (e: any) {
