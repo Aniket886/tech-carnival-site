@@ -309,6 +309,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       if (error) throw error;
       setSuccessData({ id: regId, eventName: selectedEventData?.name || "" });
       setForm(initialForm);
+      setPaymentScreenshot(null);
       setTouched({});
       setStep(0);
       supabase.functions.invoke("send-email", {

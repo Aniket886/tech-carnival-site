@@ -35,6 +35,7 @@ interface Registration {
   amount_paid: string | null;
   utr_number: string | null;
   transaction_id: string | null;
+  payment_screenshot_url: string | null;
   members: any;
   created_at: string;
   semester: string | null;
