@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Search, Plus, Pencil, Trash2, Upload, Building2, CheckCircle2, Clock, UserPlus } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 interface College {
   id: string;
@@ -61,6 +62,7 @@ const emptyForm: FormData = {
 type FilterStatus = "all" | "pending" | "approved";
 
 const AdminColleges = () => {
+  const isOwner = useIsOwner();
   const [colleges, setColleges] = useState<College[]>([]);
   const [regCounts, setRegCounts] = useState<Map<string, number>>(new Map());
   const [loading, setLoading] = useState(true);
@@ -348,9 +350,9 @@ const AdminColleges = () => {
                       <button onClick={() => openEdit(c)} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                         <Pencil size={15} />
                       </button>
-                      <button onClick={() => setDeleteId(c.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                      {isOwner && <button onClick={() => setDeleteId(c.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                         <Trash2 size={15} />
-                      </button>
+                      </button>}
                     </div>
                   </TableCell>
                 </TableRow>

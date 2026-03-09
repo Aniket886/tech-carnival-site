@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import {
   Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2,
 } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Registration {
@@ -50,6 +51,7 @@ const statusConfig: Record<string, { label: string; cls: string }> = {
 const categoryIcon: Record<string, string> = { technical: "💻", gaming: "🎮", cultural: "🎭" };
 
 const AdminPayments = () => {
+  const isOwner = useIsOwner();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -211,9 +213,9 @@ const AdminPayments = () => {
           <Button variant="outline" size="sm" onClick={exportCSV} disabled={filtered.length === 0} className="gap-2">
             <Download size={14} /> Export CSV
           </Button>
-          <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setResetConfirm(true)}>
+          {isOwner && <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setResetConfirm(true)}>
             <RotateCcw size={14} /> Reset All
-          </Button>
+          </Button>}
         </div>
       </div>
 

@@ -15,6 +15,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── Types ─── */
 type BotContact = {
@@ -43,6 +44,7 @@ type EventOption = { id: string; name: string };
 
 /* ─── Contacts Tab ─── */
 const ContactsTab = () => {
+  const isOwner = useIsOwner();
   const [contacts, setContacts] = useState<BotContact[]>([]);
   const [events, setEvents] = useState<EventOption[]>([]);
   const [loading, setLoading] = useState(true);
@@ -145,7 +147,7 @@ const ContactsTab = () => {
       >
         <Save size={16} />
       </Button>
-      <AlertDialog>
+      {isOwner && <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive"><Trash2 size={16} /></Button>
         </AlertDialogTrigger>
@@ -159,7 +161,7 @@ const ContactsTab = () => {
             <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>}
     </div>
   );
 
@@ -200,6 +202,7 @@ const ContactsTab = () => {
 
 /* ─── FAQ Tab ─── */
 const FaqTab = () => {
+  const isOwner = useIsOwner();
   const [faqs, setFaqs] = useState<BotFaq[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<Record<string, boolean>>({});
@@ -299,7 +302,7 @@ const FaqTab = () => {
                   >
                     <Save size={16} />
                   </Button>
-                  <AlertDialog>
+                  {isOwner && <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive"><Trash2 size={16} /></Button>
                     </AlertDialogTrigger>
@@ -313,7 +316,7 @@ const FaqTab = () => {
                         <AlertDialogAction onClick={() => handleDelete(f.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
-                  </AlertDialog>
+                  </AlertDialog>}
                 </div>
               </div>
               <Input

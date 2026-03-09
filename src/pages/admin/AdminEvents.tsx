@@ -22,6 +22,7 @@ import {
 import { toast } from "sonner";
 import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Event {
@@ -72,6 +73,7 @@ const categoryStyles: Record<string, string> = {
 };
 
 const AdminEvents = () => {
+  const isOwner = useIsOwner();
   const [events, setEvents] = useState<Event[]>([]);
   const [regCounts, setRegCounts] = useState<Map<string, number>>(new Map());
   const [loading, setLoading] = useState(true);
@@ -266,9 +268,9 @@ const AdminEvents = () => {
                           <button onClick={() => openEdit(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                             <Pencil size={15} />
                           </button>
-                          <button onClick={() => setDeleteId(ev.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                          {isOwner && <button onClick={() => setDeleteId(ev.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                             <Trash2 size={15} />
-                          </button>
+                          </button>}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -341,9 +343,9 @@ const AdminEvents = () => {
                             <a href={ev.website_url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                               <ExternalLink size={15} />
                             </a>
-                            <button onClick={() => clearLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                            {isOwner && <button onClick={() => clearLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                               <Link2Off size={15} />
-                            </button>
+                            </button>}
                           </>
                         )}
                       </div>

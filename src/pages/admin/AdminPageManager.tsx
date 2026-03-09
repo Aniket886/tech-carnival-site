@@ -9,6 +9,7 @@ import {
   ChevronDown, ChevronUp, ExternalLink, RotateCcw, Search,
   Wrench, Eye, EyeOff, Activity, Shield,
 } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
@@ -60,6 +61,7 @@ const fmtDate = (d: string) => {
 
 /* ─── main ─── */
 const AdminPageManager = () => {
+  const isOwner = useIsOwner();
   const [sections, setSections] = useState<Section[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -263,9 +265,9 @@ const AdminPageManager = () => {
           <Switch checked={regOpen} onCheckedChange={toggleRegistration} />
         </div>
         <div className="h-6 w-px bg-border hidden sm:block" />
-        <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={resetToDefault}>
+        {isOwner && <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={resetToDefault}>
           <RotateCcw size={14} /> Reset to Default
-        </Button>
+        </Button>}
       </div>
 
       {/* Sections List */}

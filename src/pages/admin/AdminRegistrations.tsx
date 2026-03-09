@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import {
   Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2,
 } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Registration {
@@ -51,6 +52,7 @@ const categoryConfig: Record<string, string> = {
 };
 
 const AdminRegistrations = () => {
+  const isOwner = useIsOwner();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -318,7 +320,7 @@ const AdminRegistrations = () => {
                             {r.registration_status === "confirmed" && (
                               <button title="Undo (set back to pending)" onClick={() => updateStatus(r.id, "pending")} className="p-1.5 rounded-md text-amber-400 hover:bg-amber-500/10 transition-colors"><Undo2 size={15} /></button>
                             )}
-                            <button title="Delete" onClick={() => setDeleteConfirm({ type: "single", id: r.id })} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><Trash2 size={15} /></button>
+                            {isOwner && <button title="Delete" onClick={() => setDeleteConfirm({ type: "single", id: r.id })} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><Trash2 size={15} /></button>}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -361,26 +363,28 @@ const AdminRegistrations = () => {
         )}
       </div>
 
-      {/* Danger Zone */}
-      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 space-y-3">
-        <div className="flex items-start gap-2">
-          <AlertTriangle size={18} className="text-destructive mt-0.5" />
-          <div>
-            <h3 className="text-sm font-semibold text-destructive">Data Management — Danger Zone</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Cloud storage is limited. Export your data as CSV before deleting to keep a local backup. Deleted data cannot be recovered.
-            </p>
+      {/* Danger Zone - Owner Only */}
+      {isOwner && (
+        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 space-y-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle size={18} className="text-destructive mt-0.5" />
+            <div>
+              <h3 className="text-sm font-semibold text-destructive">Data Management — Danger Zone</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Cloud storage is limited. Export your data as CSV before deleting to keep a local backup. Deleted data cannot be recovered.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="destructive" size="sm" className="gap-2" onClick={() => exportCSV(true)} disabled={filtered.length === 0}>
+              <Download size={14} /> Export & Delete All ({filtered.length})
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setDeleteConfirm({ type: "bulk" })} disabled={filtered.length === 0}>
+              <Trash2 size={14} /> Delete Filtered ({filtered.length})
+            </Button>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="destructive" size="sm" className="gap-2" onClick={() => exportCSV(true)} disabled={filtered.length === 0}>
-            <Download size={14} /> Export & Delete All ({filtered.length})
-          </Button>
-          <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setDeleteConfirm({ type: "bulk" })} disabled={filtered.length === 0}>
-            <Trash2 size={14} /> Delete Filtered ({filtered.length})
-          </Button>
-        </div>
-      </div>
+      )}
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>

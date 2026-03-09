@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Search, Plus, Pencil, Trash2, Upload, Trophy, Download } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 interface Score {
   id: string;
@@ -60,6 +61,7 @@ const positionStyles: Record<string, { label: string; cls: string }> = {
 };
 
 const AdminScores = () => {
+  const isOwner = useIsOwner();
   const [scores, setScores] = useState<Score[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [colleges, setColleges] = useState<CollegeInfo[]>([]);
@@ -305,9 +307,9 @@ const AdminScores = () => {
                         <button onClick={() => openEdit(s)} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                           <Pencil size={15} />
                         </button>
-                        <button onClick={() => setDeleteId(s.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                        {isOwner && <button onClick={() => setDeleteId(s.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                           <Trash2 size={15} />
-                        </button>
+                        </button>}
                       </div>
                     </TableCell>
                   </TableRow>

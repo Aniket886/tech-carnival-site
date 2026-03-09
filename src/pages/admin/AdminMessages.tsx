@@ -9,6 +9,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 type Contact = {
   id: string;
@@ -21,6 +22,7 @@ type Contact = {
 };
 
 const AdminMessages = () => {
+  const isOwner = useIsOwner();
   const [messages, setMessages] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -88,7 +90,7 @@ const AdminMessages = () => {
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input placeholder="Search…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 w-48 bg-muted/50" />
           </div>
-          {messages.length > 0 && (
+          {messages.length > 0 && isOwner && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="sm"><Trash2 size={14} className="mr-1.5" /> Delete All ({messages.length})</Button>
@@ -140,7 +142,7 @@ const AdminMessages = () => {
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => toggleRead(m)} title={m.is_read ? "Mark unread" : "Mark read"}>
                     {m.is_read ? <Mail size={16} /> : <MailOpen size={16} />}
                   </Button>
-                  <AlertDialog>
+                  {isOwner && <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive"><Trash2 size={16} /></Button>
                     </AlertDialogTrigger>
@@ -154,7 +156,7 @@ const AdminMessages = () => {
                         <AlertDialogAction onClick={() => deleteOne(m.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
-                  </AlertDialog>
+                  </AlertDialog>}
                 </div>
               </div>
             </div>
