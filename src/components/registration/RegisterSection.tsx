@@ -294,6 +294,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       else if (utrStatus === "duplicate") errs.utrNumber = "This UTR number has already been used";
       if (!form.transactionId.trim()) errs.transactionId = "Enter your transaction ID";
       else if (txnStatus === "duplicate") errs.transactionId = "This Transaction ID has already been used";
+      if (!paymentScreenshot) errs.paymentScreenshot = "Please upload your payment screenshot";
     }
     if (s === 3) { if (!form.agreedTerms) errs.terms = "You must accept the terms"; }
     setErrors(errs);
