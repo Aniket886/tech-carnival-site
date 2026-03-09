@@ -213,9 +213,9 @@ const AdminPayments = () => {
           <Button variant="outline" size="sm" onClick={exportCSV} disabled={filtered.length === 0} className="gap-2">
             <Download size={14} /> Export CSV
           </Button>
-          <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setResetConfirm(true)}>
+          {isOwner && <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setResetConfirm(true)}>
             <RotateCcw size={14} /> Reset All
-          </Button>
+          </Button>}
         </div>
       </div>
 

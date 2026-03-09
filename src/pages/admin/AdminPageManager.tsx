@@ -265,9 +265,9 @@ const AdminPageManager = () => {
           <Switch checked={regOpen} onCheckedChange={toggleRegistration} />
         </div>
         <div className="h-6 w-px bg-border hidden sm:block" />
-        <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={resetToDefault}>
+        {isOwner && <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={resetToDefault}>
           <RotateCcw size={14} /> Reset to Default
-        </Button>
+        </Button>}
       </div>
 
       {/* Sections List */}

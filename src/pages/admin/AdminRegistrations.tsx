@@ -363,26 +363,28 @@ const AdminRegistrations = () => {
         )}
       </div>
 
-      {/* Danger Zone */}
-      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 space-y-3">
-        <div className="flex items-start gap-2">
-          <AlertTriangle size={18} className="text-destructive mt-0.5" />
-          <div>
-            <h3 className="text-sm font-semibold text-destructive">Data Management — Danger Zone</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Cloud storage is limited. Export your data as CSV before deleting to keep a local backup. Deleted data cannot be recovered.
-            </p>
+      {/* Danger Zone - Owner Only */}
+      {isOwner && (
+        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 space-y-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle size={18} className="text-destructive mt-0.5" />
+            <div>
+              <h3 className="text-sm font-semibold text-destructive">Data Management — Danger Zone</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Cloud storage is limited. Export your data as CSV before deleting to keep a local backup. Deleted data cannot be recovered.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="destructive" size="sm" className="gap-2" onClick={() => exportCSV(true)} disabled={filtered.length === 0}>
+              <Download size={14} /> Export & Delete All ({filtered.length})
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setDeleteConfirm({ type: "bulk" })} disabled={filtered.length === 0}>
+              <Trash2 size={14} /> Delete Filtered ({filtered.length})
+            </Button>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="destructive" size="sm" className="gap-2" onClick={() => exportCSV(true)} disabled={filtered.length === 0}>
-            <Download size={14} /> Export & Delete All ({filtered.length})
-          </Button>
-          <Button variant="outline" size="sm" className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => setDeleteConfirm({ type: "bulk" })} disabled={filtered.length === 0}>
-            <Trash2 size={14} /> Delete Filtered ({filtered.length})
-          </Button>
-        </div>
-      </div>
+      )}
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>

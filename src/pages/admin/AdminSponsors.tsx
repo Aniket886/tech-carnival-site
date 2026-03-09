@@ -193,9 +193,9 @@ const AdminSponsors = () => {
                       <button onClick={() => openEdit(s)} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                         <Pencil size={15} />
                       </button>
-                      <button onClick={() => setDeleteId(s.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                      {isOwner && <button onClick={() => setDeleteId(s.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                         <Trash2 size={15} />
-                      </button>
+                      </button>}
                     </div>
                   </TableCell>
                 </TableRow>

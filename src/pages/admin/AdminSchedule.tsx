@@ -206,9 +206,9 @@ const AdminSchedule = () => {
                   <Button variant="ghost" size="icon" className="h-7 w-7" disabled={idx === filtered.length - 1} onClick={() => handleReorder(ev.id, "down")}>
                     <ArrowDown size={13} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(ev.id)}>
+                  {isOwner && <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(ev.id)}>
                     <Trash2 size={13} />
-                  </Button>
+                  </Button>}
                 </div>
               </CardContent>
             </Card>

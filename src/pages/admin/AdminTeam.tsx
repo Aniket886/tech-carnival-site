@@ -242,9 +242,9 @@ const AdminTeam = () => {
                   <Button variant="ghost" size="icon" className="h-8 w-8" disabled={idx === filtered.length - 1} onClick={() => handleReorder(member.id, "down")}>
                     <ArrowDown size={14} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDelete(member.id)}>
+                  {isOwner && <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDelete(member.id)}>
                     <Trash2 size={14} />
-                  </Button>
+                  </Button>}
                 </div>
               </CardContent>
             </Card>

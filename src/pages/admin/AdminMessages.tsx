@@ -156,7 +156,7 @@ const AdminMessages = () => {
                         <AlertDialogAction onClick={() => deleteOne(m.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
-                  </AlertDialog>
+                  </AlertDialog>}
                 </div>
               </div>
             </div>

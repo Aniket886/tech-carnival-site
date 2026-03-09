@@ -343,9 +343,9 @@ const AdminEvents = () => {
                             <a href={ev.website_url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                               <ExternalLink size={15} />
                             </a>
-                            <button onClick={() => clearLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                            {isOwner && <button onClick={() => clearLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                               <Link2Off size={15} />
-                            </button>
+                            </button>}
                           </>
                         )}
                       </div>
