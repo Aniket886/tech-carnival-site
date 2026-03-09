@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Search, Plus, Pencil, Trash2, Upload, Building2, CheckCircle2, Clock, UserPlus } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 interface College {
   id: string;
