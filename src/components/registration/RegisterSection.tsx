@@ -160,6 +160,30 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     txnTimerRef.current = setTimeout(() => checkDuplicateField("transaction_id", v, setTxnStatus), 500);
   };
 
+  // Reset duplicate statuses when event changes
+  useEffect(() => {
+    setEmailDupStatus("idle");
+    setPhoneDupStatus("idle");
+  }, [form.eventId]);
+
+  // Debounced email duplicate check
+  useEffect(() => {
+    clearTimeout(emailDupTimerRef.current);
+    const email = form.leaderEmail.trim().toLowerCase();
+    if (!email || !form.eventId || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEmailDupStatus("idle"); return; }
+    emailDupTimerRef.current = setTimeout(() => checkDuplicateRegistration("leader_email", email, form.eventId, setEmailDupStatus), 600);
+    return () => clearTimeout(emailDupTimerRef.current);
+  }, [form.leaderEmail, form.eventId, checkDuplicateRegistration]);
+
+  // Debounced phone duplicate check
+  useEffect(() => {
+    clearTimeout(phoneDupTimerRef.current);
+    const phone = form.leaderPhone.trim();
+    if (!phone || !form.eventId || !/^[6-9]\d{9}$/.test(phone)) { setPhoneDupStatus("idle"); return; }
+    phoneDupTimerRef.current = setTimeout(() => checkDuplicateRegistration("leader_phone", phone, form.eventId, setPhoneDupStatus), 600);
+    return () => clearTimeout(phoneDupTimerRef.current);
+  }, [form.leaderPhone, form.eventId, checkDuplicateRegistration]);
+
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
     if (data) setColleges(data.filter((c: any) => c.approval_status === "approved"));
