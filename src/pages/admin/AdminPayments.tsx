@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2,
+  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon,
 } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
@@ -35,6 +35,7 @@ interface Registration {
   amount_paid: string | null;
   utr_number: string | null;
   transaction_id: string | null;
+  payment_screenshot_url: string | null;
   members: any;
   created_at: string;
   semester: string | null;
@@ -302,6 +303,14 @@ const AdminPayments = () => {
                               {r.team_name && <p className="text-xs text-muted-foreground">Team: {r.team_name}</p>}
                               <p className="text-xs text-muted-foreground">College: {r.college_name}</p>
                               {r.transaction_id && <p className="text-xs text-muted-foreground">Txn: {r.transaction_id}</p>}
+                              {r.payment_screenshot_url && (
+                                <div className="pt-1 border-t border-border mt-1">
+                                  <p className="text-xs font-medium text-foreground mb-1">Payment Screenshot:</p>
+                                  <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer">
+                                    <img src={r.payment_screenshot_url} alt="Payment screenshot" className="w-full max-w-[200px] rounded-md border border-border" />
+                                  </a>
+                                </div>
+                              )}
                               {getMembers(r.members).length > 0 && (
                                 <div className="pt-1 border-t border-border mt-1">
                                   <p className="text-xs font-medium text-foreground mb-0.5">Members:</p>
@@ -324,7 +333,14 @@ const AdminPayments = () => {
                         {r.amount_paid ? `₹${r.amount_paid}` : "—"}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground font-mono max-w-[140px] truncate">
-                        {r.utr_number || "—"}
+                        <span className="flex items-center gap-1.5">
+                          {r.utr_number || "—"}
+                          {r.payment_screenshot_url && (
+                            <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer" title="View payment screenshot">
+                              <ImageIcon size={13} className="text-primary shrink-0" />
+                            </a>
+                          )}
+                        </span>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`text-[10px] capitalize ${sc.cls}`}>

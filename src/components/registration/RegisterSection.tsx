@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, ChevronRight, ChevronLeft, Users, User, Plus, Trash2, PartyPopper, X, AlertTriangle } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, Users, User, Plus, Trash2, PartyPopper, X, AlertTriangle, Download, Upload, ImageIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { Tables } from "@/integrations/supabase/types";
 import {
@@ -92,6 +92,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [shakeSubmit, setShakeSubmit] = useState(false);
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
 
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
@@ -279,6 +280,17 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         setErrors(errs); setStep(2); setLoading(false); return;
       }
       const regId = crypto.randomUUID();
+      // Upload payment screenshot if provided
+      let screenshotUrl: string | null = null;
+      if (paymentScreenshot) {
+        const ext = paymentScreenshot.name.split(".").pop() || "jpg";
+        const filePath = `${regId}.${ext}`;
+        const { error: uploadErr } = await supabase.storage.from("payment-screenshots").upload(filePath, paymentScreenshot);
+        if (!uploadErr) {
+          const { data: urlData } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
+          screenshotUrl = urlData.publicUrl;
+        }
+      }
       const { error } = await supabase.from("registrations").insert({
         id: regId,
         event_id: form.eventId,
@@ -292,10 +304,12 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         amount_paid: form.amountPaid.trim(),
         utr_number: utr,
         transaction_id: txn,
-      });
+        payment_screenshot_url: screenshotUrl,
+      } as any);
       if (error) throw error;
       setSuccessData({ id: regId, eventName: selectedEventData?.name || "" });
       setForm(initialForm);
+      setPaymentScreenshot(null);
       setTouched({});
       setStep(0);
       supabase.functions.invoke("send-email", {
@@ -488,33 +502,83 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 </AlertDescription>
               </Alert>
               <div className="glass rounded-lg p-5 space-y-4">
-                <p className="text-sm font-medium text-foreground text-center mb-2">Scan QR or use the payment link below to pay</p>
+                <p className="text-sm font-medium text-foreground text-center mb-2">Scan QR Code to Pay</p>
                 <div className="flex flex-col items-center gap-3">
                   <div className="bg-white rounded-xl p-3 shadow-md">
                     <img
                       src={paymentQr}
                       alt="Payment QR Code - Scan to pay with any UPI app"
-                      width={200}
-                      height={200}
+                      width={220}
+                      height={220}
                       className="rounded-lg"
                     />
                   </div>
-                  <a
-                    href="upi://pay?pa=example@upi&pn=TechCarnival&cu=INR"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4 transition-colors"
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 text-primary border-primary/30 hover:bg-primary/10"
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href = paymentQr;
+                      link.download = "TechCarnival_Payment_QR.jpeg";
+                      link.click();
+                    }}
                   >
-                    💳 Pay via UPI Payment Link
-                  </a>
-                  <p className="text-xs text-muted-foreground text-center">UPI ID: <span className="font-mono text-foreground select-all">example@upi</span></p>
+                    <Download size={14} /> Download QR Code
+                  </Button>
+                  <div className="text-center space-y-1">
+                    <p className="text-xs text-muted-foreground">UPI ID: <span className="font-mono text-foreground select-all">anikettegginamath@ptyes</span></p>
+                    <p className="text-xs text-muted-foreground">Name: <span className="font-medium text-foreground">Aniket C Tegginamath</span></p>
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground text-center pt-2 border-t border-border">After payment, fill in the details below.</p>
+                <p className="text-sm text-muted-foreground text-center pt-2 border-t border-border">After payment, fill in the details below and upload your payment screenshot.</p>
               </div>
               <div className="space-y-4">
                 {renderField("amountPaid", "Amount Paid (₹)", form.amountPaid, (v) => setForm((f) => ({ ...f, amountPaid: v })), { placeholder: "e.g. 200" })}
                 {renderField("utrNumber", "UTR Number", form.utrNumber, (v) => setForm((f) => ({ ...f, utrNumber: v })), { placeholder: "Enter UTR number from payment confirmation" })}
                 {renderField("transactionId", "Transaction ID", form.transactionId, (v) => setForm((f) => ({ ...f, transactionId: v })), { placeholder: "Enter transaction ID" })}
+                
+                {/* Payment Screenshot Upload */}
+                <div className="space-y-1.5">
+                  <Label className="text-sm text-foreground font-medium">Payment Screenshot (Optional)</Label>
+                  <div className="relative">
+                    {paymentScreenshot ? (
+                      <div className="glass rounded-lg p-3 flex items-center gap-3">
+                        <div className="w-16 h-16 rounded-md overflow-hidden bg-muted shrink-0">
+                          <img src={URL.createObjectURL(paymentScreenshot)} alt="Payment screenshot" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-foreground font-medium truncate">{paymentScreenshot.name}</p>
+                          <p className="text-xs text-muted-foreground">{(paymentScreenshot.size / 1024).toFixed(1)} KB</p>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => setPaymentScreenshot(null)} className="text-destructive hover:text-destructive shrink-0">
+                          <X size={14} />
+                        </Button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center gap-2 cursor-pointer rounded-lg border-2 border-dashed border-border hover:border-primary/50 bg-muted/30 p-6 transition-colors">
+                        <Upload size={24} className="text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Click to upload payment screenshot</span>
+                        <span className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              if (file.size > 5 * 1024 * 1024) {
+                                toast.error("File too large. Max 5MB allowed.");
+                                return;
+                              }
+                              setPaymentScreenshot(file);
+                            }
+                          }}
+                        />
+                      </label>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="flex justify-between">
                 <Button variant="ghost" onClick={prev} className="text-muted-foreground"><ChevronLeft size={16} className="mr-1" /> Back</Button>
