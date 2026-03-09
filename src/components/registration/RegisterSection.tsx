@@ -132,13 +132,13 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (field === "leader_phone" && !/^[6-9]\d{9}$/.test(trimmed)) { setStatus("idle"); return; }
     setStatus("checking");
     try {
-      const { data } = await supabase
-        .from("registrations")
-        .select("id")
-        .eq("event_id", eventId)
-        .eq(field, trimmed)
-        .limit(1);
-      setStatus(data && data.length > 0 ? "duplicate" : "clear");
+      const { data, error } = await supabase.rpc("check_registration_duplicate", {
+        _event_id: eventId,
+        _field: field,
+        _value: trimmed,
+      });
+      if (error) { setStatus("idle"); return; }
+      setStatus(data === true ? "duplicate" : "clear");
     } catch {
       setStatus("idle");
     }
