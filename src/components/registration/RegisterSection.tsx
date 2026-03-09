@@ -294,6 +294,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       else if (utrStatus === "duplicate") errs.utrNumber = "This UTR number has already been used";
       if (!form.transactionId.trim()) errs.transactionId = "Enter your transaction ID";
       else if (txnStatus === "duplicate") errs.transactionId = "This Transaction ID has already been used";
+      if (!paymentScreenshot) errs.paymentScreenshot = "Please upload your payment screenshot";
     }
     if (s === 3) { if (!form.agreedTerms) errs.terms = "You must accept the terms"; }
     setErrors(errs);
@@ -316,7 +317,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       }
       setTouched(t => ({ ...t, ...fields }));
     } else if (step === 2) {
-      setTouched(t => ({ ...t, amountPaid: true, utrNumber: true, transactionId: true }));
+      setTouched(t => ({ ...t, amountPaid: true, utrNumber: true, transactionId: true, paymentScreenshot: true }));
     }
     if (!validateStep(step)) {
       setShakeSubmit(true);
@@ -709,7 +710,8 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 
                 {/* Payment Screenshot Upload */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm text-foreground font-medium">Payment Screenshot (Optional)</Label>
+                   <Label className="text-sm text-foreground font-medium">Payment Screenshot <span className="text-destructive">*</span></Label>
+                   {touched.paymentScreenshot && errors.paymentScreenshot && <p className="text-xs text-destructive">{errors.paymentScreenshot}</p>}
                   <div className="relative">
                     {paymentScreenshot ? (
                       <div className="glass rounded-lg p-3 flex items-center gap-3">
