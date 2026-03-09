@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import {
   Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2,
 } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Registration {
