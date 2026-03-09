@@ -95,8 +95,12 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
+  const [emailDupStatus, setEmailDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
+  const [phoneDupStatus, setPhoneDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
   const utrTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const txnTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const emailDupTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const phoneDupTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const checkDuplicateField = useCallback(async (field: "utr_number" | "transaction_id", value: string, setStatus: (s: "idle" | "checking" | "valid" | "duplicate") => void) => {
     const trimmed = value.trim();
@@ -109,6 +113,32 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         .eq(field, trimmed)
         .limit(1);
       setStatus(data && data.length > 0 ? "duplicate" : "valid");
+    } catch {
+      setStatus("idle");
+    }
+  }, []);
+
+  // Live duplicate registration check by email for the selected event
+  const checkDuplicateRegistration = useCallback(async (
+    field: "leader_email" | "leader_phone",
+    value: string,
+    eventId: string,
+    setStatus: (s: "idle" | "checking" | "clear" | "duplicate") => void
+  ) => {
+    const trimmed = value.trim().toLowerCase();
+    if (!trimmed || !eventId) { setStatus("idle"); return; }
+    // Basic validation before checking
+    if (field === "leader_email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setStatus("idle"); return; }
+    if (field === "leader_phone" && !/^[6-9]\d{9}$/.test(trimmed)) { setStatus("idle"); return; }
+    setStatus("checking");
+    try {
+      const { data } = await supabase
+        .from("registrations")
+        .select("id")
+        .eq("event_id", eventId)
+        .eq(field, trimmed)
+        .limit(1);
+      setStatus(data && data.length > 0 ? "duplicate" : "clear");
     } catch {
       setStatus("idle");
     }
@@ -129,6 +159,30 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (!v.trim()) { setTxnStatus("idle"); return; }
     txnTimerRef.current = setTimeout(() => checkDuplicateField("transaction_id", v, setTxnStatus), 500);
   };
+
+  // Reset duplicate statuses when event changes
+  useEffect(() => {
+    setEmailDupStatus("idle");
+    setPhoneDupStatus("idle");
+  }, [form.eventId]);
+
+  // Debounced email duplicate check
+  useEffect(() => {
+    clearTimeout(emailDupTimerRef.current);
+    const email = form.leaderEmail.trim().toLowerCase();
+    if (!email || !form.eventId || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEmailDupStatus("idle"); return; }
+    emailDupTimerRef.current = setTimeout(() => checkDuplicateRegistration("leader_email", email, form.eventId, setEmailDupStatus), 600);
+    return () => clearTimeout(emailDupTimerRef.current);
+  }, [form.leaderEmail, form.eventId, checkDuplicateRegistration]);
+
+  // Debounced phone duplicate check
+  useEffect(() => {
+    clearTimeout(phoneDupTimerRef.current);
+    const phone = form.leaderPhone.trim();
+    if (!phone || !form.eventId || !/^[6-9]\d{9}$/.test(phone)) { setPhoneDupStatus("idle"); return; }
+    phoneDupTimerRef.current = setTimeout(() => checkDuplicateRegistration("leader_phone", phone, form.eventId, setPhoneDupStatus), 600);
+    return () => clearTimeout(phoneDupTimerRef.current);
+  }, [form.leaderPhone, form.eventId, checkDuplicateRegistration]);
 
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
@@ -217,7 +271,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (s === 1) {
       const nameV = validateName(form.leaderName); if (!nameV.valid) errs.leaderName = nameV.error!;
       const emailV = validateEmail(form.leaderEmail); if (!emailV.valid) errs.leaderEmail = emailV.error!;
+      else if (emailDupStatus === "duplicate") errs.leaderEmail = "This email is already registered for this event";
       const phoneV = validatePhone(form.leaderPhone); if (!phoneV.valid) errs.leaderPhone = phoneV.error!;
+      else if (phoneDupStatus === "duplicate") errs.leaderPhone = "This phone number is already registered for this event";
       const collegeV = validateCollegeName(form.collegeName); if (!collegeV.valid) errs.collegeName = collegeV.error!;
       if (!form.semester) errs.semester = "Select your semester";
       if (!isSolo) {
@@ -453,12 +509,42 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
           {step === 1 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="font-display text-lg font-semibold text-foreground">Step 2 — {isSolo ? "Your" : "Team"} Details</h3>
+              {(emailDupStatus === "duplicate" || phoneDupStatus === "duplicate") && (
+                <Alert className="border-destructive/30 bg-destructive/10">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  <AlertDescription className="text-destructive text-sm">
+                    A registration with this {emailDupStatus === "duplicate" && phoneDupStatus === "duplicate" ? "email and phone number" : emailDupStatus === "duplicate" ? "email" : "phone number"} already exists for the selected event. Please use different details or contact the organizing team.
+                  </AlertDescription>
+                </Alert>
+              )}
               <div className="space-y-4">
                 <p className="text-sm font-medium text-muted-foreground">{isSolo ? "Participant Info" : "Team Leader"}</p>
                 {!isSolo && renderField("teamName", "Team Name", form.teamName, (v) => setForm((f) => ({ ...f, teamName: v })), { placeholder: "e.g. Code Warriors" })}
                 {renderField("leaderName", "Full Name", form.leaderName, (v) => setForm((f) => ({ ...f, leaderName: v })), { placeholder: "John Doe" })}
-                {renderField("leaderEmail", "Email", form.leaderEmail, (v) => setForm((f) => ({ ...f, leaderEmail: v })), { type: "email", placeholder: "john@example.com" })}
-                {renderField("leaderPhone", "Phone Number", form.leaderPhone, (v) => setForm((f) => ({ ...f, leaderPhone: v })), { type: "tel", placeholder: "9876543210" })}
+                {/* Email with live duplicate check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="leaderEmail" className="text-sm text-foreground font-medium">Email</Label>
+                  <div className="relative">
+                    <Input id="leaderEmail" type="email" placeholder="john@example.com" value={form.leaderEmail} onChange={(e) => setForm((f) => ({ ...f, leaderEmail: e.target.value }))} onBlur={() => handleBlur("leaderEmail")} className={getFieldClass("leaderEmail")} />
+                    {emailDupStatus === "checking" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground animate-pulse">Checking…</span>}
+                    {emailDupStatus === "clear" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-500">✅ Available</span>}
+                    {emailDupStatus === "duplicate" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-destructive">⚠️ Already registered</span>}
+                  </div>
+                  {errors.leaderEmail && <p className="text-xs text-destructive">{errors.leaderEmail}</p>}
+                  {emailDupStatus === "duplicate" && !errors.leaderEmail && <p className="text-xs text-destructive">This email is already registered for this event</p>}
+                </div>
+                {/* Phone with live duplicate check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="leaderPhone" className="text-sm text-foreground font-medium">Phone Number</Label>
+                  <div className="relative">
+                    <Input id="leaderPhone" type="tel" placeholder="9876543210" value={form.leaderPhone} onChange={(e) => setForm((f) => ({ ...f, leaderPhone: e.target.value }))} onBlur={() => handleBlur("leaderPhone")} className={getFieldClass("leaderPhone")} />
+                    {phoneDupStatus === "checking" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground animate-pulse">Checking…</span>}
+                    {phoneDupStatus === "clear" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-500">✅ Available</span>}
+                    {phoneDupStatus === "duplicate" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-destructive">⚠️ Already registered</span>}
+                  </div>
+                  {errors.leaderPhone && <p className="text-xs text-destructive">{errors.leaderPhone}</p>}
+                  {phoneDupStatus === "duplicate" && !errors.leaderPhone && <p className="text-xs text-destructive">This phone number is already registered for this event</p>}
+                </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="collegeName" className="text-sm text-foreground font-medium">College / Organization *</Label>
                   {colleges.length > 0 ? (
