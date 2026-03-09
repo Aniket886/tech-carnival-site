@@ -276,6 +276,7 @@ const AdminPayments = () => {
                   <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
                   <TableHead className="text-xs text-muted-foreground font-medium">Amount</TableHead>
                   <TableHead className="text-xs text-muted-foreground font-medium">UTR</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Screenshot</TableHead>
                   <TableHead className="text-xs text-muted-foreground font-medium">Status</TableHead>
                   <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
                 </TableRow>
