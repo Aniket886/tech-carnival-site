@@ -90,7 +90,7 @@ const AdminMessages = () => {
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input placeholder="Search…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 w-48 bg-muted/50" />
           </div>
-          {messages.length > 0 && (
+          {messages.length > 0 && isOwner && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="sm"><Trash2 size={14} className="mr-1.5" /> Delete All ({messages.length})</Button>
