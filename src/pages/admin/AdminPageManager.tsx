@@ -9,6 +9,7 @@ import {
   ChevronDown, ChevronUp, ExternalLink, RotateCcw, Search,
   Wrench, Eye, EyeOff, Activity, Shield,
 } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
