@@ -710,7 +710,8 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 
                 {/* Payment Screenshot Upload */}
                 <div className="space-y-1.5">
-                  <Label className="text-sm text-foreground font-medium">Payment Screenshot (Optional)</Label>
+                   <Label className="text-sm text-foreground font-medium">Payment Screenshot <span className="text-destructive">*</span></Label>
+                   {touched.paymentScreenshot && errors.paymentScreenshot && <p className="text-xs text-destructive">{errors.paymentScreenshot}</p>}
                   <div className="relative">
                     {paymentScreenshot ? (
                       <div className="glass rounded-lg p-3 flex items-center gap-3">
