@@ -7,9 +7,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { scheduleData, formatTime, type ScheduleCategory, type ScheduleEvent } from "@/data/schedule";
+import { supabase } from "@/integrations/supabase/client";
+import { formatTime, type ScheduleCategory } from "@/data/schedule";
 
 type FilterCategory = "all" | ScheduleCategory;
+
+interface ScheduleEvent {
+  id: string;
+  emoji: string;
+  name: string;
+  startHour: number;
+  endHour: number;
+  category: ScheduleCategory;
+  venue: string;
+  teamSize?: string;
+  day: 1 | 2;
+  lane: number;
+}
 
 interface DaySchedule {
   label: string;
@@ -17,22 +31,6 @@ interface DaySchedule {
   endHour: number;
   events: ScheduleEvent[];
 }
-
-// Derive day schedule from shared data
-const days: DaySchedule[] = [
-  {
-    label: "Day 1",
-    startHour: 8,
-    endHour: 20,
-    events: scheduleData.filter((e) => e.day === 1),
-  },
-  {
-    label: "Day 2",
-    startHour: 9,
-    endHour: 18,
-    events: scheduleData.filter((e) => e.day === 2),
-  },
-];
 
 const filters: { label: string; value: FilterCategory; icon: string }[] = [
   { label: "All", value: "all", icon: "🎯" },
@@ -71,6 +69,25 @@ function assignLanes(events: ScheduleEvent[]): { event: ScheduleEvent; lane: num
   });
 }
 
+function buildDays(events: ScheduleEvent[]): DaySchedule[] {
+  const day1Events = events.filter(e => e.day === 1);
+  const day2Events = events.filter(e => e.day === 2);
+  return [
+    {
+      label: "Day 1",
+      startHour: day1Events.length ? Math.floor(Math.min(...day1Events.map(e => e.startHour))) : 8,
+      endHour: day1Events.length ? Math.ceil(Math.max(...day1Events.map(e => e.endHour))) : 20,
+      events: day1Events,
+    },
+    {
+      label: "Day 2",
+      startHour: day2Events.length ? Math.floor(Math.min(...day2Events.map(e => e.startHour))) : 9,
+      endHour: day2Events.length ? Math.ceil(Math.max(...day2Events.map(e => e.endHour))) : 18,
+      events: day2Events,
+    },
+  ];
+}
+
 function DesktopTimetable({ day, activeCategory }: { day: DaySchedule; activeCategory: FilterCategory }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -100,7 +117,7 @@ function DesktopTimetable({ day, activeCategory }: { day: DaySchedule; activeCat
   const hours: number[] = [];
   for (let h = day.startHour; h <= day.endHour; h++) hours.push(h);
 
-  const laneData = useMemo(() => assignLanes(day.events), [day]);
+  const laneData = useMemo(() => assignLanes(day.events), [day.events]);
   const laneCount = Math.max(1, ...laneData.map((d) => d.lane + 1));
   const LANE_H = 44;
 
@@ -180,7 +197,7 @@ function DesktopTimetable({ day, activeCategory }: { day: DaySchedule; activeCat
 function MobileScheduleList({ day, activeCategory }: { day: DaySchedule; activeCategory: FilterCategory }) {
   const sorted = useMemo(
     () => [...day.events].sort((a, b) => a.startHour - b.startHour),
-    [day]
+    [day.events]
   );
   const maxDuration = Math.max(...sorted.map((e) => e.endHour - e.startHour));
 
@@ -215,7 +232,42 @@ function MobileScheduleList({ day, activeCategory }: { day: DaySchedule; activeC
 const ScheduleSection = () => {
   const [activeDay, setActiveDay] = useState(0);
   const [activeCategory, setActiveCategory] = useState<FilterCategory>("all");
+  const [allEvents, setAllEvents] = useState<ScheduleEvent[]>([]);
 
+  const fetchSchedule = async () => {
+    const { data } = await supabase
+      .from("schedule_events")
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true });
+    if (data) {
+      setAllEvents(
+        data.map((d: any) => ({
+          id: d.id,
+          emoji: d.emoji,
+          name: d.name,
+          startHour: Number(d.start_hour),
+          endHour: Number(d.end_hour),
+          category: d.category as ScheduleCategory,
+          venue: d.venue,
+          teamSize: d.team_size,
+          day: d.day as 1 | 2,
+          lane: d.lane,
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchSchedule();
+    const channel = supabase
+      .channel("schedule_realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "schedule_events" }, () => fetchSchedule())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const days = useMemo(() => buildDays(allEvents), [allEvents]);
   const day = days[activeDay];
 
   return (
