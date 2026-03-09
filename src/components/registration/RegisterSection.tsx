@@ -271,7 +271,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (s === 1) {
       const nameV = validateName(form.leaderName); if (!nameV.valid) errs.leaderName = nameV.error!;
       const emailV = validateEmail(form.leaderEmail); if (!emailV.valid) errs.leaderEmail = emailV.error!;
+      else if (emailDupStatus === "duplicate") errs.leaderEmail = "This email is already registered for this event";
       const phoneV = validatePhone(form.leaderPhone); if (!phoneV.valid) errs.leaderPhone = phoneV.error!;
+      else if (phoneDupStatus === "duplicate") errs.leaderPhone = "This phone number is already registered for this event";
       const collegeV = validateCollegeName(form.collegeName); if (!collegeV.valid) errs.collegeName = collegeV.error!;
       if (!form.semester) errs.semester = "Select your semester";
       if (!isSolo) {
