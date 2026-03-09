@@ -73,6 +73,7 @@ const categoryStyles: Record<string, string> = {
 };
 
 const AdminEvents = () => {
+  const isOwner = useIsOwner();
   const [events, setEvents] = useState<Event[]>([]);
   const [regCounts, setRegCounts] = useState<Map<string, number>>(new Map());
   const [loading, setLoading] = useState(true);
