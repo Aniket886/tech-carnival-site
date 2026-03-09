@@ -22,6 +22,7 @@ import {
 import { toast } from "sonner";
 import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Event {
