@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
-  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon,
+  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon, X,
 } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
@@ -60,6 +60,7 @@ const AdminPayments = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dupsOnly, setDupsOnly] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     const [{ data: regs }, { data: evts }] = await Promise.all([
@@ -338,9 +339,9 @@ const AdminPayments = () => {
                       </TableCell>
                       <TableCell>
                         {r.payment_screenshot_url ? (
-                          <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer" title="View payment screenshot">
-                            <img src={r.payment_screenshot_url} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity" />
-                          </a>
+                          <button onClick={() => setLightboxUrl(r.payment_screenshot_url)} title="View payment screenshot" className="block">
+                            <img src={r.payment_screenshot_url} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity cursor-pointer" />
+                          </button>
                         ) : (
                           <span className="text-xs text-muted-foreground">—</span>
                         )}
@@ -399,6 +400,21 @@ const AdminPayments = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Screenshot Lightbox */}
+      {lightboxUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setLightboxUrl(null)}>
+          <div className="relative max-w-[90vw] max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setLightboxUrl(null)} className="absolute -top-10 right-0 text-white/80 hover:text-white transition-colors flex items-center gap-1 text-sm">
+              <X size={16} /> Close
+            </button>
+            <img src={lightboxUrl} alt="Payment screenshot" className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg border border-border" />
+            <a href={lightboxUrl} target="_blank" rel="noopener noreferrer" className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-xs text-white/60 hover:text-white transition-colors flex items-center gap-1">
+              <Download size={12} /> Open in new tab
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
