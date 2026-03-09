@@ -571,8 +571,40 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
               </div>
               <div className="space-y-4">
                 {renderField("amountPaid", "Amount Paid (₹)", form.amountPaid, (v) => setForm((f) => ({ ...f, amountPaid: v })), { placeholder: "e.g. 200" })}
-                {renderField("utrNumber", "UTR Number", form.utrNumber, (v) => setForm((f) => ({ ...f, utrNumber: v })), { placeholder: "Enter UTR number from payment confirmation" })}
-                {renderField("transactionId", "Transaction ID", form.transactionId, (v) => setForm((f) => ({ ...f, transactionId: v })), { placeholder: "Enter transaction ID" })}
+                
+                {/* UTR Number with live check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="utrNumber" className="text-sm text-foreground font-medium">UTR Number</Label>
+                  <div className="relative">
+                    <Input id="utrNumber" placeholder="Enter UTR number from payment confirmation" value={form.utrNumber} onChange={(e) => handleUtrChange(e.target.value)} onBlur={() => handleBlur("utrNumber")}
+                      className={`${utrStatus === "duplicate" || (errors.utrNumber && touched.utrNumber) ? "border-destructive focus:border-destructive focus:ring-destructive/30" : utrStatus === "valid" ? "border-green-500/50 focus:border-green-500 focus:ring-green-500/30" : ""} bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors pr-10`} />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {utrStatus === "checking" && <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
+                      {utrStatus === "valid" && <Check size={16} className="text-green-500" />}
+                      {utrStatus === "duplicate" && <AlertTriangle size={16} className="text-destructive" />}
+                    </div>
+                  </div>
+                  {utrStatus === "valid" && form.utrNumber.trim() && <p className="text-xs text-green-500 flex items-center gap-1"><Check size={12} /> UTR number is valid</p>}
+                  {utrStatus === "duplicate" && <p className="text-xs text-destructive flex items-center gap-1"><AlertTriangle size={12} /> This UTR number has already been used</p>}
+                  {errors.utrNumber && touched.utrNumber && utrStatus !== "duplicate" && <p className="text-xs text-destructive">{errors.utrNumber}</p>}
+                </div>
+
+                {/* Transaction ID with live check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="transactionId" className="text-sm text-foreground font-medium">Transaction ID</Label>
+                  <div className="relative">
+                    <Input id="transactionId" placeholder="Enter transaction ID" value={form.transactionId} onChange={(e) => handleTxnChange(e.target.value)} onBlur={() => handleBlur("transactionId")}
+                      className={`${txnStatus === "duplicate" || (errors.transactionId && touched.transactionId) ? "border-destructive focus:border-destructive focus:ring-destructive/30" : txnStatus === "valid" ? "border-green-500/50 focus:border-green-500 focus:ring-green-500/30" : ""} bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors pr-10`} />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {txnStatus === "checking" && <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
+                      {txnStatus === "valid" && <Check size={16} className="text-green-500" />}
+                      {txnStatus === "duplicate" && <AlertTriangle size={16} className="text-destructive" />}
+                    </div>
+                  </div>
+                  {txnStatus === "valid" && form.transactionId.trim() && <p className="text-xs text-green-500 flex items-center gap-1"><Check size={12} /> Transaction ID is valid</p>}
+                  {txnStatus === "duplicate" && <p className="text-xs text-destructive flex items-center gap-1"><AlertTriangle size={12} /> This Transaction ID has already been used</p>}
+                  {errors.transactionId && touched.transactionId && txnStatus !== "duplicate" && <p className="text-xs text-destructive">{errors.transactionId}</p>}
+                </div>
                 
                 {/* Payment Screenshot Upload */}
                 <div className="space-y-1.5">
