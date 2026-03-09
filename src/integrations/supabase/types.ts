@@ -539,6 +539,54 @@ export type Database = {
           },
         ]
       }
+      schedule_events: {
+        Row: {
+          category: string
+          created_at: string
+          day: number
+          display_order: number
+          emoji: string
+          end_hour: number
+          id: string
+          is_active: boolean
+          lane: number
+          name: string
+          start_hour: number
+          team_size: string | null
+          venue: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          day?: number
+          display_order?: number
+          emoji?: string
+          end_hour: number
+          id?: string
+          is_active?: boolean
+          lane?: number
+          name: string
+          start_hour: number
+          team_size?: string | null
+          venue?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          day?: number
+          display_order?: number
+          emoji?: string
+          end_hour?: number
+          id?: string
+          is_active?: boolean
+          lane?: number
+          name?: string
+          start_hour?: number
+          team_size?: string | null
+          venue?: string
+        }
+        Relationships: []
+      }
       section_cards: {
         Row: {
           card_key: string

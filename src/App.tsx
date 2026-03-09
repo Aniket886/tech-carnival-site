@@ -23,6 +23,7 @@ import AdminBotSettings from "./pages/admin/AdminBotSettings";
 import AdminEmail from "./pages/admin/AdminEmail";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminTeam from "./pages/admin/AdminTeam";
+import AdminSchedule from "./pages/admin/AdminSchedule";
 
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
                 <Route path="/admin/bot-settings" element={<AdminBotSettings />} />
                 <Route path="/admin/email" element={<AdminEmail />} />
                 <Route path="/admin/team" element={<AdminTeam />} />
+                <Route path="/admin/schedule" element={<AdminSchedule />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
