@@ -317,7 +317,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       }
       setTouched(t => ({ ...t, ...fields }));
     } else if (step === 2) {
-      setTouched(t => ({ ...t, amountPaid: true, utrNumber: true, transactionId: true }));
+      setTouched(t => ({ ...t, amountPaid: true, utrNumber: true, transactionId: true, paymentScreenshot: true }));
     }
     if (!validateStep(step)) {
       setShakeSubmit(true);
