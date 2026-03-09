@@ -206,7 +206,6 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
         if (!form.transaction_id.trim()) e.transaction_id = "Enter your Transaction ID";
         else if (form.transaction_id.trim().length < 4) e.transaction_id = "Transaction ID must be at least 4 characters";
-        if (!paymentScreenshot) e.paymentScreenshot = "Please upload your payment screenshot";
       }
       if (s === 2) {
         if (!form.agreed) e.agreed = "You must agree to the terms";
@@ -227,7 +226,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         : touched));
     }
     if (step === 1) {
-      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id", "paymentScreenshot"]));
+      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id"]));
     }
     if (countErrors(errs) > 0) {
       setShake(true);
@@ -636,8 +635,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
 
                   {/* Screenshot Upload */}
                   <div className="space-y-1">
-                     <Label className="text-xs">Payment Screenshot <span className="text-destructive">*</span></Label>
-                     {errors.paymentScreenshot && <p className="text-xs text-destructive">{errors.paymentScreenshot}</p>}
+                    <Label className="text-xs">Payment Screenshot (Optional)</Label>
                     {paymentScreenshot ? (
                       <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/10 p-2">
                         <div className="w-12 h-12 rounded overflow-hidden bg-muted shrink-0">
