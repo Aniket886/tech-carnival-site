@@ -54,6 +54,7 @@ const tierEmoji: Record<string, string> = {
 };
 
 const AdminSponsors = () => {
+  const isOwner = useIsOwner();
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
