@@ -21,10 +21,22 @@ const Footer = () => {
                 Where innovation meets celebration — a multi-day inter-college tech fest by GM University, Davangere.
               </p>
               <div className="flex gap-2">
-                <a href="https://instagram.com/techcarnival2k26" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200">
+                <a
+                  href="https://instagram.com/techcarnival2k26"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200"
+                >
                   <Instagram size={15} />
                 </a>
-                <a href="https://www.gmu.ac.in" target="_blank" rel="noopener noreferrer" aria-label="GM University" className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200">
+                <a
+                  href="https://www.gmu.ac.in"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GM University"
+                  className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200"
+                >
                   <Globe size={15} />
                 </a>
               </div>
@@ -33,17 +45,23 @@ const Footer = () => {
             {/* Right — Contact + back to top */}
             <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 items-start">
               <div className="space-y-3">
-                <a href="mailto:info@techcarnival.online" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="mailto:info@techcarnival.online"
+                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Mail size={14} className="text-primary" />
                   </div>
                   info@techcarnival.online
                 </a>
-                <a href="tel:+918073491988" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="tel:+918073491988"
+                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Phone size={14} className="text-primary" />
                   </div>
-                  +91 80734 91988
+                  +91 8073491988
                 </a>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
@@ -52,7 +70,6 @@ const Footer = () => {
                   P.B. Road, Davangere – 577006
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -65,7 +82,7 @@ const Footer = () => {
               All Rights Reserved
             </p>
             <p className="text-xs sm:text-sm font-sans font-medium text-foreground/70 tracking-wider uppercase">
-              Built with <span className="text-destructive">♥</span> by FCIT Tech Team
+              Built with <span className="text-destructive">❤️</span> by FCIT Tech Team
             </p>
           </div>
         </div>
