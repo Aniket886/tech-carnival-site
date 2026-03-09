@@ -280,6 +280,17 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         setErrors(errs); setStep(2); setLoading(false); return;
       }
       const regId = crypto.randomUUID();
+      // Upload payment screenshot if provided
+      let screenshotUrl: string | null = null;
+      if (paymentScreenshot) {
+        const ext = paymentScreenshot.name.split(".").pop() || "jpg";
+        const filePath = `${regId}.${ext}`;
+        const { error: uploadErr } = await supabase.storage.from("payment-screenshots").upload(filePath, paymentScreenshot);
+        if (!uploadErr) {
+          const { data: urlData } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
+          screenshotUrl = urlData.publicUrl;
+        }
+      }
       const { error } = await supabase.from("registrations").insert({
         id: regId,
         event_id: form.eventId,
@@ -293,7 +304,8 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         amount_paid: form.amountPaid.trim(),
         utr_number: utr,
         transaction_id: txn,
-      });
+        payment_screenshot_url: screenshotUrl,
+      } as any);
       if (error) throw error;
       setSuccessData({ id: regId, eventName: selectedEventData?.name || "" });
       setForm(initialForm);
