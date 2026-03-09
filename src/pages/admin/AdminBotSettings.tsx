@@ -202,6 +202,7 @@ const ContactsTab = () => {
 
 /* ─── FAQ Tab ─── */
 const FaqTab = () => {
+  const isOwner = useIsOwner();
   const [faqs, setFaqs] = useState<BotFaq[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<Record<string, boolean>>({});
