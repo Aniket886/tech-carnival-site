@@ -62,6 +62,7 @@ const emptyForm: FormData = {
 type FilterStatus = "all" | "pending" | "approved";
 
 const AdminColleges = () => {
+  const isOwner = useIsOwner();
   const [colleges, setColleges] = useState<College[]>([]);
   const [regCounts, setRegCounts] = useState<Map<string, number>>(new Map());
   const [loading, setLoading] = useState(true);
