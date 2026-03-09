@@ -51,6 +51,7 @@ const formatTime = (h: number): string => {
 };
 
 const AdminSchedule = () => {
+  const isOwner = useIsOwner();
   const refreshKey = useAdminRefresh();
   const [events, setEvents] = useState<ScheduleEvent[]>([]);
   const [loading, setLoading] = useState(true);
