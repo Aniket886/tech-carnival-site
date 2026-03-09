@@ -513,8 +513,30 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 <p className="text-sm font-medium text-muted-foreground">{isSolo ? "Participant Info" : "Team Leader"}</p>
                 {!isSolo && renderField("teamName", "Team Name", form.teamName, (v) => setForm((f) => ({ ...f, teamName: v })), { placeholder: "e.g. Code Warriors" })}
                 {renderField("leaderName", "Full Name", form.leaderName, (v) => setForm((f) => ({ ...f, leaderName: v })), { placeholder: "John Doe" })}
-                {renderField("leaderEmail", "Email", form.leaderEmail, (v) => setForm((f) => ({ ...f, leaderEmail: v })), { type: "email", placeholder: "john@example.com" })}
-                {renderField("leaderPhone", "Phone Number", form.leaderPhone, (v) => setForm((f) => ({ ...f, leaderPhone: v })), { type: "tel", placeholder: "9876543210" })}
+                {/* Email with live duplicate check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="leaderEmail" className="text-sm text-foreground font-medium">Email</Label>
+                  <div className="relative">
+                    <Input id="leaderEmail" type="email" placeholder="john@example.com" value={form.leaderEmail} onChange={(e) => setForm((f) => ({ ...f, leaderEmail: e.target.value }))} onBlur={() => handleBlur("leaderEmail")} className={getFieldClass("leaderEmail")} />
+                    {emailDupStatus === "checking" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground animate-pulse">Checking…</span>}
+                    {emailDupStatus === "clear" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-500">✅ Available</span>}
+                    {emailDupStatus === "duplicate" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-destructive">⚠️ Already registered</span>}
+                  </div>
+                  {errors.leaderEmail && <p className="text-xs text-destructive">{errors.leaderEmail}</p>}
+                  {emailDupStatus === "duplicate" && !errors.leaderEmail && <p className="text-xs text-destructive">This email is already registered for this event</p>}
+                </div>
+                {/* Phone with live duplicate check */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="leaderPhone" className="text-sm text-foreground font-medium">Phone Number</Label>
+                  <div className="relative">
+                    <Input id="leaderPhone" type="tel" placeholder="9876543210" value={form.leaderPhone} onChange={(e) => setForm((f) => ({ ...f, leaderPhone: e.target.value }))} onBlur={() => handleBlur("leaderPhone")} className={getFieldClass("leaderPhone")} />
+                    {phoneDupStatus === "checking" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground animate-pulse">Checking…</span>}
+                    {phoneDupStatus === "clear" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-500">✅ Available</span>}
+                    {phoneDupStatus === "duplicate" && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-destructive">⚠️ Already registered</span>}
+                  </div>
+                  {errors.leaderPhone && <p className="text-xs text-destructive">{errors.leaderPhone}</p>}
+                  {phoneDupStatus === "duplicate" && !errors.leaderPhone && <p className="text-xs text-destructive">This phone number is already registered for this event</p>}
+                </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="collegeName" className="text-sm text-foreground font-medium">College / Organization *</Label>
                   {colleges.length > 0 ? (
