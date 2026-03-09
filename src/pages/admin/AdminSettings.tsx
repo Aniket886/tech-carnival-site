@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { UserPlus, Trash2, Shield, Clock } from "lucide-react";
+import { UserPlus, Trash2, Shield, Clock, RotateCcw } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 
 interface AdminRole {
   id: string;
