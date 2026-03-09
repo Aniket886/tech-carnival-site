@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Search, Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 interface Sponsor {
   id: string;
