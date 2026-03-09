@@ -9,8 +9,20 @@ import { Mail, Phone, MapPin, User, Send } from "lucide-react";
 import { validateName, validateEmail, validatePhone, validateMessage, sanitizeInput } from "@/lib/validators";
 
 const coordinators = [
-  { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com", initial: "A" },
-  { name: "Sonali V Meharwade", role: "Core Organizer", phone: "+91 8073 289 015", email: "xyz@college.edu", initial: "S" },
+  {
+    name: "Aniket Tegginamath",
+    role: "Core Organizer",
+    phone: "+91 8073491988",
+    email: "aniket.gmu@gmail.com",
+    initial: "A",
+  },
+  {
+    name: "Sonali V Meharwade",
+    role: "Core Organizer",
+    phone: "+91 8073289015",
+    email: "xyz@college.edu",
+    initial: "S",
+  },
 ];
 
 const RATE_LIMIT_KEY = "contact_last_submit";
@@ -25,26 +37,45 @@ const ContactSection = () => {
     setTouched((t) => ({ ...t, [field]: true }));
     const errs = { ...errors };
     delete errs[field];
-    if (field === "name") { const r = validateName(form.name); if (!r.valid) errs.name = r.error!; }
-    if (field === "email") { const r = validateEmail(form.email); if (!r.valid) errs.email = r.error!; }
-    if (field === "phone" && form.phone.trim()) { const r = validatePhone(form.phone); if (!r.valid) errs.phone = r.error!; }
-    if (field === "message") { const r = validateMessage(form.message); if (!r.valid) errs.message = r.error!; }
+    if (field === "name") {
+      const r = validateName(form.name);
+      if (!r.valid) errs.name = r.error!;
+    }
+    if (field === "email") {
+      const r = validateEmail(form.email);
+      if (!r.valid) errs.email = r.error!;
+    }
+    if (field === "phone" && form.phone.trim()) {
+      const r = validatePhone(form.phone);
+      if (!r.valid) errs.phone = r.error!;
+    }
+    if (field === "message") {
+      const r = validateMessage(form.message);
+      if (!r.valid) errs.message = r.error!;
+    }
     setErrors(errs);
   };
 
   const getFieldClass = (field: string) => {
     const base = "bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors";
     if (errors[field] && touched[field]) return `${base} border-destructive focus:border-destructive`;
-    if (touched[field] && !errors[field] && form[field as keyof typeof form]) return `${base} border-green-500/50 focus:border-green-500`;
+    if (touched[field] && !errors[field] && form[field as keyof typeof form])
+      return `${base} border-green-500/50 focus:border-green-500`;
     return `${base} border-border focus:border-primary`;
   };
 
   const validateAll = (): boolean => {
     const errs: Record<string, string> = {};
-    const nv = validateName(form.name); if (!nv.valid) errs.name = nv.error!;
-    const ev = validateEmail(form.email); if (!ev.valid) errs.email = ev.error!;
-    if (form.phone.trim()) { const pv = validatePhone(form.phone); if (!pv.valid) errs.phone = pv.error!; }
-    const mv = validateMessage(form.message); if (!mv.valid) errs.message = mv.error!;
+    const nv = validateName(form.name);
+    if (!nv.valid) errs.name = nv.error!;
+    const ev = validateEmail(form.email);
+    if (!ev.valid) errs.email = ev.error!;
+    if (form.phone.trim()) {
+      const pv = validatePhone(form.phone);
+      if (!pv.valid) errs.phone = pv.error!;
+    }
+    const mv = validateMessage(form.message);
+    if (!mv.valid) errs.message = mv.error!;
     setErrors(errs);
     setTouched({ name: true, email: true, phone: true, message: true });
     if (Object.keys(errs).length > 0) {
@@ -105,31 +136,86 @@ const ContactSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <form onSubmit={handleSubmit} className="glass-strong rounded-xl p-6 sm:p-8 space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="contact-name" className="text-sm text-foreground font-medium">Name</Label>
-              <Input id="contact-name" required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} onBlur={() => handleBlur("name")} placeholder="Your name" className={getFieldClass("name")} />
+              <Label htmlFor="contact-name" className="text-sm text-foreground font-medium">
+                Name
+              </Label>
+              <Input
+                id="contact-name"
+                required
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                onBlur={() => handleBlur("name")}
+                placeholder="Your name"
+                className={getFieldClass("name")}
+              />
               {errors.name && touched.name && <p className="text-xs text-destructive">{errors.name}</p>}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="contact-email" className="text-sm text-foreground font-medium">Email</Label>
-              <Input id="contact-email" type="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} onBlur={() => handleBlur("email")} placeholder="you@example.com" className={getFieldClass("email")} />
+              <Label htmlFor="contact-email" className="text-sm text-foreground font-medium">
+                Email
+              </Label>
+              <Input
+                id="contact-email"
+                type="email"
+                required
+                value={form.email}
+                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                onBlur={() => handleBlur("email")}
+                placeholder="you@example.com"
+                className={getFieldClass("email")}
+              />
               {errors.email && touched.email && <p className="text-xs text-destructive">{errors.email}</p>}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="contact-phone" className="text-sm text-foreground font-medium">Phone</Label>
-              <Input id="contact-phone" type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} onBlur={() => handleBlur("phone")} placeholder="9876543210" className={getFieldClass("phone")} />
+              <Label htmlFor="contact-phone" className="text-sm text-foreground font-medium">
+                Phone
+              </Label>
+              <Input
+                id="contact-phone"
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                onBlur={() => handleBlur("phone")}
+                placeholder="9876543210"
+                className={getFieldClass("phone")}
+              />
               {errors.phone && touched.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="contact-msg" className="text-sm text-foreground font-medium">Message</Label>
-                <span className={`text-xs ${messageLen > 500 ? "text-destructive" : "text-muted-foreground"}`}>{messageLen}/500</span>
+                <Label htmlFor="contact-msg" className="text-sm text-foreground font-medium">
+                  Message
+                </Label>
+                <span className={`text-xs ${messageLen > 500 ? "text-destructive" : "text-muted-foreground"}`}>
+                  {messageLen}/500
+                </span>
               </div>
-              <Textarea id="contact-msg" required rows={4} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} onBlur={() => handleBlur("message")} placeholder="Your message..." className={`${getFieldClass("message")} resize-none`} maxLength={500} />
+              <Textarea
+                id="contact-msg"
+                required
+                rows={4}
+                value={form.message}
+                onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+                onBlur={() => handleBlur("message")}
+                placeholder="Your message..."
+                className={`${getFieldClass("message")} resize-none`}
+                maxLength={500}
+              />
               {errors.message && touched.message && <p className="text-xs text-destructive">{errors.message}</p>}
             </div>
-            <button type="submit" disabled={loading} className="btn-golden h-10 w-full text-sm font-semibold tracking-wider inline-flex items-center justify-center disabled:pointer-events-none disabled:opacity-50 transition-all duration-300">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-golden h-10 w-full text-sm font-semibold tracking-wider inline-flex items-center justify-center disabled:pointer-events-none disabled:opacity-50 transition-all duration-300"
+            >
               <span className="inline-flex items-center gap-2">
-                {loading ? "Sending..." : (<><Send size={16} /> Send Message</>)}
+                {loading ? (
+                  "Sending..."
+                ) : (
+                  <>
+                    <Send size={16} /> Send Message
+                  </>
+                )}
               </span>
             </button>
           </form>
@@ -143,10 +229,16 @@ const ContactSection = () => {
                 <div className="space-y-1 text-sm">
                   <p className="font-semibold text-foreground">{c.name}</p>
                   <p className="text-xs text-muted-foreground">{c.role}</p>
-                  <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
+                  <a
+                    href={`tel:${c.phone.replace(/\s/g, "")}`}
+                    className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+                  >
                     <Phone size={12} /> {c.phone}
                   </a>
-                  <a href={`mailto:${c.email}`} className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
+                  <a
+                    href={`mailto:${c.email}`}
+                    className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+                  >
                     <Mail size={12} /> {c.email}
                   </a>
                 </div>
@@ -158,12 +250,20 @@ const ContactSection = () => {
                 <p className="text-sm font-semibold text-foreground">College Address</p>
               </div>
               <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                GM University P.B. Road, Davanagere,<br />Davangere - 577006 Karnataka,
+                GM University P.B. Road, Davanagere,
+                <br />
+                Davangere - 577006 Karnataka,
               </p>
               <div className="rounded-lg overflow-hidden border border-border h-40 bg-muted/30">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1720.843825501612!2d75.88425921598456!3d14.47528060769758!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bba2f005c56529f%3A0x2178cebedeb330c!2sGM%20University%20Main%20Gate!5e0!3m2!1sen!2sin!4v1771513343942!5m2!1sen!2sin"
-                  width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
                 />
               </div>
             </div>
