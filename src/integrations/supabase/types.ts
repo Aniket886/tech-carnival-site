@@ -789,6 +789,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_registration_duplicate: {
+        Args: { _event_id: string; _field: string; _value: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
