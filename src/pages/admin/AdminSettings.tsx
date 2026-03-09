@@ -40,6 +40,7 @@ const AdminSettings = () => {
   // Admins list
   const [admins, setAdmins] = useState<AdminRole[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<AdminRole | null>(null);
+  const [showReinvite, setShowReinvite] = useState(false);
 
   // Session security
   const [sessionTimeout, setSessionTimeout] = useState("30");
