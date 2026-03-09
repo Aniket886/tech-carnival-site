@@ -227,7 +227,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         : touched));
     }
     if (step === 1) {
-      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id"]));
+      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id", "paymentScreenshot"]));
     }
     if (countErrors(errs) > 0) {
       setShake(true);
