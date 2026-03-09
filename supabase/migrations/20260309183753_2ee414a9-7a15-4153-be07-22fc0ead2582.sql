@@ -1,0 +1,1 @@
+ALTER TABLE public.registrations ADD CONSTRAINT registrations_event_phone_unique UNIQUE (event_id, leader_phone);
