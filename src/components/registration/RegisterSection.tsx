@@ -509,8 +509,15 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
           {step === 1 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="font-display text-lg font-semibold text-foreground">Step 2 — {isSolo ? "Your" : "Team"} Details</h3>
+              {(emailDupStatus === "duplicate" || phoneDupStatus === "duplicate") && (
+                <Alert className="border-destructive/30 bg-destructive/10">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  <AlertDescription className="text-destructive text-sm">
+                    A registration with this {emailDupStatus === "duplicate" && phoneDupStatus === "duplicate" ? "email and phone number" : emailDupStatus === "duplicate" ? "email" : "phone number"} already exists for the selected event. Please use different details or contact the organizing team.
+                  </AlertDescription>
+                </Alert>
+              )}
               <div className="space-y-4">
-                <p className="text-sm font-medium text-muted-foreground">{isSolo ? "Participant Info" : "Team Leader"}</p>
                 {!isSolo && renderField("teamName", "Team Name", form.teamName, (v) => setForm((f) => ({ ...f, teamName: v })), { placeholder: "e.g. Code Warriors" })}
                 {renderField("leaderName", "Full Name", form.leaderName, (v) => setForm((f) => ({ ...f, leaderName: v })), { placeholder: "John Doe" })}
                 {/* Email with live duplicate check */}
