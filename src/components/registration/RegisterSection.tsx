@@ -95,8 +95,12 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
+  const [emailDupStatus, setEmailDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
+  const [phoneDupStatus, setPhoneDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
   const utrTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const txnTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const emailDupTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const phoneDupTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const checkDuplicateField = useCallback(async (field: "utr_number" | "transaction_id", value: string, setStatus: (s: "idle" | "checking" | "valid" | "duplicate") => void) => {
     const trimmed = value.trim();
@@ -109,6 +113,32 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         .eq(field, trimmed)
         .limit(1);
       setStatus(data && data.length > 0 ? "duplicate" : "valid");
+    } catch {
+      setStatus("idle");
+    }
+  }, []);
+
+  // Live duplicate registration check by email for the selected event
+  const checkDuplicateRegistration = useCallback(async (
+    field: "leader_email" | "leader_phone",
+    value: string,
+    eventId: string,
+    setStatus: (s: "idle" | "checking" | "clear" | "duplicate") => void
+  ) => {
+    const trimmed = value.trim().toLowerCase();
+    if (!trimmed || !eventId) { setStatus("idle"); return; }
+    // Basic validation before checking
+    if (field === "leader_email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setStatus("idle"); return; }
+    if (field === "leader_phone" && !/^[6-9]\d{9}$/.test(trimmed)) { setStatus("idle"); return; }
+    setStatus("checking");
+    try {
+      const { data } = await supabase
+        .from("registrations")
+        .select("id")
+        .eq("event_id", eventId)
+        .eq(field, trimmed)
+        .limit(1);
+      setStatus(data && data.length > 0 ? "duplicate" : "clear");
     } catch {
       setStatus("idle");
     }
