@@ -334,14 +334,16 @@ const AdminPayments = () => {
                         {r.amount_paid ? `₹${r.amount_paid}` : "—"}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground font-mono max-w-[140px] truncate">
-                        <span className="flex items-center gap-1.5">
-                          {r.utr_number || "—"}
-                          {r.payment_screenshot_url && (
-                            <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer" title="View payment screenshot">
-                              <ImageIcon size={13} className="text-primary shrink-0" />
-                            </a>
-                          )}
-                        </span>
+                        {r.utr_number || "—"}
+                      </TableCell>
+                      <TableCell>
+                        {r.payment_screenshot_url ? (
+                          <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer" title="View payment screenshot">
+                            <img src={r.payment_screenshot_url} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity" />
+                          </a>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`text-[10px] capitalize ${sc.cls}`}>
