@@ -147,7 +147,7 @@ const ContactsTab = () => {
       >
         <Save size={16} />
       </Button>
-      <AlertDialog>
+      {isOwner && <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive"><Trash2 size={16} /></Button>
         </AlertDialogTrigger>
@@ -161,7 +161,7 @@ const ContactsTab = () => {
             <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>}
     </div>
   );
 
