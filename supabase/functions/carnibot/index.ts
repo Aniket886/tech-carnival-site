@@ -16,7 +16,7 @@ Day 1 (27th March 2026):
   🔍 Myth Busters — 9:00 AM – 11:00 AM — 📍 Seminar Hall B | Team: Solo [technical]
   ⚡ Hack Momentum (6hr Hackathon) — 10:30 AM – 5:30 PM — 📍 Main Auditorium | Team: 2-4 [technical]
   🧠 Brain Quest (Mega Quiz) — 10:30 AM – 1:30 PM — 📍 Seminar Hall A | Team: 2 [technical]
-  📊 Poster Presentation — 10:30 AM – 1:30 PM — 📍 Exhibition Hall | Team: 1-2 [technical]
+  📊 Pixel Perfect — 10:30 AM – 1:30 PM — 📍 Exhibition Hall | Team: 1-2 [technical]
   🍽️ Lunch Break — 1:30 PM – 2:30 PM — 📍 Food Court [break]
   🎯 Pitch Perfect — 2:30 PM – 5:00 PM — 📍 Seminar Hall B | Team: 1-2 [technical]
   🎮 Battle Ground – Free Fire — 2:30 PM – 5:30 PM — 📍 Gaming Arena | Team: 4 (squad) [gaming]
@@ -50,15 +50,21 @@ serve(async (req) => {
     ]);
 
     // Build context
-    const eventList = (events || []).map((e: any) =>
-      `- ${e.name} (${e.category}): ${e.description || 'No description'}. Team: ${e.team_size_min}-${e.team_size_max}. Date: ${e.date || 'TBA'}. Time: ${e.time || 'TBA'}. Venue: ${e.venue || 'TBA'}. Prize: ${e.prize_pool || 'TBA'}. Rules: ${(e.rules || []).join('; ')}`
-    ).join('\n');
+    const eventList = (events || [])
+      .map(
+        (e: any) =>
+          `- ${e.name} (${e.category}): ${e.description || "No description"}. Team: ${e.team_size_min}-${e.team_size_max}. Date: ${e.date || "TBA"}. Time: ${e.time || "TBA"}. Venue: ${e.venue || "TBA"}. Prize: ${e.prize_pool || "TBA"}. Rules: ${(e.rules || []).join("; ")}`,
+      )
+      .join("\n");
 
-    const contactList = (contacts || []).map((c: any) =>
-      `- ${c.role === 'core_team' ? '🎯 Core Team' : `🎪 ${c.events?.name || 'Event'} Coordinator`}: ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ''}`
-    ).join('\n');
+    const contactList = (contacts || [])
+      .map(
+        (c: any) =>
+          `- ${c.role === "core_team" ? "🎯 Core Team" : `🎪 ${c.events?.name || "Event"} Coordinator`}: ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ""}`,
+      )
+      .join("\n");
 
-    const faqList = (faqs || []).map((f: any) => `Q patterns: "${f.question_pattern}" → A: ${f.answer}`).join('\n');
+    const faqList = (faqs || []).map((f: any) => `Q patterns: "${f.question_pattern}" → A: ${f.answer}`).join("\n");
 
     const leaderboard = (scores || []).reduce((acc: any, s: any) => {
       acc[s.college_name] = (acc[s.college_name] || 0) + s.points;
@@ -68,7 +74,7 @@ serve(async (req) => {
       .sort((a: any, b: any) => b[1] - a[1])
       .slice(0, 5)
       .map(([name, pts], i) => `${i + 1}. ${name}: ${pts} points`)
-      .join('\n');
+      .join("\n");
 
     const systemPrompt = `You are CarniBOT 🤖 — the friendly, enthusiastic AI assistant for Tech Carnival 2K26, a college tech fest.
 
@@ -86,7 +92,7 @@ FAQ KNOWLEDGE:
 ${faqList}
 
 LEADERBOARD (Top colleges):
-${topColleges || 'No scores yet'}
+${topColleges || "No scores yet"}
 
 RULES:
 1. For schedule/timing questions, ALWAYS use the FULL EVENT SCHEDULE above. It is the exact schedule shown on the website.
@@ -107,10 +113,7 @@ RULES:
       },
       body: JSON.stringify({
         model: "llama-3.1-8b-instant",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
         stream: true,
       }),
     });
@@ -118,18 +121,21 @@ RULES:
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "Service temporarily unavailable." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const t = await response.text();
       console.error("AI gateway error:", response.status, t);
       return new Response(JSON.stringify({ error: "AI service error" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -139,7 +145,8 @@ RULES:
   } catch (e) {
     console.error("CarniBOT error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
