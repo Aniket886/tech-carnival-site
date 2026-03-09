@@ -20,7 +20,7 @@ const coordinators = [
     name: "Sonali V Meharwade",
     role: "Core Organizer",
     phone: "+91 8073289015",
-    email: "xyz@college.edu",
+    email: "meharwadesona@gmail.com",
     initial: "S",
   },
 ];
