@@ -320,7 +320,7 @@ const AdminRegistrations = () => {
                             {r.registration_status === "confirmed" && (
                               <button title="Undo (set back to pending)" onClick={() => updateStatus(r.id, "pending")} className="p-1.5 rounded-md text-amber-400 hover:bg-amber-500/10 transition-colors"><Undo2 size={15} /></button>
                             )}
-                            <button title="Delete" onClick={() => setDeleteConfirm({ type: "single", id: r.id })} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><Trash2 size={15} /></button>
+                            {isOwner && <button title="Delete" onClick={() => setDeleteConfirm({ type: "single", id: r.id })} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><Trash2 size={15} /></button>}
                           </div>
                         </TableCell>
                       </TableRow>
