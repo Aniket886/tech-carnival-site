@@ -10,6 +10,31 @@ import { toast } from "sonner";
 import { Plus, Trash2, ArrowUp, ArrowDown, ImagePlus, User, Pencil } from "lucide-react";
 import { useAdminRefresh } from "@/components/AdminLayout";
 
+// Fallback static images for members seeded before storage was set up
+import shwetaImg from "@/assets/team/shweta.png";
+import rajashekharImg from "@/assets/team/rajashekhar.png";
+import shaminaImg from "@/assets/team/shamina.png";
+import manjulaImg from "@/assets/team/manjula.png";
+import sugandhaImg from "@/assets/team/sugandha.png";
+import adarshImg from "@/assets/team/adarsh.jpeg";
+import aniketImg from "@/assets/team/aniket.png";
+import bhanuImg from "@/assets/team/bhanuprakash.png";
+import vishwasheetal from "@/assets/team/vishwasheetal.png";
+import sonaliImg from "@/assets/team/sonali.png";
+
+const fallbackImages: Record<string, string> = {
+  "Dr. Shweta Marigoudar": shwetaImg,
+  "Prof. Rajashekhar G. C": rajashekharImg,
+  "Prof. Shamina Attar": shaminaImg,
+  "Prof. Manjula K": manjulaImg,
+  "Prof. Sugandha M S": sugandhaImg,
+  "Adarsh Gouda D": adarshImg,
+  "Aniket Tegginamath": aniketImg,
+  "Bhanuprakash K S": bhanuImg,
+  "K Vishwasheetal": vishwasheetal,
+  "Sonali Meharwade": sonaliImg,
+};
+
 type TeamMember = {
   id: string;
   name: string;
@@ -20,7 +45,7 @@ type TeamMember = {
   is_active: boolean;
 };
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const getImage = (member: TeamMember) => member.image_url || fallbackImages[member.name] || null;
 
 const AdminTeam = () => {
   const refreshKey = useAdminRefresh();
@@ -197,8 +222,8 @@ const AdminTeam = () => {
               <CardContent className="pt-5 flex flex-col items-center text-center gap-3">
                 {/* Image */}
                 <div className="relative w-24 h-24 rounded-full border-2 border-primary/30 bg-muted/60 flex items-center justify-center overflow-hidden group">
-                  {member.image_url ? (
-                    <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />
+                  {getImage(member) ? (
+                    <img src={getImage(member)!} alt={member.name} className="w-full h-full object-cover" />
                   ) : (
                     <User className="w-10 h-10 text-muted-foreground/50" />
                   )}
