@@ -194,8 +194,8 @@ const AdminTeam = () => {
               <CardContent className="pt-5 flex flex-col items-center text-center gap-3">
                 {/* Image */}
                 <div className="relative w-24 h-24 rounded-full border-2 border-primary/30 bg-muted/60 flex items-center justify-center overflow-hidden group">
-                  {getImage(member) ? (
-                    <img src={getImage(member)!} alt={member.name} className="w-full h-full object-cover" />
+                  {member.image_url ? (
+                    <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />
                   ) : (
                     <User className="w-10 h-10 text-muted-foreground/50" />
                   )}
