@@ -35,6 +35,18 @@ const fallbackImages: Record<string, string> = {
   "Sonali Meharwade": sonaliImg,
 };
 
+type TeamMember = {
+  id: string;
+  name: string;
+  role: string | null;
+  section: string;
+  image_url: string | null;
+  display_order: number;
+  is_active: boolean;
+};
+
+const getImage = (member: TeamMember) => member.image_url || fallbackImages[member.name] || null;
+
 const AdminTeam = () => {
   const refreshKey = useAdminRefresh();
   const [members, setMembers] = useState<TeamMember[]>([]);
