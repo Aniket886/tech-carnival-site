@@ -305,6 +305,49 @@ const AdminSettings = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Re-invite Dialog */}
+      <Dialog open={showReinvite} onOpenChange={setShowReinvite}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <RotateCcw size={18} className="text-primary" /> Re-invite Admin
+            </DialogTitle>
+            <DialogDescription>
+              Create a new account for the previously removed admin. They'll need to use the new password to log in.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label className="text-sm text-foreground">Email</Label>
+              <Input value={email} onChange={(e) => setEmail(e.target.value)} className="bg-muted/50" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm text-foreground">New Password</Label>
+              <Input
+                type="password"
+                placeholder="Min 6 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-muted/50"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowReinvite(false)}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                await handleCreateAdmin();
+                setShowReinvite(false);
+              }}
+              disabled={inviting}
+              className="gap-2"
+            >
+              <RotateCcw size={14} /> {inviting ? "Creating…" : "Re-invite"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
