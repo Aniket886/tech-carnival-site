@@ -479,6 +479,7 @@ export type Database = {
           leader_name: string
           leader_phone: string
           members: Json | null
+          payment_screenshot_url: string | null
           registration_status: string
           semester: string | null
           source: string
@@ -497,6 +498,7 @@ export type Database = {
           leader_name: string
           leader_phone: string
           members?: Json | null
+          payment_screenshot_url?: string | null
           registration_status?: string
           semester?: string | null
           source?: string
@@ -515,6 +517,7 @@ export type Database = {
           leader_name?: string
           leader_phone?: string
           members?: Json | null
+          payment_screenshot_url?: string | null
           registration_status?: string
           semester?: string | null
           source?: string
