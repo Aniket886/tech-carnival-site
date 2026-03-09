@@ -295,6 +295,19 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     setLoading(true);
 
     try {
+      // Upload payment screenshot if provided
+      let screenshotUrl: string | null = null;
+      if (paymentScreenshot) {
+        const regIdForFile = crypto.randomUUID();
+        const ext = paymentScreenshot.name.split(".").pop() || "jpg";
+        const filePath = `${regIdForFile}.${ext}`;
+        const { error: uploadErr } = await supabase.storage.from("payment-screenshots").upload(filePath, paymentScreenshot);
+        if (!uploadErr) {
+          const { data: urlData } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
+          screenshotUrl = urlData.publicUrl;
+        }
+      }
+
       const insertPromise = supabase
         .from("registrations")
         .insert([{
@@ -311,7 +324,8 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           amount_paid: form.amount_paid.trim(),
           utr_number: form.utr_number.trim(),
           transaction_id: form.transaction_id.trim(),
-        }]);
+          payment_screenshot_url: screenshotUrl,
+        } as any]);
 
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Request timed out")), 15000)
