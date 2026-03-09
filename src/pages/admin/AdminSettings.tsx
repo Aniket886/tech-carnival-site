@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { UserPlus, Trash2, Shield, Clock } from "lucide-react";
+import { UserPlus, Trash2, Shield, Clock, RotateCcw } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 
 interface AdminRole {
   id: string;
@@ -40,6 +43,7 @@ const AdminSettings = () => {
   // Admins list
   const [admins, setAdmins] = useState<AdminRole[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<AdminRole | null>(null);
+  const [showReinvite, setShowReinvite] = useState(false);
 
   // Session security
   const [sessionTimeout, setSessionTimeout] = useState("30");
@@ -124,13 +128,26 @@ const AdminSettings = () => {
   // Remove admin
   const handleRemoveAdmin = async () => {
     if (!deleteTarget) return;
+    const removedEmail = deleteTarget.email || "";
     try {
       const { data, error } = await supabase.functions.invoke("delete-admin", {
         body: { user_id: deleteTarget.user_id },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      toast.success("Admin removed");
+      toast.success("Admin removed — no longer has access", {
+        action: removedEmail
+          ? {
+              label: "Re-invite",
+              onClick: () => {
+                setEmail(removedEmail);
+                setPassword("");
+                setShowReinvite(true);
+              },
+            }
+          : undefined,
+        duration: 8000,
+      });
       setDeleteTarget(null);
       fetchAdmins();
     } catch (e: any) {
@@ -288,6 +305,49 @@ const AdminSettings = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Re-invite Dialog */}
+      <Dialog open={showReinvite} onOpenChange={setShowReinvite}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <RotateCcw size={18} className="text-primary" /> Re-invite Admin
+            </DialogTitle>
+            <DialogDescription>
+              Create a new account for the previously removed admin. They'll need to use the new password to log in.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label className="text-sm text-foreground">Email</Label>
+              <Input value={email} onChange={(e) => setEmail(e.target.value)} className="bg-muted/50" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm text-foreground">New Password</Label>
+              <Input
+                type="password"
+                placeholder="Min 6 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-muted/50"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowReinvite(false)}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                await handleCreateAdmin();
+                setShowReinvite(false);
+              }}
+              disabled={inviting}
+              className="gap-2"
+            >
+              <RotateCcw size={14} /> {inviting ? "Creating…" : "Re-invite"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
