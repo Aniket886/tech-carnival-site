@@ -142,7 +142,7 @@ const AdminMessages = () => {
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => toggleRead(m)} title={m.is_read ? "Mark unread" : "Mark read"}>
                     {m.is_read ? <Mail size={16} /> : <MailOpen size={16} />}
                   </Button>
-                  <AlertDialog>
+                  {isOwner && <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive"><Trash2 size={16} /></Button>
                     </AlertDialogTrigger>
