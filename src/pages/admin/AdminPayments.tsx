@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import {
   Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2,
 } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Registration {
