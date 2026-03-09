@@ -339,9 +339,9 @@ const AdminPayments = () => {
                       </TableCell>
                       <TableCell>
                         {r.payment_screenshot_url ? (
-                          <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer" title="View payment screenshot">
-                            <img src={r.payment_screenshot_url} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity" />
-                          </a>
+                          <button onClick={() => setLightboxUrl(r.payment_screenshot_url)} title="View payment screenshot" className="block">
+                            <img src={r.payment_screenshot_url} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity cursor-pointer" />
+                          </button>
                         ) : (
                           <span className="text-xs text-muted-foreground">—</span>
                         )}
