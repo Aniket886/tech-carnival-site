@@ -52,6 +52,7 @@ const App = () => (
                 <Route path="/admin/bot-settings" element={<AdminBotSettings />} />
                 <Route path="/admin/email" element={<AdminEmail />} />
                 <Route path="/admin/team" element={<AdminTeam />} />
+                <Route path="/admin/schedule" element={<AdminSchedule />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
