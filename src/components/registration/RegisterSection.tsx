@@ -362,8 +362,13 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     setLoading(true);
     try {
       const leaderEmail = sanitizeInput(form.leaderEmail).toLowerCase();
-      const { data: existing } = await supabase.from("registrations").select("id").eq("event_id", form.eventId).eq("leader_email", leaderEmail);
-      if (existing && existing.length > 0) { setErrors({ leaderEmail: "This email is already registered for this event" }); setStep(1); setLoading(false); return; }
+      const leaderPhone = form.leaderPhone.replace(/\s/g, "");
+      // Check duplicate email via RPC
+      const { data: emailDup } = await supabase.rpc("check_registration_duplicate", { _event_id: form.eventId, _field: "leader_email", _value: leaderEmail });
+      if (emailDup === true) { setErrors({ leaderEmail: "This email is already registered for this event" }); setStep(1); setLoading(false); return; }
+      // Check duplicate phone via RPC
+      const { data: phoneDup } = await supabase.rpc("check_registration_duplicate", { _event_id: form.eventId, _field: "leader_phone", _value: leaderPhone });
+      if (phoneDup === true) { setErrors({ leaderPhone: "This phone number is already registered for this event" }); setStep(1); setLoading(false); return; }
       const utr = form.utrNumber.trim();
       const txn = form.transactionId.trim();
       const { data: dupes } = await supabase.from("registrations").select("id, utr_number, transaction_id").or(`utr_number.eq.${utr},transaction_id.eq.${txn}`);
@@ -390,7 +395,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         event_id: form.eventId,
         leader_name: sanitizeInput(form.leaderName),
         leader_email: leaderEmail,
-        leader_phone: form.leaderPhone.replace(/\s/g, ""),
+        leader_phone: leaderPhone,
         college_name: sanitizeInput(form.collegeName),
         semester: form.semester,
         team_name: isSolo ? null : sanitizeInput(form.teamName),
@@ -400,7 +405,15 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         transaction_id: txn,
         payment_screenshot_url: screenshotUrl,
       } as any);
-      if (error) throw error;
+      if (error) {
+        if (error.code === "23505") {
+          if (error.message.includes("email")) { setErrors({ leaderEmail: "This email is already registered for this event" }); setStep(1); }
+          else if (error.message.includes("phone")) { setErrors({ leaderPhone: "This phone number is already registered for this event" }); setStep(1); }
+          else { toast.error("Duplicate registration detected. Please check your details."); }
+          setLoading(false); return;
+        }
+        throw error;
+      }
       setSuccessData({ id: regId, eventName: selectedEventData?.name || "" });
       setForm(initialForm);
       setPaymentScreenshot(null);
