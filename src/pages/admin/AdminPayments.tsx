@@ -333,7 +333,14 @@ const AdminPayments = () => {
                         {r.amount_paid ? `₹${r.amount_paid}` : "—"}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground font-mono max-w-[140px] truncate">
-                        {r.utr_number || "—"}
+                        <span className="flex items-center gap-1.5">
+                          {r.utr_number || "—"}
+                          {r.payment_screenshot_url && (
+                            <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer" title="View payment screenshot">
+                              <ImageIcon size={13} className="text-primary shrink-0" />
+                            </a>
+                          )}
+                        </span>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`text-[10px] capitalize ${sc.cls}`}>
