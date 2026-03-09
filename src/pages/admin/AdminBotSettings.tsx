@@ -44,6 +44,7 @@ type EventOption = { id: string; name: string };
 
 /* ─── Contacts Tab ─── */
 const ContactsTab = () => {
+  const isOwner = useIsOwner();
   const [contacts, setContacts] = useState<BotContact[]>([]);
   const [events, setEvents] = useState<EventOption[]>([]);
   const [loading, setLoading] = useState(true);
