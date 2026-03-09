@@ -22,6 +22,7 @@ type Contact = {
 };
 
 const AdminMessages = () => {
+  const isOwner = useIsOwner();
   const [messages, setMessages] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
