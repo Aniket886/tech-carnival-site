@@ -636,7 +636,8 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
 
                   {/* Screenshot Upload */}
                   <div className="space-y-1">
-                    <Label className="text-xs">Payment Screenshot (Optional)</Label>
+                     <Label className="text-xs">Payment Screenshot <span className="text-destructive">*</span></Label>
+                     {errors.paymentScreenshot && <p className="text-xs text-destructive">{errors.paymentScreenshot}</p>}
                     {paymentScreenshot ? (
                       <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/10 p-2">
                         <div className="w-12 h-12 rounded overflow-hidden bg-muted shrink-0">
