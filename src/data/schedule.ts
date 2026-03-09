@@ -72,8 +72,8 @@ export const scheduleData: ScheduleEvent[] = [
   {
     emoji: "🔍",
     name: "Myth Busters",
-    startHour: 9,
-    endHour: 11,
+    startHour: 10,
+    endHour: 12,
     category: "technical",
     venue: "Seminar Hall B",
     teamSize: "Solo",
