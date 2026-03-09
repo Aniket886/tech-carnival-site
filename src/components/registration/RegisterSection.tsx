@@ -518,6 +518,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 </Alert>
               )}
               <div className="space-y-4">
+                <p className="text-sm font-medium text-muted-foreground">{isSolo ? "Participant Info" : "Team Leader"}</p>
                 {!isSolo && renderField("teamName", "Team Name", form.teamName, (v) => setForm((f) => ({ ...f, teamName: v })), { placeholder: "e.g. Code Warriors" })}
                 {renderField("leaderName", "Full Name", form.leaderName, (v) => setForm((f) => ({ ...f, leaderName: v })), { placeholder: "John Doe" })}
                 {/* Email with live duplicate check */}
