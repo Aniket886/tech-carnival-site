@@ -136,10 +136,11 @@ const AdminTeam = () => {
     }
 
     const { data: urlData } = supabase.storage.from("team-images").getPublicUrl(filePath);
+    const cacheBust = `?t=${Date.now()}`;
 
     const { error: updateError } = await supabase
       .from("team_members")
-      .update({ image_url: urlData.publicUrl })
+      .update({ image_url: urlData.publicUrl + cacheBust })
       .eq("id", memberId);
 
     if (updateError) toast.error("Failed to save image URL");
