@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Search, Plus, Pencil, Trash2, Upload, Trophy, Download } from "lucide-react";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 interface Score {
   id: string;
