@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { toast } from "sonner";
 import { Plus, Trash2, ArrowUp, ArrowDown, ImagePlus, User, Pencil } from "lucide-react";
 import { useAdminRefresh } from "@/components/AdminLayout";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 type TeamMember = {
   id: string;
