@@ -23,6 +23,7 @@ import AdminBotSettings from "./pages/admin/AdminBotSettings";
 import AdminEmail from "./pages/admin/AdminEmail";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminTeam from "./pages/admin/AdminTeam";
+import AdminSchedule from "./pages/admin/AdminSchedule";
 
 
 const queryClient = new QueryClient();
