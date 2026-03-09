@@ -61,6 +61,7 @@ const positionStyles: Record<string, { label: string; cls: string }> = {
 };
 
 const AdminScores = () => {
+  const isOwner = useIsOwner();
   const [scores, setScores] = useState<Score[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [colleges, setColleges] = useState<CollegeInfo[]>([]);
