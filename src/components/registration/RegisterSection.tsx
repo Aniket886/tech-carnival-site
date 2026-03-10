@@ -716,7 +716,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
                   <p className="text-xs text-muted-foreground mb-1">Amount to Pay</p>
                   <p className="text-2xl font-bold text-primary">
-                    ₹{form.amountPaid && EVENT_PRICES[form.amountPaid] ? EVENT_PRICES[form.amountPaid] : 0}
+                    ₹{form.amountPaid && eventPrices[form.amountPaid] ? eventPrices[form.amountPaid] : 0}
                   </p>
                 </div>
                 
