@@ -27,6 +27,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AnnouncementBanner />
       <PageLoader />
       <CustomCursor />
       <Navbar />

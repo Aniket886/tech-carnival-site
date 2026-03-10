@@ -60,6 +60,9 @@ const App = () => (
                 <Route path="/admin/settings" element={<AdminSettings />} />
                 <Route path="/admin/payment-instructions" element={<AdminPaymentInstructions />} />
                 <Route path="/admin/faqs" element={<AdminFAQ />} />
+                <Route path="/admin/announcements" element={<AdminAnnouncements />} />
+                <Route path="/admin/activity-log" element={<AdminActivityLog />} />
+                <Route path="/admin/gallery" element={<AdminGallery />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
