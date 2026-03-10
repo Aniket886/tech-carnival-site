@@ -32,7 +32,7 @@ const FAQSection = () => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchFaqs = async () => {
       const { data, error } = await supabase
         .from("faqs")
         .select("id, question, answer, link_url, link_label, display_order")
@@ -43,7 +43,14 @@ const FAQSection = () => {
       }
       setLoaded(true);
     };
-    fetch();
+    fetchFaqs();
+
+    const channel = supabase
+      .channel("faqs_realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "faqs" }, () => fetchFaqs())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const useFallback = loaded && faqs.length === 0;

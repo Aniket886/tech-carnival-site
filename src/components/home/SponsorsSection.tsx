@@ -123,6 +123,13 @@ const SponsorsSection = () => {
       if (data) setSponsors(data);
     };
     fetchSponsors();
+
+    const channel = supabase
+      .channel("sponsors_realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "sponsors" }, () => fetchSponsors())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const grouped: Record<TierKey, Sponsor[]> = {

@@ -18,15 +18,25 @@ const GallerySection = () => {
   const { isSectionVisible } = useSiteVisibility();
 
   useEffect(() => {
-    supabase
-      .from("gallery_items")
-      .select("id,image_url,caption,category")
-      .eq("is_visible", true)
-      .order("display_order")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (data) setItems(data as unknown as GalleryItem[]);
-      });
+    const fetchGallery = () => {
+      supabase
+        .from("gallery_items")
+        .select("id,image_url,caption,category")
+        .eq("is_visible", true)
+        .order("display_order")
+        .order("created_at", { ascending: false })
+        .then(({ data }) => {
+          if (data) setItems(data as unknown as GalleryItem[]);
+        });
+    };
+    fetchGallery();
+
+    const channel = supabase
+      .channel("gallery_realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "gallery_items" }, () => fetchGallery())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   if (!isSectionVisible("gallery") || !items.length) return null;
