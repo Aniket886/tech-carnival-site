@@ -138,7 +138,7 @@ const AdminPayments = () => {
     if (error) { toast.error("Failed to update"); return; }
     toast.success(`Status → ${status}`);
     const reg = registrations.find(r => r.id === id);
-    logActivity(`Payment ${status}`, `${reg?.leader_name || id} → ${status}`);
+    
 
     if (status === "confirmed" || status === "rejected") {
       const reg = registrations.find(r => r.id === id);
