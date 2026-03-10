@@ -583,7 +583,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
               <div className="flex justify-end mt-6">
                 <motion.div animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : {}} transition={{ duration: 0.4 }}>
                   <Button onClick={goNext} className="neon-glow gap-2">
-                    Review <ChevronRight className="h-4 w-4" />
+                    Next <ChevronRight className="h-4 w-4" />
                   </Button>
                 </motion.div>
               </div>
