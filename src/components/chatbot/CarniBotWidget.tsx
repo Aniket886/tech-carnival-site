@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Send, MessageCircle } from "lucide-react";
+import { X, Send, MessageCircle, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -19,10 +19,12 @@ interface Message {
 const GREETING = "Hey there! 🎪 I'm CarniBOT — your personal Tech Carnival guide! Ask me anything about events, registration, schedules, or prizes. Let's roll! 🚀";
 
 const INITIAL_SUGGESTIONS = [
-  "📋 Events",
-  "📅 Schedule",
-  "📝 Register",
-  "📞 Contact",
+  "📋 What events are there?",
+  "📅 Show me the schedule",
+  "📝 How to register?",
+  "💰 What are the prizes?",
+  "📞 Contact coordinator",
+  "🏆 Leaderboard",
 ];
 
 const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/carnibot`;
@@ -310,6 +312,30 @@ const CarniBotWidget = () => {
                   Ask me anything!
                 </p>
               </div>
+              <button
+                onClick={() => {
+                  setMessages([{
+                    id: "greeting",
+                    role: "bot",
+                    content: GREETING,
+                    timestamp: new Date(),
+                    suggestions: INITIAL_SUGGESTIONS,
+                  }]);
+                }}
+                className="p-2 rounded-lg transition-all duration-200"
+                style={{ color: "rgba(255, 255, 255, 0.5)" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#f87171";
+                  e.currentTarget.style.background = "rgba(248, 113, 113, 0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                  e.currentTarget.style.background = "transparent";
+                }}
+                title="Clear chat"
+              >
+                <Trash2 size={16} />
+              </button>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-lg transition-all duration-200"
