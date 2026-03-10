@@ -239,6 +239,7 @@ const AdminEvents = () => {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{teamSizeLabel(ev.team_size_min, ev.team_size_max)}</TableCell>
+                      <TableCell className="text-sm font-medium text-foreground">₹{ev.price || 0}</TableCell>
                       <TableCell>
                         <span className={`text-sm font-semibold ${(regCounts.get(ev.id) || 0) > 0 ? "text-primary" : "text-muted-foreground"}`}>
                           {regCounts.get(ev.id) || 0}
