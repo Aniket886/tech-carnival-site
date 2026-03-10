@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import paymentQr from "@/assets/payment-qr.jpeg";
+import { FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
