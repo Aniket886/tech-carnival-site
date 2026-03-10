@@ -822,7 +822,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
               </div>
               <div className="flex justify-between">
                 <Button variant="ghost" onClick={prev} className="text-muted-foreground"><ChevronLeft size={16} className="mr-1" /> Back</Button>
-                <Button variant="neon" onClick={next} disabled={checkingPayment || !form.amountPaid.trim() || !form.utrNumber.trim() || !form.transactionId.trim() || !paymentScreenshot} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
+                <Button variant="neon" onClick={next} disabled={checkingPayment || !form.amountPaid || !form.utrNumber.trim() || !form.transactionId.trim() || !paymentScreenshot} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
               </div>
             </div>
           )}
