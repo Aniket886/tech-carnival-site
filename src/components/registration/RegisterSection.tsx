@@ -321,8 +321,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       }
     }
     if (s === 2) {
-      if (!form.amountPaid.trim()) errs.amountPaid = "Amount paid is required";
-      else if (isNaN(Number(form.amountPaid)) || Number(form.amountPaid) <= 0) errs.amountPaid = "Enter a valid positive amount";
+      if (!form.amountPaid) errs.amountPaid = "Please select an event";
       if (!form.utrNumber.trim()) errs.utrNumber = "Enter your UTR number";
       else if (utrStatus === "duplicate") errs.utrNumber = "This UTR number has already been used";
       if (!form.transactionId.trim()) errs.transactionId = "Enter your transaction ID";
