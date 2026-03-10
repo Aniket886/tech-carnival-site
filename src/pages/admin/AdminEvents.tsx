@@ -218,6 +218,7 @@ const AdminEvents = () => {
                     <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Team Size</TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-medium">Price (₹)</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Registrations</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Active</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
