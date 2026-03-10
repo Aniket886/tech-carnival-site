@@ -161,7 +161,7 @@ const EventsSection = () => {
           <div className="text-center text-muted-foreground py-12">No events found. Check back soon!</div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
             layout
           >
             <AnimatePresence mode="popLayout">
