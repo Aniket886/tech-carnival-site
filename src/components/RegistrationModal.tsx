@@ -211,8 +211,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         });
       }
       if (s === 1) {
-        if (!form.amount_paid.trim()) e.amount_paid = "Amount paid is required";
-        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid positive amount";
+        if (!form.amount_paid) e.amount_paid = "Please select an event";
         if (!form.utr_number.trim()) e.utr_number = "UTR Number is required";
         else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
         if (!form.transaction_id.trim()) e.transaction_id = "Transaction ID is required";
