@@ -313,6 +313,30 @@ const CarniBotWidget = () => {
                 </p>
               </div>
               <button
+                onClick={() => {
+                  setMessages([{
+                    id: "greeting",
+                    role: "bot",
+                    content: GREETING,
+                    timestamp: new Date(),
+                    suggestions: INITIAL_SUGGESTIONS,
+                  }]);
+                }}
+                className="p-2 rounded-lg transition-all duration-200"
+                style={{ color: "rgba(255, 255, 255, 0.5)" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#f87171";
+                  e.currentTarget.style.background = "rgba(248, 113, 113, 0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                  e.currentTarget.style.background = "transparent";
+                }}
+                title="Clear chat"
+              >
+                <Trash2 size={16} />
+              </button>
+              <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-lg transition-all duration-200"
                 style={{ color: "rgba(255, 255, 255, 0.5)" }}
