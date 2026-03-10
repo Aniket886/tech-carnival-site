@@ -192,6 +192,26 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
 
   useEffect(() => { fetchColleges(); }, []);
 
+  // Fetch payment instructions from admin_settings
+  useEffect(() => {
+    supabase
+      .from("admin_settings")
+      .select("setting_key, setting_value")
+      .in("setting_key", ["payment_upi_id", "payment_upi_name", "payment_instructions", "payment_qr_url"])
+      .then(({ data }) => {
+        if (data) {
+          const map: Record<string, string> = {};
+          data.forEach((r) => (map[r.setting_key] = r.setting_value));
+          setPaymentSettings({
+            upi_id: map.payment_upi_id || "",
+            upi_name: map.payment_upi_name || "",
+            instructions: map.payment_instructions || "",
+            qr_url: map.payment_qr_url || "",
+          });
+        }
+      });
+  }, []);
+
   useEffect(() => {
     supabase
       .from("events")
