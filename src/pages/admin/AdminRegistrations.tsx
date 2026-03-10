@@ -14,7 +14,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { logActivity } from "@/lib/logActivity";
+
 import {
   Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2,
 } from "lucide-react";
@@ -120,7 +120,7 @@ const AdminRegistrations = () => {
     if (error) { toast.error("Failed to update status"); return; }
     toast.success(`Status updated to ${status}`);
     const reg = registrations.find(r => r.id === id);
-    logActivity(`Registration ${status}`, `${reg?.leader_name || id} → ${status}`);
+    
     // Send email notification on confirm/reject
     if (status === "confirmed" || status === "rejected") {
       const reg = registrations.find(r => r.id === id);
@@ -151,7 +151,7 @@ const AdminRegistrations = () => {
     const { error } = await supabase.from("registrations").delete().eq("id", id);
     if (error) { toast.error("Failed to delete"); return; }
     toast.success("Registration deleted");
-    logActivity("Registration deleted", reg?.leader_name || id);
+    
     setDeleteConfirm(null);
     fetchData();
   };
@@ -163,7 +163,7 @@ const AdminRegistrations = () => {
     const { error } = await supabase.from("registrations").delete().in("id", ids);
     if (error) { toast.error("Failed to delete"); return; }
     toast.success(`${ids.length} registrations deleted`);
-    logActivity("Bulk registration delete", `${ids.length} registrations deleted`);
+    
     setDeleteConfirm(null);
     fetchData();
   };

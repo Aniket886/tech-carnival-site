@@ -19,7 +19,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { logActivity } from "@/lib/logActivity";
+
 import { toast } from "sonner";
 import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -126,7 +126,7 @@ const AdminEvents = () => {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editingId ? "Event updated" : "Event created");
-    logActivity(editingId ? "Event updated" : "Event created", form.name);
+    
     setDialogOpen(false);
     fetchData();
   };
@@ -135,7 +135,7 @@ const AdminEvents = () => {
     const { error } = await supabase.from("events").update({ is_active: !ev.is_active }).eq("id", ev.id);
     if (error) { toast.error("Failed to update"); return; }
     toast.success(`${ev.name} ${!ev.is_active ? "activated" : "deactivated"}`);
-    logActivity("Event toggled", `${ev.name} → ${!ev.is_active ? "active" : "inactive"}`);
+    
     fetchData();
   };
 
@@ -145,7 +145,7 @@ const AdminEvents = () => {
     if (error) { toast.error(error.message); return; }
     const ev = events.find(e => e.id === deleteId);
     toast.success("Event deleted");
-    logActivity("Event deleted", ev?.name || deleteId);
+    
     setDeleteId(null);
     fetchData();
   };

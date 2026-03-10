@@ -27,7 +27,6 @@ import AdminSchedule from "./pages/admin/AdminSchedule";
 import AdminPaymentInstructions from "./pages/admin/AdminPaymentInstructions";
 import AdminFAQ from "./pages/admin/AdminFAQ";
 import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
-import AdminActivityLog from "./pages/admin/AdminActivityLog";
 import AdminGallery from "./pages/admin/AdminGallery";
 
 const queryClient = new QueryClient();
@@ -61,7 +60,6 @@ const App = () => (
                 <Route path="/admin/payment-instructions" element={<AdminPaymentInstructions />} />
                 <Route path="/admin/faqs" element={<AdminFAQ />} />
                 <Route path="/admin/announcements" element={<AdminAnnouncements />} />
-                <Route path="/admin/activity-log" element={<AdminActivityLog />} />
                 <Route path="/admin/gallery" element={<AdminGallery />} />
               </Route>
               <Route path="*" element={<NotFound />} />

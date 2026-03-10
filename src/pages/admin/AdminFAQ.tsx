@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { logActivity } from "@/lib/logActivity";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminRefresh } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -105,7 +105,7 @@ const AdminFAQ = () => {
       console.error(error);
     } else {
       toast.success(editingId ? "FAQ updated" : "FAQ added");
-      logActivity(editingId ? "FAQ updated" : "FAQ created", form.question.slice(0, 50));
+      
       setDialogOpen(false);
       fetchFaqs();
     }
@@ -119,7 +119,7 @@ const AdminFAQ = () => {
       toast.error("Failed to delete FAQ");
     } else {
       toast.success("FAQ deleted");
-      logActivity("FAQ deleted");
+      
       fetchFaqs();
     }
     setDeleteId(null);

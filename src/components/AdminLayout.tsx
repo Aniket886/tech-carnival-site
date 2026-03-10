@@ -13,7 +13,7 @@ import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
   Trophy, Handshake, Bot, Layers, Mail, Users, Clock, HelpCircle,
-  Megaphone, ScrollText, ImageIcon,
+  Megaphone, ImageIcon,
 } from "lucide-react";
 
 const links = [
@@ -34,7 +34,7 @@ const links = [
   { label: "CarniBOT", to: "/admin/bot-settings", icon: Bot },
   { label: "Email", to: "/admin/email", icon: Mail },
   { label: "Messages", to: "/admin/messages", icon: MessageSquare },
-  { label: "Activity Log", to: "/admin/activity-log", icon: ScrollText },
+  
   { label: "Settings", to: "/admin/settings", icon: Settings },
 ];
 
