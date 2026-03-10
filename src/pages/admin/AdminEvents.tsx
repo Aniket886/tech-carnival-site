@@ -126,7 +126,7 @@ const AdminEvents = () => {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editingId ? "Event updated" : "Event created");
-    logActivity(editingId ? "Event updated" : "Event created", form.name);
+    
     setDialogOpen(false);
     fetchData();
   };
