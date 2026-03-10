@@ -17,6 +17,7 @@ import PageLoader from "@/components/layout/PageLoader";
 import CustomCursor from "@/components/layout/CustomCursor";
 import ScrollAnimate from "@/components/layout/ScrollAnimate";
 import MaintenancePage from "@/components/home/MaintenancePage";
+import AnnouncementBanner from "@/components/home/AnnouncementBanner";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 
 const Index = () => {
