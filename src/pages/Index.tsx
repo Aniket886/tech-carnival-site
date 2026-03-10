@@ -38,6 +38,7 @@ const Index = () => {
       {isSectionVisible("events") && <ScrollAnimate><EventsSection /></ScrollAnimate>}
       {isSectionVisible("schedule") && <ScrollAnimate><ScheduleSection /></ScrollAnimate>}
       {isSectionVisible("leaderboard") && <ScrollAnimate><Leaderboard /></ScrollAnimate>}
+      <ScrollAnimate><GallerySection /></ScrollAnimate>
       {isSectionVisible("faq") && <ScrollAnimate><FAQSection /></ScrollAnimate>}
       {isSectionVisible("contact") && <ScrollAnimate><ContactSection /></ScrollAnimate>}
       <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>
