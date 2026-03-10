@@ -18,7 +18,7 @@ const Footer = () => {
                 Tech Carnival <span className="text-primary">2K26</span>
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Innovation meets celebration — a two-day <b>National Level Technical Competition</b> by GM University,
+                Innovation meets celebration — a two-day National Level Technical Competition by GM University,
                 Davangere.
               </p>
               <div className="flex gap-2">
