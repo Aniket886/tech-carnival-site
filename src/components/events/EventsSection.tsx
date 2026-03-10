@@ -127,7 +127,7 @@ const EventsSection = () => {
   const filtered = active === "all" ? events : events.filter((e) => e.category === active);
 
   return (
-    <section id="events" className="py-24 relative">
+    <section id="events" className="py-24 pb-32 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       <div className="relative z-10 container mx-auto px-4">
         <div className="text-center mb-12">
