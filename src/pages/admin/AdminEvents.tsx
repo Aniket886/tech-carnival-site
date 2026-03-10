@@ -19,7 +19,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { logActivity } from "@/lib/logActivity";
+
 import { toast } from "sonner";
 import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

@@ -18,7 +18,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { logActivity } from "@/lib/logActivity";
+
 import { Search, Plus, Pencil, Trash2, Upload, Trophy, Download } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 

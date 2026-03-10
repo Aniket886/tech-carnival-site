@@ -19,7 +19,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { logActivity } from "@/lib/logActivity";
+
 import { Search, Plus, Pencil, Trash2, Upload, Building2, CheckCircle2, Clock, UserPlus } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 

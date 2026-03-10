@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { logActivity } from "@/lib/logActivity";
+
 import { UserPlus, Trash2, Shield, Clock, RotateCcw } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,

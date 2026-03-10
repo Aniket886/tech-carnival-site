@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { logActivity } from "@/lib/logActivity";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminRefresh } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
