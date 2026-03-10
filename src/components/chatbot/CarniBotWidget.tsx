@@ -207,10 +207,10 @@ const CarniBotWidget = () => {
           >
             {showTooltip && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute -top-12 left-1/2 -translate-x-1/2 text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg"
+                className="absolute top-1/2 -translate-y-1/2 right-full mr-3 text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg"
                 style={{
                   background: "rgba(0, 229, 255, 0.15)",
                   border: "1px solid rgba(0, 229, 255, 0.3)",
@@ -219,7 +219,7 @@ const CarniBotWidget = () => {
               >
                 Need help? 💬
                 <div
-                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45"
+                  className="absolute top-1/2 -translate-y-1/2 -right-1 w-2 h-2 rotate-45"
                   style={{ background: "rgba(0, 229, 255, 0.15)" }}
                 />
               </motion.div>
