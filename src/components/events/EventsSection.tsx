@@ -127,7 +127,7 @@ const EventsSection = () => {
   const filtered = active === "all" ? events : events.filter((e) => e.category === active);
 
   return (
-    <section id="events" className="py-24 relative">
+    <section id="events" className="py-24 pb-32 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       <div className="relative z-10 container mx-auto px-4">
         <div className="text-center mb-12">
@@ -140,12 +140,12 @@ const EventsSection = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex justify-start sm:justify-center gap-2 mb-12 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
           {tabs.map((tab) => (
             <button
               key={tab.value}
               onClick={() => setActive(tab.value)}
-              className={`${tab.btnClass} h-10 px-5 text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 ${
+              className={`${tab.btnClass} h-9 sm:h-10 px-3 sm:px-5 text-xs sm:text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 whitespace-nowrap shrink-0 ${
                 active === tab.value ? `ring-2 ${tab.ringColor}` : "opacity-70"
               }`}
             >
@@ -161,7 +161,7 @@ const EventsSection = () => {
           <div className="text-center text-muted-foreground py-12">No events found. Check back soon!</div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
             layout
           >
             <AnimatePresence mode="popLayout">
@@ -181,7 +181,7 @@ const EventsSection = () => {
                     }}
                     data-cursor-card
                     onClick={() => setSelectedEvent(event)}
-                    className={`relative overflow-hidden rounded-xl border p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer bg-card/40 backdrop-blur-sm ${style.border} ${style.accent}`}
+                    className={`relative overflow-hidden rounded-xl border p-4 sm:p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer bg-card/40 backdrop-blur-sm ${style.border} ${style.accent}`}
                   >
                     {/* Category glow accent */}
                     <motion.div
@@ -192,61 +192,60 @@ const EventsSection = () => {
                     />
                     <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-30 ${style.glow}`} />
                     
-                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-4 ${style.iconBg}`}>{event.emoji}</div>
-                    <h3 className="font-display font-semibold text-foreground text-lg mb-2">
+                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-2xl sm:text-3xl mb-3 sm:mb-4 ${style.iconBg}`}>{event.emoji}</div>
+                    <h3 className="font-display font-semibold text-foreground text-base sm:text-lg mb-1.5 sm:mb-2">
                       {event.name}
                     </h3>
-                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4 leading-relaxed">
                       {event.description}
                     </p>
-                    <p className="text-xs text-muted-foreground/70 mb-4">
+                    <p className="text-xs text-muted-foreground/70 mb-3 sm:mb-4">
                       {event.team_size_min === 1 && event.team_size_max === 1
                         ? "👤 Solo"
                         : event.team_size_min === event.team_size_max
                           ? `👥 Team of ${event.team_size_min}`
                           : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
                     </p>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="outline" className={`text-xs capitalize ${style.badge}`}>
+                    {/* Button row: 2x2 grid on mobile, horizontal on sm+ */}
+                    <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center sm:justify-between gap-2">
+                      <Badge variant="outline" className={`text-[11px] sm:text-xs capitalize justify-center min-h-[36px] sm:min-h-0 sm:h-auto truncate ${style.badge}`}>
                         {event.category}
                       </Badge>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (event.rulebookUrl) {
-                              window.open(event.rulebookUrl, "_blank", "noopener,noreferrer");
-                            } else {
-                              toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
-                            }
-                          }}
-                          className="btn-golden h-9 px-3 text-sm font-medium inline-flex items-center justify-center gap-1"
-                        >
-                          <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> Rule Book</span>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (event.paymentUrl) {
-                              window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
-                            } else {
-                              toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
-                            }
-                          }}
-                          className="btn-gold h-9 px-3 text-sm font-medium inline-flex items-center justify-center gap-1"
-                        >
-                          <span>💰 Pay</span>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setRegisterEvent(event);
-                          }}
-                          className="btn-golden h-9 px-3 text-sm font-medium inline-flex items-center justify-center"
-                        >
-                          <span>Register</span>
-                        </button>
-                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (event.rulebookUrl) {
+                            window.open(event.rulebookUrl, "_blank", "noopener,noreferrer");
+                          } else {
+                            toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
+                          }
+                        }}
+                        className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
+                      >
+                        <span className="inline-flex items-center gap-1 truncate"><FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" /> Rule Book</span>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (event.paymentUrl) {
+                            window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
+                          } else {
+                            toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
+                          }
+                        }}
+                        className="btn-gold min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
+                      >
+                        <span className="truncate">💰 Pay</span>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRegisterEvent(event);
+                        }}
+                        className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center overflow-hidden rounded-lg"
+                      >
+                        <span className="truncate">Register</span>
+                      </button>
                     </div>
                   </motion.div>
                 );
