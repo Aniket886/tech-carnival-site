@@ -58,12 +58,13 @@ interface FormData {
   prize_pool: string;
   rules: string;
   website_url: string;
+  payment_url: string;
 }
 
 const emptyForm: FormData = {
   name: "", slug: "", category: "technical", icon: "🎯", description: "",
   team_size_min: 1, team_size_max: 1, date: "", time: "", venue: "",
-  prize_pool: "", rules: "", website_url: "",
+  prize_pool: "", rules: "", website_url: "", payment_url: "",
 };
 
 const categoryStyles: Record<string, string> = {
