@@ -20,6 +20,7 @@ const links = [
   { label: "Page Manager", to: "/admin/page-manager", icon: Layers },
   { label: "Registrations", to: "/admin/registrations", icon: ClipboardList },
   { label: "Payments", to: "/admin/payments", icon: CreditCard },
+  { label: "Payment Setup", to: "/admin/payment-instructions", icon: CreditCard },
   { label: "Events", to: "/admin/events", icon: CalendarDays },
   { label: "Colleges", to: "/admin/colleges", icon: Building2 },
   { label: "Sponsors", to: "/admin/sponsors", icon: Handshake },
