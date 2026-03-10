@@ -11,8 +11,29 @@ interface Message {
 }
 
 const formatContent = (content: string) => {
-  let html = content
-    // Escape HTML first
+  // First, find and extract emails to protect them from HTML escaping
+  const emailRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
+  const emails: string[] = [];
+  let safeContent = content.replace(emailRegex, (match) => {
+    emails.push(match);
+    return `__EMAIL_${emails.length - 1}__`;
+  });
+
+  // Find and extract phone numbers
+  const phoneRegex = /(\+91\s?)(\d{10}|\d{5}\s?\d{5})/g;
+  const phones: { prefix: string; num: string }[] = [];
+  safeContent = safeContent.replace(phoneRegex, (_, prefix, num) => {
+    phones.push({ prefix, num: num.replace(/\s/g, "") });
+    return `__PHONE_${phones.length - 1}__`;
+  });
+  // Also standalone 📱 + 10 digits
+  safeContent = safeContent.replace(/📱\s*(\d{10})/g, (_, num) => {
+    phones.push({ prefix: "+91 ", num });
+    return `__PHONE_${phones.length - 1}__`;
+  });
+
+  let html = safeContent
+    // Escape HTML
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -21,38 +42,38 @@ const formatContent = (content: string) => {
     // Horizontal rules / separators
     .replace(/^─+$/gm, '<div class="carnibot-separator"></div>')
     .replace(/^---+$/gm, '<div class="carnibot-separator"></div>')
-    // Headers (### → h4, ## → h3)
+    // Headers
     .replace(/^### (.+)$/gm, '<div class="carnibot-heading-sm">$1</div>')
     .replace(/^## (.+)$/gm, '<div class="carnibot-heading">$1</div>')
-    // Phone numbers — clickable tel: links
-    .replace(/(\+91\s?)(\d{10}|\d{5}\s?\d{5})/g, (_, prefix, num) => {
-      const clean = num.replace(/\s/g, "");
-      return `<a href="tel:+91${clean}" class="carnibot-phone">📱 +91 ${clean}</a>`;
-    })
-    // Standalone phone without +91 prefix (10 digits after 📱)
-    .replace(/📱\s*(\d{10})/g, (_, num) => {
-      return `<a href="tel:+91${num}" class="carnibot-phone">📱 +91 ${num}</a>`;
-    })
-    // Email addresses — clickable mailto: links
-    .replace(/✉️\s*([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g,
-      (_, email) => `<a href="mailto:${email}" class="carnibot-email">✉️ ${email}</a>`
-    )
-    // Also catch emails without ✉️ prefix
-    .replace(/(?<!mailto:)(?<!">)([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})(?!<\/a>)/g,
-      (email) => `<a href="mailto:${email}" class="carnibot-email">${email}</a>`
-    )
     // Bullet points
     .replace(/^[•\-]\s+/gm, '<span class="carnibot-bullet">•</span> ')
     // Newlines
     .replace(/\n/g, "<br/>");
 
+  // Restore phone placeholders as clickable links
+  phones.forEach((p, i) => {
+    html = html.replace(
+      `__PHONE_${i}__`,
+      `<a href="tel:+91${p.num}" class="carnibot-phone">📱 +91 ${p.num}</a>`
+    );
+  });
+
+  // Restore email placeholders as clickable links
+  emails.forEach((email, i) => {
+    html = html.replace(
+      `__EMAIL_${i}__`,
+      `<a href="mailto:${email}" class="carnibot-email">✉️ ${email}</a>`
+    );
+  });
+
+  // Remove duplicate ✉️ emoji (since we add one in the replacement)
+  html = html.replace(/✉️\s*(<a [^>]*class="carnibot-email"[^>]*>)✉️/g, '$1✉️');
+
   // Wrap sections that look like contact cards
-  // Core Team card
   html = html.replace(
     /(🌟\s*(?:<strong>)?CORE TEAM(?:<\/strong>)?(?:.*?))(?=🎪\s*(?:<strong>)?EVENT|$)/s,
     '<div class="carnibot-card carnibot-card-gold">$1</div>'
   );
-  // Event Coordinators card
   html = html.replace(
     /(🎪\s*(?:<strong>)?EVENT COORDINATORS(?:<\/strong>)?(?:.*?))((?:<br\/>)*💡|$)/s,
     '<div class="carnibot-card carnibot-card-cyan">$1</div>$2'
@@ -60,6 +81,8 @@ const formatContent = (content: string) => {
 
   return html;
 };
+
+
 
 const CarniBotMessage = memo(({ message }: { message: Message }) => {
   const isBot = message.role === "bot";
