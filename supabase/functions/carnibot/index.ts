@@ -147,19 +147,57 @@ RULES:
 8. Always end responses with a helpful suggestion or follow-up question.
 9. Keep responses under 200 words unless contact info or detailed info is specifically requested (contacts can be longer).
 10. Use markdown formatting for readability (bold, lists, etc.)
-11. Phone numbers MUST always include the +91 prefix so they become clickable links.`;
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-lite",
-        messages: [{ role: "system", content: systemPrompt }, ...messages],
-        stream: true,
-      }),
-    });
+    11. Phone numbers MUST always include the +91 prefix so they become clickable links.`;
+
+    const chatMessages = [{ role: "system", content: systemPrompt }, ...messages];
+
+    // Helper to call an AI provider
+    async function callProvider(url: string, apiKey: string, model: string) {
+      return fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ model, messages: chatMessages, stream: true }),
+      });
+    }
+
+    // Try Groq first, fallback to Lovable AI
+    let response: Response | null = null;
+
+    if (GROQ_API_KEY) {
+      try {
+        response = await callProvider(
+          "https://api.groq.com/openai/v1/chat/completions",
+          GROQ_API_KEY,
+          "llama-3.1-8b-instant"
+        );
+        if (!response.ok) {
+          console.log(`Groq returned ${response.status}, falling back to Lovable AI`);
+          await response.text(); // consume body
+          response = null;
+        }
+      } catch (e) {
+        console.log("Groq request failed, falling back to Lovable AI:", e);
+        response = null;
+      }
+    }
+
+    if (!response && LOVABLE_API_KEY) {
+      response = await callProvider(
+        "https://ai.gateway.lovable.dev/v1/chat/completions",
+        LOVABLE_API_KEY,
+        "google/gemini-2.5-flash-lite"
+      );
+    }
+
+    if (!response) {
+      return new Response(JSON.stringify({ error: "No AI provider available" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     if (!response.ok) {
       if (response.status === 429) {
@@ -175,7 +213,7 @@ RULES:
         });
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
+      console.error("AI error:", response.status, t);
       return new Response(JSON.stringify({ error: "AI service error" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
