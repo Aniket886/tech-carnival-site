@@ -107,6 +107,7 @@ const EventsSection = () => {
               rules: e.rules,
               rulebookUrl: e.website_url || null,
               paymentUrl: e.payment_url || null,
+              price: e.price || 0,
             }))
           );
         }

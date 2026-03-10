@@ -47,6 +47,7 @@ interface PassedEventData {
   category: string;
   team_size_min: number;
   team_size_max: number;
+  price: number;
 }
 
 interface TeamMember {
