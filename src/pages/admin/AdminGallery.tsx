@@ -67,7 +67,7 @@ const AdminGallery = () => {
       count++;
     }
     setUploading(false);
-    if (count) { toast({ title: `${count} image(s) uploaded` }); fetchItems(); }
+    if (count) { toast({ title: `${count} image(s) uploaded` }); logActivity("Gallery upload", `${count} images`); fetchItems(); }
     if (fileRef.current) fileRef.current.value = "";
   };
 
