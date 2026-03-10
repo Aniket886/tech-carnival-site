@@ -105,6 +105,7 @@ const AdminFAQ = () => {
       console.error(error);
     } else {
       toast.success(editingId ? "FAQ updated" : "FAQ added");
+      logActivity(editingId ? "FAQ updated" : "FAQ created", form.question.slice(0, 50));
       setDialogOpen(false);
       fetchFaqs();
     }
