@@ -73,6 +73,17 @@ const initialForm: FormData = {
 
 const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 
+const EVENT_PRICES: Record<string, number> = {
+  "Battle Ground": 400,
+  "Brain Quest": 200,
+  "Code Compass": 200,
+  "Dance Mania": 500,
+  "Hack Momentum": 1000,
+  "Myth Busters": 200,
+  "Pixel Perfect (Poster Presentation)": 200,
+  "Scitopia (Skit Play)": 500,
+};
+
 const categoryLabels: Record<string, string> = {
   technical: "💻 Technical Events",
   gaming: "🎮 Gaming Events",
@@ -228,7 +239,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (selectedEvent && events.length) {
       const match = events.find((e) => e.name === selectedEvent);
       if (match) {
-        setForm((f) => ({ ...f, eventId: match.id }));
+        setForm((f) => ({ ...f, eventId: match.id, amountPaid: match.name in EVENT_PRICES ? match.name : "" }));
         setStep(0);
       }
     }
@@ -238,6 +249,17 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     () => events.find((e) => e.id === form.eventId) || null,
     [events, form.eventId]
   );
+
+  // Pre-select amountPaid when event changes in step 0
+  useEffect(() => {
+    if (selectedEventData) {
+      const name = selectedEventData.name;
+      if (name in EVENT_PRICES) {
+        setForm((f) => ({ ...f, amountPaid: name }));
+      }
+    }
+  }, [selectedEventData]);
+
 
   const isSolo = selectedEventData
     ? (selectedEventData.team_size_max || 1) === 1
@@ -310,8 +332,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       }
     }
     if (s === 2) {
-      if (!form.amountPaid.trim()) errs.amountPaid = "Amount paid is required";
-      else if (isNaN(Number(form.amountPaid)) || Number(form.amountPaid) <= 0) errs.amountPaid = "Enter a valid positive amount";
+      if (!form.amountPaid) errs.amountPaid = "Please select an event";
       if (!form.utrNumber.trim()) errs.utrNumber = "Enter your UTR number";
       else if (utrStatus === "duplicate") errs.utrNumber = "This UTR number has already been used";
       if (!form.transactionId.trim()) errs.transactionId = "Enter your transaction ID";
@@ -423,7 +444,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         semester: form.semester,
         team_name: isSolo ? null : sanitizeInput(form.teamName),
         members: isSolo ? null : (form.members.map((m) => ({ name: sanitizeInput(m.name), email: sanitizeInput(m.email).toLowerCase(), phone: m.phone.replace(/\s/g, "") })) as any),
-        amount_paid: form.amountPaid.trim(),
+        amount_paid: form.amountPaid && EVENT_PRICES[form.amountPaid] ? String(EVENT_PRICES[form.amountPaid]) : form.amountPaid,
         utr_number: utr,
         transaction_id: txn,
         payment_screenshot_url: screenshotUrl,
@@ -676,25 +697,35 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 </div>
               )}
               <div className="space-y-4">
-                {/* Amount Paid */}
+                {/* Select Event & Amount */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="amountPaid" className="text-sm text-foreground font-medium">Amount Paid (₹) <span className="text-destructive">*</span></Label>
-                  <Input
-                    id="amountPaid"
-                    type="number"
-                    min="1"
-                    placeholder="e.g. 200"
-                    value={form.amountPaid}
-                    onChange={(e) => { setForm((f) => ({ ...f, amountPaid: e.target.value })); setErrors((er) => { const n = { ...er }; delete n.amountPaid; return n; }); }}
-                    onBlur={() => {
+                  <Label htmlFor="paymentEvent" className="text-sm text-foreground font-medium">Select Event & Amount <span className="text-destructive">*</span></Label>
+                  <Select
+                    value={form.amountPaid ? form.amountPaid : undefined}
+                    onValueChange={(v) => {
+                      setForm((f) => ({ ...f, amountPaid: v }));
+                      setErrors((er) => { const n = { ...er }; delete n.amountPaid; return n; });
                       setTouched((t) => ({ ...t, amountPaid: true }));
-                      const v = form.amountPaid.trim();
-                      if (!v) setErrors((e) => ({ ...e, amountPaid: "Amount paid is required" }));
-                      else if (isNaN(Number(v)) || Number(v) <= 0) setErrors((e) => ({ ...e, amountPaid: "Enter a valid positive amount" }));
                     }}
-                    className={`bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors ${touched.amountPaid && errors.amountPaid ? "border-destructive focus:border-destructive focus:ring-destructive/30" : ""}`}
-                  />
+                  >
+                    <SelectTrigger className={`bg-muted/50 text-foreground transition-colors ${touched.amountPaid && errors.amountPaid ? "border-destructive" : "border-border focus:border-primary"}`}>
+                      <SelectValue placeholder="-- Select Event --" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(EVENT_PRICES).map(([name, price]) => (
+                        <SelectItem key={name} value={name}>{name} — ₹{price}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {touched.amountPaid && errors.amountPaid && <p className="text-xs text-destructive">{errors.amountPaid}</p>}
+                </div>
+
+                {/* Amount to Pay - auto display */}
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
+                  <p className="text-xs text-muted-foreground mb-1">Amount to Pay</p>
+                  <p className="text-2xl font-bold text-primary">
+                    ₹{form.amountPaid && EVENT_PRICES[form.amountPaid] ? EVENT_PRICES[form.amountPaid] : 0}
+                  </p>
                 </div>
                 
                 {/* UTR Number with live check */}
@@ -790,7 +821,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
               </div>
               <div className="flex justify-between">
                 <Button variant="ghost" onClick={prev} className="text-muted-foreground"><ChevronLeft size={16} className="mr-1" /> Back</Button>
-                <Button variant="neon" onClick={next} disabled={checkingPayment || !form.amountPaid.trim() || !form.utrNumber.trim() || !form.transactionId.trim() || !paymentScreenshot} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
+                <Button variant="neon" onClick={next} disabled={checkingPayment || !form.amountPaid || !form.utrNumber.trim() || !form.transactionId.trim() || !paymentScreenshot} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
               </div>
             </div>
           )}
@@ -827,7 +858,8 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 )}
                 <div className="pt-3 border-t border-border">
                   <p className="text-xs text-muted-foreground font-medium mb-2">Payment Details</p>
-                  <Row label="Amount Paid" value={`₹${form.amountPaid}`} />
+                  <Row label="Event" value={form.amountPaid} />
+                  <Row label="Amount Paid" value={`₹${EVENT_PRICES[form.amountPaid] || 0}`} />
                   <Row label="UTR Number" value={form.utrNumber} />
                   <Row label="Transaction ID" value={form.transactionId} />
                 </div>
