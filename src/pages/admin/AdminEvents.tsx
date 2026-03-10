@@ -113,6 +113,7 @@ const AdminEvents = () => {
       rules: form.rules.trim() ? form.rules.split("\n").map(r => r.trim()).filter(Boolean) : null,
       website_url: form.website_url || null,
       payment_url: form.payment_url || null,
+      price: form.price || 0,
     };
 
     let error;
