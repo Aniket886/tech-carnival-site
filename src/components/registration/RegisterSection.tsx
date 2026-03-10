@@ -235,7 +235,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (selectedEvent && events.length) {
       const match = events.find((e) => e.name === selectedEvent);
       if (match) {
-        setForm((f) => ({ ...f, eventId: match.id, amountPaid: match.name in EVENT_PRICES ? match.name : "" }));
+        setForm((f) => ({ ...f, eventId: match.id, amountPaid: match.name }));
         setStep(0);
       }
     }
