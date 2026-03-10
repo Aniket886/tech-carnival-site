@@ -200,7 +200,7 @@ const Events = () => {
       />
 
       <RegistrationModal
-        eventData={registerEventId ? { id: registerEventId, name: registerEventId, emoji: "", category: "technical", team_size_min: 1, team_size_max: 1 } : null}
+        eventData={registerEventId ? { id: registerEventId, name: registerEventId, emoji: "", category: "technical", team_size_min: 1, team_size_max: 1, price: 0 } : null}
         onClose={() => setRegisterEventId(null)}
       />
     </section>
