@@ -641,7 +641,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                   <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
                     <p className="text-[10px] text-muted-foreground mb-0.5">Amount to Pay</p>
                     <p className="text-xl font-bold text-primary">
-                      ₹{form.amount_paid && EVENT_PRICES[form.amount_paid] ? EVENT_PRICES[form.amount_paid] : 0}
+                      ₹{form.amount_paid && eventPrices[form.amount_paid] ? eventPrices[form.amount_paid] : 0}
                     </p>
                   </div>
                   <div className="space-y-1">
