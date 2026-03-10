@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, ChevronRight, ChevronLeft, Users, User, Plus, Trash2, PartyPopper, X, AlertTriangle, Upload, ImageIcon } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, Users, User, Plus, Trash2, PartyPopper, X, AlertTriangle, Upload, ImageIcon, FileText } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { Tables } from "@/integrations/supabase/types";
 import {
