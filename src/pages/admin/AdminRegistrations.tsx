@@ -118,7 +118,8 @@ const AdminRegistrations = () => {
     const { error } = await supabase.from("registrations").update({ registration_status: status }).eq("id", id);
     if (error) { toast.error("Failed to update status"); return; }
     toast.success(`Status updated to ${status}`);
-
+    const reg = registrations.find(r => r.id === id);
+    logActivity(`Registration ${status}`, `${reg?.leader_name || id} → ${status}`);
     // Send email notification on confirm/reject
     if (status === "confirmed" || status === "rejected") {
       const reg = registrations.find(r => r.id === id);
