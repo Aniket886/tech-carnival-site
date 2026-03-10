@@ -245,7 +245,10 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     }
   }, [selectedEvent, events]);
 
-
+  const selectedEventData = useMemo(
+    () => events.find((e) => e.id === form.eventId) || null,
+    [events, form.eventId]
+  );
 
   // Pre-select amountPaid when event changes in step 0
   useEffect(() => {
@@ -257,11 +260,6 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     }
   }, [selectedEventData]);
 
-
-  const selectedEventData = useMemo(
-    () => events.find((e) => e.id === form.eventId) || null,
-    [events, form.eventId]
-  );
 
   const isSolo = selectedEventData
     ? (selectedEventData.team_size_max || 1) === 1
