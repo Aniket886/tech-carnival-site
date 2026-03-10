@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import paymentQr from "@/assets/payment-qr.jpeg";
+import { FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { CheckCircle2, Plus, Trash2, Users, User, ChevronRight, ChevronLeft, QrCode, Clock, Download, Upload, X } from "lucide-react";
+import { CheckCircle2, Plus, Trash2, Users, User, ChevronRight, ChevronLeft, Clock, Upload, X, AlertTriangle } from "lucide-react";
 import {
   validateName, validateEmail, validatePhone,
   validateTeamName, validateCollegeName, sanitizeInput, countErrors,
@@ -200,19 +200,20 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         });
       }
       if (s === 1) {
-        if (!form.amount_paid.trim()) e.amount_paid = "Enter the amount you paid";
-        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid amount";
-        if (!form.utr_number.trim()) e.utr_number = "Enter your UTR number";
+        if (!form.amount_paid.trim()) e.amount_paid = "Amount paid is required";
+        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid positive amount";
+        if (!form.utr_number.trim()) e.utr_number = "UTR Number is required";
         else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
-        if (!form.transaction_id.trim()) e.transaction_id = "Enter your Transaction ID";
+        if (!form.transaction_id.trim()) e.transaction_id = "Transaction ID is required";
         else if (form.transaction_id.trim().length < 4) e.transaction_id = "Transaction ID must be at least 4 characters";
+        if (!paymentScreenshot) e.payment_screenshot = "Payment screenshot is required";
       }
       if (s === 2) {
         if (!form.agreed) e.agreed = "You must agree to the terms";
       }
       return e;
     },
-    [form, isTeamEvent]
+    [form, isTeamEvent, paymentScreenshot]
   );
 
   const [checkingPayment, setCheckingPayment] = useState(false);
@@ -226,7 +227,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         : touched));
     }
     if (step === 1) {
-      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id"]));
+      setTouched(new Set([...touched, "amount_paid", "utr_number", "transaction_id", "payment_screenshot"]));
     }
     if (countErrors(errs) > 0) {
       setShake(true);
@@ -595,70 +596,65 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
               <div className="space-y-5">
                 <p className="text-sm font-semibold text-muted-foreground border-b border-border pb-2">💳 Payment Details</p>
                 
-                {/* QR Code Section */}
-                <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-muted/10 p-4">
-                  <p className="text-sm font-medium text-foreground">Scan QR Code to Pay</p>
-                  <div className="bg-white rounded-xl p-2 shadow-md">
-                    <img src={paymentQr} alt="Payment QR Code" width={180} height={180} className="rounded-lg" />
-                  </div>
-                  <Button
-                    variant="outline" size="sm"
-                    className="gap-2 text-primary border-primary/30 hover:bg-primary/10"
-                    onClick={() => { const a = document.createElement("a"); a.href = paymentQr; a.download = "TechCarnival_Payment_QR.jpeg"; a.click(); }}
-                  >
-                    <Download className="h-3.5 w-3.5" /> Download QR
-                  </Button>
-                  <div className="text-center space-y-0.5">
-                    <p className="text-xs text-muted-foreground">UPI ID: <span className="font-mono text-foreground select-all">anikettegginamath@ptyes</span></p>
-                    <p className="text-xs text-muted-foreground">Name: <span className="font-medium text-foreground">Aniket C Tegginamath</span></p>
-                  </div>
-                </div>
-
-                <p className="text-xs text-muted-foreground text-center">After payment, fill in the details below.</p>
+                <p className="text-xs text-muted-foreground text-center">Complete your payment and fill in the details below.</p>
 
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <Label className="text-xs">Amount Paid (₹) *</Label>
-                    <Input placeholder="e.g. 200" value={form.amount_paid} onChange={(e) => setForm((p) => ({ ...p, amount_paid: e.target.value.replace(/[^0-9.]/g, "") }))} onBlur={() => onBlur("amount_paid")} maxLength={10} className={fieldClass("amount_paid")} />
+                    <Label className="text-xs">Amount Paid (₹) <span className="text-destructive">*</span></Label>
+                    <Input placeholder="e.g. 200" type="number" min="1" value={form.amount_paid} onChange={(e) => setForm((p) => ({ ...p, amount_paid: e.target.value.replace(/[^0-9.]/g, "") }))} onBlur={() => onBlur("amount_paid")} maxLength={10} className={fieldClass("amount_paid")} />
                     <FieldError field="amount_paid" />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">UTR Number *</Label>
+                    <Label className="text-xs">UTR Number <span className="text-destructive">*</span></Label>
                     <Input placeholder="Enter UTR / Reference Number" value={form.utr_number} onChange={(e) => setForm((p) => ({ ...p, utr_number: e.target.value }))} onBlur={() => onBlur("utr_number")} maxLength={50} className={fieldClass("utr_number")} />
                     <FieldError field="utr_number" />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Transaction ID *</Label>
+                    <Label className="text-xs">Transaction ID <span className="text-destructive">*</span></Label>
                     <Input placeholder="Enter Transaction ID" value={form.transaction_id} onChange={(e) => setForm((p) => ({ ...p, transaction_id: e.target.value }))} onBlur={() => onBlur("transaction_id")} maxLength={50} className={fieldClass("transaction_id")} />
                     <FieldError field="transaction_id" />
                   </div>
 
-                  {/* Screenshot Upload */}
+                  {/* Screenshot Upload — Mandatory */}
                   <div className="space-y-1">
-                    <Label className="text-xs">Payment Screenshot (Optional)</Label>
+                    <Label className="text-xs">Payment Screenshot <span className="text-destructive">*</span></Label>
+                    {touched.has("payment_screenshot") && errors.payment_screenshot && (
+                      <p className="text-xs text-destructive">{errors.payment_screenshot}</p>
+                    )}
                     {paymentScreenshot ? (
                       <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/10 p-2">
-                        <div className="w-12 h-12 rounded overflow-hidden bg-muted shrink-0">
-                          <img src={URL.createObjectURL(paymentScreenshot)} alt="Screenshot" className="w-full h-full object-cover" />
+                        <div className="w-12 h-12 rounded overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+                          {paymentScreenshot.type.startsWith("image/") ? (
+                            <img src={URL.createObjectURL(paymentScreenshot)} alt="Screenshot" className="w-full h-full object-cover" />
+                          ) : (
+                            <FileText className="h-6 w-6 text-muted-foreground" />
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs text-foreground truncate">{paymentScreenshot.name}</p>
                           <p className="text-[10px] text-muted-foreground">{(paymentScreenshot.size / 1024).toFixed(1)} KB</p>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={() => setPaymentScreenshot(null)} className="text-destructive hover:text-destructive h-7 px-1.5">
+                        <Button variant="ghost" size="sm" onClick={() => { setPaymentScreenshot(null); setErrors((e) => ({ ...e, payment_screenshot: "Payment screenshot is required" })); }} className="text-destructive hover:text-destructive h-7 px-1.5">
                           <X className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                     ) : (
-                      <label className="flex flex-col items-center gap-1.5 cursor-pointer rounded-lg border border-dashed border-border hover:border-primary/50 bg-muted/10 p-4 transition-colors">
+                      <label className={`flex flex-col items-center gap-1.5 cursor-pointer rounded-lg border border-dashed ${touched.has("payment_screenshot") && errors.payment_screenshot ? "border-destructive" : "border-border hover:border-primary/50"} bg-muted/10 p-4 transition-colors`}>
                         <Upload className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">Click to upload screenshot</span>
-                        <span className="text-[10px] text-muted-foreground/70">PNG, JPG up to 5MB</span>
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                        <span className="text-xs text-muted-foreground text-center">Click to upload screenshot (All image formats & PDF supported, up to 5 MB)</span>
+                        <span className="text-[10px] text-muted-foreground/70">PNG, JPG, GIF, BMP, WEBP, SVG, PDF, HEIC, HEIF</span>
+                        <input type="file" accept="image/*,.pdf,.heic,.heif" className="hidden" onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            if (file.size > 5 * 1024 * 1024) { toast({ title: "File too large. Max 5MB.", variant: "destructive" }); return; }
+                            if (file.size > 5 * 1024 * 1024) { toast({ title: "File size must be under 5 MB", variant: "destructive" }); return; }
+                            const allowedTypes = ["image/", "application/pdf"];
+                            const allowedExts = [".heic", ".heif"];
+                            const ext = "." + (file.name.split(".").pop() || "").toLowerCase();
+                            const isAllowed = allowedTypes.some((t) => file.type.startsWith(t)) || allowedExts.includes(ext);
+                            if (!isAllowed) { toast({ title: "Unsupported file format", variant: "destructive" }); return; }
                             setPaymentScreenshot(file);
+                            setErrors((prev) => { const n = { ...prev }; delete n.payment_screenshot; return n; });
+                            setTouched((prev) => new Set([...prev, "payment_screenshot"]));
                           }
                         }} />
                       </label>
@@ -672,7 +668,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                   <ChevronLeft className="h-4 w-4" /> Back
                 </Button>
                 <motion.div animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : {}} transition={{ duration: 0.4 }}>
-                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment}>
+                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment || !form.amount_paid.trim() || !form.utr_number.trim() || !form.transaction_id.trim() || !paymentScreenshot}>
                     {checkingPayment ? "Verifying..." : "Review"} <ChevronRight className="h-4 w-4" />
                   </Button>
                 </motion.div>
