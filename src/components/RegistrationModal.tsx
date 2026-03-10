@@ -200,12 +200,13 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         });
       }
       if (s === 1) {
-        if (!form.amount_paid.trim()) e.amount_paid = "Enter the amount you paid";
-        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid amount";
-        if (!form.utr_number.trim()) e.utr_number = "Enter your UTR number";
+        if (!form.amount_paid.trim()) e.amount_paid = "Amount paid is required";
+        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid positive amount";
+        if (!form.utr_number.trim()) e.utr_number = "UTR Number is required";
         else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
-        if (!form.transaction_id.trim()) e.transaction_id = "Enter your Transaction ID";
+        if (!form.transaction_id.trim()) e.transaction_id = "Transaction ID is required";
         else if (form.transaction_id.trim().length < 4) e.transaction_id = "Transaction ID must be at least 4 characters";
+        if (!paymentScreenshot) e.payment_screenshot = "Payment screenshot is required";
       }
       if (s === 2) {
         if (!form.agreed) e.agreed = "You must agree to the terms";
