@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ImageIcon, X } from "lucide-react";
+import { ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 
 interface GalleryItem {
@@ -11,10 +11,13 @@ interface GalleryItem {
   category: string;
 }
 
+const ITEMS_PER_PAGE = 12;
+
 const GallerySection = () => {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [selectedImg, setSelectedImg] = useState<GalleryItem | null>(null);
   const [filter, setFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const { isSectionVisible } = useSiteVisibility();
 
   useEffect(() => {
@@ -39,10 +42,15 @@ const GallerySection = () => {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
+  // Reset page when filter changes
+  useEffect(() => { setPage(1); }, [filter]);
+
   if (!isSectionVisible("gallery") || !items.length) return null;
 
   const categories = ["all", ...Array.from(new Set(items.map(i => i.category)))];
   const filtered = filter === "all" ? items : items.filter(i => i.category === filter);
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   return (
     <section id="gallery" className="py-20 px-4 relative overflow-hidden">
@@ -98,7 +106,7 @@ const GallerySection = () => {
           className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3"
         >
           <AnimatePresence mode="popLayout">
-            {filtered.map((item, i) => (
+            {paginated.map((item, i) => (
               <motion.div
                 key={item.id}
                 layout
@@ -126,6 +134,41 @@ const GallerySection = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-10">
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`w-9 h-9 rounded-lg text-sm font-medium border transition-all ${
+                  p === page
+                    ? "bg-primary/15 border-primary/40 text-primary shadow-[0_0_10px_hsl(var(--neon-blue)/0.15)]"
+                    : "border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Lightbox */}
