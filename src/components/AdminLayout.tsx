@@ -13,11 +13,13 @@ import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
   Trophy, Handshake, Bot, Layers, Mail, Users, Clock, HelpCircle,
+  Megaphone, ScrollText, ImageIcon,
 } from "lucide-react";
 
 const links = [
   { label: "Overview", to: "/admin/overview", icon: LayoutDashboard },
   { label: "Page Manager", to: "/admin/page-manager", icon: Layers },
+  { label: "Announcements", to: "/admin/announcements", icon: Megaphone },
   { label: "Registrations", to: "/admin/registrations", icon: ClipboardList },
   { label: "Payments", to: "/admin/payments", icon: CreditCard },
   { label: "Payment Setup", to: "/admin/payment-instructions", icon: CreditCard },
@@ -26,11 +28,13 @@ const links = [
   { label: "Sponsors", to: "/admin/sponsors", icon: Handshake },
   { label: "Scores", to: "/admin/scores", icon: Trophy },
   { label: "Team", to: "/admin/team", icon: Users },
+  { label: "Gallery", to: "/admin/gallery", icon: ImageIcon },
   { label: "Event Flow", to: "/admin/schedule", icon: Clock },
   { label: "FAQs", to: "/admin/faqs", icon: HelpCircle },
   { label: "CarniBOT", to: "/admin/bot-settings", icon: Bot },
   { label: "Email", to: "/admin/email", icon: Mail },
   { label: "Messages", to: "/admin/messages", icon: MessageSquare },
+  { label: "Activity Log", to: "/admin/activity-log", icon: ScrollText },
   { label: "Settings", to: "/admin/settings", icon: Settings },
 ];
 
