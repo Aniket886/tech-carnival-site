@@ -88,6 +88,7 @@ const AdminGallery = () => {
     }
     await supabase.from("gallery_items").delete().eq("id", deleteId);
     toast({ title: "Deleted" });
+    logActivity("Gallery image deleted");
     setDeleteId(null);
     fetchItems();
   };
