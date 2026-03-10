@@ -41,6 +41,7 @@ interface Event {
   prize_pool: string | null;
   rules: string[] | null;
   website_url: string | null;
+  payment_url: string | null;
   created_at: string;
 }
 
