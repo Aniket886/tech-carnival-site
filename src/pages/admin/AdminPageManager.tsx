@@ -50,7 +50,7 @@ interface LogEntry {
 const sectionIcons: Record<string, string> = {
   hero: "🏠", about: "ℹ️", sponsors: "💛", events: "🎯",
   schedule: "📅", registration: "📋", leaderboard: "🏆",
-  faq: "❓", contact: "📞", footer: "❤️", carnibot: "🤖",
+  gallery: "🖼️", faq: "❓", contact: "📞", footer: "❤️", carnibot: "🤖",
 };
 
 /* ─── helpers ─── */

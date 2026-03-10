@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { ImageIcon, X } from "lucide-react";
+import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 
 interface GalleryItem {
   id: string;
@@ -14,6 +15,7 @@ const GallerySection = () => {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [selectedImg, setSelectedImg] = useState<GalleryItem | null>(null);
   const [filter, setFilter] = useState("all");
+  const { isSectionVisible } = useSiteVisibility();
 
   useEffect(() => {
     supabase
@@ -27,7 +29,7 @@ const GallerySection = () => {
       });
   }, []);
 
-  if (!items.length) return null;
+  if (!isSectionVisible("gallery") || !items.length) return null;
 
   const categories = ["all", ...Array.from(new Set(items.map(i => i.category)))];
   const filtered = filter === "all" ? items : items.filter(i => i.category === filter);
