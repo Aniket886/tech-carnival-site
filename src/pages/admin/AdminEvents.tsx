@@ -26,46 +26,24 @@ import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Event {
-  id: string;
-  name: string;
-  slug: string;
-  category: string;
-  icon: string | null;
-  description: string | null;
-  team_size_min: number;
-  team_size_max: number;
-  is_active: boolean;
-  date: string | null;
-  time: string | null;
-  venue: string | null;
-  prize_pool: string | null;
-  rules: string[] | null;
-  website_url: string | null;
-  payment_url: string | null;
-  created_at: string;
+  id: string; name: string; slug: string; category: string; icon: string | null;
+  description: string | null; team_size_min: number; team_size_max: number;
+  is_active: boolean; date: string | null; time: string | null; venue: string | null;
+  prize_pool: string | null; rules: string[] | null; website_url: string | null;
+  payment_url: string | null; created_at: string; price: number;
 }
 
 interface FormData {
-  name: string;
-  slug: string;
-  category: string;
-  icon: string;
-  description: string;
-  team_size_min: number;
-  team_size_max: number;
-  date: string;
-  time: string;
-  venue: string;
-  prize_pool: string;
-  rules: string;
-  website_url: string;
-  payment_url: string;
+  name: string; slug: string; category: string; icon: string; description: string;
+  team_size_min: number; team_size_max: number; date: string; time: string;
+  venue: string; prize_pool: string; rules: string; website_url: string;
+  payment_url: string; price: number;
 }
 
 const emptyForm: FormData = {
   name: "", slug: "", category: "technical", icon: "🎯", description: "",
   team_size_min: 1, team_size_max: 1, date: "", time: "", venue: "",
-  prize_pool: "", rules: "", website_url: "", payment_url: "",
+  prize_pool: "", rules: "", website_url: "", payment_url: "", price: 0,
 };
 
 const categoryStyles: Record<string, string> = {
@@ -112,6 +90,7 @@ const AdminEvents = () => {
       description: ev.description || "", team_size_min: ev.team_size_min, team_size_max: ev.team_size_max,
       date: ev.date || "", time: ev.time || "", venue: ev.venue || "",
       prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "", payment_url: ev.payment_url || "",
+      price: ev.price || 0,
     });
     setDialogOpen(true);
   };
@@ -134,6 +113,7 @@ const AdminEvents = () => {
       rules: form.rules.trim() ? form.rules.split("\n").map(r => r.trim()).filter(Boolean) : null,
       website_url: form.website_url || null,
       payment_url: form.payment_url || null,
+      price: form.price || 0,
     };
 
     let error;
@@ -238,6 +218,7 @@ const AdminEvents = () => {
                     <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Team Size</TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-medium">Price (₹)</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Registrations</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium">Active</TableHead>
                     <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
@@ -258,6 +239,7 @@ const AdminEvents = () => {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{teamSizeLabel(ev.team_size_min, ev.team_size_max)}</TableCell>
+                      <TableCell className="text-sm font-medium text-foreground">₹{ev.price || 0}</TableCell>
                       <TableCell>
                         <span className={`text-sm font-semibold ${(regCounts.get(ev.id) || 0) > 0 ? "text-primary" : "text-muted-foreground"}`}>
                           {regCounts.get(ev.id) || 0}
@@ -279,7 +261,7 @@ const AdminEvents = () => {
                     </TableRow>
                   ))}
                   {events.length === 0 && (
-                    <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-10">No events yet.</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-10">No events yet.</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -425,6 +407,10 @@ const AdminEvents = () => {
               <div>
                 <Label className="text-xs text-muted-foreground">Prize Pool</Label>
                 <Input value={form.prize_pool} onChange={e => updateField("prize_pool", e.target.value)} className="bg-card border-border" />
+              </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">Registration Price (₹)</Label>
+                <Input type="number" min={0} value={form.price} onChange={e => updateField("price", parseInt(e.target.value) || 0)} placeholder="e.g. 200" className="bg-card border-border" />
               </div>
             </div>
             <div>

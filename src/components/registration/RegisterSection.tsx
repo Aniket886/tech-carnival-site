@@ -73,16 +73,6 @@ const initialForm: FormData = {
 
 const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 
-const EVENT_PRICES: Record<string, number> = {
-  "Battle Ground": 400,
-  "Brain Quest": 200,
-  "Code Compass": 200,
-  "Dance Mania": 500,
-  "Hack Momentum": 1000,
-  "Myth Busters": 200,
-  "Pixel Perfect (Poster Presentation)": 200,
-  "Scitopia (Skit Play)": 500,
-};
 
 const categoryLabels: Record<string, string> = {
   technical: "💻 Technical Events",
@@ -104,6 +94,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [eventPrices, setEventPrices] = useState<Record<string, number>>({});
   const [paymentSettings, setPaymentSettings] = useState<{ upi_id: string; upi_name: string; instructions: string; qr_url: string }>({ upi_id: "", upi_name: "", instructions: "", qr_url: "" });
   const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
@@ -231,7 +222,12 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       .order("category")
       .order("name")
       .then(({ data }) => {
-        if (data) setEvents(data);
+        if (data) {
+          setEvents(data);
+          const prices: Record<string, number> = {};
+          data.forEach((e: any) => { if (e.price > 0) prices[e.name] = e.price; });
+          setEventPrices(prices);
+        }
       });
   }, []);
 
@@ -239,7 +235,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (selectedEvent && events.length) {
       const match = events.find((e) => e.name === selectedEvent);
       if (match) {
-        setForm((f) => ({ ...f, eventId: match.id, amountPaid: match.name in EVENT_PRICES ? match.name : "" }));
+        setForm((f) => ({ ...f, eventId: match.id, amountPaid: match.name }));
         setStep(0);
       }
     }
@@ -250,13 +246,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     [events, form.eventId]
   );
 
-  // Pre-select amountPaid when event changes in step 0
   useEffect(() => {
     if (selectedEventData) {
-      const name = selectedEventData.name;
-      if (name in EVENT_PRICES) {
-        setForm((f) => ({ ...f, amountPaid: name }));
-      }
+      setForm((f) => ({ ...f, amountPaid: selectedEventData.name }));
     }
   }, [selectedEventData]);
 
@@ -444,7 +436,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         semester: form.semester,
         team_name: isSolo ? null : sanitizeInput(form.teamName),
         members: isSolo ? null : (form.members.map((m) => ({ name: sanitizeInput(m.name), email: sanitizeInput(m.email).toLowerCase(), phone: m.phone.replace(/\s/g, "") })) as any),
-        amount_paid: form.amountPaid && EVENT_PRICES[form.amountPaid] ? String(EVENT_PRICES[form.amountPaid]) : form.amountPaid,
+        amount_paid: form.amountPaid && eventPrices[form.amountPaid] ? String(eventPrices[form.amountPaid]) : form.amountPaid,
         utr_number: utr,
         transaction_id: txn,
         payment_screenshot_url: screenshotUrl,
@@ -712,7 +704,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                       <SelectValue placeholder="-- Select Event --" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.entries(EVENT_PRICES).map(([name, price]) => (
+                      {Object.entries(eventPrices).map(([name, price]) => (
                         <SelectItem key={name} value={name}>{name} — ₹{price}</SelectItem>
                       ))}
                     </SelectContent>
@@ -724,7 +716,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
                   <p className="text-xs text-muted-foreground mb-1">Amount to Pay</p>
                   <p className="text-2xl font-bold text-primary">
-                    ₹{form.amountPaid && EVENT_PRICES[form.amountPaid] ? EVENT_PRICES[form.amountPaid] : 0}
+                    ₹{form.amountPaid && eventPrices[form.amountPaid] ? eventPrices[form.amountPaid] : 0}
                   </p>
                 </div>
                 
@@ -859,7 +851,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 <div className="pt-3 border-t border-border">
                   <p className="text-xs text-muted-foreground font-medium mb-2">Payment Details</p>
                   <Row label="Event" value={form.amountPaid} />
-                  <Row label="Amount Paid" value={`₹${EVENT_PRICES[form.amountPaid] || 0}`} />
+                  <Row label="Amount Paid" value={`₹${eventPrices[form.amountPaid] || 0}`} />
                   <Row label="UTR Number" value={form.utrNumber} />
                   <Row label="Transaction ID" value={form.transactionId} />
                 </div>

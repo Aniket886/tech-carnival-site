@@ -47,6 +47,7 @@ interface PassedEventData {
   category: string;
   team_size_min: number;
   team_size_max: number;
+  price: number;
 }
 
 interface TeamMember {
@@ -80,17 +81,6 @@ interface RegistrationModalProps {
 
 const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 
-const EVENT_PRICES: Record<string, number> = {
-  "Battle Ground": 400,
-  "Brain Quest": 200,
-  "Code Compass": 200,
-  "Dance Mania": 500,
-  "Hack Momentum": 1000,
-  "Myth Busters": 200,
-  "Pixel Perfect (Poster Presentation)": 200,
-  "Scitopia (Skit Play)": 500,
-};
-
 const STEP_LABELS = ["Details", "Payment", "Review"];
 
 const emptyMember = (): TeamMember => ({ name: "", email: "", phone: "" });
@@ -122,13 +112,24 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [eventPrices, setEventPrices] = useState<Record<string, number>>({});
 
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
     if (data) setColleges(data.filter((c: any) => c.approval_status === "approved"));
   };
 
-  useEffect(() => { fetchColleges(); }, []);
+  useEffect(() => {
+    fetchColleges();
+    // Fetch event prices from DB
+    supabase.from("events").select("name, price").eq("is_active", true).then(({ data }) => {
+      if (data) {
+        const prices: Record<string, number> = {};
+        data.forEach((e: any) => { if (e.price > 0) prices[e.name] = e.price; });
+        setEventPrices(prices);
+      }
+    });
+  }, []);
 
   const isTeamEvent = event ? event.team_size_max > 1 : false;
   const isOpen = !!eventData;
@@ -154,9 +155,9 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
       team_size_max: eventData.team_size_max,
     };
     setEvent(ev);
-    // Pre-select event in payment dropdown
+    // Pre-select event in payment dropdown using event name
     const eventName = ev.name;
-    const preselect = eventName in EVENT_PRICES ? eventName : "";
+    const preselect = eventName;
     if (ev.team_size_max > 1) {
       const minExtra = Math.max(0, ev.team_size_min - 1);
       setForm((prev) => ({
@@ -338,7 +339,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           members: isTeamEvent && form.members.length > 0
             ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
             : null,
-          amount_paid: form.amount_paid && EVENT_PRICES[form.amount_paid] ? String(EVENT_PRICES[form.amount_paid]) : form.amount_paid,
+          amount_paid: form.amount_paid && eventPrices[form.amount_paid] ? String(eventPrices[form.amount_paid]) : form.amount_paid,
           utr_number: form.utr_number.trim(),
           transaction_id: form.transaction_id.trim(),
           payment_screenshot_url: screenshotUrl,
@@ -629,7 +630,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                         <SelectValue placeholder="-- Select Event --" />
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.entries(EVENT_PRICES).map(([name, price]) => (
+                        {Object.entries(eventPrices).map(([name, price]) => (
                           <SelectItem key={name} value={name}>{name} — ₹{price}</SelectItem>
                         ))}
                       </SelectContent>
@@ -640,7 +641,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                   <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
                     <p className="text-[10px] text-muted-foreground mb-0.5">Amount to Pay</p>
                     <p className="text-xl font-bold text-primary">
-                      ₹{form.amount_paid && EVENT_PRICES[form.amount_paid] ? EVENT_PRICES[form.amount_paid] : 0}
+                      ₹{form.amount_paid && eventPrices[form.amount_paid] ? eventPrices[form.amount_paid] : 0}
                     </p>
                   </div>
                   <div className="space-y-1">
@@ -762,7 +763,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                     <span className="text-muted-foreground">Event</span>
                     <span className="text-foreground">{form.amount_paid}</span>
                     <span className="text-muted-foreground">Amount Paid</span>
-                    <span className="text-foreground">₹{EVENT_PRICES[form.amount_paid] || 0}</span>
+                    <span className="text-foreground">₹{eventPrices[form.amount_paid] || 0}</span>
                     <span className="text-muted-foreground">UTR Number</span>
                     <span className="text-foreground font-mono text-xs">{form.utr_number}</span>
                     <span className="text-muted-foreground">Transaction ID</span>
