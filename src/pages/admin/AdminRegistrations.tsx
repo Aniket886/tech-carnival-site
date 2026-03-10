@@ -151,7 +151,7 @@ const AdminRegistrations = () => {
     const { error } = await supabase.from("registrations").delete().eq("id", id);
     if (error) { toast.error("Failed to delete"); return; }
     toast.success("Registration deleted");
-    logActivity("Registration deleted", reg?.leader_name || id);
+    
     setDeleteConfirm(null);
     fetchData();
   };
