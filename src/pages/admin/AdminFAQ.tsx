@@ -119,6 +119,7 @@ const AdminFAQ = () => {
       toast.error("Failed to delete FAQ");
     } else {
       toast.success("FAQ deleted");
+      logActivity("FAQ deleted");
       fetchFaqs();
     }
     setDeleteId(null);

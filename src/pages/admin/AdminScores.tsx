@@ -176,6 +176,7 @@ const AdminScores = () => {
     const { error } = await supabase.from("college_scores").delete().eq("id", deleteId);
     if (error) { toast.error(error.message); return; }
     toast.success("Score deleted");
+    logActivity("Score deleted");
     setDeleteId(null);
     fetchData();
   };
