@@ -27,6 +27,7 @@ export interface EventData {
   prize_pool: string | null;
   rules: string[] | null;
   rulebookUrl: string | null;
+  paymentUrl: string | null;
 }
 
 const tabs: { label: string; value: Category; icon: string; btnClass: string; ringColor: string }[] = [
