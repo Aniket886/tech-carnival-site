@@ -41,6 +41,7 @@ interface Event {
   prize_pool: string | null;
   rules: string[] | null;
   website_url: string | null;
+  payment_url: string | null;
   created_at: string;
 }
 
@@ -58,12 +59,13 @@ interface FormData {
   prize_pool: string;
   rules: string;
   website_url: string;
+  payment_url: string;
 }
 
 const emptyForm: FormData = {
   name: "", slug: "", category: "technical", icon: "🎯", description: "",
   team_size_min: 1, team_size_max: 1, date: "", time: "", venue: "",
-  prize_pool: "", rules: "", website_url: "",
+  prize_pool: "", rules: "", website_url: "", payment_url: "",
 };
 
 const categoryStyles: Record<string, string> = {
@@ -109,7 +111,7 @@ const AdminEvents = () => {
       name: ev.name, slug: ev.slug, category: ev.category, icon: ev.icon || "🎯",
       description: ev.description || "", team_size_min: ev.team_size_min, team_size_max: ev.team_size_max,
       date: ev.date || "", time: ev.time || "", venue: ev.venue || "",
-      prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "",
+      prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "", payment_url: ev.payment_url || "",
     });
     setDialogOpen(true);
   };
@@ -131,6 +133,7 @@ const AdminEvents = () => {
       prize_pool: form.prize_pool || null,
       rules: form.rules.trim() ? form.rules.split("\n").map(r => r.trim()).filter(Boolean) : null,
       website_url: form.website_url || null,
+      payment_url: form.payment_url || null,
     };
 
     let error;
@@ -427,6 +430,10 @@ const AdminEvents = () => {
             <div>
               <Label className="text-xs text-muted-foreground">Website / Rulebook URL</Label>
               <Input value={form.website_url} onChange={e => updateField("website_url", e.target.value)} className="bg-card border-border" />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Payment URL</Label>
+              <Input value={form.payment_url} onChange={e => updateField("payment_url", e.target.value)} placeholder="https://payment-link.com" className="bg-card border-border" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Rules (one per line)</Label>

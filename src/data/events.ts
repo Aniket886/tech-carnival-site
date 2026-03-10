@@ -18,6 +18,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-brain-quest",
@@ -36,6 +37,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-poster-presentation",
@@ -54,6 +56,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-pitch-perfect",
@@ -72,6 +75,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-code-compass",
@@ -90,6 +94,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-myth-busters",
@@ -108,6 +113,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-battle-ground",
@@ -126,6 +132,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-dance-mania",
@@ -144,6 +151,7 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
   {
     id: "fallback-scitopia",
@@ -162,5 +170,6 @@ export const fallbackEvents: EventData[] = [
     prize_pool: null,
     rules: null,
     rulebookUrl: null,
+    paymentUrl: null,
   },
 ];

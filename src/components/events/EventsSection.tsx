@@ -27,6 +27,7 @@ export interface EventData {
   prize_pool: string | null;
   rules: string[] | null;
   rulebookUrl: string | null;
+  paymentUrl: string | null;
 }
 
 const tabs: { label: string; value: Category; icon: string; btnClass: string; ringColor: string }[] = [
@@ -104,6 +105,7 @@ const EventsSection = () => {
               prize_pool: e.prize_pool,
               rules: e.rules,
               rulebookUrl: e.website_url || null,
+              paymentUrl: e.payment_url || null,
             }))
           );
         }
@@ -221,6 +223,19 @@ const EventsSection = () => {
                           className="btn-golden h-9 px-3 text-sm font-medium inline-flex items-center justify-center gap-1"
                         >
                           <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> Rule Book</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (event.paymentUrl) {
+                              window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
+                            } else {
+                              toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
+                            }
+                          }}
+                          className="btn-gold h-9 px-3 text-sm font-medium inline-flex items-center justify-center gap-1"
+                        >
+                          <span>💰 Pay</span>
                         </button>
                         <button
                           onClick={(e) => {
