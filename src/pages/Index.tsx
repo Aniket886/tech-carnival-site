@@ -5,6 +5,7 @@ import About from "@/components/home/About";
 import SponsorsSection from "@/components/home/SponsorsSection";
 import EventsSection from "@/components/events/EventsSection";
 import ScheduleSection from "@/components/schedule/ScheduleSection";
+import GallerySection from "@/components/home/GallerySection";
 import Leaderboard from "@/components/home/Leaderboard";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
@@ -37,6 +38,7 @@ const Index = () => {
       {isSectionVisible("events") && <ScrollAnimate><EventsSection /></ScrollAnimate>}
       {isSectionVisible("schedule") && <ScrollAnimate><ScheduleSection /></ScrollAnimate>}
       {isSectionVisible("leaderboard") && <ScrollAnimate><Leaderboard /></ScrollAnimate>}
+      <ScrollAnimate><GallerySection /></ScrollAnimate>
       {isSectionVisible("faq") && <ScrollAnimate><FAQSection /></ScrollAnimate>}
       {isSectionVisible("contact") && <ScrollAnimate><ContactSection /></ScrollAnimate>}
       <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>
