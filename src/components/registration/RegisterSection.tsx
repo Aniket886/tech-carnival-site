@@ -222,7 +222,12 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       .order("category")
       .order("name")
       .then(({ data }) => {
-        if (data) setEvents(data);
+        if (data) {
+          setEvents(data);
+          const prices: Record<string, number> = {};
+          data.forEach((e: any) => { if (e.price > 0) prices[e.name] = e.price; });
+          setEventPrices(prices);
+        }
       });
   }, []);
 
