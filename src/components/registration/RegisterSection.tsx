@@ -660,16 +660,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                   Each UTR Number and Transaction ID can only be used once. Duplicate payment details will be rejected.
                 </AlertDescription>
               </Alert>
-              {/* Dynamic payment info from admin settings */}
-              {(paymentSettings.qr_url || paymentSettings.upi_id || paymentSettings.instructions) ? (
-                <div className="glass rounded-lg p-5 space-y-4">
-                  {paymentSettings.qr_url && (
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="bg-white rounded-xl p-3 shadow-md">
-                        <img src={paymentSettings.qr_url} alt="Payment QR Code" width={200} height={200} className="rounded-lg" />
-                      </div>
-                    </div>
-                  )}
+              {/* Dynamic payment info from admin settings — NO QR code */}
+              {(paymentSettings.upi_id || paymentSettings.upi_name || paymentSettings.instructions) && (
+                <div className="glass rounded-lg p-5 space-y-3">
                   {(paymentSettings.upi_id || paymentSettings.upi_name) && (
                     <div className="text-center space-y-1">
                       {paymentSettings.upi_id && <p className="text-xs text-muted-foreground">UPI ID: <span className="font-mono text-foreground select-all">{paymentSettings.upi_id}</span></p>}
@@ -680,17 +673,32 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                     <p className="text-sm text-muted-foreground text-center pt-2 border-t border-border">{paymentSettings.instructions}</p>
                   )}
                 </div>
-              ) : (
-                <div className="glass rounded-lg p-5 space-y-2">
-                  <p className="text-sm text-muted-foreground text-center">Complete your payment and fill in the details below with your payment screenshot.</p>
-                </div>
               )}
               <div className="space-y-4">
-                {renderField("amountPaid", "Amount Paid (₹)", form.amountPaid, (v) => setForm((f) => ({ ...f, amountPaid: v })), { placeholder: "e.g. 200" })}
+                {/* Amount Paid */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="amountPaid" className="text-sm text-foreground font-medium">Amount Paid (₹) <span className="text-destructive">*</span></Label>
+                  <Input
+                    id="amountPaid"
+                    type="number"
+                    min="1"
+                    placeholder="e.g. 200"
+                    value={form.amountPaid}
+                    onChange={(e) => { setForm((f) => ({ ...f, amountPaid: e.target.value })); setErrors((er) => { const n = { ...er }; delete n.amountPaid; return n; }); }}
+                    onBlur={() => {
+                      setTouched((t) => ({ ...t, amountPaid: true }));
+                      const v = form.amountPaid.trim();
+                      if (!v) setErrors((e) => ({ ...e, amountPaid: "Amount paid is required" }));
+                      else if (isNaN(Number(v)) || Number(v) <= 0) setErrors((e) => ({ ...e, amountPaid: "Enter a valid positive amount" }));
+                    }}
+                    className={`bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors ${touched.amountPaid && errors.amountPaid ? "border-destructive focus:border-destructive focus:ring-destructive/30" : ""}`}
+                  />
+                  {touched.amountPaid && errors.amountPaid && <p className="text-xs text-destructive">{errors.amountPaid}</p>}
+                </div>
                 
                 {/* UTR Number with live check */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="utrNumber" className="text-sm text-foreground font-medium">UTR Number</Label>
+                  <Label htmlFor="utrNumber" className="text-sm text-foreground font-medium">UTR Number <span className="text-destructive">*</span></Label>
                   <div className="relative">
                     <Input id="utrNumber" placeholder="Enter UTR number from payment confirmation" value={form.utrNumber} onChange={(e) => handleUtrChange(e.target.value)} onBlur={() => handleBlur("utrNumber")}
                       className={`${utrStatus === "duplicate" || (errors.utrNumber && touched.utrNumber) ? "border-destructive focus:border-destructive focus:ring-destructive/30" : utrStatus === "valid" ? "border-green-500/50 focus:border-green-500 focus:ring-green-500/30" : ""} bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors pr-10`} />
@@ -707,7 +715,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
 
                 {/* Transaction ID with live check */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="transactionId" className="text-sm text-foreground font-medium">Transaction ID</Label>
+                  <Label htmlFor="transactionId" className="text-sm text-foreground font-medium">Transaction ID <span className="text-destructive">*</span></Label>
                   <div className="relative">
                     <Input id="transactionId" placeholder="Enter transaction ID" value={form.transactionId} onChange={(e) => handleTxnChange(e.target.value)} onBlur={() => handleBlur("transactionId")}
                       className={`${txnStatus === "duplicate" || (errors.transactionId && touched.transactionId) ? "border-destructive focus:border-destructive focus:ring-destructive/30" : txnStatus === "valid" ? "border-green-500/50 focus:border-green-500 focus:ring-green-500/30" : ""} bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors pr-10`} />
@@ -728,34 +736,49 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                    {touched.paymentScreenshot && errors.paymentScreenshot && <p className="text-xs text-destructive">{errors.paymentScreenshot}</p>}
                   <div className="relative">
                     {paymentScreenshot ? (
-                      <div className="glass rounded-lg p-3 flex items-center gap-3">
-                        <div className="w-16 h-16 rounded-md overflow-hidden bg-muted shrink-0">
-                          <img src={URL.createObjectURL(paymentScreenshot)} alt="Payment screenshot" className="w-full h-full object-cover" />
+                      <div className={`glass rounded-lg p-3 flex items-center gap-3 ${touched.paymentScreenshot && errors.paymentScreenshot ? "border border-destructive" : ""}`}>
+                        <div className="w-16 h-16 rounded-md overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+                          {paymentScreenshot.type.startsWith("image/") ? (
+                            <img src={URL.createObjectURL(paymentScreenshot)} alt="Payment screenshot" className="w-full h-full object-cover" />
+                          ) : (
+                            <FileText size={28} className="text-muted-foreground" />
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-foreground font-medium truncate">{paymentScreenshot.name}</p>
                           <p className="text-xs text-muted-foreground">{(paymentScreenshot.size / 1024).toFixed(1)} KB</p>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={() => setPaymentScreenshot(null)} className="text-destructive hover:text-destructive shrink-0">
+                        <Button variant="ghost" size="sm" onClick={() => { setPaymentScreenshot(null); setErrors((e) => ({ ...e, paymentScreenshot: "Payment screenshot is required" })); }} className="text-destructive hover:text-destructive shrink-0">
                           <X size={14} />
                         </Button>
                       </div>
                     ) : (
-                      <label className="flex flex-col items-center gap-2 cursor-pointer rounded-lg border-2 border-dashed border-border hover:border-primary/50 bg-muted/30 p-6 transition-colors">
+                      <label className={`flex flex-col items-center gap-2 cursor-pointer rounded-lg border-2 border-dashed ${touched.paymentScreenshot && errors.paymentScreenshot ? "border-destructive" : "border-border hover:border-primary/50"} bg-muted/30 p-6 transition-colors`}>
                         <Upload size={24} className="text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">Click to upload payment screenshot</span>
-                        <span className="text-xs text-muted-foreground/70">All file types up to 5MB</span>
+                        <span className="text-sm text-muted-foreground text-center">Click to upload screenshot (All image formats & PDF supported, up to 5 MB)</span>
+                        <span className="text-xs text-muted-foreground/70">PNG, JPG, GIF, BMP, WEBP, SVG, PDF, HEIC, HEIF</span>
                         <input
                           type="file"
+                          accept="image/*,.pdf,.heic,.heif"
                           className="hidden"
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               if (file.size > 5 * 1024 * 1024) {
-                                toast.error("File too large. Max 5MB allowed.");
+                                toast.error("File size must be under 5 MB");
+                                return;
+                              }
+                              const allowedTypes = ["image/", "application/pdf"];
+                              const allowedExts = [".heic", ".heif"];
+                              const ext = "." + (file.name.split(".").pop() || "").toLowerCase();
+                              const isAllowed = allowedTypes.some((t) => file.type.startsWith(t)) || allowedExts.includes(ext);
+                              if (!isAllowed) {
+                                toast.error("Unsupported file format");
                                 return;
                               }
                               setPaymentScreenshot(file);
+                              setErrors((er) => { const n = { ...er }; delete n.paymentScreenshot; return n; });
+                              setTouched((t) => ({ ...t, paymentScreenshot: true }));
                             }
                           }}
                         />
@@ -766,7 +789,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
               </div>
               <div className="flex justify-between">
                 <Button variant="ghost" onClick={prev} className="text-muted-foreground"><ChevronLeft size={16} className="mr-1" /> Back</Button>
-                <Button variant="neon" onClick={next} disabled={checkingPayment} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
+                <Button variant="neon" onClick={next} disabled={checkingPayment || !form.amountPaid.trim() || !form.utrNumber.trim() || !form.transactionId.trim() || !paymentScreenshot} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
               </div>
             </div>
           )}
