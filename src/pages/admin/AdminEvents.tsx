@@ -135,7 +135,7 @@ const AdminEvents = () => {
     const { error } = await supabase.from("events").update({ is_active: !ev.is_active }).eq("id", ev.id);
     if (error) { toast.error("Failed to update"); return; }
     toast.success(`${ev.name} ${!ev.is_active ? "activated" : "deactivated"}`);
-    logActivity("Event toggled", `${ev.name} → ${!ev.is_active ? "active" : "inactive"}`);
+    
     fetchData();
   };
 
