@@ -80,6 +80,17 @@ interface RegistrationModalProps {
 
 const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 
+const EVENT_PRICES: Record<string, number> = {
+  "Battle Ground": 400,
+  "Brain Quest": 200,
+  "Code Compass": 200,
+  "Dance Mania": 500,
+  "Hack Momentum": 1000,
+  "Myth Busters": 200,
+  "Pixel Perfect (Poster Presentation)": 200,
+  "Scitopia (Skit Play)": 500,
+};
+
 const STEP_LABELS = ["Details", "Payment", "Review"];
 
 const emptyMember = (): TeamMember => ({ name: "", email: "", phone: "" });
@@ -143,12 +154,18 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
       team_size_max: eventData.team_size_max,
     };
     setEvent(ev);
+    // Pre-select event in payment dropdown
+    const eventName = ev.name;
+    const preselect = eventName in EVENT_PRICES ? eventName : "";
     if (ev.team_size_max > 1) {
       const minExtra = Math.max(0, ev.team_size_min - 1);
       setForm((prev) => ({
         ...prev,
+        amount_paid: preselect,
         members: Array.from({ length: minExtra }, emptyMember),
       }));
+    } else {
+      setForm((prev) => ({ ...prev, amount_paid: preselect }));
     }
   }, [eventData]);
 
@@ -200,8 +217,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         });
       }
       if (s === 1) {
-        if (!form.amount_paid.trim()) e.amount_paid = "Amount paid is required";
-        else if (isNaN(Number(form.amount_paid.trim())) || Number(form.amount_paid.trim()) <= 0) e.amount_paid = "Enter a valid positive amount";
+        if (!form.amount_paid) e.amount_paid = "Please select an event";
         if (!form.utr_number.trim()) e.utr_number = "UTR Number is required";
         else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
         if (!form.transaction_id.trim()) e.transaction_id = "Transaction ID is required";
@@ -322,7 +338,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           members: isTeamEvent && form.members.length > 0
             ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
             : null,
-          amount_paid: form.amount_paid.trim(),
+          amount_paid: form.amount_paid && EVENT_PRICES[form.amount_paid] ? String(EVENT_PRICES[form.amount_paid]) : form.amount_paid,
           utr_number: form.utr_number.trim(),
           transaction_id: form.transaction_id.trim(),
           payment_screenshot_url: screenshotUrl,
@@ -600,9 +616,32 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
 
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <Label className="text-xs">Amount Paid (₹) <span className="text-destructive">*</span></Label>
-                    <Input placeholder="e.g. 200" type="number" min="1" value={form.amount_paid} onChange={(e) => setForm((p) => ({ ...p, amount_paid: e.target.value.replace(/[^0-9.]/g, "") }))} onBlur={() => onBlur("amount_paid")} maxLength={10} className={fieldClass("amount_paid")} />
+                    <Label className="text-xs">Select Event & Amount <span className="text-destructive">*</span></Label>
+                    <Select
+                      value={form.amount_paid || undefined}
+                      onValueChange={(v) => {
+                        setForm((p) => ({ ...p, amount_paid: v }));
+                        setErrors((prev) => { const n = { ...prev }; delete n.amount_paid; return n; });
+                        setTouched((prev) => new Set([...prev, "amount_paid"]));
+                      }}
+                    >
+                      <SelectTrigger className={fieldClass("amount_paid")}>
+                        <SelectValue placeholder="-- Select Event --" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(EVENT_PRICES).map(([name, price]) => (
+                          <SelectItem key={name} value={name}>{name} — ₹{price}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FieldError field="amount_paid" />
+                  </div>
+                  {/* Amount to Pay - auto display */}
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
+                    <p className="text-[10px] text-muted-foreground mb-0.5">Amount to Pay</p>
+                    <p className="text-xl font-bold text-primary">
+                      ₹{form.amount_paid && EVENT_PRICES[form.amount_paid] ? EVENT_PRICES[form.amount_paid] : 0}
+                    </p>
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">UTR Number <span className="text-destructive">*</span></Label>
@@ -668,7 +707,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                   <ChevronLeft className="h-4 w-4" /> Back
                 </Button>
                 <motion.div animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : {}} transition={{ duration: 0.4 }}>
-                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment || !form.amount_paid.trim() || !form.utr_number.trim() || !form.transaction_id.trim() || !paymentScreenshot}>
+                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment || !form.amount_paid || !form.utr_number.trim() || !form.transaction_id.trim() || !paymentScreenshot}>
                     {checkingPayment ? "Verifying..." : "Review"} <ChevronRight className="h-4 w-4" />
                   </Button>
                 </motion.div>
@@ -720,8 +759,10 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                 <div className="rounded-lg border border-border bg-muted/10 p-3">
                   <p className="text-xs text-muted-foreground mb-1">Payment</p>
                   <div className="grid grid-cols-2 gap-y-1.5 text-sm">
+                    <span className="text-muted-foreground">Event</span>
+                    <span className="text-foreground">{form.amount_paid}</span>
                     <span className="text-muted-foreground">Amount Paid</span>
-                    <span className="text-foreground">₹{form.amount_paid}</span>
+                    <span className="text-foreground">₹{EVENT_PRICES[form.amount_paid] || 0}</span>
                     <span className="text-muted-foreground">UTR Number</span>
                     <span className="text-foreground font-mono text-xs">{form.utr_number}</span>
                     <span className="text-muted-foreground">Transaction ID</span>
