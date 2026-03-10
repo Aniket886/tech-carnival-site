@@ -93,7 +93,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
-  const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
+  const [paymentSettings, setPaymentSettings] = useState<{ upi_id: string; upi_name: string; instructions: string; qr_url: string }>({ upi_id: "", upi_name: "", instructions: "", qr_url: "" });
   const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [emailDupStatus, setEmailDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
   const [phoneDupStatus, setPhoneDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
