@@ -196,21 +196,21 @@ const CarniBotWidget = () => {
 
   return (
     <>
-      {/* Floating Pill Button */}
+      {/* Floating Circle Button */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-6 right-6 z-50"
+            className="fixed bottom-6 right-6 z-50 max-sm:bottom-4 max-sm:right-4"
           >
             {showTooltip && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute -top-12 right-0 text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg"
+                className="absolute -top-12 left-1/2 -translate-x-1/2 text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg"
                 style={{
                   background: "rgba(0, 229, 255, 0.15)",
                   border: "1px solid rgba(0, 229, 255, 0.3)",
@@ -219,7 +219,7 @@ const CarniBotWidget = () => {
               >
                 Need help? 💬
                 <div
-                  className="absolute -bottom-1 right-5 w-2 h-2 rotate-45"
+                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45"
                   style={{ background: "rgba(0, 229, 255, 0.15)" }}
                 />
               </motion.div>
@@ -228,27 +228,28 @@ const CarniBotWidget = () => {
               onClick={openChat}
               animate={{ y: [0, -5, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="relative flex items-center gap-2 px-5 py-3 rounded-full font-display text-sm font-semibold tracking-wide transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative w-[60px] h-[60px] max-sm:w-[52px] max-sm:h-[52px] rounded-full flex items-center justify-center transition-all duration-300"
               style={{
                 background: "rgba(15, 15, 30, 0.7)",
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
                 color: "#00e5ff",
-                boxShadow: "0 0 15px rgba(0, 229, 255, 0.15)",
+                boxShadow: "0 0 12px rgba(0, 200, 255, 0.2)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 25px rgba(0, 229, 255, 0.4), 0 0 50px rgba(0, 229, 255, 0.15)";
+                e.currentTarget.style.boxShadow = "0 0 20px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.15)";
                 e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.3)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 15px rgba(0, 229, 255, 0.15)";
+                e.currentTarget.style.boxShadow = "0 0 12px rgba(0, 200, 255, 0.2)";
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
               }}
               aria-label="Open CarniBOT"
             >
-              <MessageCircle size={18} />
-              <span>Ask CarniBOT</span>
+              <MessageCircle size={26} />
             </motion.button>
           </motion.div>
         )}
