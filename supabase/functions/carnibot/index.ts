@@ -57,12 +57,30 @@ serve(async (req) => {
       )
       .join("\n");
 
-    const contactList = (contacts || [])
-      .map(
-        (c: any) =>
-          `- ${c.role === "core_team" ? "🎯 Core Team" : `🎪 ${c.events?.name || "Event"} Coordinator`}: ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ""}`,
-      )
-      .join("\n");
+    // Group contacts by event for better lookup
+    const coreTeamContacts = (contacts || []).filter((c: any) => c.role === "core_team");
+    const eventCoordinators = (contacts || []).filter((c: any) => c.role !== "core_team");
+
+    const eventContactMap: Record<string, any[]> = {};
+    for (const c of eventCoordinators) {
+      const eventName = c.events?.name || "Unassigned";
+      if (!eventContactMap[eventName]) eventContactMap[eventName] = [];
+      eventContactMap[eventName].push(c);
+    }
+
+    const contactList = [
+      "CORE TEAM (general help — always show when user asks for contacts/help):",
+      ...coreTeamContacts.map((c: any) =>
+        `  - 🎯 ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ""}`
+      ),
+      "",
+      "EVENT-SPECIFIC COORDINATORS (show the matching event's coordinator when user asks about that event):",
+      ...Object.entries(eventContactMap).map(([eventName, coords]) =>
+        `  ${eventName}:\n${(coords as any[]).map((c: any) =>
+          `    - ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ""}`
+        ).join("\n")}`
+      ),
+    ].join("\n");
 
     const faqList = (faqs || []).map((f: any) => `Q patterns: "${f.question_pattern}" → A: ${f.answer}`).join("\n");
 
@@ -98,7 +116,7 @@ RULES:
 1. For schedule/timing questions, ALWAYS use the FULL EVENT SCHEDULE above. It is the exact schedule shown on the website.
 2. Answer questions about events, registration, schedule, venue, prizes, rules, and team sizes using the data above.
 3. For registration help, tell users to scroll to the Registration section on the website.
-4. When users ask for contact info, phone numbers, or say "help", "talk to someone", "coordinator" — show the relevant contacts from the list above.
+4. When users ask for contact info or about a SPECIFIC EVENT's coordinator, show the coordinator(s) listed under that event. When they say "help", "talk to someone", or ask for general contacts, show Core Team contacts. If they ask about an event AND want help, show both the event coordinator AND core team.
 5. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
 6. For leaderboard/scores questions, use the leaderboard data.
 7. Always end responses with a helpful suggestion or follow-up question.
