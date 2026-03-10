@@ -177,6 +177,7 @@ const AdminColleges = () => {
     const { error } = await supabase.from("colleges").delete().eq("id", deleteId);
     if (error) { toast.error(error.message); return; }
     toast.success("College deleted");
+    logActivity("College deleted");
     setDeleteId(null);
     fetchData();
   };
