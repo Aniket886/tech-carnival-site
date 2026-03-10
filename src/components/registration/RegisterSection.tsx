@@ -73,16 +73,6 @@ const initialForm: FormData = {
 
 const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 
-const EVENT_PRICES: Record<string, number> = {
-  "Battle Ground": 400,
-  "Brain Quest": 200,
-  "Code Compass": 200,
-  "Dance Mania": 500,
-  "Hack Momentum": 1000,
-  "Myth Busters": 200,
-  "Pixel Perfect (Poster Presentation)": 200,
-  "Scitopia (Skit Play)": 500,
-};
 
 const categoryLabels: Record<string, string> = {
   technical: "💻 Technical Events",
