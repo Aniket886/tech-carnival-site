@@ -436,7 +436,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         semester: form.semester,
         team_name: isSolo ? null : sanitizeInput(form.teamName),
         members: isSolo ? null : (form.members.map((m) => ({ name: sanitizeInput(m.name), email: sanitizeInput(m.email).toLowerCase(), phone: m.phone.replace(/\s/g, "") })) as any),
-        amount_paid: form.amountPaid && EVENT_PRICES[form.amountPaid] ? String(EVENT_PRICES[form.amountPaid]) : form.amountPaid,
+        amount_paid: form.amountPaid && eventPrices[form.amountPaid] ? String(eventPrices[form.amountPaid]) : form.amountPaid,
         utr_number: utr,
         transaction_id: txn,
         payment_screenshot_url: screenshotUrl,
