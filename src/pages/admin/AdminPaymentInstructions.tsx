@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Save, Upload, X, QrCode, IndianRupee, FileText } from "lucide-react";
+import { Save, Upload, X, QrCode, IndianRupee, FileText, Eye } from "lucide-react";
 
 const SETTING_KEYS = [
   "payment_upi_id",
@@ -238,6 +238,66 @@ const AdminPaymentInstructions = () => {
           <p className="text-xs text-muted-foreground">
             Leave empty to use the default message.
           </p>
+        </div>
+      </div>
+
+      {/* Live Preview */}
+      <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <div className="flex items-center gap-2 text-foreground font-semibold">
+          <Eye size={18} className="text-primary" />
+          Participant Preview
+        </div>
+        <p className="text-xs text-muted-foreground">
+          This is how the payment section appears to participants during registration.
+        </p>
+
+        <div className="rounded-lg border border-primary/20 bg-background p-5 space-y-4">
+          <p className="text-sm font-semibold text-muted-foreground border-b border-border pb-2">💳 Payment Details</p>
+
+          {(values.payment_upi_id || values.payment_upi_name || values.payment_instructions) ? (
+            <div className="rounded-lg border border-border bg-muted/10 p-4 space-y-3">
+              {(values.payment_upi_id || values.payment_upi_name) && (
+                <div className="text-center space-y-1">
+                  {values.payment_upi_id && (
+                    <p className="text-xs text-muted-foreground">UPI ID: <span className="font-mono text-foreground select-all">{values.payment_upi_id}</span></p>
+                  )}
+                  {values.payment_upi_name && (
+                    <p className="text-xs text-muted-foreground">Name: <span className="font-medium text-foreground">{values.payment_upi_name}</span></p>
+                  )}
+                </div>
+              )}
+              {values.payment_instructions && (
+                <p className="text-sm text-muted-foreground text-center pt-2 border-t border-border">{values.payment_instructions}</p>
+              )}
+            </div>
+          ) : (
+            <div className="rounded-lg border border-border bg-muted/10 p-4">
+              <p className="text-sm text-muted-foreground text-center">Complete your payment and fill in the details below.</p>
+            </div>
+          )}
+
+          {/* Mock fields */}
+          <div className="space-y-3 opacity-60 pointer-events-none">
+            <div className="space-y-1">
+              <p className="text-xs text-foreground font-medium">Amount Paid (₹) <span className="text-destructive">*</span></p>
+              <div className="h-9 rounded-md border border-border bg-muted/50 px-3 flex items-center text-sm text-muted-foreground">e.g. 200</div>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-foreground font-medium">UTR Number <span className="text-destructive">*</span></p>
+              <div className="h-9 rounded-md border border-border bg-muted/50 px-3 flex items-center text-sm text-muted-foreground">Enter UTR / Reference Number</div>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-foreground font-medium">Transaction ID <span className="text-destructive">*</span></p>
+              <div className="h-9 rounded-md border border-border bg-muted/50 px-3 flex items-center text-sm text-muted-foreground">Enter Transaction ID</div>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-foreground font-medium">Payment Screenshot <span className="text-destructive">*</span></p>
+              <div className="rounded-lg border border-dashed border-border bg-muted/10 p-4 flex flex-col items-center gap-1.5">
+                <Upload className="h-5 w-5 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">Click to upload screenshot</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
