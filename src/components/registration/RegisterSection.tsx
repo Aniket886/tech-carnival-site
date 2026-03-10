@@ -94,6 +94,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [paymentSettings, setPaymentSettings] = useState<{ upi_id: string; upi_name: string; instructions: string; qr_url: string }>({ upi_id: "", upi_name: "", instructions: "", qr_url: "" });
+  const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [emailDupStatus, setEmailDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
   const [phoneDupStatus, setPhoneDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
