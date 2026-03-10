@@ -250,8 +250,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   useEffect(() => {
     if (selectedEventData) {
       const name = selectedEventData.name;
-      if (name in EVENT_PRICES) {
-        setForm((f) => ({ ...f, amountPaid: name }));
+      setForm((f) => ({ ...f, amountPaid: name }));
       }
     }
   }, [selectedEventData]);
