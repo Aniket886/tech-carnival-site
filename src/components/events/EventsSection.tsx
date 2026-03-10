@@ -226,6 +226,19 @@ const EventsSection = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            if (event.paymentUrl) {
+                              window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
+                            } else {
+                              toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
+                            }
+                          }}
+                          className="btn-gold h-9 px-3 text-sm font-medium inline-flex items-center justify-center gap-1"
+                        >
+                          <span>💰 Pay</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setRegisterEvent(event);
                           }}
                           className="btn-golden h-9 px-3 text-sm font-medium inline-flex items-center justify-center"
