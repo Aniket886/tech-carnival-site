@@ -128,6 +128,48 @@ export type Database = {
         }
         Relationships: []
       }
+      announcements: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          link_label: string | null
+          link_url: string | null
+          message: string
+          starts_at: string
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          link_label?: string | null
+          link_url?: string | null
+          message: string
+          starts_at?: string
+          title: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          link_label?: string | null
+          link_url?: string | null
+          message?: string
+          starts_at?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
           api_key: string
@@ -365,6 +407,36 @@ export type Database = {
         }
         Relationships: []
       }
+      email_sends: {
+        Row: {
+          created_at: string
+          filters: Json | null
+          id: string
+          recipient_count: number
+          sent_by: string | null
+          subject: string
+          template_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          filters?: Json | null
+          id?: string
+          recipient_count?: number
+          sent_by?: string | null
+          subject: string
+          template_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          filters?: Json | null
+          id?: string
+          recipient_count?: number
+          sent_by?: string | null
+          subject?: string
+          template_id?: string | null
+        }
+        Relationships: []
+      }
       event_updates: {
         Row: {
           api_key_id: string
@@ -506,6 +578,39 @@ export type Database = {
           link_url?: string | null
           question?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      gallery_items: {
+        Row: {
+          caption: string | null
+          category: string
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string
+          is_visible: boolean
+          uploaded_by: string | null
+        }
+        Insert: {
+          caption?: string | null
+          category?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url: string
+          is_visible?: boolean
+          uploaded_by?: string | null
+        }
+        Update: {
+          caption?: string | null
+          category?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_visible?: boolean
+          uploaded_by?: string | null
         }
         Relationships: []
       }
