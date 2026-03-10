@@ -90,6 +90,7 @@ const AdminEvents = () => {
       description: ev.description || "", team_size_min: ev.team_size_min, team_size_max: ev.team_size_max,
       date: ev.date || "", time: ev.time || "", venue: ev.venue || "",
       prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "", payment_url: ev.payment_url || "",
+      price: ev.price || 0,
     });
     setDialogOpen(true);
   };
