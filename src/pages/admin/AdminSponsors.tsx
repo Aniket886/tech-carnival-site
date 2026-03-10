@@ -113,6 +113,7 @@ const AdminSponsors = () => {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editingId ? "Sponsor updated" : "Sponsor added");
+    logActivity(editingId ? "Sponsor updated" : "Sponsor added", form.name);
     setDialogOpen(false);
     fetchData();
   };
