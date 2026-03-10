@@ -13,7 +13,7 @@ import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
   Trophy, Handshake, Bot, Layers, Mail, Users, Clock, HelpCircle,
-  Megaphone, ScrollText, ImageIcon,
+  Megaphone, ImageIcon,
 } from "lucide-react";
 
 const links = [
