@@ -23,12 +23,22 @@ const AnnouncementBanner = () => {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    supabase.from("announcements").select("id,title,message,type,link_url,link_label")
-      .eq("is_active", true)
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (data) setAnnouncements(data as unknown as Announcement[]);
-      });
+    const fetchAnnouncements = () => {
+      supabase.from("announcements").select("id,title,message,type,link_url,link_label")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .then(({ data }) => {
+          if (data) setAnnouncements(data as unknown as Announcement[]);
+        });
+    };
+    fetchAnnouncements();
+
+    const channel = supabase
+      .channel("announcements_realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "announcements" }, () => fetchAnnouncements())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const visible = announcements.filter(a => !dismissed.has(a.id));

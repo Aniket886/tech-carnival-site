@@ -123,7 +123,13 @@ const EventsSection = () => {
     }, 8000);
 
     fetchEvents();
-    return () => { cancelled = true; clearTimeout(timeout); };
+
+    const channel = supabase
+      .channel("events_realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "events" }, () => fetchEvents())
+      .subscribe();
+
+    return () => { cancelled = true; clearTimeout(timeout); supabase.removeChannel(channel); };
   }, []);
 
   const filtered = active === "all" ? events : events.filter((e) => e.category === active);
