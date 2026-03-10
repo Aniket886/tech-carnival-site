@@ -95,6 +95,7 @@ const AdminAnnouncements = () => {
     setSaving(false);
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     toast({ title: editId ? "Updated" : "Created", description: `Announcement "${form.title}" saved.` });
+    logActivity(editId ? "Announcement updated" : "Announcement created", form.title);
     setModalOpen(false);
     fetch();
   };
