@@ -57,12 +57,30 @@ serve(async (req) => {
       )
       .join("\n");
 
-    const contactList = (contacts || [])
-      .map(
-        (c: any) =>
-          `- ${c.role === "core_team" ? "🎯 Core Team" : `🎪 ${c.events?.name || "Event"} Coordinator`}: ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ""}`,
-      )
-      .join("\n");
+    // Group contacts by event for better lookup
+    const coreTeamContacts = (contacts || []).filter((c: any) => c.role === "core_team");
+    const eventCoordinators = (contacts || []).filter((c: any) => c.role !== "core_team");
+
+    const eventContactMap: Record<string, any[]> = {};
+    for (const c of eventCoordinators) {
+      const eventName = c.events?.name || "Unassigned";
+      if (!eventContactMap[eventName]) eventContactMap[eventName] = [];
+      eventContactMap[eventName].push(c);
+    }
+
+    const contactList = [
+      "CORE TEAM (general help — always show when user asks for contacts/help):",
+      ...coreTeamContacts.map((c: any) =>
+        `  - 🎯 ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ""}`
+      ),
+      "",
+      "EVENT-SPECIFIC COORDINATORS (show the matching event's coordinator when user asks about that event):",
+      ...Object.entries(eventContactMap).map(([eventName, coords]) =>
+        `  ${eventName}:\n${(coords as any[]).map((c: any) =>
+          `    - ${c.name} — 📞 +91 ${c.phone}${c.email ? ` — ✉️ ${c.email}` : ""}`
+        ).join("\n")}`
+      ),
+    ].join("\n");
 
     const faqList = (faqs || []).map((f: any) => `Q patterns: "${f.question_pattern}" → A: ${f.answer}`).join("\n");
 
