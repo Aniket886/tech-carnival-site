@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
   Users, MessageCircle, BarChart3, Save, Trash2, Plus,
-  Phone, Bot, Mail,
+  Phone, Bot, Mail, AlertTriangle, CheckCircle2,
 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── Types ─── */
@@ -40,7 +43,19 @@ type BotFaq = {
   created_at: string | null;
 };
 
-type EventOption = { id: string; name: string };
+type EventOption = { id: string; name: string; category: string };
+
+const EVENT_CATEGORY_COLORS: Record<string, string> = {
+  technical: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  gaming: "bg-red-500/20 text-red-400 border-red-500/30",
+  cultural: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+};
+const CORE_TEAM_COLOR = "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+
+const getEventBadgeClass = (category: string | undefined) => {
+  if (!category) return CORE_TEAM_COLOR;
+  return EVENT_CATEGORY_COLORS[category] || "bg-muted text-muted-foreground border-border";
+};
 
 /* ─── Contacts Tab ─── */
 const ContactsTab = () => {
@@ -53,11 +68,11 @@ const ContactsTab = () => {
 
   const fetch_ = useCallback(async () => {
     const [{ data: c }, { data: e }] = await Promise.all([
-      supabase.from("bot_contacts").select("*, events(name)").order("role").order("display_order"),
-      supabase.from("events").select("id, name").eq("is_active", true).order("name"),
+      supabase.from("bot_contacts").select("*, events(name, category)").order("role").order("display_order"),
+      supabase.from("events").select("id, name, category").eq("is_active", true).order("name"),
     ]);
     setContacts(c || []);
-    setEvents(e || []);
+    setEvents((e || []) as EventOption[]);
     setLoading(false);
   }, []);
 
@@ -73,9 +88,27 @@ const ContactsTab = () => {
   const setEdit = (id: string, field: string, value: any) =>
     setEdits(prev => ({ ...prev, [id]: { ...prev[id], [field]: value } }));
 
+  const validate = (c: BotContact): string | null => {
+    const name = (getEdit(c.id, "name", c.name) as string).trim();
+    const phone = (getEdit(c.id, "phone", c.phone) as string).trim();
+    const email = (getEdit(c.id, "email", c.email || "") as string).trim();
+    const role = (getEdit(c.id, "role", c.role) as string);
+    const eventId = getEdit(c.id, "event_id", c.event_id);
+
+    if (role === "event_coordinator" && !eventId) return "Please select an event for this coordinator";
+    if (!name || name.length < 2) return "Name must be at least 2 characters";
+    if (!/^[6-9]\d{9}$/.test(phone)) return "Phone must be a valid 10-digit Indian mobile number";
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Invalid email address";
+    return null;
+  };
+
   const handleSave = async (c: BotContact) => {
     const patch = edits[c.id];
     if (!patch || !Object.keys(patch).length) return;
+
+    const error_msg = validate(c);
+    if (error_msg) { toast.error(error_msg); return; }
+
     setSaving(p => ({ ...p, [c.id]: true }));
     const { error } = await supabase.from("bot_contacts").update(patch).eq("id", c.id);
     if (error) toast.error("Failed to save");
@@ -93,87 +126,184 @@ const ContactsTab = () => {
     else { toast.success("Contact deleted"); fetch_(); }
   };
 
-  const handleAdd = async (role: string) => {
+  const handleAdd = async () => {
     const { error } = await supabase.from("bot_contacts").insert({
-      name: role === "core_team" ? "New Organizer" : "Coordinator",
+      name: "New Coordinator",
       phone: "0000000000",
-      role,
+      role: "event_coordinator",
+      event_id: null,
     });
     if (error) toast.error("Failed to add");
-    else { toast.success("Contact added"); fetch_(); }
+    else { toast.success("Coordinator added — select an event and fill details"); fetch_(); }
   };
 
-  if (loading) return <p className="text-muted-foreground">Loading contacts…</p>;
+  const handleAddCoreTeam = async () => {
+    const { error } = await supabase.from("bot_contacts").insert({
+      name: "New Organizer",
+      phone: "0000000000",
+      role: "core_team",
+      event_id: null,
+    });
+    if (error) toast.error("Failed to add");
+    else { toast.success("Core team member added"); fetch_(); }
+  };
 
+  const handleEventChange = (contactId: string, value: string) => {
+    if (value === "core_team") {
+      setEdit(contactId, "role", "core_team");
+      setEdit(contactId, "event_id", null);
+    } else {
+      setEdit(contactId, "role", "event_coordinator");
+      setEdit(contactId, "event_id", value);
+    }
+  };
+
+  // Derived data
   const coreTeam = contacts.filter(c => c.role === "core_team");
   const coordinators = contacts.filter(c => c.role !== "core_team");
 
-  const renderRow = (c: BotContact, showEvent = false) => (
-    <div key={c.id} className="flex flex-wrap items-center gap-3 py-3 px-4 border-b border-border last:border-b-0">
-      {showEvent && c.events?.name && (
-        <Badge variant="secondary" className="text-xs shrink-0">{c.events.name}</Badge>
-      )}
-      <Input
-        value={getEdit(c.id, "name", c.name) as string}
-        onChange={e => setEdit(c.id, "name", e.target.value)}
-        className="flex-1 min-w-[140px] bg-muted/50"
-        placeholder="Name"
-      />
-      <div className="relative shrink-0">
-        <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+  const eventsWithCoordinators = useMemo(() => {
+    const map = new Map<string, BotContact[]>();
+    for (const c of coordinators) {
+      const key = c.event_id || "unassigned";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(c);
+    }
+    return map;
+  }, [coordinators]);
+
+  const assignedCount = useMemo(() => {
+    const assigned = new Set(coordinators.map(c => c.event_id).filter(Boolean));
+    return assigned.size;
+  }, [coordinators]);
+
+  const totalEvents = events.length;
+
+  if (loading) return <p className="text-muted-foreground">Loading contacts…</p>;
+
+  const getCurrentEventValue = (c: BotContact) => {
+    const editRole = getEdit(c.id, "role", c.role) as string;
+    if (editRole === "core_team") return "core_team";
+    const editEventId = getEdit(c.id, "event_id", c.event_id);
+    return editEventId || "";
+  };
+
+  const getEventCategory = (eventId: string | null): string | undefined => {
+    if (!eventId) return undefined;
+    return events.find(e => e.id === eventId)?.category;
+  };
+
+  const renderRow = (c: BotContact) => {
+    const currentEventValue = getCurrentEventValue(c);
+    const eventCategory = currentEventValue === "core_team"
+      ? undefined
+      : getEventCategory(currentEventValue || c.event_id);
+    const badgeClass = currentEventValue === "core_team" ? CORE_TEAM_COLOR : getEventBadgeClass(eventCategory);
+
+    return (
+      <div key={c.id} className="flex flex-wrap items-center gap-3 py-3 px-4 border-b border-border last:border-b-0">
+        {/* Event Dropdown */}
+        <Select value={currentEventValue} onValueChange={v => handleEventChange(c.id, v)}>
+          <SelectTrigger className={`w-44 shrink-0 text-xs border ${badgeClass}`}>
+            <SelectValue placeholder="Select event…" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="core_team">
+              <span className="flex items-center gap-1.5">🏆 Core Team</span>
+            </SelectItem>
+            {events.map(ev => (
+              <SelectItem key={ev.id} value={ev.id}>
+                <span className="flex items-center gap-1.5">{ev.name}</span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Input
-          value={getEdit(c.id, "phone", c.phone) as string}
-          onChange={e => setEdit(c.id, "phone", e.target.value)}
-          className="pl-9 w-40 bg-muted/50"
-          placeholder="+91 XXXXX XXXXX"
+          value={getEdit(c.id, "name", c.name) as string}
+          onChange={e => setEdit(c.id, "name", e.target.value)}
+          className="flex-1 min-w-[140px] bg-muted/50"
+          placeholder="Name"
         />
+        <div className="relative shrink-0">
+          <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={getEdit(c.id, "phone", c.phone) as string}
+            onChange={e => setEdit(c.id, "phone", e.target.value)}
+            className="pl-9 w-40 bg-muted/50"
+            placeholder="10-digit phone"
+          />
+        </div>
+        <div className="relative shrink-0">
+          <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={getEdit(c.id, "email", c.email || "") as string}
+            onChange={e => setEdit(c.id, "email", e.target.value || null)}
+            className="pl-9 w-52 bg-muted/50"
+            placeholder="email@example.com"
+          />
+        </div>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 text-muted-foreground hover:text-primary"
+          onClick={() => handleSave(c)}
+          disabled={saving[c.id] || !edits[c.id]}
+          title="Save"
+        >
+          <Save size={16} />
+        </Button>
+        {isOwner && <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive"><Trash2 size={16} /></Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete contact?</AlertDialogTitle>
+              <AlertDialogDescription>Remove {c.name} from CarniBOT contacts?</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>}
       </div>
-      <div className="relative shrink-0">
-        <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={getEdit(c.id, "email", c.email || "") as string}
-          onChange={e => setEdit(c.id, "email", e.target.value || null)}
-          className="pl-9 w-52 bg-muted/50"
-          placeholder="email@example.com"
-        />
-      </div>
-      <Button
-        size="icon"
-        variant="ghost"
-        className="h-8 w-8 text-muted-foreground hover:text-primary"
-        onClick={() => handleSave(c)}
-        disabled={saving[c.id] || !edits[c.id]}
-        title="Save"
-      >
-        <Save size={16} />
-      </Button>
-      {isOwner && <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive"><Trash2 size={16} /></Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete contact?</AlertDialogTitle>
-            <AlertDialogDescription>Remove {c.name} from CarniBOT contacts?</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>}
-    </div>
-  );
+    );
+  };
+
+  // Events without any coordinator
+  const unassignedEvents = events.filter(ev => !eventsWithCoordinators.has(ev.id));
 
   return (
     <div className="space-y-6">
+      {/* Summary */}
+      <div className="rounded-lg border border-border bg-card px-5 py-3 flex items-center gap-3 text-sm">
+        {assignedCount >= totalEvents ? (
+          <>
+            <CheckCircle2 size={16} className="text-green-400 shrink-0" />
+            <span className="text-muted-foreground">
+              <strong className="text-foreground">{assignedCount}/{totalEvents}</strong> events have coordinators assigned
+            </span>
+          </>
+        ) : (
+          <>
+            <AlertTriangle size={16} className="text-yellow-400 shrink-0" />
+            <span className="text-muted-foreground">
+              <strong className="text-foreground">{assignedCount}/{totalEvents}</strong> events have coordinators —{" "}
+              {unassignedEvents.map(e => e.name).join(", ")} need{unassignedEvents.length === 1 ? "s" : ""} a coordinator
+            </span>
+          </>
+        )}
+      </div>
+
       {/* Core Team */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h3 className="font-semibold text-foreground flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-primary" /> Core Team
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" /> Core Team
           </h3>
-          <Button size="sm" variant="outline" onClick={() => handleAdd("core_team")}>
+          <Button size="sm" variant="outline" onClick={handleAddCoreTeam}>
             <Plus size={14} className="mr-1.5" /> Add
           </Button>
         </div>
@@ -182,19 +312,48 @@ const ContactsTab = () => {
         ) : coreTeam.map(c => renderRow(c))}
       </div>
 
-      {/* Event Coordinators */}
+      {/* Event Coordinators — Grouped by Event */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h3 className="font-semibold text-foreground flex items-center gap-2">
             🎪 Event Coordinators
           </h3>
-          <Button size="sm" variant="outline" onClick={() => handleAdd("event_coordinator")}>
+          <Button size="sm" variant="outline" onClick={handleAdd}>
             <Plus size={14} className="mr-1.5" /> Add
           </Button>
         </div>
-        {coordinators.length === 0 ? (
-          <p className="text-sm text-muted-foreground p-5">No event coordinators yet.</p>
-        ) : coordinators.map(c => renderRow(c, true))}
+
+        {/* Grouped by event */}
+        {events.map(ev => {
+          const eventCoords = eventsWithCoordinators.get(ev.id) || [];
+          const badgeClass = getEventBadgeClass(ev.category);
+          return (
+            <div key={ev.id}>
+              <div className="px-5 py-2 bg-muted/30 border-b border-border flex items-center gap-2">
+                <Badge className={`text-xs border ${badgeClass}`}>{ev.name}</Badge>
+                {eventCoords.length === 0 && (
+                  <span className="text-xs text-yellow-400 flex items-center gap-1">
+                    <AlertTriangle size={12} /> No coordinator assigned
+                  </span>
+                )}
+              </div>
+              {eventCoords.map(c => renderRow(c))}
+            </div>
+          );
+        })}
+
+        {/* Unassigned coordinators */}
+        {eventsWithCoordinators.has("unassigned") && (
+          <>
+            <div className="px-5 py-2 bg-muted/30 border-b border-border flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">Unassigned</Badge>
+              <span className="text-xs text-yellow-400 flex items-center gap-1">
+                <AlertTriangle size={12} /> Select an event for these coordinators
+              </span>
+            </div>
+            {eventsWithCoordinators.get("unassigned")!.map(c => renderRow(c))}
+          </>
+        )}
       </div>
     </div>
   );
