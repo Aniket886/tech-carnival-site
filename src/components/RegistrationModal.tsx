@@ -213,7 +213,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
       }
       return e;
     },
-    [form, isTeamEvent]
+    [form, isTeamEvent, paymentScreenshot]
   );
 
   const [checkingPayment, setCheckingPayment] = useState(false);
