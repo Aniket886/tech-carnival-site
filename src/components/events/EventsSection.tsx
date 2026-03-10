@@ -105,6 +105,7 @@ const EventsSection = () => {
               prize_pool: e.prize_pool,
               rules: e.rules,
               rulebookUrl: e.website_url || null,
+              paymentUrl: e.payment_url || null,
             }))
           );
         }
