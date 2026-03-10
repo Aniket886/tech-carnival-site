@@ -26,23 +26,11 @@ import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
 interface Event {
-  id: string;
-  name: string;
-  slug: string;
-  category: string;
-  icon: string | null;
-  description: string | null;
-  team_size_min: number;
-  team_size_max: number;
-  is_active: boolean;
-  date: string | null;
-  time: string | null;
-  venue: string | null;
-  prize_pool: string | null;
-  rules: string[] | null;
-  website_url: string | null;
-  payment_url: string | null;
-  created_at: string;
+  id: string; name: string; slug: string; category: string; icon: string | null;
+  description: string | null; team_size_min: number; team_size_max: number;
+  is_active: boolean; date: string | null; time: string | null; venue: string | null;
+  prize_pool: string | null; rules: string[] | null; website_url: string | null;
+  payment_url: string | null; created_at: string; price: number;
 }
 
 interface FormData {
