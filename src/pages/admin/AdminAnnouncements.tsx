@@ -104,6 +104,7 @@ const AdminAnnouncements = () => {
     if (!deleteId) return;
     await supabase.from("announcements").delete().eq("id", deleteId);
     toast({ title: "Deleted", description: "Announcement removed." });
+    logActivity("Announcement deleted");
     setDeleteId(null);
     fetch();
   };
