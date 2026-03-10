@@ -25,6 +25,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminSchedule from "./pages/admin/AdminSchedule";
 import AdminPaymentInstructions from "./pages/admin/AdminPaymentInstructions";
+import AdminFAQ from "./pages/admin/AdminFAQ";
 
 
 const queryClient = new QueryClient();
