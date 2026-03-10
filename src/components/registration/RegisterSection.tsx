@@ -93,6 +93,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [paymentSettings, setPaymentSettings] = useState<{ upi_id: string; upi_name: string; instructions: string; qr_url: string }>({ upi_id: "", upi_name: "", instructions: "", qr_url: "" });
   const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [txnStatus, setTxnStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
   const [emailDupStatus, setEmailDupStatus] = useState<"idle" | "checking" | "clear" | "duplicate">("idle");
@@ -190,6 +191,26 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   };
 
   useEffect(() => { fetchColleges(); }, []);
+
+  // Fetch payment instructions from admin_settings
+  useEffect(() => {
+    supabase
+      .from("admin_settings")
+      .select("setting_key, setting_value")
+      .in("setting_key", ["payment_upi_id", "payment_upi_name", "payment_instructions", "payment_qr_url"])
+      .then(({ data }) => {
+        if (data) {
+          const map: Record<string, string> = {};
+          data.forEach((r) => (map[r.setting_key] = r.setting_value));
+          setPaymentSettings({
+            upi_id: map.payment_upi_id || "",
+            upi_name: map.payment_upi_name || "",
+            instructions: map.payment_instructions || "",
+            qr_url: map.payment_qr_url || "",
+          });
+        }
+      });
+  }, []);
 
   useEffect(() => {
     supabase
@@ -639,9 +660,31 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                   Each UTR Number and Transaction ID can only be used once. Duplicate payment details will be rejected.
                 </AlertDescription>
               </Alert>
-              <div className="glass rounded-lg p-5 space-y-2">
-                <p className="text-sm text-muted-foreground text-center">Complete your payment and fill in the details below with your payment screenshot.</p>
-              </div>
+              {/* Dynamic payment info from admin settings */}
+              {(paymentSettings.qr_url || paymentSettings.upi_id || paymentSettings.instructions) ? (
+                <div className="glass rounded-lg p-5 space-y-4">
+                  {paymentSettings.qr_url && (
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="bg-white rounded-xl p-3 shadow-md">
+                        <img src={paymentSettings.qr_url} alt="Payment QR Code" width={200} height={200} className="rounded-lg" />
+                      </div>
+                    </div>
+                  )}
+                  {(paymentSettings.upi_id || paymentSettings.upi_name) && (
+                    <div className="text-center space-y-1">
+                      {paymentSettings.upi_id && <p className="text-xs text-muted-foreground">UPI ID: <span className="font-mono text-foreground select-all">{paymentSettings.upi_id}</span></p>}
+                      {paymentSettings.upi_name && <p className="text-xs text-muted-foreground">Name: <span className="font-medium text-foreground">{paymentSettings.upi_name}</span></p>}
+                    </div>
+                  )}
+                  {paymentSettings.instructions && (
+                    <p className="text-sm text-muted-foreground text-center pt-2 border-t border-border">{paymentSettings.instructions}</p>
+                  )}
+                </div>
+              ) : (
+                <div className="glass rounded-lg p-5 space-y-2">
+                  <p className="text-sm text-muted-foreground text-center">Complete your payment and fill in the details below with your payment screenshot.</p>
+                </div>
+              )}
               <div className="space-y-4">
                 {renderField("amountPaid", "Amount Paid (₹)", form.amountPaid, (v) => setForm((f) => ({ ...f, amountPaid: v })), { placeholder: "e.g. 200" })}
                 

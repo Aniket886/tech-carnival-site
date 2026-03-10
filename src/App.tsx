@@ -24,6 +24,7 @@ import AdminEmail from "./pages/admin/AdminEmail";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminSchedule from "./pages/admin/AdminSchedule";
+import AdminPaymentInstructions from "./pages/admin/AdminPaymentInstructions";
 
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
                 <Route path="/admin/team" element={<AdminTeam />} />
                 <Route path="/admin/schedule" element={<AdminSchedule />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
+                <Route path="/admin/payment-instructions" element={<AdminPaymentInstructions />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
