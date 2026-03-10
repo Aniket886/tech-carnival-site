@@ -246,12 +246,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     [events, form.eventId]
   );
 
-  // Pre-select amountPaid when event changes in step 0
   useEffect(() => {
     if (selectedEventData) {
-      const name = selectedEventData.name;
-      setForm((f) => ({ ...f, amountPaid: name }));
-      }
+      setForm((f) => ({ ...f, amountPaid: selectedEventData.name }));
     }
   }, [selectedEventData]);
 
