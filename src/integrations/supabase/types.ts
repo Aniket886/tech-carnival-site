@@ -420,6 +420,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          payment_url: string | null
           prize_pool: string | null
           rules: string[] | null
           slug: string
@@ -438,6 +439,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          payment_url?: string | null
           prize_pool?: string | null
           rules?: string[] | null
           slug: string
@@ -456,6 +458,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          payment_url?: string | null
           prize_pool?: string | null
           rules?: string[] | null
           slug?: string
