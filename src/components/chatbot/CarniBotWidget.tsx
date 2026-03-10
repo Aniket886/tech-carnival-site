@@ -19,10 +19,12 @@ interface Message {
 const GREETING = "Hey there! 🎪 I'm CarniBOT — your personal Tech Carnival guide! Ask me anything about events, registration, schedules, or prizes. Let's roll! 🚀";
 
 const INITIAL_SUGGESTIONS = [
-  "📋 Events",
-  "📅 Schedule",
-  "📝 Register",
-  "📞 Contact",
+  "📋 What events are there?",
+  "📅 Show me the schedule",
+  "📝 How to register?",
+  "💰 What are the prizes?",
+  "📞 Contact coordinator",
+  "🏆 Leaderboard",
 ];
 
 const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/carnibot`;
