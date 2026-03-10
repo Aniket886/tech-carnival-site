@@ -859,7 +859,8 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 )}
                 <div className="pt-3 border-t border-border">
                   <p className="text-xs text-muted-foreground font-medium mb-2">Payment Details</p>
-                  <Row label="Amount Paid" value={`₹${form.amountPaid}`} />
+                  <Row label="Event" value={form.amountPaid} />
+                  <Row label="Amount Paid" value={`₹${EVENT_PRICES[form.amountPaid] || 0}`} />
                   <Row label="UTR Number" value={form.utrNumber} />
                   <Row label="Transaction ID" value={form.transactionId} />
                 </div>
