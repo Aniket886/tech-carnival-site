@@ -408,6 +408,10 @@ const AdminEvents = () => {
                 <Label className="text-xs text-muted-foreground">Prize Pool</Label>
                 <Input value={form.prize_pool} onChange={e => updateField("prize_pool", e.target.value)} className="bg-card border-border" />
               </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">Registration Price (₹)</Label>
+                <Input type="number" min={0} value={form.price} onChange={e => updateField("price", parseInt(e.target.value) || 0)} placeholder="e.g. 200" className="bg-card border-border" />
+              </div>
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Website / Rulebook URL</Label>
