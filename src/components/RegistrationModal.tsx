@@ -611,9 +611,32 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
 
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <Label className="text-xs">Amount Paid (₹) <span className="text-destructive">*</span></Label>
-                    <Input placeholder="e.g. 200" type="number" min="1" value={form.amount_paid} onChange={(e) => setForm((p) => ({ ...p, amount_paid: e.target.value.replace(/[^0-9.]/g, "") }))} onBlur={() => onBlur("amount_paid")} maxLength={10} className={fieldClass("amount_paid")} />
+                    <Label className="text-xs">Select Event & Amount <span className="text-destructive">*</span></Label>
+                    <Select
+                      value={form.amount_paid || undefined}
+                      onValueChange={(v) => {
+                        setForm((p) => ({ ...p, amount_paid: v }));
+                        setErrors((prev) => { const n = { ...prev }; delete n.amount_paid; return n; });
+                        setTouched((prev) => new Set([...prev, "amount_paid"]));
+                      }}
+                    >
+                      <SelectTrigger className={fieldClass("amount_paid")}>
+                        <SelectValue placeholder="-- Select Event --" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(EVENT_PRICES).map(([name, price]) => (
+                          <SelectItem key={name} value={name}>{name} — ₹{price}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FieldError field="amount_paid" />
+                  </div>
+                  {/* Amount to Pay - auto display */}
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
+                    <p className="text-[10px] text-muted-foreground mb-0.5">Amount to Pay</p>
+                    <p className="text-xl font-bold text-primary">
+                      ₹{form.amount_paid && EVENT_PRICES[form.amount_paid] ? EVENT_PRICES[form.amount_paid] : 0}
+                    </p>
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">UTR Number <span className="text-destructive">*</span></Label>
