@@ -763,7 +763,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                     <span className="text-muted-foreground">Event</span>
                     <span className="text-foreground">{form.amount_paid}</span>
                     <span className="text-muted-foreground">Amount Paid</span>
-                    <span className="text-foreground">₹{EVENT_PRICES[form.amount_paid] || 0}</span>
+                    <span className="text-foreground">₹{eventPrices[form.amount_paid] || 0}</span>
                     <span className="text-muted-foreground">UTR Number</span>
                     <span className="text-foreground font-mono text-xs">{form.utr_number}</span>
                     <span className="text-muted-foreground">Transaction ID</span>
