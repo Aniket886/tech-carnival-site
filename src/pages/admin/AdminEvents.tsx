@@ -145,7 +145,7 @@ const AdminEvents = () => {
     if (error) { toast.error(error.message); return; }
     const ev = events.find(e => e.id === deleteId);
     toast.success("Event deleted");
-    logActivity("Event deleted", ev?.name || deleteId);
+    
     setDeleteId(null);
     fetchData();
   };

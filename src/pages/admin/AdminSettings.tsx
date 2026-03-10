@@ -150,7 +150,7 @@ const AdminSettings = () => {
           : undefined,
         duration: 8000,
       });
-      logActivity("Admin removed", removedEmail);
+      
       setDeleteTarget(null);
       fetchAdmins();
     } catch (e: any) {

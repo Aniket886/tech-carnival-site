@@ -131,7 +131,7 @@ const AdminSponsors = () => {
     if (error) { toast.error(error.message); return; }
     const s = sponsors.find(sp => sp.id === deleteId);
     toast.success("Sponsor deleted");
-    logActivity("Sponsor deleted", s?.name || deleteId);
+    
     setDeleteId(null);
     fetchData();
   };
