@@ -152,7 +152,7 @@ const AdminColleges = () => {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editingId ? "College updated" : "College added");
-    logActivity(editingId ? "College updated" : "College added", form.name);
+    
     setDialogOpen(false);
     fetchData();
   };
