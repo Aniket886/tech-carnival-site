@@ -704,7 +704,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                       <SelectValue placeholder="-- Select Event --" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.entries(EVENT_PRICES).map(([name, price]) => (
+                      {Object.entries(eventPrices).map(([name, price]) => (
                         <SelectItem key={name} value={name}>{name} — ₹{price}</SelectItem>
                       ))}
                     </SelectContent>
