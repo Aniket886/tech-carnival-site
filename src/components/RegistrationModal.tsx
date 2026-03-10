@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { CheckCircle2, Plus, Trash2, Users, User, ChevronRight, ChevronLeft, QrCode, Clock, Download, Upload, X } from "lucide-react";
+import { CheckCircle2, Plus, Trash2, Users, User, ChevronRight, ChevronLeft, Clock, Upload, X, AlertTriangle } from "lucide-react";
 import {
   validateName, validateEmail, validatePhone,
   validateTeamName, validateCollegeName, sanitizeInput, countErrors,
