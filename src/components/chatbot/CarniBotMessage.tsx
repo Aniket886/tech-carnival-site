@@ -82,20 +82,7 @@ const formatContent = (content: string) => {
   return html;
 };
 
-  // Wrap sections that look like contact cards
-  // Core Team card
-  html = html.replace(
-    /(🌟\s*(?:<strong>)?CORE TEAM(?:<\/strong>)?(?:.*?))(?=🎪\s*(?:<strong>)?EVENT|$)/s,
-    '<div class="carnibot-card carnibot-card-gold">$1</div>'
-  );
-  // Event Coordinators card
-  html = html.replace(
-    /(🎪\s*(?:<strong>)?EVENT COORDINATORS(?:<\/strong>)?(?:.*?))((?:<br\/>)*💡|$)/s,
-    '<div class="carnibot-card carnibot-card-cyan">$1</div>$2'
-  );
 
-  return html;
-};
 
 const CarniBotMessage = memo(({ message }: { message: Message }) => {
   const isBot = message.role === "bot";
