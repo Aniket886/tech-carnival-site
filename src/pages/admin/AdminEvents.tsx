@@ -143,7 +143,9 @@ const AdminEvents = () => {
     if (!deleteId) return;
     const { error } = await supabase.from("events").delete().eq("id", deleteId);
     if (error) { toast.error(error.message); return; }
+    const ev = events.find(e => e.id === deleteId);
     toast.success("Event deleted");
+    logActivity("Event deleted", ev?.name || deleteId);
     setDeleteId(null);
     fetchData();
   };

@@ -167,6 +167,7 @@ const AdminPayments = () => {
     const { error } = await supabase.from("registrations").update({ registration_status: "pending" }).in("id", pendingIds);
     if (error) { toast.error("Failed to reset"); return; }
     toast.success(`${pendingIds.length} registrations reset to pending`);
+    logActivity("Reset all payments to pending", `${pendingIds.length} registrations`);
     setResetConfirm(false);
     fetchData();
   };
