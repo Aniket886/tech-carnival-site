@@ -28,6 +28,7 @@ export interface EventData {
   rules: string[] | null;
   rulebookUrl: string | null;
   paymentUrl: string | null;
+  price: number;
 }
 
 const tabs: { label: string; value: Category; icon: string; btnClass: string; ringColor: string }[] = [
