@@ -34,7 +34,7 @@ const links = [
   { label: "CarniBOT", to: "/admin/bot-settings", icon: Bot },
   { label: "Email", to: "/admin/email", icon: Mail },
   { label: "Messages", to: "/admin/messages", icon: MessageSquare },
-  { label: "Activity Log", to: "/admin/activity-log", icon: ScrollText },
+  
   { label: "Settings", to: "/admin/settings", icon: Settings },
 ];
 
