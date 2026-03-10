@@ -17,7 +17,7 @@ const About = () => {
             About the Event
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-            Tech Carnival – 2K26 is a grand inter-collegiate technical and cultural fest hosted on March 27–28, 2026. Featuring 11+ events across Technical, Gaming, and Cultural categories — including Hack Momentum (6-hour hackathon), Brain Quest (mega quiz), Code Compass (competitive coding), Battle Ground (BGMI & Free Fire tournaments), Dance Mania, Scitopia (skit play), and more — this two-day carnival brings together the brightest minds from colleges across India to compete, collaborate, and celebrate innovation under one roof.
+            Tech Carnival – 2K26 is a two-day inter-collegiate fest on March 27–28, 2026, featuring 11+ events across Technical, Gaming, and Cultural categories — from hackathons and coding battles to dance and skit competitions.
           </p>
         </div>
 
