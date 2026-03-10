@@ -112,13 +112,24 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [eventPrices, setEventPrices] = useState<Record<string, number>>({});
 
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
     if (data) setColleges(data.filter((c: any) => c.approval_status === "approved"));
   };
 
-  useEffect(() => { fetchColleges(); }, []);
+  useEffect(() => {
+    fetchColleges();
+    // Fetch event prices from DB
+    supabase.from("events").select("name, price").eq("is_active", true).then(({ data }) => {
+      if (data) {
+        const prices: Record<string, number> = {};
+        data.forEach((e: any) => { if (e.price > 0) prices[e.name] = e.price; });
+        setEventPrices(prices);
+      }
+    });
+  }, []);
 
   const isTeamEvent = event ? event.team_size_max > 1 : false;
   const isOpen = !!eventData;
