@@ -154,12 +154,18 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
       team_size_max: eventData.team_size_max,
     };
     setEvent(ev);
+    // Pre-select event in payment dropdown
+    const eventName = ev.name;
+    const preselect = eventName in EVENT_PRICES ? eventName : "";
     if (ev.team_size_max > 1) {
       const minExtra = Math.max(0, ev.team_size_min - 1);
       setForm((prev) => ({
         ...prev,
+        amount_paid: preselect,
         members: Array.from({ length: minExtra }, emptyMember),
       }));
+    } else {
+      setForm((prev) => ({ ...prev, amount_paid: preselect }));
     }
   }, [eventData]);
 
