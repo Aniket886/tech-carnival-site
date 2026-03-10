@@ -332,7 +332,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
           members: isTeamEvent && form.members.length > 0
             ? form.members.map((m) => ({ name: sanitizeInput(m.name), email: m.email.trim().toLowerCase(), phone: m.phone.trim() } as Record<string, string>))
             : null,
-          amount_paid: form.amount_paid.trim(),
+          amount_paid: form.amount_paid && EVENT_PRICES[form.amount_paid] ? String(EVENT_PRICES[form.amount_paid]) : form.amount_paid,
           utr_number: form.utr_number.trim(),
           transaction_id: form.transaction_id.trim(),
           payment_screenshot_url: screenshotUrl,
