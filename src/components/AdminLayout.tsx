@@ -12,7 +12,7 @@ import {
 import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
-  Trophy, Handshake, Bot, Layers, Mail, Users, Clock,
+  Trophy, Handshake, Bot, Layers, Mail, Users, Clock, HelpCircle,
 } from "lucide-react";
 
 const links = [
