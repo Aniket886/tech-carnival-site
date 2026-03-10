@@ -166,6 +166,7 @@ const AdminScores = () => {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editingId ? "Score updated" : "Score added");
+    logActivity(editingId ? "Score updated" : "Score added", `${form.college_name} - ${ev?.name}`);
     setDialogOpen(false);
     fetchData();
   };
