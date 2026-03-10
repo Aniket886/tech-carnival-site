@@ -5,6 +5,7 @@ import About from "@/components/home/About";
 import SponsorsSection from "@/components/home/SponsorsSection";
 import EventsSection from "@/components/events/EventsSection";
 import ScheduleSection from "@/components/schedule/ScheduleSection";
+import GallerySection from "@/components/home/GallerySection";
 import Leaderboard from "@/components/home/Leaderboard";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
