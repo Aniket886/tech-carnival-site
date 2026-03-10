@@ -221,7 +221,7 @@ const CarniBotWidget = () => {
               aria-label="Open CarniBOT"
             >
               <span className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-secondary to-primary animate-ping opacity-30" />
-              <span className="absolute inset-0 rounded-full shadow-[0_0_20px_hsl(195_100%_50%/0.5),0_0_40px_hsl(270_80%_60%/0.3)]" />
+              <span className="absolute inset-0 rounded-full neon-glow" />
               <span className="relative flex items-center justify-center text-primary-foreground"><Bot size={28} /></span>
             </button>
           </motion.div>
@@ -237,18 +237,18 @@ const CarniBotWidget = () => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className={
               isMobile
-                ? "fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-xl"
-                : "fixed bottom-6 right-6 z-50 w-[400px] h-[600px] max-h-[80vh] flex flex-col rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl shadow-primary/10 overflow-hidden"
+                ? "fixed inset-0 z-50 flex flex-col glass-strong"
+                : "fixed bottom-6 right-6 z-50 w-[400px] h-[600px] max-h-[80vh] flex flex-col rounded-2xl glass-strong shadow-2xl shadow-primary/10 overflow-hidden"
             }
           >
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-border/50 bg-gradient-to-r from-primary/10 to-purple-500/10 shrink-0">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-lg">
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-border/50 bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-lg neon-glow">
                 🤖
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-display text-sm font-bold text-foreground flex items-center gap-2">
                   CarniBOT
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
                 </h3>
                 <p className="text-xs text-muted-foreground">Your Tech Carnival Guide</p>
               </div>
@@ -281,14 +281,14 @@ const CarniBotWidget = () => {
               ))}
               {isTyping && (
                 <div className="flex items-start gap-2">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-xs shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs shrink-0">
                     🤖
                   </div>
-                  <div className="glass rounded-2xl rounded-tl-sm px-4 py-3">
+                  <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 neon-border">
                     <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                     </div>
                   </div>
                 </div>
@@ -302,19 +302,19 @@ const CarniBotWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSubmit} className="shrink-0 border-t border-border/50 p-3 flex gap-2">
+            <form onSubmit={handleSubmit} className="shrink-0 border-t border-border/50 p-3 flex gap-2 bg-card/50">
               <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me about events, registration..."
-                className="flex-1 bg-muted/30 border border-border/50 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="flex-1 bg-muted/30 border border-border/50 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
                 disabled={isTyping || isStreaming}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping || isStreaming}
-                className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-600 text-white flex items-center justify-center disabled:opacity-40 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary text-primary-foreground flex items-center justify-center disabled:opacity-40 hover:shadow-lg hover:shadow-primary/30 transition-all"
               >
                 <Send size={16} />
               </button>
