@@ -12,7 +12,7 @@ import {
 import {
   LayoutDashboard, ClipboardList, CalendarDays, MessageSquare,
   LogOut, Menu, X, Settings, CreditCard, Building2,
-  Trophy, Handshake, Bot, Layers, Mail, Users, Clock,
+  Trophy, Handshake, Bot, Layers, Mail, Users, Clock, HelpCircle,
 } from "lucide-react";
 
 const links = [
@@ -27,6 +27,7 @@ const links = [
   { label: "Scores", to: "/admin/scores", icon: Trophy },
   { label: "Team", to: "/admin/team", icon: Users },
   { label: "Event Flow", to: "/admin/schedule", icon: Clock },
+  { label: "FAQs", to: "/admin/faqs", icon: HelpCircle },
   { label: "CarniBOT", to: "/admin/bot-settings", icon: Bot },
   { label: "Email", to: "/admin/email", icon: Mail },
   { label: "Messages", to: "/admin/messages", icon: MessageSquare },

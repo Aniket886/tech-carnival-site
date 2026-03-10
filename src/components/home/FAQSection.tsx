@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { supabase } from "@/integrations/supabase/client";
+import { ExternalLink } from "lucide-react";
 
-const faqs = [
+interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  link_url: string | null;
+  link_label: string | null;
+  display_order: number;
+}
+
+const fallbackFaqs = [
   { q: "Who can participate?", a: "Any college student with a valid ID can participate." },
   { q: "Is there a registration fee?", a: "Some events are free while others have a nominal fee. Check event details." },
   { q: "Can I register for multiple events?", a: "Yes! You can register for multiple events as long as they don't have time conflicts." },
@@ -17,6 +28,25 @@ const faqs = [
 
 const FAQSection = () => {
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data, error } = await supabase
+        .from("faqs")
+        .select("id, question, answer, link_url, link_label, display_order")
+        .eq("is_visible", true)
+        .order("display_order", { ascending: true });
+      if (!error && data && data.length > 0) {
+        setFaqs(data);
+      }
+      setLoaded(true);
+    };
+    fetch();
+  }, []);
+
+  const useFallback = loaded && faqs.length === 0;
 
   return (
     <section id="faq" className="py-24 relative">
@@ -32,22 +62,49 @@ const FAQSection = () => {
         </div>
 
         <Accordion type="single" collapsible value={openItem} onValueChange={setOpenItem} className="space-y-3">
-          {faqs.map((faq, i) => (
-            <AccordionItem
-              key={i}
-              value={`faq-${i}`}
-              className="glass rounded-xl border-none px-5"
-              onMouseEnter={() => setOpenItem(`faq-${i}`)}
-              onMouseLeave={() => setOpenItem(undefined)}
-            >
-              <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4 hover:no-underline">
-                {faq.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground pb-4 leading-relaxed">
-                {faq.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+          {useFallback
+            ? fallbackFaqs.map((faq, i) => (
+                <AccordionItem
+                  key={i}
+                  value={`faq-${i}`}
+                  className="glass rounded-xl border-none px-5"
+                  onMouseEnter={() => setOpenItem(`faq-${i}`)}
+                  onMouseLeave={() => setOpenItem(undefined)}
+                >
+                  <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4 hover:no-underline">
+                    {faq.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground pb-4 leading-relaxed">
+                    {faq.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))
+            : faqs.map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  value={faq.id}
+                  className="glass rounded-xl border-none px-5"
+                  onMouseEnter={() => setOpenItem(faq.id)}
+                  onMouseLeave={() => setOpenItem(undefined)}
+                >
+                  <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4 hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground pb-4 leading-relaxed">
+                    <span>{faq.answer}</span>
+                    {faq.link_url && (
+                      <a
+                        href={faq.link_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 ml-2 text-primary hover:underline"
+                      >
+                        {faq.link_label || "Learn more"} <ExternalLink size={12} />
+                      </a>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
         </Accordion>
       </div>
     </section>
