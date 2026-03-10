@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Send, Bot, Trash2 } from "lucide-react";
+import { X, Send, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -19,10 +19,10 @@ interface Message {
 const GREETING = "Hey there! 🎪 I'm CarniBOT — your personal Tech Carnival guide! Ask me anything about events, registration, schedules, or prizes. Let's roll! 🚀";
 
 const INITIAL_SUGGESTIONS = [
-  "🎪 Explore Events",
-  "📝 How to Register",
-  "📅 View Schedule",
-  "📞 Contact Team",
+  "📋 Events",
+  "📅 Schedule",
+  "📝 Register",
+  "📞 Contact",
 ];
 
 const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/carnibot`;
@@ -182,7 +182,7 @@ const CarniBotWidget = () => {
         role: "bot",
         content: "Oops! Something went wrong. Please try again or contact our team directly. 😅",
         timestamp: new Date(),
-        suggestions: ["📞 Contact Team", "📋 All Events"],
+        suggestions: ["📞 Contact", "📋 Events"],
       }]);
     }
   }, [messages, sessionId]);
@@ -196,102 +196,180 @@ const CarniBotWidget = () => {
 
   return (
     <>
+      {/* Floating Pill Button */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            className="fixed bottom-32 right-6 z-50"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            className="fixed bottom-6 right-6 z-50"
           >
             {showTooltip && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute -top-12 right-0 bg-primary text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg"
+                className="absolute -top-12 right-0 text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg"
+                style={{
+                  background: "rgba(0, 229, 255, 0.15)",
+                  border: "1px solid rgba(0, 229, 255, 0.3)",
+                  color: "#00e5ff",
+                }}
               >
-                Ask me! 💬
-                <div className="absolute -bottom-1 right-5 w-2 h-2 bg-primary rotate-45" />
+                Need help? 💬
+                <div
+                  className="absolute -bottom-1 right-5 w-2 h-2 rotate-45"
+                  style={{ background: "rgba(0, 229, 255, 0.15)" }}
+                />
               </motion.div>
             )}
-            <button
+            <motion.button
               onClick={openChat}
-              className="relative w-14 h-14 rounded-full bg-gradient-to-br from-primary via-secondary to-primary flex items-center justify-center shadow-lg transition-transform duration-300 hover:scale-110 active:scale-95"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="relative flex items-center gap-2 px-5 py-3 rounded-full font-display text-sm font-semibold tracking-wide transition-all duration-300"
+              style={{
+                background: "rgba(15, 15, 30, 0.7)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                color: "#00e5ff",
+                boxShadow: "0 0 15px rgba(0, 229, 255, 0.15)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "0 0 25px rgba(0, 229, 255, 0.4), 0 0 50px rgba(0, 229, 255, 0.15)";
+                e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.3)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "0 0 15px rgba(0, 229, 255, 0.15)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
+              }}
               aria-label="Open CarniBOT"
             >
-              <span className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-secondary to-primary animate-ping opacity-30" />
-              <span className="absolute inset-0 rounded-full neon-glow" />
-              <span className="relative flex items-center justify-center text-primary-foreground"><Bot size={28} /></span>
-            </button>
+              <MessageCircle size={18} />
+              <span>Ask CarniBOT</span>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* Chat Panel */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.9, y: 20 }}
-            animate={isMobile ? { y: 0 } : { opacity: 1, scale: 1, y: 0 }}
-            exit={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            initial={isMobile ? { y: "100%" } : { opacity: 0, y: 20 }}
+            animate={isMobile ? { y: 0 } : { opacity: 1, y: 0 }}
+            exit={isMobile ? { y: "100%" } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
             className={
               isMobile
-                ? "fixed inset-0 z-50 flex flex-col glass-strong"
-                : "fixed bottom-6 right-6 z-50 w-[400px] h-[600px] max-h-[80vh] flex flex-col rounded-2xl glass-strong shadow-2xl shadow-primary/10 overflow-hidden"
+                ? "fixed inset-0 z-50 flex flex-col"
+                : "fixed bottom-6 right-6 z-50 w-[380px] h-[600px] max-h-[80vh] flex flex-col overflow-hidden"
             }
+            style={{
+              background: "rgba(10, 10, 30, 0.85)",
+              backdropFilter: "blur(30px)",
+              WebkitBackdropFilter: "blur(30px)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              borderRadius: isMobile ? "20px 20px 0 0" : "20px",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 229, 255, 0.05)",
+            }}
           >
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-border/50 bg-gradient-to-r from-primary/10 to-secondary/10 shrink-0">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-lg neon-glow">
+            {/* Header */}
+            <div
+              className="flex items-center gap-3 px-4 py-3.5 shrink-0 relative"
+              style={{
+                background: "linear-gradient(135deg, #0f0f2e, #1a1a4e)",
+                borderBottom: "1px solid rgba(0, 229, 255, 0.25)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                style={{
+                  background: "linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(139, 92, 246, 0.2))",
+                  border: "1px solid rgba(0, 229, 255, 0.3)",
+                  boxShadow: "0 0 15px rgba(0, 229, 255, 0.2)",
+                }}
+              >
                 🤖
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-display text-sm font-bold text-foreground flex items-center gap-2">
-                  CarniBOT
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
+                  CarniBOT 🤖
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse"
+                    style={{
+                      background: "#22c55e",
+                      boxShadow: "0 0 8px rgba(34, 197, 94, 0.6)",
+                    }}
+                  />
                 </h3>
-                <p className="text-xs text-muted-foreground">Your Tech Carnival Guide</p>
+                <p className="text-xs" style={{ color: "rgba(255, 255, 255, 0.45)" }}>
+                  Ask me anything!
+                </p>
               </div>
               <button
-                onClick={() => {
-                  setMessages([{
-                    id: "greeting",
-                    role: "bot",
-                    content: GREETING,
-                    timestamp: new Date(),
-                    suggestions: INITIAL_SUGGESTIONS,
-                  }]);
-                }}
-                className="p-2 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Clear chat"
-              >
-                <Trash2 size={16} />
-              </button>
-              <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
+                className="p-2 rounded-lg transition-all duration-200"
+                style={{ color: "rgba(255, 255, 255, 0.5)" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#00e5ff";
+                  e.currentTarget.style.background = "rgba(0, 229, 255, 0.1)";
+                  e.currentTarget.style.boxShadow = "0 0 10px rgba(0, 229, 255, 0.2)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 carnibot-scrollbar">
               {messages.map((msg) => (
                 <CarniBotMessage key={msg.id} message={msg} />
               ))}
               {isTyping && (
-                <div className="flex items-start gap-2">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs shrink-0">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-start gap-2"
+                >
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(139, 92, 246, 0.15))",
+                      border: "1px solid rgba(0, 229, 255, 0.2)",
+                    }}
+                  >
                     🤖
                   </div>
-                  <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 neon-border">
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  <div
+                    className="rounded-xl px-4 py-3"
+                    style={{
+                      background: "rgba(20, 20, 50, 0.9)",
+                      borderLeft: "2px solid #00e5ff",
+                    }}
+                  >
+                    <div className="flex gap-1.5">
+                      {[0, 150, 300].map((delay) => (
+                        <span
+                          key={delay}
+                          className="w-2 h-2 rounded-full animate-bounce"
+                          style={{
+                            background: "#00e5ff",
+                            boxShadow: "0 0 6px rgba(0, 229, 255, 0.5)",
+                            animationDelay: `${delay}ms`,
+                          }}
+                        />
+                      ))}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
               {!isTyping && !isStreaming && messages.length > 0 && messages[messages.length - 1].role === "bot" && messages[messages.length - 1].suggestions && (
                 <CarniBotQuickReplies
@@ -302,21 +380,53 @@ const CarniBotWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSubmit} className="shrink-0 border-t border-border/50 p-3 flex gap-2 bg-card/50">
+            {/* Input Area */}
+            <form
+              onSubmit={handleSubmit}
+              className="shrink-0 p-3 flex gap-2"
+              style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}
+            >
               <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask me about events, registration..."
-                className="flex-1 bg-muted/30 border border-border/50 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                placeholder="Type your question..."
+                className="flex-1 rounded-full px-4 py-2.5 text-sm text-foreground italic placeholder:not-italic focus:outline-none transition-all duration-200"
+                style={{
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  color: "rgba(255, 255, 255, 0.9)",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.3)";
+                  e.currentTarget.style.boxShadow = "0 0 10px rgba(0, 229, 255, 0.1)";
+                  e.currentTarget.style.fontStyle = "normal";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
+                  e.currentTarget.style.boxShadow = "none";
+                  if (!e.currentTarget.value) e.currentTarget.style.fontStyle = "italic";
+                }}
                 disabled={isTyping || isStreaming}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping || isStreaming}
-                className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary text-primary-foreground flex items-center justify-center disabled:opacity-40 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                className="w-10 h-10 rounded-full flex items-center justify-center disabled:opacity-30 transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #00e5ff, #8b5cf6)",
+                  boxShadow: "0 0 10px rgba(0, 229, 255, 0.2)",
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.boxShadow = "0 0 20px rgba(0, 229, 255, 0.5), 0 0 40px rgba(139, 92, 246, 0.3)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 0 10px rgba(0, 229, 255, 0.2)";
+                }}
               >
-                <Send size={16} />
+                <Send size={16} className="text-white" />
               </button>
             </form>
           </motion.div>
