@@ -701,10 +701,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                       <label className="flex flex-col items-center gap-2 cursor-pointer rounded-lg border-2 border-dashed border-border hover:border-primary/50 bg-muted/30 p-6 transition-colors">
                         <Upload size={24} className="text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">Click to upload payment screenshot</span>
-                        <span className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</span>
+                        <span className="text-xs text-muted-foreground/70">All file types up to 5MB</span>
                         <input
                           type="file"
-                          accept="image/*"
                           className="hidden"
                           onChange={(e) => {
                             const file = e.target.files?.[0];
