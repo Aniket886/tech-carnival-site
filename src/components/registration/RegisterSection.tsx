@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import paymentQr from "@/assets/payment-qr.jpeg";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, ChevronRight, ChevronLeft, Users, User, Plus, Trash2, PartyPopper, X, AlertTriangle, Download, Upload, ImageIcon } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, Users, User, Plus, Trash2, PartyPopper, X, AlertTriangle, Upload, ImageIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { Tables } from "@/integrations/supabase/types";
 import {
@@ -639,37 +639,8 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                   Each UTR Number and Transaction ID can only be used once. Duplicate payment details will be rejected.
                 </AlertDescription>
               </Alert>
-              <div className="glass rounded-lg p-5 space-y-4">
-                <p className="text-sm font-medium text-foreground text-center mb-2">Scan QR Code to Pay</p>
-                <div className="flex flex-col items-center gap-3">
-                  <div className="bg-white rounded-xl p-3 shadow-md">
-                    <img
-                      src={paymentQr}
-                      alt="Payment QR Code - Scan to pay with any UPI app"
-                      width={220}
-                      height={220}
-                      className="rounded-lg"
-                    />
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2 text-primary border-primary/30 hover:bg-primary/10"
-                    onClick={() => {
-                      const link = document.createElement("a");
-                      link.href = paymentQr;
-                      link.download = "TechCarnival_Payment_QR.jpeg";
-                      link.click();
-                    }}
-                  >
-                    <Download size={14} /> Download QR Code
-                  </Button>
-                  <div className="text-center space-y-1">
-                    <p className="text-xs text-muted-foreground">UPI ID: <span className="font-mono text-foreground select-all">anikettegginamath@ptyes</span></p>
-                    <p className="text-xs text-muted-foreground">Name: <span className="font-medium text-foreground">Aniket C Tegginamath</span></p>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground text-center pt-2 border-t border-border">After payment, fill in the details below and upload your payment screenshot.</p>
+              <div className="glass rounded-lg p-5 space-y-2">
+                <p className="text-sm text-muted-foreground text-center">Complete your payment and fill in the details below with your payment screenshot.</p>
               </div>
               <div className="space-y-4">
                 {renderField("amountPaid", "Amount Paid (₹)", form.amountPaid, (v) => setForm((f) => ({ ...f, amountPaid: v })), { placeholder: "e.g. 200" })}
@@ -730,10 +701,9 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                       <label className="flex flex-col items-center gap-2 cursor-pointer rounded-lg border-2 border-dashed border-border hover:border-primary/50 bg-muted/30 p-6 transition-colors">
                         <Upload size={24} className="text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">Click to upload payment screenshot</span>
-                        <span className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</span>
+                        <span className="text-xs text-muted-foreground/70">All file types up to 5MB</span>
                         <input
                           type="file"
-                          accept="image/*"
                           className="hidden"
                           onChange={(e) => {
                             const file = e.target.files?.[0];
