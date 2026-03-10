@@ -239,11 +239,23 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
     if (selectedEvent && events.length) {
       const match = events.find((e) => e.name === selectedEvent);
       if (match) {
-        setForm((f) => ({ ...f, eventId: match.id }));
+        setForm((f) => ({ ...f, eventId: match.id, amountPaid: match.name in EVENT_PRICES ? match.name : "" }));
         setStep(0);
       }
     }
   }, [selectedEvent, events]);
+
+  // Also pre-select amountPaid when event changes in step 0
+  useEffect(() => {
+    if (selectedEventData) {
+      const name = selectedEventData.name;
+      if (name in EVENT_PRICES) {
+        setForm((f) => ({ ...f, amountPaid: name }));
+      }
+    }
+  }, [selectedEventData]);
+
+  
 
   const selectedEventData = useMemo(
     () => events.find((e) => e.id === form.eventId) || null,
