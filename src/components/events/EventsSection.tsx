@@ -140,12 +140,12 @@ const EventsSection = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex justify-start sm:justify-center gap-2 mb-12 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
           {tabs.map((tab) => (
             <button
               key={tab.value}
               onClick={() => setActive(tab.value)}
-              className={`${tab.btnClass} h-10 px-5 text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 ${
+              className={`${tab.btnClass} h-9 sm:h-10 px-3 sm:px-5 text-xs sm:text-sm font-semibold tracking-wider inline-flex items-center justify-center transition-all duration-300 whitespace-nowrap shrink-0 ${
                 active === tab.value ? `ring-2 ${tab.ringColor}` : "opacity-70"
               }`}
             >
