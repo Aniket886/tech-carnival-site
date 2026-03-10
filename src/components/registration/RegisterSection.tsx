@@ -687,25 +687,35 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                 </div>
               )}
               <div className="space-y-4">
-                {/* Amount Paid */}
+                {/* Select Event & Amount */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="amountPaid" className="text-sm text-foreground font-medium">Amount Paid (₹) <span className="text-destructive">*</span></Label>
-                  <Input
-                    id="amountPaid"
-                    type="number"
-                    min="1"
-                    placeholder="e.g. 200"
-                    value={form.amountPaid}
-                    onChange={(e) => { setForm((f) => ({ ...f, amountPaid: e.target.value })); setErrors((er) => { const n = { ...er }; delete n.amountPaid; return n; }); }}
-                    onBlur={() => {
+                  <Label htmlFor="paymentEvent" className="text-sm text-foreground font-medium">Select Event & Amount <span className="text-destructive">*</span></Label>
+                  <Select
+                    value={form.amountPaid ? form.amountPaid : undefined}
+                    onValueChange={(v) => {
+                      setForm((f) => ({ ...f, amountPaid: v }));
+                      setErrors((er) => { const n = { ...er }; delete n.amountPaid; return n; });
                       setTouched((t) => ({ ...t, amountPaid: true }));
-                      const v = form.amountPaid.trim();
-                      if (!v) setErrors((e) => ({ ...e, amountPaid: "Amount paid is required" }));
-                      else if (isNaN(Number(v)) || Number(v) <= 0) setErrors((e) => ({ ...e, amountPaid: "Enter a valid positive amount" }));
                     }}
-                    className={`bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors ${touched.amountPaid && errors.amountPaid ? "border-destructive focus:border-destructive focus:ring-destructive/30" : ""}`}
-                  />
+                  >
+                    <SelectTrigger className={`bg-muted/50 text-foreground transition-colors ${touched.amountPaid && errors.amountPaid ? "border-destructive" : "border-border focus:border-primary"}`}>
+                      <SelectValue placeholder="-- Select Event --" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(EVENT_PRICES).map(([name, price]) => (
+                        <SelectItem key={name} value={name}>{name} — ₹{price}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {touched.amountPaid && errors.amountPaid && <p className="text-xs text-destructive">{errors.amountPaid}</p>}
+                </div>
+
+                {/* Amount to Pay - auto display */}
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-center" style={{ boxShadow: "0 0 15px hsl(var(--neon-blue) / 0.15)" }}>
+                  <p className="text-xs text-muted-foreground mb-1">Amount to Pay</p>
+                  <p className="text-2xl font-bold text-primary">
+                    ₹{form.amountPaid && EVENT_PRICES[form.amountPaid] ? EVENT_PRICES[form.amountPaid] : 0}
+                  </p>
                 </div>
                 
                 {/* UTR Number with live check */}
