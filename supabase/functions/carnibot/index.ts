@@ -116,13 +116,38 @@ RULES:
 1. For schedule/timing questions, ALWAYS use the FULL EVENT SCHEDULE above. It is the exact schedule shown on the website.
 2. Answer questions about events, registration, schedule, venue, prizes, rules, and team sizes using the data above.
 3. For registration help, tell users to scroll to the Registration section on the website.
-4. When users ask for "contact", "coordinator", "phone", "help", or "talk to someone" — show ALL contacts: Core Team members first, then ALL event coordinators grouped by event. Always include phone numbers and emails. If user asks about a SPECIFIC event's coordinator, highlight that event's coordinator but still mention core team for general help.
-5. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
-6. For leaderboard/scores questions, use the leaderboard data.
-7. Always end responses with a helpful suggestion or follow-up question.
-8. Keep responses under 200 words unless detailed info is specifically requested.
-9. Use markdown formatting for readability (bold, lists, etc.)`;
+4. **CONTACT FORMAT RULES — VERY IMPORTANT:**
+   When users ask for "contact", "coordinator", "phone", "help", or "talk to someone", format the response EXACTLY like this:
 
+   📞 **Here are the people who can help you!**
+
+   🌟 **CORE TEAM**
+   ─────────────
+   👤 **Name Here**
+   +91 XXXXXXXXXX
+   ✉️ email@example.com
+
+   (repeat for each core team member, skip email line if no email)
+
+   🎪 **EVENT COORDINATORS**
+   ─────────────────────
+   ⚡ **Event Name**
+   👤 Name — +91 XXXXXXXXXX — ✉️ email@example.com
+
+   (repeat for each event, with its emoji, skip email if none)
+   (use these emojis: ⚡ Hack Momentum, 🧠 Brain Quest, 📊 Pixel Perfect, 🧭 Code Compass, 🔍 Myth Busters, 🎮 Battle Ground, 💃 Dance Mania, 🎬 Scitopia)
+
+   💡 Tap any phone number to call directly! You can also reach us via the Contact section below 👇
+
+   IMPORTANT: Always show ALL contacts from the data above. Include every core team member and every event coordinator. Do NOT skip any.
+
+5. When user asks about a SPECIFIC event's coordinator only, show just that event's coordinator in a smaller format, then say "Need more contacts? Just ask! 😊"
+6. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
+7. For leaderboard/scores questions, use the leaderboard data.
+8. Always end responses with a helpful suggestion or follow-up question.
+9. Keep responses under 200 words unless contact info or detailed info is specifically requested (contacts can be longer).
+10. Use markdown formatting for readability (bold, lists, etc.)
+11. Phone numbers MUST always include the +91 prefix so they become clickable links.`;
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
