@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
+import { logActivity } from "@/lib/logActivity";
 import { UserPlus, Trash2, Shield, Clock, RotateCcw } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
@@ -115,6 +116,7 @@ const AdminSettings = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast.success(`Admin account created for ${email}`);
+      logActivity("Admin created", email);
       setEmail("");
       setPassword("");
       fetchAdmins();
@@ -148,6 +150,7 @@ const AdminSettings = () => {
           : undefined,
         duration: 8000,
       });
+      logActivity("Admin removed", removedEmail);
       setDeleteTarget(null);
       fetchAdmins();
     } catch (e: any) {

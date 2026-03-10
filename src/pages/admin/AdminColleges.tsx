@@ -19,6 +19,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { logActivity } from "@/lib/logActivity";
 import { Search, Plus, Pencil, Trash2, Upload, Building2, CheckCircle2, Clock, UserPlus } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
@@ -151,6 +152,7 @@ const AdminColleges = () => {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editingId ? "College updated" : "College added");
+    logActivity(editingId ? "College updated" : "College added", form.name);
     setDialogOpen(false);
     fetchData();
   };
@@ -175,6 +177,7 @@ const AdminColleges = () => {
     const { error } = await supabase.from("colleges").delete().eq("id", deleteId);
     if (error) { toast.error(error.message); return; }
     toast.success("College deleted");
+    logActivity("College deleted");
     setDeleteId(null);
     fetchData();
   };

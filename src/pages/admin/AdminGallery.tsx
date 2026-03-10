@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { logActivity } from "@/lib/logActivity";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminRefresh } from "@/components/AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -66,7 +67,7 @@ const AdminGallery = () => {
       count++;
     }
     setUploading(false);
-    if (count) { toast({ title: `${count} image(s) uploaded` }); fetchItems(); }
+    if (count) { toast({ title: `${count} image(s) uploaded` }); logActivity("Gallery upload", `${count} images`); fetchItems(); }
     if (fileRef.current) fileRef.current.value = "";
   };
 
@@ -87,6 +88,7 @@ const AdminGallery = () => {
     }
     await supabase.from("gallery_items").delete().eq("id", deleteId);
     toast({ title: "Deleted" });
+    logActivity("Gallery image deleted");
     setDeleteId(null);
     fetchItems();
   };

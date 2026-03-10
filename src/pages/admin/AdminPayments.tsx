@@ -17,6 +17,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { logActivity } from "@/lib/logActivity";
 import {
   Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon, X,
 } from "lucide-react";
@@ -136,6 +137,8 @@ const AdminPayments = () => {
     const { error } = await supabase.from("registrations").update({ registration_status: status }).eq("id", id);
     if (error) { toast.error("Failed to update"); return; }
     toast.success(`Status → ${status}`);
+    const reg = registrations.find(r => r.id === id);
+    logActivity(`Payment ${status}`, `${reg?.leader_name || id} → ${status}`);
 
     if (status === "confirmed" || status === "rejected") {
       const reg = registrations.find(r => r.id === id);
@@ -164,6 +167,7 @@ const AdminPayments = () => {
     const { error } = await supabase.from("registrations").update({ registration_status: "pending" }).in("id", pendingIds);
     if (error) { toast.error("Failed to reset"); return; }
     toast.success(`${pendingIds.length} registrations reset to pending`);
+    logActivity("Reset all payments to pending", `${pendingIds.length} registrations`);
     setResetConfirm(false);
     fetchData();
   };

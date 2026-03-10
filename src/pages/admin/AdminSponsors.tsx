@@ -19,6 +19,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { logActivity } from "@/lib/logActivity";
 import { Search, Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
@@ -112,6 +113,7 @@ const AdminSponsors = () => {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editingId ? "Sponsor updated" : "Sponsor added");
+    logActivity(editingId ? "Sponsor updated" : "Sponsor added", form.name);
     setDialogOpen(false);
     fetchData();
   };
@@ -127,7 +129,9 @@ const AdminSponsors = () => {
     if (!deleteId) return;
     const { error } = await supabase.from("sponsors").delete().eq("id", deleteId);
     if (error) { toast.error(error.message); return; }
+    const s = sponsors.find(sp => sp.id === deleteId);
     toast.success("Sponsor deleted");
+    logActivity("Sponsor deleted", s?.name || deleteId);
     setDeleteId(null);
     fetchData();
   };

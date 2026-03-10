@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logActivity } from "@/lib/logActivity";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminRefresh } from "@/components/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -94,6 +95,7 @@ const AdminAnnouncements = () => {
     setSaving(false);
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     toast({ title: editId ? "Updated" : "Created", description: `Announcement "${form.title}" saved.` });
+    logActivity(editId ? "Announcement updated" : "Announcement created", form.title);
     setModalOpen(false);
     fetch();
   };
@@ -102,6 +104,7 @@ const AdminAnnouncements = () => {
     if (!deleteId) return;
     await supabase.from("announcements").delete().eq("id", deleteId);
     toast({ title: "Deleted", description: "Announcement removed." });
+    logActivity("Announcement deleted");
     setDeleteId(null);
     fetch();
   };
