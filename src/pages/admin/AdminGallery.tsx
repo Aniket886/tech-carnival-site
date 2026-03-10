@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { logActivity } from "@/lib/logActivity";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminRefresh } from "@/components/AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
