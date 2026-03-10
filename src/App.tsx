@@ -27,7 +27,6 @@ import AdminSchedule from "./pages/admin/AdminSchedule";
 import AdminPaymentInstructions from "./pages/admin/AdminPaymentInstructions";
 import AdminFAQ from "./pages/admin/AdminFAQ";
 import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
-import AdminActivityLog from "./pages/admin/AdminActivityLog";
 import AdminGallery from "./pages/admin/AdminGallery";
 
 const queryClient = new QueryClient();
