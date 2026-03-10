@@ -34,26 +34,16 @@ interface Event {
 }
 
 interface FormData {
-  name: string;
-  slug: string;
-  category: string;
-  icon: string;
-  description: string;
-  team_size_min: number;
-  team_size_max: number;
-  date: string;
-  time: string;
-  venue: string;
-  prize_pool: string;
-  rules: string;
-  website_url: string;
-  payment_url: string;
+  name: string; slug: string; category: string; icon: string; description: string;
+  team_size_min: number; team_size_max: number; date: string; time: string;
+  venue: string; prize_pool: string; rules: string; website_url: string;
+  payment_url: string; price: number;
 }
 
 const emptyForm: FormData = {
   name: "", slug: "", category: "technical", icon: "🎯", description: "",
   team_size_min: 1, team_size_max: 1, date: "", time: "", venue: "",
-  prize_pool: "", rules: "", website_url: "", payment_url: "",
+  prize_pool: "", rules: "", website_url: "", payment_url: "", price: 0,
 };
 
 const categoryStyles: Record<string, string> = {
