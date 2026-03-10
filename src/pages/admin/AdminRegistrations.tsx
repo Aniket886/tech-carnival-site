@@ -14,6 +14,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { logActivity } from "@/lib/logActivity";
 import {
   Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2,
 } from "lucide-react";
