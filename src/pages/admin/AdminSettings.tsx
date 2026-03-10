@@ -116,7 +116,7 @@ const AdminSettings = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast.success(`Admin account created for ${email}`);
-      logActivity("Admin created", email);
+      
       setEmail("");
       setPassword("");
       fetchAdmins();
