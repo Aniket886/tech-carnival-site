@@ -28,6 +28,7 @@ import AdminPaymentInstructions from "./pages/admin/AdminPaymentInstructions";
 import AdminFAQ from "./pages/admin/AdminFAQ";
 import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
 import AdminGallery from "./pages/admin/AdminGallery";
+import AdminVideoGuide from "./pages/admin/AdminVideoGuide";
 
 const queryClient = new QueryClient();
 
