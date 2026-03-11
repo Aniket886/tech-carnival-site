@@ -93,13 +93,16 @@ const HowToRegister = () => {
           >
             {videoId ? (
               <div className="relative rounded-2xl overflow-hidden border border-border shadow-lg shadow-primary/5">
-                <div className="aspect-video">
+                <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                   <iframe
-                    src={`https://www.youtube.com/embed/${videoId}?rel=0`}
+                    src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`}
                     title="How to Register"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
-                    className="w-full h-full"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
                   />
                 </div>
               </div>
