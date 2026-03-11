@@ -78,7 +78,7 @@ const FAQSection = () => {
                   onMouseEnter={() => setOpenItem(`faq-${i}`)}
                   onMouseLeave={() => setOpenItem(undefined)}
                 >
-                  <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4 hover:no-underline">
+                <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4 min-h-[48px] hover:no-underline">
                     {faq.q}
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-muted-foreground pb-4 leading-relaxed">
