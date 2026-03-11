@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/home/Hero";
 import About from "@/components/home/About";
+import HowToRegister from "@/components/home/HowToRegister";
 import SponsorsSection from "@/components/home/SponsorsSection";
 import EventsSection from "@/components/events/EventsSection";
 import ScheduleSection from "@/components/schedule/ScheduleSection";
