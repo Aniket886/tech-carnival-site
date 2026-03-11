@@ -85,7 +85,7 @@ const Footer = () => {
             <p className="text-xs sm:text-sm font-sans font-medium text-foreground/70 tracking-wider uppercase">
               Built with <span className="text-destructive">❤️</span> by FCIT Tech Team
             </p>
-            <p className="text-[10px] font-sans tracking-wide text-background/[0.02] select-all cursor-default">
+            <p className="text-[10px] font-sans tracking-wide text-foreground/[0.05] select-all cursor-default">
               Developed by Aniket Tegginamath
             </p>
           </div>
