@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { FileText } from "lucide-react";
 import EventDetailModal from "@/components/events/EventDetailModal";
+import EventCard from "@/components/events/EventCard";
 import RegistrationModal from "@/components/RegistrationModal";
 import { supabase } from "@/integrations/supabase/client";
 import { fallbackEvents } from "@/data/events";
-import { toast } from "sonner";
 
 type Category = "all" | "technical" | "gaming" | "cultural";
 
@@ -38,27 +35,33 @@ const tabs: { label: string; value: Category; icon: string; btnClass: string; ri
   { label: "Cultural", value: "cultural", icon: "🎭", btnClass: "btn-purple", ringColor: "ring-[hsl(270_80%_60%/0.5)]" },
 ];
 
-const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string; border: string; glow: string; iconBg: string }> = {
+export const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string; border: string; glow: string; iconBg: string; neonColor: string; neonGlow: string }> = {
   technical: {
     badge: "bg-primary/15 text-primary border-primary/30",
     accent: "group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]",
-    border: "border-primary/20 hover:border-primary/40",
+    border: "border-primary/20",
     glow: "bg-primary/5",
     iconBg: "bg-primary/10 ring-1 ring-primary/20",
+    neonColor: "hsl(195 100% 50%)",
+    neonGlow: "0 0 15px hsl(195 100% 50% / 0.4), 0 0 45px hsl(195 100% 50% / 0.15)",
   },
   gaming: {
     badge: "bg-red-500/15 text-red-400 border-red-500/30",
     accent: "group-hover:shadow-[0_0_30px_hsl(0_80%_55%/0.25)]",
-    border: "border-red-500/20 hover:border-red-500/40",
+    border: "border-red-500/20",
     glow: "bg-red-500/5",
     iconBg: "bg-red-500/10 ring-1 ring-red-500/20",
+    neonColor: "hsl(0 80% 55%)",
+    neonGlow: "0 0 15px hsl(0 80% 55% / 0.4), 0 0 45px hsl(0 80% 55% / 0.15)",
   },
   cultural: {
     badge: "bg-accent/15 text-accent border-accent/30",
     accent: "group-hover:shadow-[0_0_30px_hsl(var(--accent)/0.25)]",
-    border: "border-accent/20 hover:border-accent/40",
+    border: "border-accent/20",
     glow: "bg-accent/5",
     iconBg: "bg-accent/10 ring-1 ring-accent/20",
+    neonColor: "hsl(270 80% 60%)",
+    neonGlow: "0 0 15px hsl(270 80% 60% / 0.4), 0 0 45px hsl(270 80% 60% / 0.15)",
   },
 };
 
@@ -85,9 +88,7 @@ const EventsSection = () => {
           .order("name");
 
         if (cancelled) return;
-        if (error) {
-          console.error("Failed to fetch events:", error);
-        }
+        if (error) console.error("Failed to fetch events:", error);
         if (data && data.length > 0) {
           setEvents(
             data.map((e: any) => ({
@@ -118,10 +119,7 @@ const EventsSection = () => {
       }
     };
 
-    const timeout = setTimeout(() => {
-      if (!cancelled) setLoading(false);
-    }, 8000);
-
+    const timeout = setTimeout(() => { if (!cancelled) setLoading(false); }, 8000);
     fetchEvents();
 
     const channel = supabase
@@ -168,96 +166,21 @@ const EventsSection = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center text-muted-foreground py-12">No events found. Check back soon!</div>
         ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
-            layout
-          >
+          <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6" layout>
             <AnimatePresence mode="popLayout">
-              {filtered.map((event, index) => {
-                const style = categoryStyles[event.category];
-                return (
-                  <motion.div
-                    key={event.id}
-                    layout
-                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: index * 0.08,
-                      ease: [0.25, 0.1, 0.25, 1],
-                    }}
-                    data-cursor-card
-                    onClick={() => setSelectedEvent(event)}
-                    className={`relative overflow-hidden rounded-xl border p-4 sm:p-6 group hover:scale-[1.03] transition-all duration-300 cursor-pointer bg-card/40 backdrop-blur-sm ${style.border} ${style.accent}`}
-                  >
-                    {/* Category glow accent */}
-                    <motion.div
-                      className={`absolute top-0 left-0 right-0 h-1 origin-left ${style.badge.includes("primary") ? "bg-primary/60" : style.badge.includes("red") ? "bg-red-500/60" : "bg-accent/60"}`}
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ duration: 0.6, delay: index * 0.08 + 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-                    />
-                    <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-30 ${style.glow}`} />
-                    
-                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-2xl sm:text-3xl mb-3 sm:mb-4 ${style.iconBg}`}>{event.emoji}</div>
-                    <h3 className="font-display font-semibold text-foreground text-base sm:text-lg mb-1.5 sm:mb-2">
-                      {event.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4 leading-relaxed">
-                      {event.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground/70 mb-3 sm:mb-4">
-                      {event.team_size_min === 1 && event.team_size_max === 1
-                        ? "👤 Solo"
-                        : event.team_size_min === event.team_size_max
-                          ? `👥 Team of ${event.team_size_min}`
-                          : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
-                    </p>
-                    {/* Button row: 2x2 grid on mobile, horizontal on sm+ */}
-                    <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center sm:justify-between gap-2">
-                      <Badge variant="outline" className={`text-[11px] sm:text-xs capitalize justify-center min-h-[36px] sm:min-h-0 sm:h-auto truncate ${style.badge}`}>
-                        {event.category}
-                      </Badge>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (event.rulebookUrl) {
-                            window.open(event.rulebookUrl, "_blank", "noopener,noreferrer");
-                          } else {
-                            toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
-                          }
-                        }}
-                        className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
-                      >
-                        <span className="inline-flex items-center gap-1 truncate"><FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" /> Rule Book</span>
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (event.paymentUrl) {
-                            window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
-                          } else {
-                            toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
-                          }
-                        }}
-                        className="btn-gold min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
-                      >
-                        <span className="truncate">💰 Pay</span>
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setRegisterEvent(event);
-                        }}
-                        className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center overflow-hidden rounded-lg"
-                      >
-                        <span className="truncate">Register</span>
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })}
+              {filtered.map((event, index) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  style={categoryStyles[event.category]}
+                  index={index}
+                  onSelect={() => setSelectedEvent(event)}
+                  onRegister={(e) => {
+                    e.stopPropagation();
+                    setRegisterEvent(event);
+                  }}
+                />
+              ))}
             </AnimatePresence>
           </motion.div>
         )}
