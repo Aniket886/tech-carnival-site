@@ -23,10 +23,16 @@ const OrganizingCommittee = () => {
 
     const channel = supabase
       .channel("team_members_committee")
-      .on("postgres_changes", { event: "*", schema: "public", table: "team_members", filter: "section=eq.organizing_committee" }, () => fetch())
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "team_members", filter: "section=eq.organizing_committee" },
+        () => fetch(),
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   if (committee.length === 0) return null;
@@ -40,7 +46,7 @@ const OrganizingCommittee = () => {
             Organizing Committee
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-base sm:text-lg">
-            Meet the brilliant minds behind Tech Carnival 2K26
+            The driving force making it all happen
           </p>
         </div>
 
@@ -57,9 +63,7 @@ const OrganizingCommittee = () => {
               <h3 className="text-sm sm:text-base font-semibold text-foreground leading-tight whitespace-nowrap">
                 {member.name}
               </h3>
-              {member.role && (
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1">{member.role}</p>
-              )}
+              {member.role && <p className="text-xs sm:text-sm text-muted-foreground mt-1">{member.role}</p>}
             </div>
           ))}
         </div>
