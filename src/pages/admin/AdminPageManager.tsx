@@ -48,7 +48,7 @@ interface LogEntry {
 
 /* ─── section emoji map ─── */
 const sectionIcons: Record<string, string> = {
-  hero: "🏠", about: "ℹ️", sponsors: "💛", events: "🎯",
+  hero: "🏠", about: "ℹ️", how_to_register: "🎬", sponsors: "💛", events: "🎯",
   schedule: "📅", registration: "📋", leaderboard: "🏆",
   gallery: "🖼️", faq: "❓", contact: "📞", footer: "❤️", carnibot: "🤖",
 };

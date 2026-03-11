@@ -35,6 +35,7 @@ const Index = () => {
       <Navbar />
       {isSectionVisible("hero") && <Hero />}
       {isSectionVisible("about") && <ScrollAnimate><About /></ScrollAnimate>}
+      {isSectionVisible("how_to_register") && <ScrollAnimate><HowToRegister /></ScrollAnimate>}
       {isSectionVisible("sponsors") && <ScrollAnimate><SponsorsSection /></ScrollAnimate>}
       {isSectionVisible("events") && <ScrollAnimate><EventsSection /></ScrollAnimate>}
       {isSectionVisible("schedule") && <ScrollAnimate><ScheduleSection /></ScrollAnimate>}
