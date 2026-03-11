@@ -10,6 +10,7 @@ interface VisibleSection {
 const sectionToNav: Record<string, { label: string; href: string }> = {
   hero: { label: "Home", href: "#home" },
   about: { label: "About", href: "#about" },
+  how_to_register: { label: "How to Register", href: "#how-to-register" },
   events: { label: "Events", href: "#events" },
   schedule: { label: "Schedule", href: "#schedule" },
   faq: { label: "FAQ", href: "#faq" },
