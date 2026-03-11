@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Menu, Rocket } from "lucide-react";
+import { Menu, Rocket, Home, Info, CalendarDays, Clock, HelpCircle, MessageSquare } from "lucide-react";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
+const sectionIcons: Record<string, React.ReactNode> = {
+  home: <Home className="h-4 w-4" />,
+  about: <Info className="h-4 w-4" />,
+  events: <CalendarDays className="h-4 w-4" />,
+  schedule: <Clock className="h-4 w-4" />,
+  faq: <HelpCircle className="h-4 w-4" />,
+  contact: <MessageSquare className="h-4 w-4" />,
+};
 
 const allNavLinks = [
   { label: "Home", href: "#home", sectionKey: "hero" },
@@ -28,7 +37,6 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Track active section via IntersectionObserver
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     navLinks.forEach((link) => {
@@ -103,37 +111,58 @@ const Navbar = () => {
         {/* Mobile */}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon" className="text-foreground hover:bg-primary/10">
+            <Button variant="ghost" size="icon" className="text-foreground hover:bg-primary/10 min-w-[44px] min-h-[44px]">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="bg-background/80 backdrop-blur-2xl border-primary/10">
-            <SheetTitle className="text-gradient font-black">Tech Carnival</SheetTitle>
-            <div className="flex flex-col gap-2 mt-8">
-              {navLinks.map((link) => {
-                const isActive = activeSection === link.href.replace("#", "");
-                return (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className={`text-lg px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? "text-primary bg-primary/10 border border-primary/20 font-semibold"
-                        : "text-muted-foreground hover:text-foreground hover:bg-card/50"
-                    }`}
-                  >
-                    {link.label}
-                  </a>
-                );
-              })}
+          <SheetContent side="right" className="bg-background/80 backdrop-blur-2xl border-primary/10 w-[280px]">
+            <SheetTitle className="text-gradient font-black text-lg">Tech Carnival</SheetTitle>
+            <div className="flex flex-col gap-1.5 mt-8">
+              <AnimatePresence>
+                {open && navLinks.map((link, i) => {
+                  const isActive = activeSection === link.href.replace("#", "");
+                  const sectionId = link.href.replace("#", "");
+                  return (
+                    <motion.a
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.25, ease: "easeOut" }}
+                      className={`flex items-center gap-3 text-base px-4 py-3 min-h-[48px] rounded-xl transition-all duration-200 ${
+                        isActive
+                          ? "text-primary bg-primary/10 border border-primary/20 font-semibold"
+                          : "text-muted-foreground hover:text-foreground hover:bg-card/50"
+                      }`}
+                    >
+                      <span className={isActive ? "text-primary" : "text-muted-foreground"}>
+                        {sectionIcons[sectionId] || sectionIcons["home"]}
+                      </span>
+                      {link.label}
+                      {isActive && (
+                        <motion.div
+                          layoutId="mobile-active-dot"
+                          className="ml-auto w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.6)]"
+                        />
+                      )}
+                    </motion.a>
+                  );
+                })}
+              </AnimatePresence>
               {isSectionVisible("events") && (
-                <Button asChild className="mt-4 rounded-full gap-2 shadow-[0_0_20px_hsl(var(--primary)/0.25)]">
-                  <a href="#events" onClick={() => setOpen(false)}>
-                    <Rocket className="h-4 w-4" />
-                    Register Now
-                  </a>
-                </Button>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: navLinks.length * 0.05 + 0.1, duration: 0.25 }}
+                >
+                  <Button asChild className="mt-4 w-full rounded-full gap-2 min-h-[48px] shadow-[0_0_20px_hsl(var(--primary)/0.25)]">
+                    <a href="#events" onClick={() => setOpen(false)}>
+                      <Rocket className="h-4 w-4" />
+                      Register Now
+                    </a>
+                  </Button>
+                </motion.div>
               )}
             </div>
           </SheetContent>
