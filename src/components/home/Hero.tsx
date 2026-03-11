@@ -80,7 +80,7 @@ const Hero = () => {
             </button>
             <button
               className="btn-golden h-14 px-12 text-lg inline-flex items-center justify-center"
-              onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}>
+              onClick={() => document.querySelector("#how-to-register")?.scrollIntoView({ behavior: "smooth" })}>
               <span>Learn More →</span>
             </button>
         </div>
