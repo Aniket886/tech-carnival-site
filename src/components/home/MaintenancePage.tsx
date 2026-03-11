@@ -71,28 +71,6 @@ const MaintenancePage = () => {
           <CountdownTimer />
         </motion.div>
 
-        {/* Social links */}
-        <motion.div
-          className="flex items-center gap-3 mt-12"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-        >
-          {[
-            { icon: Instagram, href: "#", label: "Instagram" },
-            { icon: Linkedin, href: "#", label: "LinkedIn" },
-            { icon: Youtube, href: "#", label: "YouTube" },
-          ].map(({ icon: Icon, href, label }) => (
-            <a
-              key={label}
-              href={href}
-              aria-label={label}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors duration-300"
-            >
-              <Icon size={16} />
-            </a>
-          ))}
-        </motion.div>
       </motion.div>
     </div>
   );
