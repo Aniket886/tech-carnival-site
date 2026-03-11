@@ -231,15 +231,15 @@ const ContactSection = () => {
                   <p className="text-xs text-muted-foreground">{c.role}</p>
                   <a
                     href={`tel:${c.phone.replace(/\s/g, "")}`}
-                    className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+                    className="flex items-center gap-1.5 min-h-[44px] py-1.5 text-muted-foreground hover:text-primary transition-colors"
                   >
-                    <Phone size={12} /> {c.phone}
+                    <Phone size={14} /> {c.phone}
                   </a>
                   <a
                     href={`mailto:${c.email}`}
-                    className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+                    className="flex items-center gap-1.5 min-h-[44px] py-1.5 text-muted-foreground hover:text-primary transition-colors break-all"
                   >
-                    <Mail size={12} /> {c.email}
+                    <Mail size={14} /> {c.email}
                   </a>
                 </div>
               </div>
