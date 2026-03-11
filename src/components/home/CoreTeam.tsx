@@ -23,10 +23,16 @@ const CoreTeam = () => {
 
     const channel = supabase
       .channel("team_members_core")
-      .on("postgres_changes", { event: "*", schema: "public", table: "team_members", filter: "section=eq.core_team" }, () => fetch())
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "team_members", filter: "section=eq.core_team" },
+        () => fetch(),
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   if (coreTeam.length === 0) return null;
@@ -36,11 +42,9 @@ const CoreTeam = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       <div className="relative z-10 container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold gradient-text mb-4 tracking-wide uppercase">
-            Core Team
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-bold gradient-text mb-4 tracking-wide uppercase">Core Team</h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-base sm:text-lg">
-            The driving force making it all happen
+            Meet the brilliant minds behind Tech Carnival 2K26
           </p>
         </div>
 
