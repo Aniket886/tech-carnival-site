@@ -56,14 +56,17 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
-      <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"}`}>
+      <div className={`md:hidden overflow-y-auto transition-all duration-300 ease-in-out ${mobileOpen ? "max-h-[70vh] opacity-100" : "max-h-0 opacity-0"}`}>
         <div className="glass-strong border-t border-border">
-          <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
+          <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
             {navLinks.map((link) => (
               <button key={link.href} onClick={() => handleNav(link.href)} className="text-sm text-muted-foreground hover:text-primary transition-colors py-2 text-left tracking-wide">{link.label}</button>
             ))}
-            
-            {showRegister && <Button variant="neon" size="sm" onClick={() => handleNav("#events")}>Register</Button>}
+            {showRegister && (
+              <div className="pt-2 pb-1">
+                <Button variant="neon" size="sm" className="w-full" onClick={() => handleNav("#events")}>Register</Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
