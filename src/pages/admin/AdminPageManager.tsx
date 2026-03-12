@@ -67,10 +67,56 @@ const fmtDate = (d: string) => {
   return `${dt.getMonth() + 1}/${dt.getDate()}/${dt.getFullYear()}`;
 };
 
+/* ─── Sortable Card Row ─── */
+const SortableCardRow = ({
+  card, onToggleCard,
+}: {
+  card: Card;
+  onToggleCard: (c: Card) => void;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: card.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : undefined,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/30 transition-colors"
+    >
+      <div className="flex items-center gap-2">
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing text-muted-foreground flex-shrink-0 touch-none"
+        >
+          <GripVertical size={14} />
+        </button>
+        <span className={`text-sm ${card.is_visible ? "text-foreground" : "text-muted-foreground"}`}>
+          {card.card_name}
+        </span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Badge variant={card.is_visible ? "default" : "destructive"} className="text-[10px] px-1.5 py-0">
+          {card.is_visible ? "Visible" : "Hidden"}
+        </Badge>
+        <Switch checked={card.is_visible} onCheckedChange={() => onToggleCard(card)} />
+      </div>
+    </div>
+  );
+};
+
 /* ─── Sortable Section Row ─── */
 const SortableSectionRow = ({
   section, cards, expanded, onToggleExpand, onToggleSection,
   onToggleCard, onBulkCards, cardFilter, onCardFilterChange, filteredCards,
+  onReorderCards, cardSensors,
 }: {
   section: Section;
   cards: Card[];
@@ -82,6 +128,8 @@ const SortableSectionRow = ({
   cardFilter: string;
   onCardFilterChange: (v: string) => void;
   filteredCards: Card[];
+  onReorderCards: (sectionKey: string, event: DragEndEvent) => void;
+  cardSensors: ReturnType<typeof useSensors>;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: section.id });
@@ -150,19 +198,15 @@ const SortableSectionRow = ({
               />
             </div>
           </div>
-          {filteredCards.map(card => (
-            <div key={card.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/30 transition-colors">
-              <span className={`text-sm ${card.is_visible ? "text-foreground" : "text-muted-foreground"}`}>
-                {card.card_name}
-              </span>
-              <div className="flex items-center gap-2">
-                <Badge variant={card.is_visible ? "default" : "destructive"} className="text-[10px] px-1.5 py-0">
-                  {card.is_visible ? "Visible" : "Hidden"}
-                </Badge>
-                <Switch checked={card.is_visible} onCheckedChange={() => onToggleCard(card)} />
-              </div>
-            </div>
-          ))}
+
+          <DndContext sensors={cardSensors} collisionDetection={closestCenter} onDragEnd={(e) => onReorderCards(section.section_key, e)}>
+            <SortableContext items={filteredCards.map(c => c.id)} strategy={verticalListSortingStrategy}>
+              {filteredCards.map(card => (
+                <SortableCardRow key={card.id} card={card} onToggleCard={onToggleCard} />
+              ))}
+            </SortableContext>
+          </DndContext>
+
           {filteredCards.length === 0 && (
             <p className="text-xs text-muted-foreground text-center py-2">No cards match filter</p>
           )}
