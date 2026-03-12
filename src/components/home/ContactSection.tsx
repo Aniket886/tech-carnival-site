@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, MapPin, User, Send } from "lucide-react";
+import { Mail, Phone, MapPin, User } from "lucide-react";
+import EyeFollowButton from "@/components/ui/EyeFollowButton";
 import { validateName, validateEmail, validatePhone, validateMessage, sanitizeInput } from "@/lib/validators";
 
 const coordinators = [
@@ -203,21 +204,12 @@ const ContactSection = () => {
               />
               {errors.message && touched.message && <p className="text-xs text-destructive">{errors.message}</p>}
             </div>
-            <button
+            <EyeFollowButton
               type="submit"
               disabled={loading}
-              className="btn-golden h-10 w-full text-sm font-semibold tracking-wider inline-flex items-center justify-center disabled:pointer-events-none disabled:opacity-50 transition-all duration-300"
-            >
-              <span className="inline-flex items-center gap-2">
-                {loading ? (
-                  "Sending..."
-                ) : (
-                  <>
-                    <Send size={16} /> Send Message
-                  </>
-                )}
-              </span>
-            </button>
+              loading={loading}
+              text="Send Message"
+            />
           </form>
 
           <div className="space-y-6">
