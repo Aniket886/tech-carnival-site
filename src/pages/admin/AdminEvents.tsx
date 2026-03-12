@@ -233,10 +233,13 @@ const AdminEvents = () => {
     <div className="space-y-5">
       <Tabs defaultValue="events">
         <div className="flex items-center justify-between">
-          <TabsList>
+           <TabsList>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="links" className="gap-1.5">
               <Link2 size={14} /> Event Links
+            </TabsTrigger>
+            <TabsTrigger value="payment-links" className="gap-1.5">
+              <CreditCard size={14} /> Payment Links
             </TabsTrigger>
           </TabsList>
         </div>
