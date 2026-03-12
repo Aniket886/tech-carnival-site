@@ -16,7 +16,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Search, Plus, Pencil, Trash2, ExternalLink, Crown, Medal, Handshake, GripVertical } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, ExternalLink, Crown, Medal, Handshake, Upload, X } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ── Types ── */
