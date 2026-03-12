@@ -55,11 +55,12 @@ export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) =>
     ]);
 
     if (secs) {
+      const sorted = (secs as SectionVisibility[]).sort((a, b) => a.display_order - b.display_order);
       const map = new Map<string, boolean>();
-      (secs as SectionVisibility[]).forEach((s) => map.set(s.section_key, s.is_visible));
+      sorted.forEach((s) => map.set(s.section_key, s.is_visible));
       setSections(map);
-      // Check maintenance mode - all sections except footer hidden means maintenance
-      const allHidden = (secs as SectionVisibility[])
+      setOrderedSectionKeys(sorted.map((s) => s.section_key));
+      const allHidden = sorted
         .filter((s) => s.section_key !== "footer")
         .every((s) => !s.is_visible);
       setMaintenanceMode(allHidden && secs.length > 1);
