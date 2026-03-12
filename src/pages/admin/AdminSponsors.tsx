@@ -337,15 +337,35 @@ const AdminSponsors = () => {
                   <div className="w-14 h-14 rounded-lg bg-muted/50 border border-border/50 flex items-center justify-center overflow-hidden">
                     <img src={form.logo_url} alt="preview" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1.5">
                     <span className="text-[11px] text-muted-foreground">Logo uploaded</span>
-                    <button
-                      type="button"
-                      onClick={() => updateField("logo_url", "")}
-                      className="text-[11px] text-destructive hover:underline flex items-center gap-1"
-                    >
-                      <X size={10} /> Remove
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <label className="text-[11px] text-primary hover:underline flex items-center gap-1 cursor-pointer">
+                        <Upload size={10} /> Replace
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploading}
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setUploading(true);
+                            const url = await uploadLogo(file);
+                            if (url) updateField("logo_url", url);
+                            setUploading(false);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => updateField("logo_url", "")}
+                        className="text-[11px] text-destructive hover:underline flex items-center gap-1"
+                      >
+                        <X size={10} /> Remove
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
