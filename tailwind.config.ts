@@ -103,6 +103,14 @@ export default {
           from: { transform: "translateY(calc(-100% - var(--gap)))" },
           to: { transform: "translateY(0)" },
         },
+        "marquee-x": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+        "marquee-y": {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(calc(-100% - var(--gap)))" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -114,6 +122,8 @@ export default {
         "marquee-reverse": "marquee-reverse var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
         "marquee-vertical-reverse": "marquee-vertical-reverse var(--duration) linear infinite",
+        "marquee-horizontal": "marquee-x var(--duration) infinite linear",
+        "marquee-vertical-animata": "marquee-y var(--duration) linear infinite",
       },
     },
   },

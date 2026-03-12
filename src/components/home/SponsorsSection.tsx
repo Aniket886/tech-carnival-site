@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import Marquee from "@/components/ui/marquee";
+import Marquee from "@/components/animata/container/marquee";
 import { cn } from "@/lib/utils";
 
 interface Sponsor {
@@ -26,7 +26,6 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => {
         "hover:scale-[1.03] hover:shadow-lg hover:border-primary/30"
       )}
     >
-      {/* Logo / icon area */}
       <div className="flex items-center justify-start gap-3 mb-4">
         <img
           src={sponsor.logo_url}
@@ -35,7 +34,6 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => {
           loading="lazy"
         />
       </div>
-      {/* Name */}
       <p className="text-sm font-medium text-foreground text-left leading-snug">
         {sponsor.name}
       </p>
@@ -75,12 +73,10 @@ const SponsorsSection = () => {
 
   return (
     <section className="py-20 md:py-28 relative overflow-hidden" id="sponsors">
-      {/* Separators */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Header */}
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border/30 bg-card/30 backdrop-blur-sm mb-5">
             <span className="text-sm">🤝</span>
@@ -96,18 +92,11 @@ const SponsorsSection = () => {
           </p>
         </div>
 
-        {/* Marquee */}
-        <div className="relative">
-          {/* Edge fades */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-
-          <Marquee pauseOnHover speed={35} className="[--gap:1rem]">
-            {sponsors.map((s) => (
-              <SponsorCard key={s.id} sponsor={s} />
-            ))}
-          </Marquee>
-        </div>
+        <Marquee pauseOnHover applyMask className="[--duration:25s]">
+          {sponsors.map((s) => (
+            <SponsorCard key={s.id} sponsor={s} />
+          ))}
+        </Marquee>
       </div>
     </section>
   );
