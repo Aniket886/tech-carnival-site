@@ -165,6 +165,15 @@ const AdminSponsors = () => {
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
+
+  const handleFileUpload = useCallback(async (file: File) => {
+    if (!file.type.startsWith("image/")) { toast.error("Please upload an image file"); return; }
+    setUploading(true);
+    const url = await uploadLogo(file);
+    if (url) setForm((f) => ({ ...f, logo_url: url }));
+    setUploading(false);
+  }, []);
 
   const fetchData = useCallback(async () => {
     const { data } = await supabase.from("sponsors").select("*").order("display_order");
@@ -369,13 +378,23 @@ const AdminSponsors = () => {
                   </div>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-card/50 p-6 cursor-pointer hover:border-primary/50 transition-colors">
+                <label
+                  className={`flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 cursor-pointer transition-colors ${dragging ? "border-primary bg-primary/5" : "border-border bg-card/50 hover:border-primary/50"}`}
+                  onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={async (e) => {
+                    e.preventDefault();
+                    setDragging(false);
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) await handleFileUpload(file);
+                  }}
+                >
                   {uploading ? (
                     <span className="text-xs text-muted-foreground">Uploading…</span>
                   ) : (
                     <>
-                      <Upload size={20} className="text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">Click to upload logo</span>
+                      <Upload size={20} className={dragging ? "text-primary" : "text-muted-foreground"} />
+                      <span className="text-xs text-muted-foreground">{dragging ? "Drop image here" : "Click or drag & drop logo"}</span>
                       <span className="text-[10px] text-muted-foreground/60">PNG, JPG, SVG, WEBP</span>
                     </>
                   )}
@@ -386,11 +405,7 @@ const AdminSponsors = () => {
                     disabled={uploading}
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
-                      if (!file) return;
-                      setUploading(true);
-                      const url = await uploadLogo(file);
-                      if (url) updateField("logo_url", url);
-                      setUploading(false);
+                      if (file) await handleFileUpload(file);
                       e.target.value = "";
                     }}
                   />
