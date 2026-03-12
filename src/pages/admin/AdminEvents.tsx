@@ -565,6 +565,24 @@ const AdminEvents = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Payment Link Dialog */}
+      <Dialog open={!!editPayEvent} onOpenChange={open => !open && setEditPayEvent(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Payment Link — {editPayEvent?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Label className="text-sm font-medium text-foreground">Payment URL</Label>
+            <Input placeholder="https://payment-link.com" value={editPayUrl} onChange={e => setEditPayUrl(e.target.value)} />
+            <p className="text-xs text-muted-foreground">Leave empty to remove the link. Use full URL including https://</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditPayEvent(null)}>Cancel</Button>
+            <Button onClick={handleSavePayLink} disabled={savingPayLink}>{savingPayLink ? "Saving…" : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
