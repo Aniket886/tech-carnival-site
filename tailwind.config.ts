@@ -87,14 +87,6 @@ export default {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        "marquee-x": {
-          from: { transform: "translateX(0)" },
-          to: { transform: "translateX(calc(-100% - var(--gap)))" },
-        },
-        "marquee-y": {
-          from: { transform: "translateY(0)" },
-          to: { transform: "translateY(calc(-100% - var(--gap)))" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -102,8 +94,6 @@ export default {
         "blob-float": "blob-float 7s ease-in-out infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
-        "marquee-x": "marquee-x var(--duration) linear infinite",
-        "marquee-y": "marquee-y var(--duration) linear infinite",
       },
     },
   },
