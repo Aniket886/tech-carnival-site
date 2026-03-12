@@ -614,6 +614,30 @@ export type Database = {
         }
         Relationships: []
       }
+      guide_videos: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          title?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
       registrations: {
         Row: {
           amount_paid: string | null
