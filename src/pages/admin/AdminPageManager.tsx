@@ -472,6 +472,8 @@ const AdminPageManager = () => {
                 cardFilter={cardFilter}
                 onCardFilterChange={setCardFilter}
                 filteredCards={expanded === section.section_key ? filteredCards : []}
+                onReorderCards={handleCardDragEnd}
+                cardSensors={sensors}
               />
             ))}
           </div>
