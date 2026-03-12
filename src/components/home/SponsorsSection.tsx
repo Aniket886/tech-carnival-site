@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LayoutGrid, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Marquee from "@/components/ui/marquee";
 
 interface Sponsor {
   id: string;
@@ -14,18 +15,15 @@ interface Sponsor {
 }
 
 const TIER_CONFIG = {
-  title: { label: "Title Sponsors", logoSize: "w-[140px] md:w-[180px]", speed: 30, direction: "left" as const, glow: "shadow-[0_0_20px_hsl(var(--neon-blue)/0.4)] border-yellow-500/60" },
-  gold: { label: "Gold Sponsors", logoSize: "w-[90px] md:w-[120px]", speed: 20, direction: "right" as const, glow: "border-gray-400/40" },
-  partner: { label: "Partners & Supporters", logoSize: "w-[60px] md:w-[80px]", speed: 15, direction: "left" as const, glow: "border-border/30" },
+  title: { label: "Title Sponsors", logoSize: "w-[140px] md:w-[180px]", duration: "30s", reverse: false, glow: "shadow-[0_0_20px_hsl(var(--neon-blue)/0.4)] border-yellow-500/60" },
+  gold: { label: "Gold Sponsors", logoSize: "w-[90px] md:w-[120px]", duration: "20s", reverse: true, glow: "border-gray-400/40" },
+  partner: { label: "Partners & Supporters", logoSize: "w-[60px] md:w-[80px]", duration: "15s", reverse: false, glow: "border-border/30" },
 };
 
 type TierKey = keyof typeof TIER_CONFIG;
 
 const MarqueeRow = ({ sponsors, tier }: { sponsors: Sponsor[]; tier: TierKey }) => {
   const config = TIER_CONFIG[tier];
-  const [paused, setPaused] = useState(false);
-  const duplicated = [...sponsors, ...sponsors];
-  const dirClass = config.direction === "left" ? "animate-[marquee-left_var(--speed)_linear_infinite]" : "animate-[marquee-right_var(--speed)_linear_infinite]";
 
   if (sponsors.length === 0) return null;
 
@@ -34,26 +32,17 @@ const MarqueeRow = ({ sponsors, tier }: { sponsors: Sponsor[]; tier: TierKey }) 
       <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 text-center">
         {config.label}
       </p>
-      <div
-        className="relative overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+      <Marquee
+        pauseOnHover
+        reverse={config.reverse}
+        repeat={4}
+        className="[--duration:var(--tier-duration)] [--gap:2rem]"
+        style={{ "--tier-duration": config.duration } as React.CSSProperties}
       >
-        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-
-        <div
-          className={`flex items-center gap-8 md:gap-12 ${dirClass}`}
-          style={{
-            "--speed": `${config.speed}s`,
-            animationPlayState: paused ? "paused" : "running",
-          } as React.CSSProperties}
-        >
-          {duplicated.map((s, i) => (
-            <SponsorLogo key={`${s.id}-${i}`} sponsor={s} tier={tier} />
-          ))}
-        </div>
-      </div>
+        {sponsors.map((s) => (
+          <SponsorLogo key={s.id} sponsor={s} tier={tier} />
+        ))}
+      </Marquee>
     </div>
   );
 };
