@@ -92,7 +92,7 @@ export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) =>
   );
 
   return (
-    <SiteVisibilityContext.Provider value={{ sections, cards, maintenanceMode, loading, isSectionVisible, isCardVisible }}>
+    <SiteVisibilityContext.Provider value={{ sections, cards, orderedSectionKeys, maintenanceMode, loading, isSectionVisible, isCardVisible }}>
       {children}
     </SiteVisibilityContext.Provider>
   );
