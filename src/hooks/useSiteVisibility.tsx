@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface SectionVisibility {
   section_key: string;
   is_visible: boolean;
+  display_order: number;
 }
 
 interface CardVisibility {
