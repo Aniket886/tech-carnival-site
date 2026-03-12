@@ -95,7 +95,7 @@ const SponsorsSection = () => {
   if (sponsors.length === 0) return null;
 
   return (
-    <section className="py-20 md:py-28 relative overflow-hidden" id="sponsors">
+    <section className="py-20 md:py-28 relative overflow-hidden" id="sponsors" style={{ minHeight: '200px' }}>
       {/* Top / bottom separators */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
