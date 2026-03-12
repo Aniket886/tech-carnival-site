@@ -66,7 +66,7 @@ const AdminEvents = () => {
 
   const fetchData = useCallback(async () => {
     const [{ data: evts }, { data: regs }] = await Promise.all([
-      supabase.from("events").select("*").order("name"),
+      supabase.from("events").select("*").order("name") as any,
       supabase.from("registrations").select("event_id"),
     ]);
     setEvents(evts || []);
@@ -120,9 +120,9 @@ const AdminEvents = () => {
 
     let error;
     if (editingId) {
-      ({ error } = await supabase.from("events").update(payload).eq("id", editingId));
+      ({ error } = await supabase.from("events").update(payload as any).eq("id", editingId));
     } else {
-      ({ error } = await supabase.from("events").insert(payload));
+      ({ error } = await supabase.from("events").insert(payload as any));
     }
     setSaving(false);
     if (error) { toast.error(error.message); return; }
