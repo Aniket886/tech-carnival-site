@@ -696,6 +696,24 @@ const AdminEvents = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Rulebook Link Dialog */}
+      <Dialog open={!!editRulebookEvent} onOpenChange={open => !open && setEditRulebookEvent(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Rulebook Link — {editRulebookEvent?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Label className="text-sm font-medium text-foreground">Rulebook URL</Label>
+            <Input placeholder="https://docs.google.com/..." value={editRulebookUrl} onChange={e => setEditRulebookUrl(e.target.value)} />
+            <p className="text-xs text-muted-foreground">Leave empty to remove the link. Use full URL including https://</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditRulebookEvent(null)}>Cancel</Button>
+            <Button onClick={handleSaveRulebookLink} disabled={savingRulebookLink}>{savingRulebookLink ? "Saving…" : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
