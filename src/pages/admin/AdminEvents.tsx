@@ -228,6 +228,39 @@ const AdminEvents = () => {
 
   const payLinkedCount = events.filter(e => e.payment_url).length;
 
+  /* ─── Rulebook Links state ─── */
+  const [editRulebookEvent, setEditRulebookEvent] = useState<Event | null>(null);
+  const [editRulebookUrl, setEditRulebookUrl] = useState("");
+  const [savingRulebookLink, setSavingRulebookLink] = useState(false);
+  const [copiedRulebookId, setCopiedRulebookId] = useState<string | null>(null);
+
+  const handleSaveRulebookLink = async () => {
+    if (!editRulebookEvent) return;
+    setSavingRulebookLink(true);
+    const url = editRulebookUrl.trim() || null;
+    const { error } = await supabase.from("events").update({ rulebook_url: url } as any).eq("id", editRulebookEvent.id);
+    setSavingRulebookLink(false);
+    if (error) { toast.error("Failed to update rulebook link"); return; }
+    toast.success(`Rulebook link updated for ${editRulebookEvent.name}`);
+    setEditRulebookEvent(null);
+    fetchData();
+  };
+
+  const clearRulebookLink = async (ev: Event) => {
+    const { error } = await supabase.from("events").update({ rulebook_url: null } as any).eq("id", ev.id);
+    if (error) { toast.error("Failed to remove rulebook link"); return; }
+    toast.success(`Rulebook link removed for ${ev.name}`);
+    fetchData();
+  };
+
+  const copyRulebookUrl = (id: string, url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedRulebookId(id);
+    setTimeout(() => setCopiedRulebookId(null), 1500);
+  };
+
+  const rulebookLinkedCount = events.filter(e => (e as any).rulebook_url).length;
+
   if (loading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
 
   return (
