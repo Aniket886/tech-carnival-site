@@ -166,6 +166,12 @@ const AdminEvents = () => {
   const [savingLink, setSavingLink] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
+  /* ─── Payment Links state ─── */
+  const [editPayEvent, setEditPayEvent] = useState<Event | null>(null);
+  const [editPayUrl, setEditPayUrl] = useState("");
+  const [savingPayLink, setSavingPayLink] = useState(false);
+  const [copiedPayId, setCopiedPayId] = useState<string | null>(null);
+
   const handleSaveLink = async () => {
     if (!editLinkEvent) return;
     setSavingLink(true);
