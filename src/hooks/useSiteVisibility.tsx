@@ -26,6 +26,7 @@ interface SiteVisibilityCtx {
 const SiteVisibilityContext = createContext<SiteVisibilityCtx>({
   sections: new Map(),
   cards: new Map(),
+  orderedSectionKeys: [],
   maintenanceMode: false,
   loading: true,
   isSectionVisible: () => true,
