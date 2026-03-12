@@ -165,6 +165,15 @@ const AdminSponsors = () => {
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
+
+  const handleFileUpload = useCallback(async (file: File) => {
+    if (!file.type.startsWith("image/")) { toast.error("Please upload an image file"); return; }
+    setUploading(true);
+    const url = await uploadLogo(file);
+    if (url) setForm((f) => ({ ...f, logo_url: url }));
+    setUploading(false);
+  }, []);
 
   const fetchData = useCallback(async () => {
     const { data } = await supabase.from("sponsors").select("*").order("display_order");
