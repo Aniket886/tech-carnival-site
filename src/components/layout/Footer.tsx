@@ -3,6 +3,12 @@ import { Mail, Phone, MapPin, Instagram, Globe, ArrowUp } from "lucide-react";
 const Footer = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <footer className="relative overflow-hidden">
       {/* Top accent */}
@@ -47,6 +53,7 @@ const Footer = () => {
                   <a
                     key={id}
                     href={`#${id}`}
+                    onClick={(e) => scrollToSection(e, id)}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
                   >
                     {id === "faq" ? "FAQ" : id}
@@ -63,6 +70,7 @@ const Footer = () => {
                   <a
                     key={id}
                     href={`#${id}`}
+                    onClick={(e) => scrollToSection(e, id)}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
                   >
                     {id === "faq" ? "FAQ" : id === "register" ? "Register" : id}
