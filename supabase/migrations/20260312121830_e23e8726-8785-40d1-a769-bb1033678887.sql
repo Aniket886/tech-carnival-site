@@ -1,0 +1,1 @@
+DELETE FROM sponsors WHERE name IN ('Google', 'Microsoft', 'GitHub', 'Vercel', 'Figma', 'Notion');
