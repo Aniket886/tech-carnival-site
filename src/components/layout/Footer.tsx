@@ -115,7 +115,7 @@ const Footer = () => {
 
         {/* Bottom bar */}
         <div className="border-t border-border/15">
-          <div className="container mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="container mx-auto px-4 py-5 flex flex-col items-center gap-2 text-center">
             <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 text-xs text-muted-foreground">
               <span>© {new Date().getFullYear()} Tech Carnival 2K26 · GM University</span>
               <span className="hidden sm:inline text-border/40">|</span>
@@ -123,11 +123,9 @@ const Footer = () => {
                 Built with <span className="text-destructive">❤️</span> by FCIT Tech Team
               </span>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] text-foreground/40 tracking-wide select-all">
-                Developed by Aniket Tegginamath
-              </span>
-            </div>
+            <span className="text-[10px] text-foreground/40 tracking-wide select-all">
+              Developed by Aniket Tegginamath
+            </span>
           </div>
         </div>
       </div>
