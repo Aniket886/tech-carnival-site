@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, MapPin, User, Send } from "lucide-react";
+import { Mail, Phone, MapPin, User } from "lucide-react";
+import EyeFollowButton from "@/components/ui/EyeFollowButton";
 import { validateName, validateEmail, validatePhone, validateMessage, sanitizeInput } from "@/lib/validators";
 
 const coordinators = [
