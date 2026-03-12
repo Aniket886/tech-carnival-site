@@ -120,9 +120,9 @@ const AdminEvents = () => {
 
     let error;
     if (editingId) {
-      ({ error } = await supabase.from("events").update(payload).eq("id", editingId));
+      ({ error } = await supabase.from("events").update(payload as any).eq("id", editingId));
     } else {
-      ({ error } = await supabase.from("events").insert(payload));
+      ({ error } = await supabase.from("events").insert(payload as any));
     }
     setSaving(false);
     if (error) { toast.error(error.message); return; }
