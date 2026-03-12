@@ -20,32 +20,27 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => {
         window.open(sponsor.website_url, "_blank", "noopener")
       }
       className={cn(
-        "group/card relative flex h-40 w-56 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-5",
-        "bg-gradient-to-b from-muted/60 via-muted/30 to-muted/10",
-        "border border-border/20",
-        "shadow-sm transition-all duration-300 cursor-pointer",
-        "hover:scale-[1.04] hover:shadow-xl hover:border-primary/20 hover:from-muted/80"
+        "group/card relative flex h-44 w-64 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-6",
+        "bg-gradient-to-br from-[hsl(0_0%_85%)] via-[hsl(0_0%_78%)] to-[hsl(0_0%_70%)]",
+        "shadow-md transition-all duration-300 cursor-pointer",
+        "hover:scale-[1.03] hover:shadow-xl"
       )}
     >
       {/* Icon / Logo */}
       <div className="flex items-start">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground/10 backdrop-blur-sm">
-          <img
-            src={sponsor.logo_url}
-            alt={sponsor.name}
-            className="h-6 w-6 rounded object-contain"
-            loading="lazy"
-          />
-        </div>
+        <img
+          src={sponsor.logo_url}
+          alt={sponsor.name}
+          className="h-8 w-8 object-contain"
+          loading="lazy"
+          style={{ filter: "brightness(0)" }}
+        />
       </div>
 
       {/* Name at bottom */}
-      <p className="text-[13px] font-medium leading-snug text-foreground/80 text-left group-hover/card:text-foreground transition-colors">
+      <p className="text-sm font-medium leading-snug text-[hsl(0_0%_15%)] text-left">
         {sponsor.name}
       </p>
-
-      {/* Subtle gradient overlay on hover */}
-      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-primary/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
     </button>
   );
 };
