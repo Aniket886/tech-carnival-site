@@ -50,34 +50,6 @@ const CustomCursor = () => {
     setTimeout(() => r.remove(), 550);
   }, []);
 
-  const spawnSparks = useCallback((x: number, y: number) => {
-    const container = rippleContainerRef.current;
-    if (!container) return;
-    const count = 8 + Math.floor(Math.random() * 4);
-    for (let i = 0; i < count; i++) {
-      const spark = document.createElement("div");
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-      const dist = 20 + Math.random() * 30;
-      const size = 2 + Math.random() * 2;
-      const tx = Math.cos(angle) * dist;
-      const ty = Math.sin(angle) * dist;
-      spark.style.cssText = `
-        position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;
-        border-radius:50%;background:hsl(var(--primary));
-        pointer-events:none;z-index:99998;
-        opacity:1;transition:transform 0.4s cubic-bezier(.2,.8,.3,1),opacity 0.4s ease-out;
-        box-shadow:0 0 4px hsl(var(--primary)/0.8);
-        transform:translate(-50%,-50%);
-      `;
-      container.appendChild(spark);
-      requestAnimationFrame(() => {
-        spark.style.transform = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`;
-        spark.style.opacity = "0";
-      });
-      setTimeout(() => spark.remove(), 450);
-    }
-  }, []);
-
   useEffect(() => {
     if ("ontouchstart" in window || navigator.maxTouchPoints > 0) return;
 
@@ -115,10 +87,7 @@ const CustomCursor = () => {
       }
     };
 
-    const onClick = (e: MouseEvent) => {
-      spawnRipple(e.clientX, e.clientY);
-      spawnSparks(e.clientX, e.clientY);
-    };
+    const onClick = (e: MouseEvent) => spawnRipple(e.clientX, e.clientY);
 
     const onEnter = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
@@ -198,7 +167,7 @@ const CustomCursor = () => {
       document.documentElement.style.cursor = "";
       style.remove();
     };
-  }, [spawnParticle, spawnRipple, spawnSparks]);
+  }, [spawnParticle, spawnRipple]);
 
   if (typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0)) {
     return null;
