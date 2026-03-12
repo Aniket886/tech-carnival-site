@@ -115,7 +115,10 @@ const CustomCursor = () => {
       }
     };
 
-    const onClick = (e: MouseEvent) => spawnRipple(e.clientX, e.clientY);
+    const onClick = (e: MouseEvent) => {
+      spawnRipple(e.clientX, e.clientY);
+      spawnSparks(e.clientX, e.clientY);
+    };
 
     const onEnter = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
