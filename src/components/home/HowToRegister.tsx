@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Play, CheckCircle } from "lucide-react";
+import { Play, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
@@ -10,6 +10,13 @@ const steps = [
   { num: "04", title: "Pay & Submit", desc: "Complete payment and submit your registration." },
 ];
 
+interface GuideVideo {
+  id: string;
+  title: string;
+  url: string;
+  display_order: number;
+}
+
 const extractYouTubeId = (url: string): string | null => {
   const match = url.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/
@@ -18,21 +25,22 @@ const extractYouTubeId = (url: string): string | null => {
 };
 
 const HowToRegister = () => {
-  const [videoUrl, setVideoUrl] = useState("");
+  const [videos, setVideos] = useState<GuideVideo[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetch = async () => {
       const { data } = await supabase
-        .from("admin_settings")
-        .select("setting_value")
-        .eq("setting_key", "how_to_register_video_url")
-        .maybeSingle();
-      if (data?.setting_value) setVideoUrl(data.setting_value);
+        .from("guide_videos")
+        .select("*")
+        .order("display_order", { ascending: true });
+      if (data) setVideos(data);
     };
     fetch();
   }, []);
 
-  const videoId = extractYouTubeId(videoUrl);
+  const currentVideo = videos[currentIndex];
+  const videoId = currentVideo ? extractYouTubeId(currentVideo.url) : null;
 
   return (
     <section id="how-to-register" className="py-24 relative">
@@ -84,19 +92,21 @@ const HowToRegister = () => {
             ))}
           </motion.div>
 
-          {/* Video Player */}
+          {/* Video Player with Pagination */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
+            className="space-y-4"
           >
             {videoId ? (
               <div className="relative rounded-2xl overflow-hidden border border-border shadow-lg shadow-primary/5">
                 <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                   <iframe
+                    key={videoId}
                     src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`}
-                    title="How to Register"
+                    title={currentVideo?.title || "How to Register"}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     loading="lazy"
@@ -106,13 +116,55 @@ const HowToRegister = () => {
                   />
                 </div>
               </div>
-            ) : (
+            ) : videos.length === 0 ? (
               <div className="aspect-video rounded-2xl border border-dashed border-border bg-card/30 flex flex-col items-center justify-center gap-3">
                 <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
                   <Play size={24} className="text-primary ml-1" />
                 </div>
                 <p className="text-sm text-muted-foreground">Video tutorial coming soon</p>
               </div>
+            ) : null}
+
+            {/* Pagination */}
+            {videos.length > 1 && (
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
+                  disabled={currentIndex === 0}
+                  className="p-2 rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                <div className="flex items-center gap-1.5">
+                  {videos.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentIndex(i)}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        i === currentIndex
+                          ? "bg-primary w-6"
+                          : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setCurrentIndex((prev) => Math.min(videos.length - 1, prev + 1))}
+                  disabled={currentIndex === videos.length - 1}
+                  className="p-2 rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+
+            {/* Video title */}
+            {currentVideo && (
+              <p className="text-center text-xs text-muted-foreground">
+                {currentVideo.title}{videos.length > 1 && ` · ${currentIndex + 1} / ${videos.length}`}
+              </p>
             )}
           </motion.div>
         </div>
