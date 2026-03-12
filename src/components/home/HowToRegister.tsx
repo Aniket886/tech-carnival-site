@@ -1,13 +1,33 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Play, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, Search, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
-  { num: "01", title: "Browse Events", desc: "Explore all technical, gaming & cultural events." },
-  { num: "02", title: "Pick Your Event", desc: "Check the rule book and all necessary details in the event card." },
-  { num: "03", title: "Complete Payment", desc: "Click the \"Pay\" button, complete your payment, and keep a screenshot for the next step." },
-  { num: "04", title: "Register & Submit", desc: "Click \"Register\", fill in your details (name & phone must match payment), enter UTR/TID, upload payment screenshot, and submit. You'll receive a confirmation email once verified by the organizers." },
+  {
+    num: "01",
+    title: "Browse Events",
+    desc: "Explore all technical, gaming & cultural events.",
+    icon: Compass,
+  },
+  {
+    num: "02",
+    title: "Pick Your Event",
+    desc: "Check the rule book and all necessary details in the event card.",
+    icon: Search,
+  },
+  {
+    num: "03",
+    title: "Complete Payment",
+    desc: 'Click the "Pay" button, complete your payment, and keep a screenshot for the next step.',
+    icon: CreditCard,
+  },
+  {
+    num: "04",
+    title: "Register & Submit",
+    desc: 'Click "Register", fill in your details (name & phone must match payment), enter UTR/TID, upload payment screenshot, and submit. You\'ll receive a confirmation email once verified by the organizers.',
+    icon: ClipboardCheck,
+  },
 ];
 
 interface GuideVideo {
@@ -64,53 +84,93 @@ const HowToRegister = () => {
   const videoId = currentVideo ? extractYouTubeId(currentVideo.url) : null;
 
   return (
-    <section id="how-to-register" className="py-24 relative">
+    <section id="how-to-register" className="py-24 relative overflow-hidden">
+      {/* Ambient background effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background" />
+      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/[0.03] blur-[100px]" />
+      <div className="absolute top-1/3 right-0 w-[400px] h-[400px] rounded-full bg-secondary/[0.04] blur-[100px]" />
+
       <div className="relative z-10 container mx-auto px-4">
         {/* Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text mb-4">
+          <motion.span
+            className="inline-block text-xs font-mono tracking-[0.3em] uppercase text-primary/70 mb-4"
+            initial={{ opacity: 0, letterSpacing: "0.1em" }}
+            whileInView={{ opacity: 1, letterSpacing: "0.3em" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            Step-by-step guide
+          </motion.span>
+          <h2 className="text-3xl sm:text-5xl font-display font-bold gradient-text mb-5">
             How to Register
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Follow these simple steps to register for your favorite events.
+          <p className="text-muted-foreground max-w-lg mx-auto text-sm sm:text-base">
+            Follow these steps to secure your spot at Tech Carnival 2K26.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Steps */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Steps - Timeline style */}
           <motion.div
-            className="space-y-5"
+            className="relative"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {steps.map((step, i) => (
-              <motion.div
-                key={step.num}
-                className="flex items-start gap-4 p-4 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-colors"
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.1 * i }}
-              >
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <span className="text-sm font-bold text-primary">{step.num}</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground text-sm">{step.title}</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">{step.desc}</p>
-                </div>
-                <CheckCircle size={16} className="text-primary/40 flex-shrink-0 mt-1 ml-auto" />
-              </motion.div>
-            ))}
+            {/* Vertical connecting line */}
+            <div className="absolute left-6 top-8 bottom-8 w-px bg-gradient-to-b from-primary/40 via-secondary/30 to-transparent hidden sm:block" />
+
+            <div className="space-y-6">
+              {steps.map((step, i) => {
+                const Icon = step.icon;
+                return (
+                  <motion.div
+                    key={step.num}
+                    className="group relative"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.15 * i }}
+                  >
+                    <div className="flex items-start gap-5">
+                      {/* Step circle with icon */}
+                      <div className="relative flex-shrink-0 z-10">
+                        <motion.div
+                          className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-primary/30 bg-background group-hover:border-primary/60 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)] transition-all duration-500"
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          <Icon size={18} className="text-primary" />
+                        </motion.div>
+                        {/* Step number badge */}
+                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                          {i + 1}
+                        </span>
+                      </div>
+
+                      {/* Content card */}
+                      <div className="flex-1 pb-2">
+                        <div className="p-4 rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm group-hover:border-primary/20 group-hover:bg-card/60 transition-all duration-500">
+                          <h3 className="font-display font-semibold text-foreground text-sm sm:text-base mb-1.5">
+                            {step.title}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                            {step.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </motion.div>
 
           {/* Video Player with Pagination */}
@@ -119,11 +179,13 @@ const HowToRegister = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="space-y-4"
+            className="space-y-5 lg:sticky lg:top-24"
           >
             {videoId ? (
-              <div className="relative rounded-2xl overflow-hidden border border-border shadow-lg shadow-primary/5">
-                <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-xl shadow-primary/5">
+                {/* Glow effect behind video */}
+                <div className="absolute -inset-1 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 rounded-2xl blur-sm -z-10" />
+                <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
                   <iframe
                     key={videoId}
                     src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`}
@@ -133,48 +195,67 @@ const HowToRegister = () => {
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      border: 0,
+                    }}
                   />
                 </div>
               </div>
             ) : videos.length === 0 ? (
-              <div className="aspect-video rounded-2xl border border-dashed border-border bg-card/30 flex flex-col items-center justify-center gap-3">
-                <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <Play size={24} className="text-primary ml-1" />
-                </div>
-                <p className="text-sm text-muted-foreground">Video tutorial coming soon</p>
+              <div className="aspect-video rounded-2xl border border-dashed border-border/40 bg-card/20 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+                <motion.div
+                  className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Play size={28} className="text-primary ml-1" />
+                </motion.div>
+                <p className="text-sm text-muted-foreground font-medium">
+                  Video tutorial coming soon
+                </p>
               </div>
             ) : null}
 
             {/* Pagination */}
             {videos.length > 1 && (
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-center gap-3">
                 <button
-                  onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
+                  onClick={() =>
+                    setCurrentIndex((prev) => Math.max(0, prev - 1))
+                  }
                   disabled={currentIndex === 0}
-                  className="p-2 rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-2.5 rounded-xl border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-card/60 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <ChevronLeft size={16} />
                 </button>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   {videos.map((_, i) => (
                     <button
                       key={i}
                       onClick={() => setCurrentIndex(i)}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      className={`h-2 rounded-full transition-all duration-400 ${
                         i === currentIndex
-                          ? "bg-primary w-6"
-                          : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                          ? "bg-primary w-8"
+                          : "bg-muted-foreground/20 hover:bg-muted-foreground/40 w-2"
                       }`}
                     />
                   ))}
                 </div>
 
                 <button
-                  onClick={() => setCurrentIndex((prev) => Math.min(videos.length - 1, prev + 1))}
+                  onClick={() =>
+                    setCurrentIndex((prev) =>
+                      Math.min(videos.length - 1, prev + 1)
+                    )
+                  }
                   disabled={currentIndex === videos.length - 1}
-                  className="p-2 rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-2.5 rounded-xl border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-card/60 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <ChevronRight size={16} />
                 </button>
@@ -183,8 +264,10 @@ const HowToRegister = () => {
 
             {/* Video title */}
             {currentVideo && (
-              <p className="text-center text-xs text-muted-foreground">
-                {currentVideo.title}{videos.length > 1 && ` · ${currentIndex + 1} / ${videos.length}`}
+              <p className="text-center text-xs text-muted-foreground/70 font-mono tracking-wide">
+                {currentVideo.title}
+                {videos.length > 1 &&
+                  ` · ${currentIndex + 1} / ${videos.length}`}
               </p>
             )}
           </motion.div>
