@@ -590,23 +590,6 @@ const AdminEvents = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Link Dialog */}
-      <Dialog open={!!editLinkEvent} onOpenChange={open => !open && setEditLinkEvent(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit Link — {editLinkEvent?.name}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3 py-2">
-            <Label className="text-sm font-medium text-foreground">Website URL</Label>
-            <Input placeholder="https://event-website.com" value={editLinkUrl} onChange={e => setEditLinkUrl(e.target.value)} />
-            <p className="text-xs text-muted-foreground">Leave empty to remove the link. Use full URL including https://</p>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditLinkEvent(null)}>Cancel</Button>
-            <Button onClick={handleSaveLink} disabled={savingLink}>{savingLink ? "Saving…" : "Save"}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Edit Payment Link Dialog */}
       <Dialog open={!!editPayEvent} onOpenChange={open => !open && setEditPayEvent(null)}>
