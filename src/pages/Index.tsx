@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { ReactNode } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/home/Hero";
 import About from "@/components/home/About";
@@ -22,8 +22,25 @@ import MaintenancePage from "@/components/home/MaintenancePage";
 import AnnouncementBanner from "@/components/home/AnnouncementBanner";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 
+/* Map section_key → component (wrapped in ScrollAnimate where appropriate) */
+const sectionComponentMap: Record<string, ReactNode> = {
+  hero: <Hero />,
+  about: <ScrollAnimate><About /></ScrollAnimate>,
+  how_to_register: <ScrollAnimate><HowToRegister /></ScrollAnimate>,
+  sponsors: <ScrollAnimate><SponsorsSection /></ScrollAnimate>,
+  events: <ScrollAnimate><EventsSection /></ScrollAnimate>,
+  schedule: <ScrollAnimate><ScheduleSection /></ScrollAnimate>,
+  leaderboard: <ScrollAnimate><Leaderboard /></ScrollAnimate>,
+  gallery: <ScrollAnimate><GallerySection /></ScrollAnimate>,
+  faq: <ScrollAnimate><FAQSection /></ScrollAnimate>,
+  contact: <ScrollAnimate><ContactSection /></ScrollAnimate>,
+  organizing_committee: <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>,
+  core_team: <ScrollAnimate><CoreTeam /></ScrollAnimate>,
+  footer: <Footer />,
+};
+
 const Index = () => {
-  const { isSectionVisible, maintenanceMode, loading } = useSiteVisibility();
+  const { isSectionVisible, orderedSectionKeys, maintenanceMode } = useSiteVisibility();
 
   if (maintenanceMode) return <MaintenancePage />;
 
@@ -33,19 +50,11 @@ const Index = () => {
       <PageLoader />
       <CustomCursor />
       <Navbar />
-      {isSectionVisible("hero") && <Hero />}
-      {isSectionVisible("about") && <ScrollAnimate><About /></ScrollAnimate>}
-      {isSectionVisible("how_to_register") && <ScrollAnimate><HowToRegister /></ScrollAnimate>}
-      {isSectionVisible("sponsors") && <ScrollAnimate><SponsorsSection /></ScrollAnimate>}
-      {isSectionVisible("events") && <ScrollAnimate><EventsSection /></ScrollAnimate>}
-      {isSectionVisible("schedule") && <ScrollAnimate><ScheduleSection /></ScrollAnimate>}
-      {isSectionVisible("leaderboard") && <ScrollAnimate><Leaderboard /></ScrollAnimate>}
-      <ScrollAnimate><GallerySection /></ScrollAnimate>
-      {isSectionVisible("faq") && <ScrollAnimate><FAQSection /></ScrollAnimate>}
-      {isSectionVisible("contact") && <ScrollAnimate><ContactSection /></ScrollAnimate>}
-      {isSectionVisible("organizing_committee") && <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>}
-      {isSectionVisible("core_team") && <ScrollAnimate><CoreTeam /></ScrollAnimate>}
-      {isSectionVisible("footer") && <Footer />}
+      {orderedSectionKeys.map((key) =>
+        isSectionVisible(key) && sectionComponentMap[key]
+          ? <div key={key}>{sectionComponentMap[key]}</div>
+          : null
+      )}
       <ScrollToTop />
       <CarniBotWidget />
     </div>

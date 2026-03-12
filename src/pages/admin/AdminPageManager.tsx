@@ -7,13 +7,22 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
   ChevronDown, ChevronUp, ExternalLink, RotateCcw, Search,
-  Wrench, Eye, EyeOff, Activity, Shield,
+  Wrench, Eye, EyeOff, Activity, GripVertical,
 } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor,
+  useSensor, useSensors, DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove, SortableContext, sortableKeyboardCoordinates,
+  useSortable, verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 /* ─── types ─── */
 interface Section {
@@ -53,10 +62,114 @@ const sectionIcons: Record<string, string> = {
   gallery: "🖼️", faq: "❓", contact: "📞", footer: "❤️", carnibot: "🤖",
 };
 
-/* ─── helpers ─── */
 const fmtDate = (d: string) => {
   const dt = new Date(d);
   return `${dt.getMonth() + 1}/${dt.getDate()}/${dt.getFullYear()}`;
+};
+
+/* ─── Sortable Section Row ─── */
+const SortableSectionRow = ({
+  section, cards, expanded, onToggleExpand, onToggleSection,
+  onToggleCard, onBulkCards, cardFilter, onCardFilterChange, filteredCards,
+}: {
+  section: Section;
+  cards: Card[];
+  expanded: string | null;
+  onToggleExpand: (key: string) => void;
+  onToggleSection: (s: Section) => void;
+  onToggleCard: (c: Card) => void;
+  onBulkCards: (key: string, visible: boolean) => void;
+  cardFilter: string;
+  onCardFilterChange: (v: string) => void;
+  filteredCards: Card[];
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : undefined,
+  };
+
+  const sectionCards = cards.filter(c => c.section_key === section.section_key);
+  const isExpanded = expanded === section.section_key;
+  const hasCards = sectionCards.length > 0;
+
+  return (
+    <div ref={setNodeRef} style={style} className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing text-muted-foreground flex-shrink-0 touch-none"
+        >
+          <GripVertical size={16} />
+        </button>
+        <span className="text-xl">{sectionIcons[section.section_key] || "📄"}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-foreground text-sm">{section.section_name}</span>
+            <Badge variant={section.is_visible ? "default" : "destructive"} className="text-[10px] px-1.5 py-0">
+              {section.is_visible ? "● Visible" : "● Hidden"}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+            {hasCards && <span>{sectionCards.length} cards</span>}
+            <span>⏱ {fmtDate(section.updated_at)}</span>
+          </div>
+        </div>
+        <Switch checked={section.is_visible} onCheckedChange={() => onToggleSection(section)} />
+        {hasCards && (
+          <button
+            onClick={() => onToggleExpand(section.section_key)}
+            className="text-muted-foreground hover:text-foreground transition-colors p-1"
+          >
+            {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+        )}
+      </div>
+
+      {isExpanded && hasCards && (
+        <div className="border-t border-border bg-background/50 px-4 py-3 space-y-2">
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => onBulkCards(section.section_key, true)}>
+              <Eye size={12} className="mr-1" /> Show All
+            </Button>
+            <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => onBulkCards(section.section_key, false)}>
+              <EyeOff size={12} className="mr-1" /> Hide All
+            </Button>
+            <div className="relative flex-1 min-w-[160px] max-w-[250px]">
+              <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Filter cards…"
+                value={cardFilter}
+                onChange={e => onCardFilterChange(e.target.value)}
+                className="h-7 pl-8 text-xs bg-card"
+              />
+            </div>
+          </div>
+          {filteredCards.map(card => (
+            <div key={card.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/30 transition-colors">
+              <span className={`text-sm ${card.is_visible ? "text-foreground" : "text-muted-foreground"}`}>
+                {card.card_name}
+              </span>
+              <div className="flex items-center gap-2">
+                <Badge variant={card.is_visible ? "default" : "destructive"} className="text-[10px] px-1.5 py-0">
+                  {card.is_visible ? "Visible" : "Hidden"}
+                </Badge>
+                <Switch checked={card.is_visible} onCheckedChange={() => onToggleCard(card)} />
+              </div>
+            </div>
+          ))}
+          {filteredCards.length === 0 && (
+            <p className="text-xs text-muted-foreground text-center py-2">No cards match filter</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
 };
 
 /* ─── main ─── */
@@ -71,7 +184,11 @@ const AdminPageManager = () => {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [regOpen, setRegOpen] = useState(true);
 
-  /* fetch all data */
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
   const fetchAll = useCallback(async () => {
     const [{ data: secs }, { data: crds }, { data: logData }, { data: settings }] = await Promise.all([
       supabase.from("site_sections").select("*").order("display_order"),
@@ -99,7 +216,27 @@ const AdminPageManager = () => {
     return () => clearInterval(interval);
   }, [fetchAll]);
 
-  /* toggle section visibility */
+  /* drag end → reorder sections */
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = sections.findIndex(s => s.id === active.id);
+    const newIndex = sections.findIndex(s => s.id === over.id);
+    const reordered = arrayMove(sections, oldIndex, newIndex);
+
+    // Optimistic update
+    setSections(reordered);
+
+    // Persist new display_order values
+    const updates = reordered.map((s, i) =>
+      supabase.from("site_sections").update({ display_order: i, updated_at: new Date().toISOString() }).eq("id", s.id)
+    );
+    await Promise.all(updates);
+    toast.success("Section order updated");
+    fetchAll();
+  };
+
   const toggleSection = async (section: Section) => {
     const newVal = !section.is_visible;
     const { error } = await supabase
@@ -107,20 +244,14 @@ const AdminPageManager = () => {
       .update({ is_visible: newVal, updated_at: new Date().toISOString() })
       .eq("id", section.id);
     if (error) { toast.error("Failed to update section"); return; }
-
     await supabase.from("visibility_log").insert({
-      target_type: "section",
-      target_key: section.section_key,
-      target_name: section.section_name,
-      changed_from: section.is_visible,
-      changed_to: newVal,
+      target_type: "section", target_key: section.section_key,
+      target_name: section.section_name, changed_from: section.is_visible, changed_to: newVal,
     });
-
     toast.success(`${section.section_name} ${newVal ? "shown" : "hidden"}`);
     fetchAll();
   };
 
-  /* toggle card visibility */
   const toggleCard = async (card: Card) => {
     const newVal = !card.is_visible;
     const { error } = await supabase
@@ -128,36 +259,27 @@ const AdminPageManager = () => {
       .update({ is_visible: newVal, updated_at: new Date().toISOString() })
       .eq("id", card.id);
     if (error) { toast.error("Failed to update card"); return; }
-
     await supabase.from("visibility_log").insert({
-      target_type: "card",
-      target_key: card.card_key,
-      target_name: card.card_name,
-      changed_from: card.is_visible,
-      changed_to: newVal,
+      target_type: "card", target_key: card.card_key,
+      target_name: card.card_name, changed_from: card.is_visible, changed_to: newVal,
     });
-
     toast.success(`${card.card_name} ${newVal ? "shown" : "hidden"}`);
     fetchAll();
   };
 
-  /* maintenance mode */
   const toggleMaintenance = async () => {
     const newMode = !maintenanceMode;
     const updates = sections
       .filter(s => s.section_key !== "footer")
       .map(s => supabase.from("site_sections").update({ is_visible: !newMode, updated_at: new Date().toISOString() }).eq("id", s.id));
     await Promise.all(updates);
-
     await supabase.from("activity_log").insert({
       action: newMode ? "Maintenance mode enabled" : "Maintenance mode disabled",
     });
-
     toast.success(newMode ? "Maintenance mode enabled" : "Maintenance mode disabled");
     fetchAll();
   };
 
-  /* registration toggle */
   const toggleRegistration = async () => {
     const newVal = !regOpen;
     const { error } = await supabase
@@ -168,7 +290,6 @@ const AdminPageManager = () => {
     toast.success(`Registration ${newVal ? "opened" : "closed"}`);
   };
 
-  /* reset to default */
   const resetToDefault = async () => {
     const updates = sections.map(s =>
       supabase.from("site_sections").update({ is_visible: true, updated_at: new Date().toISOString() }).eq("id", s.id)
@@ -181,7 +302,6 @@ const AdminPageManager = () => {
     fetchAll();
   };
 
-  /* bulk card actions */
   const bulkCards = async (sectionKey: string, visible: boolean) => {
     const sectionCards = cards.filter(c => c.section_key === sectionKey);
     await Promise.all(sectionCards.map(c =>
@@ -191,7 +311,6 @@ const AdminPageManager = () => {
     fetchAll();
   };
 
-  /* filtered cards for expanded section */
   const filteredCards = useMemo(() => {
     if (!expanded) return [];
     const sCards = cards.filter(c => c.section_key === expanded);
@@ -210,7 +329,7 @@ const AdminPageManager = () => {
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-display font-bold text-foreground">Page Manager</h2>
-          <p className="text-sm text-muted-foreground mt-1">Control visibility of all sections and cards on the public website</p>
+          <p className="text-sm text-muted-foreground mt-1">Drag to reorder sections · Toggle visibility · Changes update the site live</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="gap-2" onClick={() => window.open("/", "_blank")}>
@@ -270,97 +389,28 @@ const AdminPageManager = () => {
         </Button>}
       </div>
 
-      {/* Sections List */}
-      <div className="space-y-2">
-        {sections.map(section => {
-          const sectionCards = cards.filter(c => c.section_key === section.section_key);
-          const isExpanded = expanded === section.section_key;
-          const hasCards = sectionCards.length > 0;
-
-          return (
-            <div key={section.id} className="rounded-xl border border-border bg-card overflow-hidden">
-              {/* Section Row */}
-              <div className="flex items-center gap-3 px-4 py-3">
-                <span className="text-xl">{sectionIcons[section.section_key] || "📄"}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-foreground text-sm">{section.section_name}</span>
-                    <Badge
-                      variant={section.is_visible ? "default" : "destructive"}
-                      className="text-[10px] px-1.5 py-0"
-                    >
-                      {section.is_visible ? "● Visible" : "● Hidden"}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
-                    {hasCards && <span>{sectionCards.length} cards</span>}
-                    <span>⏱ {fmtDate(section.updated_at)}</span>
-                  </div>
-                </div>
-                <Switch
-                  checked={section.is_visible}
-                  onCheckedChange={() => toggleSection(section)}
-                />
-                {hasCards && (
-                  <button
-                    onClick={() => { setExpanded(isExpanded ? null : section.section_key); setCardFilter(""); }}
-                    className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                  >
-                    {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                  </button>
-                )}
-              </div>
-
-              {/* Expanded Cards */}
-              {isExpanded && hasCards && (
-                <div className="border-t border-border bg-background/50 px-4 py-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => bulkCards(section.section_key, true)}>
-                      <Eye size={12} className="mr-1" /> Show All
-                    </Button>
-                    <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => bulkCards(section.section_key, false)}>
-                      <EyeOff size={12} className="mr-1" /> Hide All
-                    </Button>
-                    <div className="relative flex-1 min-w-[160px] max-w-[250px]">
-                      <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        placeholder="Filter cards…"
-                        value={cardFilter}
-                        onChange={e => setCardFilter(e.target.value)}
-                        className="h-7 pl-8 text-xs bg-card"
-                      />
-                    </div>
-                  </div>
-
-                  {filteredCards.map(card => (
-                    <div key={card.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/30 transition-colors">
-                      <span className={`text-sm ${card.is_visible ? "text-foreground" : "text-muted-foreground"}`}>
-                        {card.card_name}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant={card.is_visible ? "default" : "destructive"}
-                          className="text-[10px] px-1.5 py-0"
-                        >
-                          {card.is_visible ? "Visible" : "Hidden"}
-                        </Badge>
-                        <Switch
-                          checked={card.is_visible}
-                          onCheckedChange={() => toggleCard(card)}
-                        />
-                      </div>
-                    </div>
-                  ))}
-
-                  {filteredCards.length === 0 && (
-                    <p className="text-xs text-muted-foreground text-center py-2">No cards match filter</p>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      {/* Sortable Sections List */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-2">
+            {sections.map(section => (
+              <SortableSectionRow
+                key={section.id}
+                section={section}
+                cards={cards}
+                expanded={expanded}
+                onToggleExpand={(key) => { setExpanded(expanded === key ? null : key); setCardFilter(""); }}
+                onToggleSection={toggleSection}
+                onToggleCard={toggleCard}
+                onBulkCards={bulkCards}
+                cardFilter={cardFilter}
+                onCardFilterChange={setCardFilter}
+                filteredCards={expanded === section.section_key ? filteredCards : []}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };
