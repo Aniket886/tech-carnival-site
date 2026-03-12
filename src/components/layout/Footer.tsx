@@ -123,7 +123,7 @@ const Footer = () => {
                 Built with <span className="text-destructive">❤️</span> by FCIT Tech Team
               </span>
             </div>
-            <a href="/admin" className="text-[10px] text-foreground/40 tracking-wide select-all hover:text-primary/60 transition-colors cursor-pointer">
+            <a href="/admin" className="text-[10px] tracking-wide select-all cursor-pointer transition-colors duration-300 text-[hsl(var(--neon-blue))] hover:text-[hsl(var(--neon-purple))]">
               Developed by Aniket Tegginamath
             </a>
           </div>
