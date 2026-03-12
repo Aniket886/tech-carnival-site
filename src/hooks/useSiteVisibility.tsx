@@ -50,7 +50,7 @@ export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) =>
 
   const fetchData = useCallback(async () => {
     const [{ data: secs }, { data: crds }] = await Promise.all([
-      supabase.from("site_sections").select("section_key, is_visible"),
+      supabase.from("site_sections").select("section_key, is_visible, display_order").order("display_order"),
       supabase.from("section_cards").select("section_key, card_key, is_visible"),
     ]);
 
