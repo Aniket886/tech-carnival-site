@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check, CreditCard } from "lucide-react";
+import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check, CreditCard, BookOpen } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
@@ -31,20 +31,20 @@ interface Event {
   description: string | null; team_size_min: number; team_size_max: number;
   is_active: boolean; date: string | null; time: string | null; venue: string | null;
   prize_pool: string | null; rules: string[] | null; website_url: string | null;
-  payment_url: string | null; created_at: string; price: number;
+  payment_url: string | null; rulebook_url: string | null; created_at: string; price: number;
 }
 
 interface FormData {
   name: string; slug: string; category: string; icon: string; description: string;
   team_size_min: number; team_size_max: number; date: string; time: string;
   venue: string; prize_pool: string; rules: string; website_url: string;
-  payment_url: string; price: number;
+  payment_url: string; rulebook_url: string; price: number;
 }
 
 const emptyForm: FormData = {
   name: "", slug: "", category: "technical", icon: "🎯", description: "",
   team_size_min: 1, team_size_max: 1, date: "", time: "", venue: "",
-  prize_pool: "", rules: "", website_url: "", payment_url: "", price: 0,
+  prize_pool: "", rules: "", website_url: "", payment_url: "", rulebook_url: "", price: 0,
 };
 
 const categoryStyles: Record<string, string> = {
@@ -90,7 +90,7 @@ const AdminEvents = () => {
       name: ev.name, slug: ev.slug, category: ev.category, icon: ev.icon || "🎯",
       description: ev.description || "", team_size_min: ev.team_size_min, team_size_max: ev.team_size_max,
       date: ev.date || "", time: ev.time || "", venue: ev.venue || "",
-      prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "", payment_url: ev.payment_url || "",
+      prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "", payment_url: ev.payment_url || "", rulebook_url: (ev as any).rulebook_url || "",
       price: ev.price || 0,
     });
     setDialogOpen(true);
@@ -114,6 +114,7 @@ const AdminEvents = () => {
       rules: form.rules.trim() ? form.rules.split("\n").map(r => r.trim()).filter(Boolean) : null,
       website_url: form.website_url || null,
       payment_url: form.payment_url || null,
+      rulebook_url: form.rulebook_url || null,
       price: form.price || 0,
     };
 
@@ -227,6 +228,39 @@ const AdminEvents = () => {
 
   const payLinkedCount = events.filter(e => e.payment_url).length;
 
+  /* ─── Rulebook Links state ─── */
+  const [editRulebookEvent, setEditRulebookEvent] = useState<Event | null>(null);
+  const [editRulebookUrl, setEditRulebookUrl] = useState("");
+  const [savingRulebookLink, setSavingRulebookLink] = useState(false);
+  const [copiedRulebookId, setCopiedRulebookId] = useState<string | null>(null);
+
+  const handleSaveRulebookLink = async () => {
+    if (!editRulebookEvent) return;
+    setSavingRulebookLink(true);
+    const url = editRulebookUrl.trim() || null;
+    const { error } = await supabase.from("events").update({ rulebook_url: url } as any).eq("id", editRulebookEvent.id);
+    setSavingRulebookLink(false);
+    if (error) { toast.error("Failed to update rulebook link"); return; }
+    toast.success(`Rulebook link updated for ${editRulebookEvent.name}`);
+    setEditRulebookEvent(null);
+    fetchData();
+  };
+
+  const clearRulebookLink = async (ev: Event) => {
+    const { error } = await supabase.from("events").update({ rulebook_url: null } as any).eq("id", ev.id);
+    if (error) { toast.error("Failed to remove rulebook link"); return; }
+    toast.success(`Rulebook link removed for ${ev.name}`);
+    fetchData();
+  };
+
+  const copyRulebookUrl = (id: string, url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedRulebookId(id);
+    setTimeout(() => setCopiedRulebookId(null), 1500);
+  };
+
+  const rulebookLinkedCount = events.filter(e => (e as any).rulebook_url).length;
+
   if (loading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
 
   return (
@@ -238,10 +272,13 @@ const AdminEvents = () => {
             <TabsTrigger value="links" className="gap-1.5">
               <Link2 size={14} /> Event Links
             </TabsTrigger>
-            <TabsTrigger value="payment-links" className="gap-1.5">
-              <CreditCard size={14} /> Payment Links
-            </TabsTrigger>
-          </TabsList>
+             <TabsTrigger value="payment-links" className="gap-1.5">
+               <CreditCard size={14} /> Payment Links
+             </TabsTrigger>
+             <TabsTrigger value="rulebook-links" className="gap-1.5">
+               <BookOpen size={14} /> Rulebook Links
+             </TabsTrigger>
+           </TabsList>
         </div>
 
         {/* ════ Events Tab ════ */}
@@ -455,6 +492,82 @@ const AdminEvents = () => {
             </Table>
           </div>
         </TabsContent>
+
+        {/* ════ Rulebook Links Tab ════ */}
+        <TabsContent value="rulebook-links" className="space-y-4 mt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-display font-bold text-foreground">Rulebook Links</h2>
+              <p className="text-sm text-muted-foreground mt-1">Manage rulebook / document URLs for each event</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1"><BookOpen size={14} /> {rulebookLinkedCount} linked</Badge>
+              <Badge variant="outline" className="gap-1"><Link2Off size={14} /> {events.length - rulebookLinkedCount} unlinked</Badge>
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Rulebook URL</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Status</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {events.map(ev => {
+                  const rbUrl = (ev as any).rulebook_url as string | null;
+                  return (
+                    <TableRow key={ev.id} className="border-border">
+                      <TableCell className="font-medium text-foreground text-sm">{ev.icon} {ev.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={`text-[10px] capitalize ${categoryStyles[ev.category] || ""}`}>{ev.category}</Badge>
+                      </TableCell>
+                      <TableCell className="max-w-[300px]">
+                        {rbUrl ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground truncate">{rbUrl}</span>
+                            <button onClick={() => copyRulebookUrl(ev.id, rbUrl)} className="text-muted-foreground hover:text-foreground shrink-0">
+                              {copiedRulebookId === ev.id ? <Check size={14} className="text-primary" /> : <Copy size={14} />}
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-muted-foreground/50 italic">No link set</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {rbUrl ? (
+                          <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">Linked</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs text-muted-foreground">Unlinked</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => { setEditRulebookEvent(ev); setEditRulebookUrl(rbUrl || ""); }} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                            <Pencil size={15} />
+                          </button>
+                          {rbUrl && (
+                            <>
+                              <a href={rbUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                                <ExternalLink size={15} />
+                              </a>
+                              {isOwner && <button onClick={() => clearRulebookLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                                <Link2Off size={15} />
+                              </button>}
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
       </Tabs>
 
       {/* Create / Edit Event Dialog */}
@@ -536,6 +649,10 @@ const AdminEvents = () => {
               <Input value={form.payment_url} onChange={e => updateField("payment_url", e.target.value)} placeholder="https://payment-link.com" className="bg-card border-border" />
             </div>
             <div>
+              <Label className="text-xs text-muted-foreground">Rulebook URL</Label>
+              <Input value={form.rulebook_url} onChange={e => updateField("rulebook_url", e.target.value)} placeholder="https://docs.google.com/..." className="bg-card border-border" />
+            </div>
+            <div>
               <Label className="text-xs text-muted-foreground">Rules (one per line)</Label>
               <Textarea value={form.rules} onChange={e => updateField("rules", e.target.value)} rows={4} className="bg-card border-border font-mono text-xs" placeholder="Rule 1&#10;Rule 2" />
             </div>
@@ -579,6 +696,24 @@ const AdminEvents = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditPayEvent(null)}>Cancel</Button>
             <Button onClick={handleSavePayLink} disabled={savingPayLink}>{savingPayLink ? "Saving…" : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Rulebook Link Dialog */}
+      <Dialog open={!!editRulebookEvent} onOpenChange={open => !open && setEditRulebookEvent(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Rulebook Link — {editRulebookEvent?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Label className="text-sm font-medium text-foreground">Rulebook URL</Label>
+            <Input placeholder="https://docs.google.com/..." value={editRulebookUrl} onChange={e => setEditRulebookUrl(e.target.value)} />
+            <p className="text-xs text-muted-foreground">Leave empty to remove the link. Use full URL including https://</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditRulebookEvent(null)}>Cancel</Button>
+            <Button onClick={handleSaveRulebookLink} disabled={savingRulebookLink}>{savingRulebookLink ? "Saving…" : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

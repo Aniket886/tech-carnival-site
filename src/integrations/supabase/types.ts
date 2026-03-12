@@ -495,6 +495,7 @@ export type Database = {
           payment_url: string | null
           price: number
           prize_pool: string | null
+          rulebook_url: string | null
           rules: string[] | null
           slug: string
           team_size_max: number
@@ -515,6 +516,7 @@ export type Database = {
           payment_url?: string | null
           price?: number
           prize_pool?: string | null
+          rulebook_url?: string | null
           rules?: string[] | null
           slug: string
           team_size_max?: number
@@ -535,6 +537,7 @@ export type Database = {
           payment_url?: string | null
           price?: number
           prize_pool?: string | null
+          rulebook_url?: string | null
           rules?: string[] | null
           slug?: string
           team_size_max?: number
