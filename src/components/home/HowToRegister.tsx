@@ -28,15 +28,27 @@ const HowToRegister = () => {
   const [videos, setVideos] = useState<GuideVideo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const fetchVideos = async () => {
+    const { data } = await supabase
+      .from("guide_videos")
+      .select("*")
+      .order("display_order", { ascending: true });
+    if (data) setVideos(data);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("guide_videos")
-        .select("*")
-        .order("display_order", { ascending: true });
-      if (data) setVideos(data);
-    };
-    fetch();
+    fetchVideos();
+
+    const channel = supabase
+      .channel("guide_videos_realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "guide_videos" },
+        () => fetchVideos()
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const currentVideo = videos[currentIndex];
