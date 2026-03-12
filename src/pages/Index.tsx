@@ -43,8 +43,8 @@ const Index = () => {
       <ScrollAnimate><GallerySection /></ScrollAnimate>
       {isSectionVisible("faq") && <ScrollAnimate><FAQSection /></ScrollAnimate>}
       {isSectionVisible("contact") && <ScrollAnimate><ContactSection /></ScrollAnimate>}
-      <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>
-      <ScrollAnimate><CoreTeam /></ScrollAnimate>
+      {isSectionVisible("organizing_committee") && <ScrollAnimate><OrganizingCommittee /></ScrollAnimate>}
+      {isSectionVisible("core_team") && <ScrollAnimate><CoreTeam /></ScrollAnimate>}
       {isSectionVisible("footer") && <Footer />}
       <ScrollToTop />
       <CarniBotWidget />
