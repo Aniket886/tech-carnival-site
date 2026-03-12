@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -122,6 +122,12 @@ const AdminVideoGuide = () => {
     setLoading(false);
   };
 
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debouncedFetch = useCallback(() => {
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchVideos(), 500);
+  }, []);
+
   useEffect(() => {
     fetchVideos();
 
@@ -130,11 +136,14 @@ const AdminVideoGuide = () => {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "guide_videos" },
-        () => fetchVideos()
+        () => debouncedFetch()
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      clearTimeout(debounceRef.current);
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleAdd = async () => {
