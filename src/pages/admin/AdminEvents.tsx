@@ -31,7 +31,7 @@ interface Event {
   description: string | null; team_size_min: number; team_size_max: number;
   is_active: boolean; date: string | null; time: string | null; venue: string | null;
   prize_pool: string | null; rules: string[] | null; website_url: string | null;
-  payment_url: string | null; created_at: string; price: number;
+  payment_url: string | null; rulebook_url: string | null; created_at: string; price: number;
 }
 
 interface FormData {
