@@ -153,6 +153,9 @@
   .btn-golden:hover {
     background-position: right;
     transform: scale(1.05);
+    background: linear-gradient(to right, hsl(45 100% 50% / 0.4), hsl(45 100% 50%), hsl(45 100% 50% / 0.4));
+    color: hsl(45 100% 50%);
+    box-shadow: 0 0 20px hsl(45 100% 50% / 0.4);
   }
 
   .btn-golden:active {
