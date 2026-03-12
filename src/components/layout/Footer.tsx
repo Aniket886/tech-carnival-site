@@ -70,6 +70,7 @@ const Footer = () => {
                   <a
                     key={id}
                     href={`#${id}`}
+                    onClick={(e) => scrollToSection(e, id)}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
                   >
                     {id === "faq" ? "FAQ" : id === "register" ? "Register" : id}
