@@ -16,7 +16,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Search, Plus, Pencil, Trash2, ExternalLink, Crown, Medal, Handshake, GripVertical } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, ExternalLink, Crown, Medal, Handshake, Upload, X } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ── Types ── */
@@ -40,6 +40,17 @@ interface FormData {
 }
 
 const emptyForm: FormData = { name: "", logo_url: "", tier: "partner", display_order: 0, website_url: "" };
+
+const BUCKET = "sponsor-logos";
+
+const uploadLogo = async (file: File): Promise<string | null> => {
+  const ext = file.name.split(".").pop() || "png";
+  const path = `${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from(BUCKET).upload(path, file, { upsert: true });
+  if (error) { toast.error("Upload failed: " + error.message); return null; }
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+};
 
 /* ── Tier config ── */
 const tierConfig: Record<string, { label: string; icon: typeof Crown; badge: string; accent: string }> = {
@@ -153,6 +164,7 @@ const AdminSponsors = () => {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = useCallback(async () => {
     const { data } = await supabase.from("sponsors").select("*").order("display_order");
@@ -198,7 +210,7 @@ const AdminSponsors = () => {
   };
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.logo_url.trim()) { toast.error("Name and logo URL are required"); return; }
+    if (!form.name.trim() || !form.logo_url.trim()) { toast.error("Name and logo are required"); return; }
     setSaving(true);
     const payload = {
       name: form.name.trim(),
@@ -319,15 +331,50 @@ const AdminSponsors = () => {
               <Input value={form.name} onChange={(e) => updateField("name", e.target.value)} className="bg-card border-border" placeholder="e.g. Google" />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground mb-1.5 block">Logo URL *</Label>
-              <Input value={form.logo_url} onChange={(e) => updateField("logo_url", e.target.value)} className="bg-card border-border" placeholder="https://..." />
-              {form.logo_url && (
-                <div className="mt-2 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg bg-muted/50 border border-border/50 flex items-center justify-center overflow-hidden">
+              <Label className="text-xs text-muted-foreground mb-1.5 block">Logo *</Label>
+              {form.logo_url ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-14 h-14 rounded-lg bg-muted/50 border border-border/50 flex items-center justify-center overflow-hidden">
                     <img src={form.logo_url} alt="preview" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <span className="text-[11px] text-muted-foreground">Preview</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] text-muted-foreground">Logo uploaded</span>
+                    <button
+                      type="button"
+                      onClick={() => updateField("logo_url", "")}
+                      className="text-[11px] text-destructive hover:underline flex items-center gap-1"
+                    >
+                      <X size={10} /> Remove
+                    </button>
+                  </div>
                 </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-card/50 p-6 cursor-pointer hover:border-primary/50 transition-colors">
+                  {uploading ? (
+                    <span className="text-xs text-muted-foreground">Uploading…</span>
+                  ) : (
+                    <>
+                      <Upload size={20} className="text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">Click to upload logo</span>
+                      <span className="text-[10px] text-muted-foreground/60">PNG, JPG, SVG, WEBP</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploading(true);
+                      const url = await uploadLogo(file);
+                      if (url) updateField("logo_url", url);
+                      setUploading(false);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
               )}
             </div>
             <div className="grid grid-cols-2 gap-3">
