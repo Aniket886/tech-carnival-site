@@ -38,6 +38,7 @@ export const useSiteVisibility = () => useContext(SiteVisibilityContext);
 export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) => {
   const [sections, setSections] = useState<Map<string, boolean>>(new Map());
   const [cards, setCards] = useState<Map<string, boolean>>(new Map());
+  const [orderedSectionKeys, setOrderedSectionKeys] = useState<string[]>([]);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
