@@ -26,12 +26,12 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => {
         "hover:scale-[1.03] hover:shadow-xl"
       )}
     >
-      {/* Icon / Logo */}
-      <div className="flex items-start">
+      {/* Logo – fills most of the card */}
+      <div className="flex-1 flex items-center justify-center">
         <img
           src={sponsor.logo_url}
           alt={sponsor.name}
-          className="h-8 w-8 object-contain"
+          className="max-h-20 max-w-[80%] object-contain"
           loading="lazy"
           style={{ filter: "brightness(0)" }}
         />
