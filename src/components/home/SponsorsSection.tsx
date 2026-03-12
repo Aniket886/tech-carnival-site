@@ -20,23 +20,32 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => {
         window.open(sponsor.website_url, "_blank", "noopener")
       }
       className={cn(
-        "relative flex w-64 shrink-0 flex-col justify-between rounded-xl p-5",
-        "bg-gradient-to-br from-muted/80 to-muted/40 border border-border/30",
-        "transition-all duration-300 cursor-pointer",
-        "hover:scale-[1.03] hover:shadow-lg hover:border-primary/30"
+        "group/card relative flex h-40 w-56 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-5",
+        "bg-gradient-to-b from-muted/60 via-muted/30 to-muted/10",
+        "border border-border/20",
+        "shadow-sm transition-all duration-300 cursor-pointer",
+        "hover:scale-[1.04] hover:shadow-xl hover:border-primary/20 hover:from-muted/80"
       )}
     >
-      <div className="flex items-center justify-start gap-3 mb-4">
-        <img
-          src={sponsor.logo_url}
-          alt={sponsor.name}
-          className="h-8 w-8 rounded-md object-contain"
-          loading="lazy"
-        />
+      {/* Icon / Logo */}
+      <div className="flex items-start">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground/10 backdrop-blur-sm">
+          <img
+            src={sponsor.logo_url}
+            alt={sponsor.name}
+            className="h-6 w-6 rounded object-contain"
+            loading="lazy"
+          />
+        </div>
       </div>
-      <p className="text-sm font-medium text-foreground text-left leading-snug">
+
+      {/* Name at bottom */}
+      <p className="text-[13px] font-medium leading-snug text-foreground/80 text-left group-hover/card:text-foreground transition-colors">
         {sponsor.name}
       </p>
+
+      {/* Subtle gradient overlay on hover */}
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-primary/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
     </button>
   );
 };
@@ -92,7 +101,7 @@ const SponsorsSection = () => {
           </p>
         </div>
 
-        <Marquee pauseOnHover applyMask className="[--duration:25s]">
+        <Marquee pauseOnHover applyMask className="[--duration:25s] [--gap:16px]">
           {sponsors.map((s) => (
             <SponsorCard key={s.id} sponsor={s} />
           ))}
