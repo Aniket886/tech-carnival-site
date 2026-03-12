@@ -73,9 +73,16 @@ const Footer = () => {
                     onClick={(e) => scrollToSection(e, id)}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
                   >
-                    {id === "faq" ? "FAQ" : id === "register" ? "Register" : id}
+                    {id === "faq" ? "FAQ" : id}
                   </a>
                 ))}
+                <a
+                  href="#events"
+                  onClick={(e) => scrollToSection(e, "events")}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
+                >
+                  Register
+                </a>
               </nav>
             </div>
 
