@@ -36,6 +36,12 @@ const HowToRegister = () => {
     if (data) setVideos(data);
   };
 
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debouncedFetch = useCallback(() => {
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchVideos(), 500);
+  }, []);
+
   useEffect(() => {
     fetchVideos();
 
@@ -44,11 +50,14 @@ const HowToRegister = () => {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "guide_videos" },
-        () => fetchVideos()
+        () => debouncedFetch()
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      clearTimeout(debounceRef.current);
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const currentVideo = videos[currentIndex];
