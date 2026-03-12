@@ -199,6 +199,34 @@ const AdminEvents = () => {
 
   const linkedCount = events.filter(e => e.website_url).length;
 
+  /* ─── Payment Links helpers ─── */
+  const handleSavePayLink = async () => {
+    if (!editPayEvent) return;
+    setSavingPayLink(true);
+    const url = editPayUrl.trim() || null;
+    const { error } = await supabase.from("events").update({ payment_url: url }).eq("id", editPayEvent.id);
+    setSavingPayLink(false);
+    if (error) { toast.error("Failed to update payment link"); return; }
+    toast.success(`Payment link updated for ${editPayEvent.name}`);
+    setEditPayEvent(null);
+    fetchData();
+  };
+
+  const clearPayLink = async (ev: Event) => {
+    const { error } = await supabase.from("events").update({ payment_url: null }).eq("id", ev.id);
+    if (error) { toast.error("Failed to remove payment link"); return; }
+    toast.success(`Payment link removed for ${ev.name}`);
+    fetchData();
+  };
+
+  const copyPayUrl = (id: string, url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedPayId(id);
+    setTimeout(() => setCopiedPayId(null), 1500);
+  };
+
+  const payLinkedCount = events.filter(e => e.payment_url).length;
+
   if (loading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
 
   return (
