@@ -198,7 +198,7 @@ const CustomCursor = () => {
       document.documentElement.style.cursor = "";
       style.remove();
     };
-  }, [spawnParticle, spawnRipple]);
+  }, [spawnParticle, spawnRipple, spawnSparks]);
 
   if (typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0)) {
     return null;
