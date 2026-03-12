@@ -66,16 +66,23 @@ const Footer = () => {
             <div className="space-y-3">
               <h4 className="text-xs font-semibold uppercase tracking-widest text-foreground/60">More</h4>
               <nav className="flex flex-col gap-2">
-                {["faq", "contact", "register"].map((id) => (
+                {["faq", "contact"].map((id) => (
                   <a
                     key={id}
                     href={`#${id}`}
                     onClick={(e) => scrollToSection(e, id)}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
                   >
-                    {id === "faq" ? "FAQ" : id === "register" ? "Register" : id}
+                    {id === "faq" ? "FAQ" : id}
                   </a>
                 ))}
+                <a
+                  href="#events"
+                  onClick={(e) => scrollToSection(e, "events")}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
+                >
+                  Register
+                </a>
               </nav>
             </div>
 
