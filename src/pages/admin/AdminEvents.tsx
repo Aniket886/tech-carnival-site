@@ -66,7 +66,7 @@ const AdminEvents = () => {
 
   const fetchData = useCallback(async () => {
     const [{ data: evts }, { data: regs }] = await Promise.all([
-      supabase.from("events").select("*").order("name"),
+      supabase.from("events").select("*, rulebook_url" as any).order("name") as any,
       supabase.from("registrations").select("event_id"),
     ]);
     setEvents(evts || []);
