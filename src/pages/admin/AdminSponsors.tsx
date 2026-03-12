@@ -41,6 +41,17 @@ interface FormData {
 
 const emptyForm: FormData = { name: "", logo_url: "", tier: "partner", display_order: 0, website_url: "" };
 
+const BUCKET = "sponsor-logos";
+
+const uploadLogo = async (file: File): Promise<string | null> => {
+  const ext = file.name.split(".").pop() || "png";
+  const path = `${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from(BUCKET).upload(path, file, { upsert: true });
+  if (error) { toast.error("Upload failed: " + error.message); return null; }
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+};
+
 /* ── Tier config ── */
 const tierConfig: Record<string, { label: string; icon: typeof Crown; badge: string; accent: string }> = {
   "title sponsor": {
