@@ -210,7 +210,7 @@ const AdminSponsors = () => {
   };
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.logo_url.trim()) { toast.error("Name and logo URL are required"); return; }
+    if (!form.name.trim() || !form.logo_url.trim()) { toast.error("Name and logo are required"); return; }
     setSaving(true);
     const payload = {
       name: form.name.trim(),
