@@ -102,6 +102,8 @@ export default {
         "blob-float": "blob-float 7s ease-in-out infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+        "marquee-x": "marquee-x var(--duration) linear infinite",
+        "marquee-y": "marquee-y var(--duration) linear infinite",
       },
     },
   },
