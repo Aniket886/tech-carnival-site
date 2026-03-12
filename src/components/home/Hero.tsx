@@ -75,11 +75,11 @@ const Hero = () => {
         <div className="animate-fade-in-up [animation-delay:0.6s] opacity-0 flex flex-col sm:flex-row gap-5 justify-center">
           <button
               onClick={scrollToRegister}
-              className="btn-golden h-14 px-12 text-lg font-bold inline-flex items-center justify-center transition-all duration-300">
+              className="btn-golden-gold h-14 px-12 text-lg font-bold inline-flex items-center justify-center transition-all duration-300">
               <span>🚀 Register Now</span>
             </button>
             <button
-              className="btn-golden h-14 px-12 text-lg inline-flex items-center justify-center transition-all duration-300"
+              className="btn-golden-gold h-14 px-12 text-lg inline-flex items-center justify-center transition-all duration-300"
               onClick={() => document.querySelector("#how-to-register")?.scrollIntoView({ behavior: "smooth" })}>
               <span>Learn More →</span>
             </button>
