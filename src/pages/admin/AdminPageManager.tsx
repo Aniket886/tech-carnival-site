@@ -281,6 +281,28 @@ const AdminPageManager = () => {
     fetchAll();
   };
 
+  /* drag end → reorder cards within a section */
+  const handleCardDragEnd = async (sectionKey: string, event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const sectionCards = cards.filter(c => c.section_key === sectionKey);
+    const oldIndex = sectionCards.findIndex(c => c.id === active.id);
+    const newIndex = sectionCards.findIndex(c => c.id === over.id);
+    const reordered = arrayMove(sectionCards, oldIndex, newIndex);
+
+    // Optimistic update
+    const otherCards = cards.filter(c => c.section_key !== sectionKey);
+    setCards([...otherCards, ...reordered.map((c, i) => ({ ...c, display_order: i }))]);
+
+    const updates = reordered.map((c, i) =>
+      supabase.from("section_cards").update({ display_order: i, updated_at: new Date().toISOString() }).eq("id", c.id)
+    );
+    await Promise.all(updates);
+    toast.success("Card order updated");
+    fetchAll();
+  };
+
   const toggleSection = async (section: Section) => {
     const newVal = !section.is_visible;
     const { error } = await supabase
