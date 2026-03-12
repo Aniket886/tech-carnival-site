@@ -60,6 +60,7 @@ const sectionIcons: Record<string, string> = {
   hero: "🏠", about: "ℹ️", how_to_register: "🎬", sponsors: "💛", events: "🎯",
   schedule: "📅", registration: "📋", leaderboard: "🏆",
   gallery: "🖼️", faq: "❓", contact: "📞", footer: "❤️", carnibot: "🤖",
+  organizing_committee: "👥", core_team: "🎓",
 };
 
 const fmtDate = (d: string) => {
