@@ -120,13 +120,6 @@ const Footer = () => {
               <span className="text-[10px] text-foreground/40 tracking-wide select-all">
                 Developed by Aniket Tegginamath
               </span>
-              <button
-                onClick={scrollToTop}
-                aria-label="Back to top"
-                className="w-8 h-8 rounded-lg bg-muted/40 border border-border/30 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200"
-              >
-                <ArrowUp size={14} />
-              </button>
             </div>
           </div>
         </div>
