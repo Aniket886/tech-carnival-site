@@ -66,7 +66,7 @@ const Footer = () => {
             <div className="space-y-3">
               <h4 className="text-xs font-semibold uppercase tracking-widest text-foreground/60">More</h4>
               <nav className="flex flex-col gap-2">
-                {["faq", "contact", "register"].map((id) => (
+                {["faq", "contact"].map((id) => (
                   <a
                     key={id}
                     href={`#${id}`}
