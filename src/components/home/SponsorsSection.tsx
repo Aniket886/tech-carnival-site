@@ -33,7 +33,6 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => {
           alt={sponsor.name}
           className="max-h-28 max-w-[90%] object-contain"
           loading="lazy"
-          style={{ filter: "brightness(0)" }}
         />
       </div>
 
