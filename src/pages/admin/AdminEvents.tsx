@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check } from "lucide-react";
+import { Pencil, Plus, Trash2, ExternalLink, Link2, Link2Off, Copy, Check, CreditCard } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
@@ -166,6 +166,12 @@ const AdminEvents = () => {
   const [savingLink, setSavingLink] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
+  /* ─── Payment Links state ─── */
+  const [editPayEvent, setEditPayEvent] = useState<Event | null>(null);
+  const [editPayUrl, setEditPayUrl] = useState("");
+  const [savingPayLink, setSavingPayLink] = useState(false);
+  const [copiedPayId, setCopiedPayId] = useState<string | null>(null);
+
   const handleSaveLink = async () => {
     if (!editLinkEvent) return;
     setSavingLink(true);
@@ -193,16 +199,47 @@ const AdminEvents = () => {
 
   const linkedCount = events.filter(e => e.website_url).length;
 
+  /* ─── Payment Links helpers ─── */
+  const handleSavePayLink = async () => {
+    if (!editPayEvent) return;
+    setSavingPayLink(true);
+    const url = editPayUrl.trim() || null;
+    const { error } = await supabase.from("events").update({ payment_url: url }).eq("id", editPayEvent.id);
+    setSavingPayLink(false);
+    if (error) { toast.error("Failed to update payment link"); return; }
+    toast.success(`Payment link updated for ${editPayEvent.name}`);
+    setEditPayEvent(null);
+    fetchData();
+  };
+
+  const clearPayLink = async (ev: Event) => {
+    const { error } = await supabase.from("events").update({ payment_url: null }).eq("id", ev.id);
+    if (error) { toast.error("Failed to remove payment link"); return; }
+    toast.success(`Payment link removed for ${ev.name}`);
+    fetchData();
+  };
+
+  const copyPayUrl = (id: string, url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedPayId(id);
+    setTimeout(() => setCopiedPayId(null), 1500);
+  };
+
+  const payLinkedCount = events.filter(e => e.payment_url).length;
+
   if (loading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>;
 
   return (
     <div className="space-y-5">
       <Tabs defaultValue="events">
         <div className="flex items-center justify-between">
-          <TabsList>
+           <TabsList>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="links" className="gap-1.5">
               <Link2 size={14} /> Event Links
+            </TabsTrigger>
+            <TabsTrigger value="payment-links" className="gap-1.5">
+              <CreditCard size={14} /> Payment Links
             </TabsTrigger>
           </TabsList>
         </div>
@@ -346,6 +383,78 @@ const AdminEvents = () => {
             </Table>
           </div>
         </TabsContent>
+        {/* ════ Payment Links Tab ════ */}
+        <TabsContent value="payment-links" className="space-y-4 mt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-display font-bold text-foreground">Payment Links</h2>
+              <p className="text-sm text-muted-foreground mt-1">Manage payment URLs for each event's Pay button</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1"><CreditCard size={14} /> {payLinkedCount} linked</Badge>
+              <Badge variant="outline" className="gap-1"><Link2Off size={14} /> {events.length - payLinkedCount} unlinked</Badge>
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Payment URL</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Status</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {events.map(ev => (
+                  <TableRow key={ev.id} className="border-border">
+                    <TableCell className="font-medium text-foreground text-sm">{ev.icon} {ev.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={`text-[10px] capitalize ${categoryStyles[ev.category] || ""}`}>{ev.category}</Badge>
+                    </TableCell>
+                    <TableCell className="max-w-[300px]">
+                      {ev.payment_url ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground truncate">{ev.payment_url}</span>
+                          <button onClick={() => copyPayUrl(ev.id, ev.payment_url!)} className="text-muted-foreground hover:text-foreground shrink-0">
+                            {copiedPayId === ev.id ? <Check size={14} className="text-primary" /> : <Copy size={14} />}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground/50 italic">No link set</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {ev.payment_url ? (
+                        <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">Linked</Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-xs text-muted-foreground">Unlinked</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => { setEditPayEvent(ev); setEditPayUrl(ev.payment_url || ""); }} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                          <Pencil size={15} />
+                        </button>
+                        {ev.payment_url && (
+                          <>
+                            <a href={ev.payment_url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                              <ExternalLink size={15} />
+                            </a>
+                            {isOwner && <button onClick={() => clearPayLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                              <Link2Off size={15} />
+                            </button>}
+                          </>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
       </Tabs>
 
       {/* Create / Edit Event Dialog */}
@@ -452,6 +561,24 @@ const AdminEvents = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditLinkEvent(null)}>Cancel</Button>
             <Button onClick={handleSaveLink} disabled={savingLink}>{savingLink ? "Saving…" : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Payment Link Dialog */}
+      <Dialog open={!!editPayEvent} onOpenChange={open => !open && setEditPayEvent(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Payment Link — {editPayEvent?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Label className="text-sm font-medium text-foreground">Payment URL</Label>
+            <Input placeholder="https://payment-link.com" value={editPayUrl} onChange={e => setEditPayUrl(e.target.value)} />
+            <p className="text-xs text-muted-foreground">Leave empty to remove the link. Use full URL including https://</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditPayEvent(null)}>Cancel</Button>
+            <Button onClick={handleSavePayLink} disabled={savingPayLink}>{savingPayLink ? "Saving…" : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
