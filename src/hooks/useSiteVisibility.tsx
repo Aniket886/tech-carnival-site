@@ -16,6 +16,7 @@ interface CardVisibility {
 interface SiteVisibilityCtx {
   sections: Map<string, boolean>;
   cards: Map<string, boolean>;
+  orderedSectionKeys: string[];
   maintenanceMode: boolean;
   loading: boolean;
   isSectionVisible: (key: string) => boolean;
