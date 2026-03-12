@@ -542,10 +542,6 @@ const AdminEvents = () => {
               <Input value={form.payment_url} onChange={e => updateField("payment_url", e.target.value)} placeholder="https://payment-link.com" className="bg-card border-border" />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">Rulebook URL</Label>
-              <Input value={form.rulebook_url} onChange={e => updateField("rulebook_url", e.target.value)} placeholder="https://docs.google.com/..." className="bg-card border-border" />
-            </div>
-            <div>
               <Label className="text-xs text-muted-foreground">Rules (one per line)</Label>
               <Textarea value={form.rules} onChange={e => updateField("rules", e.target.value)} rows={4} className="bg-card border-border font-mono text-xs" placeholder="Rule 1&#10;Rule 2" />
             </div>
