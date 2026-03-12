@@ -272,10 +272,13 @@ const AdminEvents = () => {
             <TabsTrigger value="links" className="gap-1.5">
               <Link2 size={14} /> Event Links
             </TabsTrigger>
-            <TabsTrigger value="payment-links" className="gap-1.5">
-              <CreditCard size={14} /> Payment Links
-            </TabsTrigger>
-          </TabsList>
+             <TabsTrigger value="payment-links" className="gap-1.5">
+               <CreditCard size={14} /> Payment Links
+             </TabsTrigger>
+             <TabsTrigger value="rulebook-links" className="gap-1.5">
+               <BookOpen size={14} /> Rulebook Links
+             </TabsTrigger>
+           </TabsList>
         </div>
 
         {/* ════ Events Tab ════ */}
