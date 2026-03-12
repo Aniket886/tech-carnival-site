@@ -161,44 +161,11 @@ const AdminEvents = () => {
 
   const autoSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-  /* ─── Event Links state ─── */
-  const [editLinkEvent, setEditLinkEvent] = useState<Event | null>(null);
-  const [editLinkUrl, setEditLinkUrl] = useState("");
-  const [savingLink, setSavingLink] = useState(false);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
   /* ─── Payment Links state ─── */
   const [editPayEvent, setEditPayEvent] = useState<Event | null>(null);
   const [editPayUrl, setEditPayUrl] = useState("");
   const [savingPayLink, setSavingPayLink] = useState(false);
   const [copiedPayId, setCopiedPayId] = useState<string | null>(null);
-
-  const handleSaveLink = async () => {
-    if (!editLinkEvent) return;
-    setSavingLink(true);
-    const url = editLinkUrl.trim() || null;
-    const { error } = await supabase.from("events").update({ website_url: url }).eq("id", editLinkEvent.id);
-    setSavingLink(false);
-    if (error) { toast.error("Failed to update link"); return; }
-    toast.success(`Link updated for ${editLinkEvent.name}`);
-    setEditLinkEvent(null);
-    fetchData();
-  };
-
-  const clearLink = async (ev: Event) => {
-    const { error } = await supabase.from("events").update({ website_url: null }).eq("id", ev.id);
-    if (error) { toast.error("Failed to remove link"); return; }
-    toast.success(`Link removed for ${ev.name}`);
-    fetchData();
-  };
-
-  const copyUrl = (id: string, url: string) => {
-    navigator.clipboard.writeText(url);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 1500);
-  };
-
-  const linkedCount = events.filter(e => e.website_url).length;
 
   /* ─── Payment Links helpers ─── */
   const handleSavePayLink = async () => {
