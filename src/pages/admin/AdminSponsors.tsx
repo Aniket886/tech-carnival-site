@@ -164,6 +164,7 @@ const AdminSponsors = () => {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = useCallback(async () => {
     const { data } = await supabase.from("sponsors").select("*").order("display_order");
