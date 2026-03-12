@@ -39,8 +39,8 @@ const Eye = ({
       transition={{ duration: 0.1 }}
     >
       <motion.div
-        className="rounded-full bg-foreground"
-        style={{ width: pupilSize, height: pupilSize }}
+        className="rounded-full"
+        style={{ width: pupilSize, height: pupilSize, backgroundColor: "#000" }}
         animate={{ x: clampedX, y: clampedY }}
         transition={{ type: "spring", stiffness: 300, damping: 20, mass: 0.5 }}
       />
