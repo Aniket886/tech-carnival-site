@@ -383,6 +383,78 @@ const AdminEvents = () => {
             </Table>
           </div>
         </TabsContent>
+        {/* ════ Payment Links Tab ════ */}
+        <TabsContent value="payment-links" className="space-y-4 mt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-display font-bold text-foreground">Payment Links</h2>
+              <p className="text-sm text-muted-foreground mt-1">Manage payment URLs for each event's Pay button</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1"><CreditCard size={14} /> {payLinkedCount} linked</Badge>
+              <Badge variant="outline" className="gap-1"><Link2Off size={14} /> {events.length - payLinkedCount} unlinked</Badge>
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-xs text-muted-foreground font-medium">Event</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Category</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Payment URL</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium">Status</TableHead>
+                  <TableHead className="text-xs text-muted-foreground font-medium text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {events.map(ev => (
+                  <TableRow key={ev.id} className="border-border">
+                    <TableCell className="font-medium text-foreground text-sm">{ev.icon} {ev.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={`text-[10px] capitalize ${categoryStyles[ev.category] || ""}`}>{ev.category}</Badge>
+                    </TableCell>
+                    <TableCell className="max-w-[300px]">
+                      {ev.payment_url ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground truncate">{ev.payment_url}</span>
+                          <button onClick={() => copyPayUrl(ev.id, ev.payment_url!)} className="text-muted-foreground hover:text-foreground shrink-0">
+                            {copiedPayId === ev.id ? <Check size={14} className="text-primary" /> : <Copy size={14} />}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground/50 italic">No link set</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {ev.payment_url ? (
+                        <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">Linked</Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-xs text-muted-foreground">Unlinked</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => { setEditPayEvent(ev); setEditPayUrl(ev.payment_url || ""); }} className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                          <Pencil size={15} />
+                        </button>
+                        {ev.payment_url && (
+                          <>
+                            <a href={ev.payment_url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                              <ExternalLink size={15} />
+                            </a>
+                            {isOwner && <button onClick={() => clearPayLink(ev)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                              <Link2Off size={15} />
+                            </button>}
+                          </>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
       </Tabs>
 
       {/* Create / Edit Event Dialog */}
