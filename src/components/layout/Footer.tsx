@@ -3,6 +3,12 @@ import { Mail, Phone, MapPin, Instagram, Globe, ArrowUp } from "lucide-react";
 const Footer = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <footer className="relative overflow-hidden">
       {/* Top accent */}
