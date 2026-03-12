@@ -124,6 +124,17 @@ const AdminVideoGuide = () => {
 
   useEffect(() => {
     fetchVideos();
+
+    const channel = supabase
+      .channel("admin_guide_videos_realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "guide_videos" },
+        () => fetchVideos()
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const handleAdd = async () => {
