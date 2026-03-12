@@ -5,9 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
   { num: "01", title: "Browse Events", desc: "Explore all technical, gaming & cultural events." },
-  { num: "02", title: "Pick Your Event", desc: "Click on any event card and read the details." },
-  { num: "03", title: "Fill the Form", desc: "Enter your team details and college info." },
-  { num: "04", title: "Pay & Submit", desc: "Complete payment and submit your registration." },
+  { num: "02", title: "Pick Your Event", desc: "Check the rule book and all necessary details in the event card." },
+  { num: "03", title: "Complete Payment", desc: "Click the \"Pay\" button, complete your payment, and keep a screenshot for the next step." },
+  { num: "04", title: "Register & Submit", desc: "Click \"Register\", fill in your details (name & phone must match payment), enter UTR/TID, upload payment screenshot, and submit. You'll receive a confirmation email once verified by the organizers." },
 ];
 
 interface GuideVideo {
