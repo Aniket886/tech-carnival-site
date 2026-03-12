@@ -90,7 +90,7 @@ const AdminEvents = () => {
       name: ev.name, slug: ev.slug, category: ev.category, icon: ev.icon || "🎯",
       description: ev.description || "", team_size_min: ev.team_size_min, team_size_max: ev.team_size_max,
       date: ev.date || "", time: ev.time || "", venue: ev.venue || "",
-      prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "", payment_url: ev.payment_url || "",
+      prize_pool: ev.prize_pool || "", rules: (ev.rules || []).join("\n"), website_url: ev.website_url || "", payment_url: ev.payment_url || "", rulebook_url: (ev as any).rulebook_url || "",
       price: ev.price || 0,
     });
     setDialogOpen(true);
