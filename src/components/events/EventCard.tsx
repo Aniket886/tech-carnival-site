@@ -137,7 +137,7 @@ const EventCard = ({ event, style, index, onSelect, onRegister }: EventCardProps
         </p>
 
         {/* Buttons */}
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline" className={`text-[11px] sm:text-xs capitalize justify-center min-h-[36px] sm:min-h-0 sm:h-auto truncate ${style.badge}`}>
             {event.category}
           </Badge>
