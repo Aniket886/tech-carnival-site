@@ -1,93 +1,125 @@
-import { Mail, Phone, MapPin, ArrowUp, Instagram, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Globe, ArrowUp } from "lucide-react";
 
 const Footer = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer className="relative">
-      {/* Top glow line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    <footer className="relative overflow-hidden">
+      {/* Top accent */}
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-      <div className="bg-card/40 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-12">
-          {/* Two-column layout */}
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10">
-            {/* Left — Brand + tagline */}
-            <div className="space-y-4 max-w-xs">
-              <h3 className="font-display text-xl font-bold tracking-wide">
+      <div className="bg-card/30 backdrop-blur-md border-t border-border/10">
+        {/* Main footer */}
+        <div className="container mx-auto px-4 pt-14 pb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            {/* Brand */}
+            <div className="sm:col-span-2 lg:col-span-1 space-y-4">
+              <h3 className="font-display text-lg font-bold tracking-wide">
                 Tech Carnival <span className="text-primary">2K26</span>
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Innovation meets celebration — a two-day National Level Technical Competition by GM University,
-                Davangere.
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+                A two-day National Level Technical Competition by GM University, Davangere.
               </p>
-              <div className="flex gap-2">
-                <a
-                  href="https://instagram.com/techcarnival2k26"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200"
-                >
-                  <Instagram size={15} />
-                </a>
-                <a
-                  href="https://www.gmu.ac.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GM University"
-                  className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200"
-                >
-                  <Globe size={15} />
-                </a>
+              <div className="flex gap-2 pt-1">
+                {[
+                  { href: "https://instagram.com/techcarnival2k26", icon: Instagram, label: "Instagram" },
+                  { href: "https://www.gmu.ac.in", icon: Globe, label: "GM University" },
+                ].map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="w-9 h-9 rounded-lg bg-muted/40 border border-border/30 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-200"
+                  >
+                    <s.icon size={15} />
+                  </a>
+                ))}
               </div>
             </div>
 
-            {/* Right — Contact + back to top */}
-            <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 items-start">
-              <div className="space-y-3">
+            {/* Quick Links */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-foreground/60">Explore</h4>
+              <nav className="flex flex-col gap-2">
+                {["about", "events", "schedule", "leaderboard"].map((id) => (
+                  <a
+                    key={id}
+                    href={`#${id}`}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
+                  >
+                    {id === "faq" ? "FAQ" : id}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            {/* More Links */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-foreground/60">More</h4>
+              <nav className="flex flex-col gap-2">
+                {["faq", "contact", "register"].map((id) => (
+                  <a
+                    key={id}
+                    href={`#${id}`}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors capitalize w-fit"
+                  >
+                    {id === "faq" ? "FAQ" : id === "register" ? "Register" : id}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            {/* Contact */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-foreground/60">Contact</h4>
+              <div className="space-y-2.5">
                 <a
                   href="mailto:info@techcarnival.online"
-                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Mail size={14} className="text-primary" />
-                  </div>
-                  info@techcarnival.online
+                  <Mail size={14} className="text-primary shrink-0" />
+                  <span>info@techcarnival.online</span>
                 </a>
                 <a
                   href="tel:+918073491988"
-                  className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Phone size={14} className="text-primary" />
-                  </div>
-                  +91 8073491988
+                  <Phone size={14} className="text-primary shrink-0" />
+                  <span>+91 8073491988</span>
                 </a>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <MapPin size={14} className="text-accent" />
-                  </div>
-                  P.B. Road, Davangere – 577006
+                <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                  <MapPin size={14} className="text-accent shrink-0" />
+                  <span>P.B. Road, Davangere – 577006</span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Bottom bar */}
-          <div className="mt-10 pt-5 border-t border-border/20 flex flex-col items-center gap-10 text-center">
-            <p className="text-xs sm:text-sm font-sans font-medium text-foreground tracking-wider uppercase leading-relaxed">
-              © {new Date().getFullYear()} Tech Carnival 2K26 · GM University
-              <br className="sm:hidden" />
-              <span className="hidden sm:inline"> · </span>
-              All Rights Reserved
-            </p>
-            <p className="text-xs sm:text-sm font-sans font-medium text-foreground/70 tracking-wider uppercase">
-              Built with <span className="text-destructive">❤️</span> by FCIT Tech Team
-            </p>
-            <p className="text-[10px] font-sans tracking-wide text-foreground/[0.50] select-all cursor-default">
-              Developed by Aniket Tegginamath
-            </p>
+        {/* Bottom bar */}
+        <div className="border-t border-border/15">
+          <div className="container mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 text-xs text-muted-foreground">
+              <span>© {new Date().getFullYear()} Tech Carnival 2K26 · GM University</span>
+              <span className="hidden sm:inline text-border/40">|</span>
+              <span>
+                Built with <span className="text-destructive">❤️</span> by FCIT Tech Team
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] text-foreground/40 tracking-wide select-all">
+                Developed by Aniket Tegginamath
+              </span>
+              <button
+                onClick={scrollToTop}
+                aria-label="Back to top"
+                className="w-8 h-8 rounded-lg bg-muted/40 border border-border/30 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-200"
+              >
+                <ArrowUp size={14} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
