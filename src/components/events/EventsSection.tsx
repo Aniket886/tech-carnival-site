@@ -106,7 +106,7 @@ const EventsSection = () => {
               venue: e.venue,
               prize_pool: e.prize_pool,
               rules: e.rules,
-              rulebookUrl: e.website_url || null,
+              rulebookUrl: e.rulebook_url || null,
               paymentUrl: e.payment_url || null,
               price: e.price || 0,
             }))
