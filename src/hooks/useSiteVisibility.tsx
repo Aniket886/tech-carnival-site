@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface SectionVisibility {
   section_key: string;
   is_visible: boolean;
+  display_order: number;
 }
 
 interface CardVisibility {
@@ -15,6 +16,7 @@ interface CardVisibility {
 interface SiteVisibilityCtx {
   sections: Map<string, boolean>;
   cards: Map<string, boolean>;
+  orderedSectionKeys: string[];
   maintenanceMode: boolean;
   loading: boolean;
   isSectionVisible: (key: string) => boolean;
@@ -24,6 +26,7 @@ interface SiteVisibilityCtx {
 const SiteVisibilityContext = createContext<SiteVisibilityCtx>({
   sections: new Map(),
   cards: new Map(),
+  orderedSectionKeys: [],
   maintenanceMode: false,
   loading: true,
   isSectionVisible: () => true,
@@ -35,6 +38,7 @@ export const useSiteVisibility = () => useContext(SiteVisibilityContext);
 export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) => {
   const [sections, setSections] = useState<Map<string, boolean>>(new Map());
   const [cards, setCards] = useState<Map<string, boolean>>(new Map());
+  const [orderedSectionKeys, setOrderedSectionKeys] = useState<string[]>([]);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -46,16 +50,17 @@ export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) =>
 
   const fetchData = useCallback(async () => {
     const [{ data: secs }, { data: crds }] = await Promise.all([
-      supabase.from("site_sections").select("section_key, is_visible"),
+      supabase.from("site_sections").select("section_key, is_visible, display_order").order("display_order"),
       supabase.from("section_cards").select("section_key, card_key, is_visible"),
     ]);
 
     if (secs) {
+      const sorted = (secs as SectionVisibility[]).sort((a, b) => a.display_order - b.display_order);
       const map = new Map<string, boolean>();
-      (secs as SectionVisibility[]).forEach((s) => map.set(s.section_key, s.is_visible));
+      sorted.forEach((s) => map.set(s.section_key, s.is_visible));
       setSections(map);
-      // Check maintenance mode - all sections except footer hidden means maintenance
-      const allHidden = (secs as SectionVisibility[])
+      setOrderedSectionKeys(sorted.map((s) => s.section_key));
+      const allHidden = sorted
         .filter((s) => s.section_key !== "footer")
         .every((s) => !s.is_visible);
       setMaintenanceMode(allHidden && secs.length > 1);
@@ -87,7 +92,7 @@ export const SiteVisibilityProvider = ({ children }: { children: ReactNode }) =>
   );
 
   return (
-    <SiteVisibilityContext.Provider value={{ sections, cards, maintenanceMode, loading, isSectionVisible, isCardVisible }}>
+    <SiteVisibilityContext.Provider value={{ sections, cards, orderedSectionKeys, maintenanceMode, loading, isSectionVisible, isCardVisible }}>
       {children}
     </SiteVisibilityContext.Provider>
   );
