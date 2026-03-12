@@ -38,7 +38,7 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => {
       </div>
 
       {/* Name centered */}
-      <p className="text-sm font-medium leading-snug text-[hsl(0_0%_15%)] text-center">
+      <p className="text-sm font-medium leading-snug text-[hsl(0_0%_15%)] text-center mt-2">
         {sponsor.name}
       </p>
     </button>
