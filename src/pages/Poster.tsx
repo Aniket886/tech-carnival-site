@@ -127,9 +127,9 @@ const Poster = () => {
             </div>
           </div>
           <div className="poster-qr-wrapper">
-            <div className="poster-qr-box">
+            <a href="https://techcarnival.online" target="_blank" rel="noopener noreferrer" className="poster-qr-box">
               <img src={posterQr} alt="Scan to Register" className="poster-qr-img" />
-            </div>
+            </a>
             <div className="poster-qr-label">Scan to Register</div>
           </div>
         </div>
