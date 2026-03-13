@@ -214,7 +214,7 @@ const ContactSection = () => {
 
           <div className="space-y-6">
             {coordinators.map((c) => (
-              <div key={c.email} className="glass rounded-xl p-5 flex items-start gap-4">
+              <div key={c.email} className="liquid-glass rounded-xl p-5 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span className="text-primary font-display font-bold text-sm">{c.initial}</span>
                 </div>
