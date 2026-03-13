@@ -291,14 +291,14 @@
   letter-spacing: 1px;
   opacity: 0.8;
 }
-.ec1 { --card-accent: #00f5ff; }
-.ec2 { --card-accent: #a78bfa; }
-.ec3 { --card-accent: #ff00cc; }
-.ec4 { --card-accent: #34d399; }
-.ec5 { --card-accent: #fb923c; }
-.ec6 { --card-accent: #38bdf8; }
-.ec7 { --card-accent: #ffd700; }
-.ec8 { --card-accent: #f472b6; }
+.ec1 { --card-accent: #00f5ff; --card-accent-rgb: 0, 245, 255; }
+.ec2 { --card-accent: #a78bfa; --card-accent-rgb: 167, 139, 250; }
+.ec3 { --card-accent: #ff00cc; --card-accent-rgb: 255, 0, 204; }
+.ec4 { --card-accent: #34d399; --card-accent-rgb: 52, 211, 153; }
+.ec5 { --card-accent: #fb923c; --card-accent-rgb: 251, 146, 60; }
+.ec6 { --card-accent: #38bdf8; --card-accent-rgb: 56, 189, 248; }
+.ec7 { --card-accent: #ffd700; --card-accent-rgb: 255, 215, 0; }
+.ec8 { --card-accent: #f472b6; --card-accent-rgb: 244, 114, 182; }
 
 /* Prize Banner */
 .poster-prize-banner {
