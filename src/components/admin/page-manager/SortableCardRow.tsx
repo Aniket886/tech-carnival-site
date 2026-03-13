@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { motion } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "./types";
@@ -18,15 +19,19 @@ const SortableCardRow = forwardRef<HTMLDivElement, SortableCardRowProps>(
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
-      opacity: isDragging ? 0.5 : 1,
       zIndex: isDragging ? 50 : undefined,
     };
 
     return (
-      <div
+      <motion.div
         ref={setNodeRef}
         style={style}
-        className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/30 transition-colors"
+        layout
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0, scale: isDragging ? 1.02 : 1 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className={`flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/30 transition-colors ${isDragging ? "shadow-lg shadow-primary/10 bg-card border border-border" : ""}`}
       >
         <div className="flex items-center gap-2">
           <button
@@ -51,7 +56,7 @@ const SortableCardRow = forwardRef<HTMLDivElement, SortableCardRowProps>(
           </Badge>
           <Switch checked={card.is_visible} onCheckedChange={() => onToggleCard(card)} />
         </div>
-      </div>
+      </motion.div>
     );
   }
 );
