@@ -77,6 +77,7 @@ const EventsSection = () => {
   const [events, setEvents] = useState<EventData[]>(fallbackEvents);
   const [loading, setLoading] = useState(false);
   const [registrationOpen, setRegistrationOpen] = useState(true);
+  const [payButtonVisible, setPayButtonVisible] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -120,25 +121,27 @@ const EventsSection = () => {
       }
     };
 
-    const fetchRegStatus = async () => {
+    const fetchSettings = async () => {
       const { data } = await supabase
         .from("admin_settings")
-        .select("setting_value")
-        .eq("setting_key", "registration_open")
-        .maybeSingle();
+        .select("setting_key, setting_value")
+        .in("setting_key", ["registration_open", "pay_button_visible"]);
       if (!cancelled && data) {
-        setRegistrationOpen(data.setting_value === "true");
+        const reg = data.find(s => s.setting_key === "registration_open");
+        if (reg) setRegistrationOpen(reg.setting_value === "true");
+        const pay = data.find(s => s.setting_key === "pay_button_visible");
+        if (pay) setPayButtonVisible(pay.setting_value === "true");
       }
     };
 
     const timeout = setTimeout(() => { if (!cancelled) setLoading(false); }, 8000);
     fetchEvents();
-    fetchRegStatus();
+    fetchSettings();
 
     const channel = supabase
       .channel("events_realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "events" }, () => fetchEvents())
-      .on("postgres_changes", { event: "*", schema: "public", table: "admin_settings" }, () => fetchRegStatus())
+      .on("postgres_changes", { event: "*", schema: "public", table: "admin_settings" }, () => fetchSettings())
       .subscribe();
 
     return () => { cancelled = true; clearTimeout(timeout); supabase.removeChannel(channel); };
@@ -194,6 +197,7 @@ const EventsSection = () => {
                     setRegisterEvent(event);
                   }}
                   registrationOpen={registrationOpen}
+                  payButtonVisible={payButtonVisible}
                 />
               ))}
             </AnimatePresence>
