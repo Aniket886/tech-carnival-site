@@ -228,6 +228,7 @@ const AdminPageManager = () => {
   const [cardFilter, setCardFilter] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [regOpen, setRegOpen] = useState(true);
+  const [payVisible, setPayVisible] = useState(true);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -251,6 +252,8 @@ const AdminPageManager = () => {
     if (settings) {
       const reg = (settings as any[]).find(s => s.setting_key === "registration_open");
       if (reg) setRegOpen(reg.setting_value === "true");
+      const pay = (settings as any[]).find(s => s.setting_key === "pay_button_visible");
+      if (pay) setPayVisible(pay.setting_value === "true");
     }
     setLoading(false);
   }, []);
@@ -357,6 +360,16 @@ const AdminPageManager = () => {
     toast.success(`Registration ${newVal ? "opened" : "closed"}`);
   };
 
+  const togglePayButton = async () => {
+    const newVal = !payVisible;
+    const { error } = await supabase
+      .from("admin_settings")
+      .upsert({ setting_key: "pay_button_visible", setting_value: String(newVal), updated_at: new Date().toISOString() }, { onConflict: "setting_key" });
+    if (error) { toast.error("Failed to update"); return; }
+    setPayVisible(newVal);
+    toast.success(`Pay button ${newVal ? "shown" : "hidden"}`);
+  };
+
   const resetToDefault = async () => {
     const updates = sections.map(s =>
       supabase.from("site_sections").update({ is_visible: true, updated_at: new Date().toISOString() }).eq("id", s.id)
@@ -445,6 +458,11 @@ const AdminPageManager = () => {
           <Switch checked={maintenanceMode} onCheckedChange={toggleMaintenance} />
         </div>
         <div className="h-6 w-px bg-border hidden sm:block" />
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-foreground">Pay Button</span>
+          <Badge variant={payVisible ? "default" : "destructive"} className="text-xs">{payVisible ? "Visible" : "Hidden"}</Badge>
+          <Switch checked={payVisible} onCheckedChange={togglePayButton} />
+        </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground">Registration</span>
           <Badge variant={regOpen ? "default" : "destructive"} className="text-xs">{regOpen ? "Open" : "Closed"}</Badge>
