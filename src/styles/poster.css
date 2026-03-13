@@ -128,10 +128,15 @@
 /* Clay title */
 .poster-hero-title-clay {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 4px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 12px;
+}
+.poster-clay-word {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
 }
 .poster-clay-letter {
   font-family: 'Orbitron', monospace;
