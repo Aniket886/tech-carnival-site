@@ -46,7 +46,7 @@ const ContactSection = () => {
       const r = validateEmail(form.email);
       if (!r.valid) errs.email = r.error!;
     }
-    if (field === "phone" && form.phone.trim()) {
+    if (field === "phone") {
       const r = validatePhone(form.phone);
       if (!r.valid) errs.phone = r.error!;
     }
@@ -71,10 +71,8 @@ const ContactSection = () => {
     if (!nv.valid) errs.name = nv.error!;
     const ev = validateEmail(form.email);
     if (!ev.valid) errs.email = ev.error!;
-    if (form.phone.trim()) {
-      const pv = validatePhone(form.phone);
-      if (!pv.valid) errs.phone = pv.error!;
-    }
+    const pv = validatePhone(form.phone);
+    if (!pv.valid) errs.phone = pv.error!;
     const mv = validateMessage(form.message);
     if (!mv.valid) errs.message = mv.error!;
     setErrors(errs);
@@ -148,7 +146,7 @@ const ContactSection = () => {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="contact-phone" className="text-sm text-foreground font-medium">Phone</Label>
-              <Input id="contact-phone" type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} onBlur={() => handleBlur("phone")} placeholder="9876543210" className={getFieldClass("phone")} />
+              <Input id="contact-phone" type="tel" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} onBlur={() => handleBlur("phone")} placeholder="9876543210" className={getFieldClass("phone")} />
               {errors.phone && touched.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
             </div>
             <div className="space-y-1.5">
