@@ -1,4 +1,3 @@
-/* Liquid Glass v2 — rebuilt */
 import { motion } from "framer-motion";
 
 const About = () => {

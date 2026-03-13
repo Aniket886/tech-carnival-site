@@ -1,4 +1,3 @@
-/* Liquid Glass v2 — rebuilt */
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -138,79 +137,29 @@ const ContactSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <form onSubmit={handleSubmit} className="liquid-glass rounded-xl p-6 sm:p-8 space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="contact-name" className="text-sm text-foreground font-medium">
-                Name
-              </Label>
-              <Input
-                id="contact-name"
-                required
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                onBlur={() => handleBlur("name")}
-                placeholder="Your name"
-                className={getFieldClass("name")}
-              />
+              <Label htmlFor="contact-name" className="text-sm text-foreground font-medium">Name</Label>
+              <Input id="contact-name" required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} onBlur={() => handleBlur("name")} placeholder="Your name" className={getFieldClass("name")} />
               {errors.name && touched.name && <p className="text-xs text-destructive">{errors.name}</p>}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="contact-email" className="text-sm text-foreground font-medium">
-                Email
-              </Label>
-              <Input
-                id="contact-email"
-                type="email"
-                required
-                value={form.email}
-                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                onBlur={() => handleBlur("email")}
-                placeholder="you@example.com"
-                className={getFieldClass("email")}
-              />
+              <Label htmlFor="contact-email" className="text-sm text-foreground font-medium">Email</Label>
+              <Input id="contact-email" type="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} onBlur={() => handleBlur("email")} placeholder="you@example.com" className={getFieldClass("email")} />
               {errors.email && touched.email && <p className="text-xs text-destructive">{errors.email}</p>}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="contact-phone" className="text-sm text-foreground font-medium">
-                Phone
-              </Label>
-              <Input
-                id="contact-phone"
-                type="tel"
-                value={form.phone}
-                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                onBlur={() => handleBlur("phone")}
-                placeholder="9876543210"
-                className={getFieldClass("phone")}
-              />
+              <Label htmlFor="contact-phone" className="text-sm text-foreground font-medium">Phone</Label>
+              <Input id="contact-phone" type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} onBlur={() => handleBlur("phone")} placeholder="9876543210" className={getFieldClass("phone")} />
               {errors.phone && touched.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="contact-msg" className="text-sm text-foreground font-medium">
-                  Message
-                </Label>
-                <span className={`text-xs ${messageLen > 500 ? "text-destructive" : "text-muted-foreground"}`}>
-                  {messageLen}/500
-                </span>
+                <Label htmlFor="contact-msg" className="text-sm text-foreground font-medium">Message</Label>
+                <span className={`text-xs ${messageLen > 500 ? "text-destructive" : "text-muted-foreground"}`}>{messageLen}/500</span>
               </div>
-              <Textarea
-                id="contact-msg"
-                required
-                rows={4}
-                value={form.message}
-                onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                onBlur={() => handleBlur("message")}
-                placeholder="Your message..."
-                className={`${getFieldClass("message")} resize-none`}
-                maxLength={500}
-              />
+              <Textarea id="contact-msg" required rows={4} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} onBlur={() => handleBlur("message")} placeholder="Your message..." className={`${getFieldClass("message")} resize-none`} maxLength={500} />
               {errors.message && touched.message && <p className="text-xs text-destructive">{errors.message}</p>}
             </div>
-            <EyeFollowButton
-              type="submit"
-              disabled={loading}
-              loading={loading}
-              text="Send Message"
-            />
+            <EyeFollowButton type="submit" disabled={loading} loading={loading} text="Send Message" />
           </form>
 
           <div className="space-y-6">
@@ -222,16 +171,10 @@ const ContactSection = () => {
                 <div className="space-y-1 text-sm">
                   <p className="font-semibold text-foreground">{c.name}</p>
                   <p className="text-xs text-muted-foreground">{c.role}</p>
-                  <a
-                    href={`tel:${c.phone.replace(/\s/g, "")}`}
-                    className="flex items-center gap-1.5 min-h-[44px] py-1.5 text-muted-foreground hover:text-primary transition-colors"
-                  >
+                  <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 min-h-[44px] py-1.5 text-muted-foreground hover:text-primary transition-colors">
                     <Phone size={14} /> {c.phone}
                   </a>
-                  <a
-                    href={`mailto:${c.email}`}
-                    className="flex items-center gap-1.5 min-h-[44px] py-1.5 text-muted-foreground hover:text-primary transition-colors break-all"
-                  >
+                  <a href={`mailto:${c.email}`} className="flex items-center gap-1.5 min-h-[44px] py-1.5 text-muted-foreground hover:text-primary transition-colors break-all">
                     <Mail size={14} /> {c.email}
                   </a>
                 </div>
@@ -243,20 +186,12 @@ const ContactSection = () => {
                 <p className="text-sm font-semibold text-foreground">College Address</p>
               </div>
               <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                GM University P.B. Road, Davanagere,
-                <br />
-                Davangere - 577006 Karnataka,
+                GM University P.B. Road, Davanagere,<br />Davangere - 577006 Karnataka,
               </p>
               <div className="rounded-lg overflow-hidden border border-border h-40 bg-muted/30">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1720.843825501612!2d75.88425921598456!3d14.47528060769758!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bba2f005c56529f%3A0x2178cebedeb330c!2sGM%20University%20Main%20Gate!5e0!3m2!1sen!2sin!4v1771513343942!5m2!1sen!2sin"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="w-full h-full"
+                  width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full"
                 />
               </div>
             </div>
