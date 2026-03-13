@@ -62,19 +62,11 @@ const Poster = () => {
         {/* Hero */}
         <div className="poster-hero">
           <span className="poster-hero-rocket">🚀</span>
-          <div className="poster-hero-title-clay">
-            <div className="poster-clay-word">
-              {"TECH".split("").map((char, i) => (
-                <span key={i} className="poster-clay-letter" style={{ animationDelay: `${i * 0.05}s` }}>{char}</span>
-              ))}
-            </div>
-            <div className="poster-clay-word">
-              {"CARNIVAL".split("").map((char, i) => (
-                <span key={i} className="poster-clay-letter" style={{ animationDelay: `${(i + 5) * 0.05}s` }}>{char}</span>
-              ))}
-            </div>
+          <div className="poster-hero-title">
+            TECH CARNIVAL
+            <div className="poster-glitch-layer">TECH CARNIVAL</div>
           </div>
-          <div className="poster-hero-year-clay">2K26</div>
+          <div className="poster-hero-year">2K26</div>
           <div className="poster-hero-subtitle">National Level Technical Competition · UG Students</div>
         </div>
 
