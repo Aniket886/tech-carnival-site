@@ -74,7 +74,7 @@ const FAQSection = () => {
                 <AccordionItem
                   key={i}
                   value={`faq-${i}`}
-                  className="glass rounded-xl border-none px-5"
+                  className="liquid-glass rounded-xl border-none px-5 transition-all duration-300 hover:scale-[1.01]"
                   onMouseEnter={() => setOpenItem(`faq-${i}`)}
                   onMouseLeave={() => setOpenItem(undefined)}
                 >
