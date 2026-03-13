@@ -229,7 +229,19 @@ const HowToRegister = () => {
                     setCurrentIndex((prev) => Math.max(0, prev - 1))
                   }
                   disabled={currentIndex === 0}
-                  className="p-2.5 rounded-xl border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-card/60 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-200 active:translate-y-[1px] disabled:opacity-30 disabled:cursor-not-allowed"
+                  style={{
+                    background: 'linear-gradient(145deg, hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.15))',
+                    border: '1px solid hsl(var(--primary) / 0.25)',
+                    boxShadow: `
+                      6px 6px 14px rgba(0, 0, 0, 0.5),
+                      -3px -3px 10px hsl(var(--primary) / 0.06),
+                      inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+                      inset -2px -2px 4px rgba(0, 0, 0, 0.3)
+                    `,
+                    color: 'hsl(var(--primary))',
+                    textShadow: '0 0 10px hsl(var(--primary) / 0.5)',
+                  }}
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -239,11 +251,17 @@ const HowToRegister = () => {
                     <button
                       key={i}
                       onClick={() => setCurrentIndex(i)}
-                      className={`h-2 rounded-full transition-all duration-400 ${
-                        i === currentIndex
-                          ? "bg-primary w-8"
-                          : "bg-muted-foreground/20 hover:bg-muted-foreground/40 w-2"
-                      }`}
+                      className="rounded-full transition-all duration-400"
+                      style={{
+                        width: i === currentIndex ? '2rem' : '0.5rem',
+                        height: '0.5rem',
+                        background: i === currentIndex
+                          ? 'linear-gradient(145deg, hsl(var(--primary) / 0.8), hsl(var(--primary) / 0.5))'
+                          : 'linear-gradient(145deg, hsl(var(--muted-foreground) / 0.25), hsl(var(--muted-foreground) / 0.1))',
+                        boxShadow: i === currentIndex
+                          ? 'inset 1px 1px 2px rgba(255,255,255,0.15), inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 8px hsl(var(--primary) / 0.3)'
+                          : 'inset 1px 1px 2px rgba(255,255,255,0.05), inset -1px -1px 2px rgba(0,0,0,0.3)',
+                      }}
                     />
                   ))}
                 </div>
@@ -255,7 +273,19 @@ const HowToRegister = () => {
                     )
                   }
                   disabled={currentIndex === videos.length - 1}
-                  className="p-2.5 rounded-xl border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-card/60 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-200 active:translate-y-[1px] disabled:opacity-30 disabled:cursor-not-allowed"
+                  style={{
+                    background: 'linear-gradient(145deg, hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.15))',
+                    border: '1px solid hsl(var(--primary) / 0.25)',
+                    boxShadow: `
+                      6px 6px 14px rgba(0, 0, 0, 0.5),
+                      -3px -3px 10px hsl(var(--primary) / 0.06),
+                      inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+                      inset -2px -2px 4px rgba(0, 0, 0, 0.3)
+                    `,
+                    color: 'hsl(var(--primary))',
+                    textShadow: '0 0 10px hsl(var(--primary) / 0.5)',
+                  }}
                 >
                   <ChevronRight size={16} />
                 </button>
