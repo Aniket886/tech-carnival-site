@@ -61,13 +61,15 @@ const EventCard = ({ event, style, index, onSelect, onRegister }: EventCardProps
         style={{
           transform: `perspective(800px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) ${hovered ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)"}`,
           transition: "transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out",
-          boxShadow: hovered ? style.neonGlow : "none",
-          borderColor: hovered ? style.neonColor : undefined,
+          boxShadow: hovered
+            ? `${style.neonGlow}, inset 0 1px 0 0 hsl(195 100% 80% / 0.12), inset 0 -1px 0 0 hsl(270 80% 60% / 0.06)`
+            : "inset 0 1px 0 0 hsl(195 100% 80% / 0.08), 0 8px 32px -8px hsl(195 100% 50% / 0.08), 0 2px 8px -2px hsl(0 0% 0% / 0.25)",
+          borderColor: hovered ? style.neonColor : "hsl(195 100% 50% / 0.1)",
           background: hovered
-            ? "linear-gradient(135deg, hsl(230 20% 12% / 0.85), hsl(230 20% 8% / 0.7))"
-            : "hsl(var(--card) / 0.4)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
+            ? "linear-gradient(135deg, hsl(195 100% 50% / 0.1) 0%, hsl(230 20% 12% / 0.7) 30%, hsl(270 80% 60% / 0.08) 50%, hsl(230 20% 8% / 0.7) 75%, hsl(195 100% 50% / 0.1) 100%)"
+            : "linear-gradient(135deg, hsl(195 100% 50% / 0.06) 0%, hsl(230 20% 8% / 0.4) 25%, hsl(270 80% 60% / 0.04) 50%, hsl(230 20% 8% / 0.45) 75%, hsl(195 100% 50% / 0.06) 100%)",
+          backdropFilter: "blur(24px) saturate(1.8)",
+          WebkitBackdropFilter: "blur(24px) saturate(1.8)",
         }}
       >
         {/* Top accent bar */}
