@@ -226,7 +226,8 @@ const SortableSectionRow = forwardRef<HTMLDivElement, SortableSectionRowProps>((
       )}
     </div>
   );
-};
+});
+SortableSectionRow.displayName = "SortableSectionRow";
 
 /* ─── main ─── */
 const AdminPageManager = () => {
