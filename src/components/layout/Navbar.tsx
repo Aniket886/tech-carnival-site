@@ -124,21 +124,12 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
         </div>
 
         <button
-          className="md:hidden text-foreground p-2 rounded-xl hover:bg-primary/10 transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
+          className="md:hidden text-foreground p-2 min-w-[44px] min-h-[44px] rounded-xl hover:bg-primary/10 transition-colors relative z-50"
+          onClick={() => setMobileOpen((prev) => !prev)}
           aria-label="Toggle menu"
+          type="button"
         >
-          <AnimatePresence mode="wait">
-            {mobileOpen ? (
-              <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <X size={24} />
-              </motion.div>
-            ) : (
-              <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <Menu size={24} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
