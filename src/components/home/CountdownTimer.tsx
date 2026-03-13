@@ -36,33 +36,28 @@ const CountdownTimer = () => {
   ];
 
   return (
-    <div className="flex gap-4 sm:gap-6">
+    <div className="flex gap-2 sm:gap-6">
       {units.map(({ label, value }) => {
         const digits = String(value).padStart(2, "0");
         return (
-          <div key={label} className="flex flex-col items-center gap-2.5">
-            {/* Clay tile */}
+          <div key={label} className="flex flex-col items-center gap-1.5 sm:gap-2.5">
             <div
-              className="relative w-[72px] h-[82px] sm:w-[88px] sm:h-[100px] rounded-2xl flex items-center justify-center"
+              className="relative w-[52px] h-[58px] sm:w-[88px] sm:h-[100px] rounded-xl sm:rounded-2xl flex items-center justify-center"
               style={{
                 background: "linear-gradient(145deg, hsl(var(--primary) / 0.25) 0%, hsl(var(--primary) / 0.10) 100%)",
                 boxShadow:
-                  "8px 8px 16px rgba(0,0,0,0.45), -4px -4px 12px rgba(255,255,255,0.04), inset -3px -3px 6px rgba(0,0,0,0.2), inset 3px 3px 6px hsl(var(--primary) / 0.12)",
+                  "6px 6px 12px rgba(0,0,0,0.45), -3px -3px 8px rgba(255,255,255,0.04), inset -2px -2px 4px rgba(0,0,0,0.2), inset 2px 2px 4px hsl(var(--primary) / 0.12)",
                 border: "1px solid hsl(var(--primary) / 0.15)",
-                borderRadius: "20px",
               }}
             >
-              {/* Inner soft highlight */}
               <div
-                className="absolute inset-0 rounded-[19px] pointer-events-none"
+                className="absolute inset-0 rounded-[11px] sm:rounded-[19px] pointer-events-none"
                 style={{
                   background: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)",
                 }}
               />
-
-              {/* Digit */}
               <span
-                className="relative text-2xl sm:text-4xl font-black tabular-nums"
+                className="relative text-lg sm:text-4xl font-black tabular-nums"
                 style={{
                   color: "hsl(var(--primary))",
                   textShadow: "0 2px 4px rgba(0,0,0,0.4), 0 0 20px hsl(var(--primary) / 0.3)",
@@ -72,10 +67,8 @@ const CountdownTimer = () => {
                 {digits}
               </span>
             </div>
-
-            {/* Clay label */}
             <span
-              className="text-[10px] sm:text-xs font-bold tracking-[0.18em] uppercase px-3 py-1 rounded-full"
+              className="text-[8px] sm:text-xs font-bold tracking-[0.12em] sm:tracking-[0.18em] uppercase px-2 sm:px-3 py-0.5 sm:py-1 rounded-full"
               style={{
                 color: "hsl(var(--primary) / 0.8)",
                 background: "linear-gradient(145deg, hsl(var(--primary) / 0.12) 0%, hsl(var(--primary) / 0.05) 100%)",
