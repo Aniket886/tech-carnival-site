@@ -43,21 +43,32 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
   }, []);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+    const ratios = new Map<string, number>();
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          ratios.set(e.target.id, e.intersectionRatio);
+        });
+        let best = "";
+        let bestRatio = 0;
+        ratios.forEach((r, id) => {
+          if (r > bestRatio) {
+            bestRatio = r;
+            best = id;
+          }
+        });
+        if (best) setActiveSection(best);
+      },
+      { threshold: [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] }
+    );
+
     navLinks.forEach((link) => {
-      const id = link.href.replace("#", "");
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(id);
-        },
-        { threshold: 0.3 }
-      );
-      obs.observe(el);
-      observers.push(obs);
+      const el = document.getElementById(link.href.replace("#", ""));
+      if (el) obs.observe(el);
     });
-    return () => observers.forEach((o) => o.disconnect());
+
+    return () => obs.disconnect();
   }, [navLinks]);
 
   const handleNav = (href: string) => {
