@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,6 +26,9 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
   const navLinks = visibleSections
     ? visibleSections.filter((s) => sectionToNav[s.section_key]).map((s) => sectionToNav[s.section_key])
@@ -59,30 +62,53 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
 
   const handleNav = (href: string) => {
     setMobileOpen(false);
-    // Delay scroll until menu close animation finishes
     setTimeout(() => {
       document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
     }, 400);
   };
 
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!navRef.current) return;
+    const rect = navRef.current.getBoundingClientRect();
+    setCursorPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
   return (
     <motion.nav
+      ref={navRef}
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       role="navigation"
       aria-label="Main navigation"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 overflow-hidden ${
         scrolled || mobileOpen
           ? "liquid-glass border-b border-primary/10"
           : "bg-transparent"
       }`}
     >
+      {/* Cursor-following liquid glass glow — desktop only */}
+      <div
+        className="hidden md:block pointer-events-none absolute rounded-full transition-opacity duration-300"
+        style={{
+          width: 220,
+          height: 220,
+          left: cursorPos.x - 110,
+          top: cursorPos.y - 110,
+          opacity: isHovering ? 1 : 0,
+          background: "radial-gradient(circle, hsl(195 100% 50% / 0.12) 0%, hsl(270 80% 60% / 0.06) 40%, transparent 70%)",
+          filter: "blur(20px)",
+        }}
+      />
+
       {scrolled && (
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       )}
 
-      <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between h-16 relative z-10">
         <button
           onClick={() => handleNav("#home")}
           className="font-bold text-lg tracking-wider text-gradient relative group"
