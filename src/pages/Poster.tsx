@@ -94,11 +94,6 @@ const Poster = () => {
         Back
       </Link>
 
-      {/* Download button */}
-      <button onClick={handleDownload} className="poster-download-btn no-pdf">
-        <Download size={16} />
-        Download Flyer
-      </button>
 
       <div className="poster-container">
         {/* Header */}
