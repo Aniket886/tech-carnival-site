@@ -114,7 +114,8 @@ const SortableCardRow = forwardRef<HTMLDivElement, {
       </div>
     </div>
   );
-};
+});
+SortableCardRow.displayName = "SortableCardRow";
 
 /* ─── Sortable Section Row ─── */
 const SortableSectionRow = ({
