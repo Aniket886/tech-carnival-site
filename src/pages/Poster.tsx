@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import "@/styles/poster.css";
+import posterQr from "@/assets/poster-qr.png";
 
 const events = [
   { emoji: "💻", name: "Hack Momentum", type: "Hackathon", cls: "ec1" },
