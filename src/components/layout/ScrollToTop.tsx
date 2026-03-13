@@ -22,9 +22,21 @@ const ScrollToTop = () => {
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
-        className="w-10 h-10 rounded-xl bg-primary/20 backdrop-blur-sm border border-primary/40 flex items-center justify-center text-primary shadow-[0_0_15px_hsl(var(--primary)/0.4)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.6)] hover:bg-primary/30 hover:border-primary/60 transition-all duration-300"
+        className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:translate-y-[1px]"
+        style={{
+          background: 'linear-gradient(145deg, hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.15))',
+          border: '1px solid hsl(var(--primary) / 0.25)',
+          boxShadow: `
+            6px 6px 14px rgba(0, 0, 0, 0.5),
+            -3px -3px 10px hsl(var(--primary) / 0.06),
+            inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+            inset -2px -2px 4px rgba(0, 0, 0, 0.3)
+          `,
+          color: 'hsl(var(--primary))',
+          textShadow: '0 0 10px hsl(var(--primary) / 0.5)',
+        }}
       >
-        <ArrowUp size={16} />
+        <ArrowUp size={18} />
       </button>
     </div>
   );
