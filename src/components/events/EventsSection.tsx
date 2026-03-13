@@ -136,12 +136,12 @@ const EventsSection = () => {
 
     const timeout = setTimeout(() => { if (!cancelled) setLoading(false); }, 8000);
     fetchEvents();
-    fetchRegStatus();
+    fetchSettings();
 
     const channel = supabase
       .channel("events_realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "events" }, () => fetchEvents())
-      .on("postgres_changes", { event: "*", schema: "public", table: "admin_settings" }, () => fetchRegStatus())
+      .on("postgres_changes", { event: "*", schema: "public", table: "admin_settings" }, () => fetchSettings())
       .subscribe();
 
     return () => { cancelled = true; clearTimeout(timeout); supabase.removeChannel(channel); };
