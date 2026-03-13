@@ -42,7 +42,7 @@ const CountdownTimer = () => {
         return (
           <div key={label} className="flex flex-col items-center gap-1.5 sm:gap-2.5">
             <div
-              className="relative w-[52px] h-[58px] sm:w-[88px] sm:h-[100px] rounded-xl sm:rounded-2xl flex items-center justify-center"
+              className={`relative w-[52px] h-[58px] sm:w-[88px] sm:h-[100px] rounded-xl sm:rounded-2xl flex items-center justify-center transition-shadow duration-700 ${label === "Seconds" ? "animate-[clayPulse_2s_ease-in-out_infinite]" : ""}`}
               style={{
                 background: "linear-gradient(145deg, hsl(var(--primary) / 0.25) 0%, hsl(var(--primary) / 0.10) 100%)",
                 boxShadow:
