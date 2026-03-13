@@ -182,10 +182,20 @@ const HowToRegister = () => {
             className="space-y-5 lg:sticky lg:top-24"
           >
             {videoId ? (
-              <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-xl shadow-primary/5">
-                {/* Glow effect behind video */}
-                <div className="absolute -inset-1 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 rounded-2xl blur-sm -z-10" />
-                <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+              <div className="relative rounded-2xl overflow-hidden"
+                style={{
+                  border: '1px solid hsl(var(--primary) / 0.25)',
+                  background: 'linear-gradient(145deg, hsl(var(--primary) / 0.12), hsl(var(--primary) / 0.04))',
+                  boxShadow: `
+                    8px 8px 18px rgba(0, 0, 0, 0.55),
+                    -4px -4px 12px hsl(var(--primary) / 0.06),
+                    inset 2px 2px 4px rgba(255, 255, 255, 0.08),
+                    inset -2px -2px 4px rgba(0, 0, 0, 0.25)
+                  `,
+                  padding: '6px',
+                }}
+              >
+                <div className="relative w-full rounded-xl overflow-hidden" style={{ paddingBottom: "56.25%" }}>
                   <iframe
                     key={videoId}
                     src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`}
@@ -202,6 +212,7 @@ const HowToRegister = () => {
                       width: "100%",
                       height: "100%",
                       border: 0,
+                      borderRadius: "0.75rem",
                     }}
                   />
                 </div>
