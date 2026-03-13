@@ -121,14 +121,16 @@ const EventsSection = () => {
       }
     };
 
-    const fetchRegStatus = async () => {
+    const fetchSettings = async () => {
       const { data } = await supabase
         .from("admin_settings")
-        .select("setting_value")
-        .eq("setting_key", "registration_open")
-        .maybeSingle();
+        .select("setting_key, setting_value")
+        .in("setting_key", ["registration_open", "pay_button_visible"]);
       if (!cancelled && data) {
-        setRegistrationOpen(data.setting_value === "true");
+        const reg = data.find(s => s.setting_key === "registration_open");
+        if (reg) setRegistrationOpen(reg.setting_value === "true");
+        const pay = data.find(s => s.setting_key === "pay_button_visible");
+        if (pay) setPayButtonVisible(pay.setting_value === "true");
       }
     };
 
