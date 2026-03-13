@@ -135,12 +135,20 @@ const Poster = () => {
         </div>
 
         {/* Footer */}
-        <div className="poster-footer-strip">
-          <div className="poster-cert-badge">
-            <div className="poster-dot" />
-            All Participants Receive Participation Certificates
+        <div className="poster-footer-redesigned">
+          <div className="poster-footer-trophy-card">
+            <div className="poster-trophy-glow" />
+            <span className="poster-trophy-icon">🏆</span>
+            <div className="poster-trophy-text">
+              <span className="poster-trophy-title">GENERAL CHAMPIONSHIP</span>
+              <span className="poster-trophy-sub">Trophy Awaits the Best</span>
+            </div>
           </div>
-          <div className="poster-champ-badge">🏆 GENERAL CHAMPIONSHIP<br />TROPHY AWAITS</div>
+          <div className="poster-footer-cert-card">
+            <div className="poster-cert-dot-pulse" />
+            <span className="poster-cert-icon">📜</span>
+            <span className="poster-cert-text">All Participants Receive Certificates</span>
+          </div>
         </div>
       </div>
     </div>
