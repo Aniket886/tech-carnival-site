@@ -118,11 +118,7 @@ const SortableCardRow = forwardRef<HTMLDivElement, {
 SortableCardRow.displayName = "SortableCardRow";
 
 /* ─── Sortable Section Row ─── */
-const SortableSectionRow = ({
-  section, cards, expanded, onToggleExpand, onToggleSection,
-  onToggleCard, onBulkCards, cardFilter, onCardFilterChange, filteredCards,
-  onReorderCards, cardSensors,
-}: {
+interface SortableSectionRowProps {
   section: Section;
   cards: Card[];
   expanded: string | null;
@@ -135,7 +131,13 @@ const SortableSectionRow = ({
   filteredCards: Card[];
   onReorderCards: (sectionKey: string, event: DragEndEvent) => void;
   cardSensors: ReturnType<typeof useSensors>;
-}) => {
+}
+
+const SortableSectionRow = forwardRef<HTMLDivElement, SortableSectionRowProps>(({
+  section, cards, expanded, onToggleExpand, onToggleSection,
+  onToggleCard, onBulkCards, cardFilter, onCardFilterChange, filteredCards,
+  onReorderCards, cardSensors,
+}, _ref) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: section.id });
 
