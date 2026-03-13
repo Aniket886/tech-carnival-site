@@ -649,3 +649,14 @@
   color: #00e5ff;
   margin-right: 2px;
 }
+
+@keyframes clayPulse {
+  0%, 100% {
+    box-shadow: 6px 6px 12px rgba(0,0,0,0.45), -3px -3px 8px rgba(255,255,255,0.04), inset -2px -2px 4px rgba(0,0,0,0.2), inset 2px 2px 4px hsl(var(--primary) / 0.12);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 8px 8px 16px rgba(0,0,0,0.5), -4px -4px 10px rgba(255,255,255,0.05), inset -2px -2px 4px rgba(0,0,0,0.2), inset 2px 2px 4px hsl(var(--primary) / 0.18), 0 0 20px hsl(var(--primary) / 0.15);
+    transform: scale(1.04);
+  }
+}
