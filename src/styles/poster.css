@@ -155,26 +155,42 @@
   font-family: 'Orbitron', monospace;
   font-size: clamp(42px, 10vw, 96px);
   font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: -2px;
-  background: linear-gradient(135deg, #00f5ff 0%, #fff 40%, #ff00cc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  line-height: 1;
+  letter-spacing: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
   position: relative;
+  padding: 16px 24px;
+}
+
+.poster-clay-letter {
   display: inline-block;
-  padding: 24px 40px;
-  border-radius: 32px;
-  background-color: rgba(30, 50, 90, 0.5);
-  background-image: none;
-  -webkit-text-fill-color: unset;
   color: #00f5ff;
+  padding: 8px 6px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(30, 60, 100, 0.6), rgba(15, 35, 65, 0.7));
   box-shadow:
-    12px 12px 24px rgba(0, 0, 0, 0.5),
-    -8px -8px 20px rgba(100, 160, 255, 0.08),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.1),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.3);
-  text-shadow: 0 0 30px rgba(0, 245, 255, 0.5), 0 0 60px rgba(0, 245, 255, 0.2);
+    6px 6px 14px rgba(0, 0, 0, 0.5),
+    -3px -3px 10px rgba(0, 200, 255, 0.06),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.12),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 20px rgba(0, 245, 255, 0.5), 0 0 40px rgba(0, 245, 255, 0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.poster-clay-letter:hover {
+  transform: translateY(-4px) scale(1.08);
+  box-shadow:
+    8px 8px 18px rgba(0, 0, 0, 0.55),
+    -4px -4px 12px rgba(0, 200, 255, 0.1),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.15),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.3);
+}
+.poster-clay-space {
+  background: none !important;
+  box-shadow: none !important;
+  width: 16px;
 }
 /* Year – Claymorphism */
 .poster-hero-year {
