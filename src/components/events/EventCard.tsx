@@ -170,12 +170,14 @@ const EventCard = ({ event, style, index, onSelect, onRegister, registrationOpen
           >
             <span className="truncate">💰 Pay</span>
           </button>
-          <button
-            onClick={(e) => onRegister(e)}
-            className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center overflow-hidden rounded-lg"
-          >
-            <span className="truncate">Register</span>
-          </button>
+          {registrationOpen && (
+            <button
+              onClick={(e) => onRegister(e)}
+              className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center overflow-hidden rounded-lg"
+            >
+              <span className="truncate">Register</span>
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

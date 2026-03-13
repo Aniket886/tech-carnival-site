@@ -193,6 +193,7 @@ const EventsSection = () => {
                     e.stopPropagation();
                     setRegisterEvent(event);
                   }}
+                  registrationOpen={registrationOpen}
                 />
               ))}
             </AnimatePresence>
