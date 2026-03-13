@@ -230,24 +230,20 @@ const CarniBotWidget = () => {
               onClick={openChat}
               animate={{ y: [0, -5, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative w-[60px] h-[60px] max-sm:w-[52px] max-sm:h-[52px] rounded-full flex items-center justify-center transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="relative w-[60px] h-[60px] max-sm:w-[52px] max-sm:h-[52px] rounded-2xl flex items-center justify-center transition-all duration-200 active:translate-y-[1px]"
               style={{
-                background: "rgba(15, 15, 30, 0.7)",
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                color: "#00e5ff",
-                boxShadow: "0 0 12px rgba(0, 200, 255, 0.2)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 20px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.15)";
-                e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 12px rgba(0, 200, 255, 0.2)";
-                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
+                background: "linear-gradient(145deg, hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.15))",
+                border: "1px solid hsl(var(--primary) / 0.25)",
+                boxShadow: `
+                  6px 6px 14px rgba(0, 0, 0, 0.5),
+                  -3px -3px 10px hsl(var(--primary) / 0.06),
+                  inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+                  inset -2px -2px 4px rgba(0, 0, 0, 0.3)
+                `,
+                color: "hsl(var(--primary))",
+                textShadow: "0 0 10px hsl(var(--primary) / 0.5)",
               }}
               aria-label="Open CarniBOT"
             >
