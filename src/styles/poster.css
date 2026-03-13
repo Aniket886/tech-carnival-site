@@ -176,29 +176,23 @@
     inset -4px -4px 8px rgba(0, 0, 0, 0.3);
   text-shadow: 0 0 30px rgba(0, 245, 255, 0.5), 0 0 60px rgba(0, 245, 255, 0.2);
 }
-.poster-glitch-layer {
-  position: absolute;
-  inset: 0;
-  font-family: 'Orbitron', monospace;
-  font-size: clamp(42px, 10vw, 96px);
-  font-weight: 900;
-  color: #ff00cc;
-  animation: posterGlitch 6s infinite;
-  opacity: 0;
-  padding: 24px 40px;
-}
-@keyframes posterGlitch {
-  0%,94%,100% { opacity: 0; transform: none; }
-  95% { opacity: 0.6; transform: translateX(-3px) skewX(-2deg); }
-  97% { opacity: 0.4; transform: translateX(3px) skewX(1deg); }
-}
+/* Year – Claymorphism */
 .poster-hero-year {
   font-family: 'Orbitron', monospace;
   font-size: clamp(18px, 4vw, 28px);
   letter-spacing: 10px;
   color: #ffd700;
-  text-shadow: 0 0 20px #ffd700;
-  margin-top: 8px;
+  display: inline-block;
+  padding: 10px 32px;
+  margin-top: 12px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(80, 60, 10, 0.5), rgba(50, 40, 5, 0.6));
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.5),
+    -4px -4px 12px rgba(255, 215, 0, 0.06),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.1),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 .poster-hero-subtitle {
   font-size: 13px;

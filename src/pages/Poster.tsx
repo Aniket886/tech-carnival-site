@@ -105,7 +105,7 @@ const Poster = () => {
           <span className="poster-hero-rocket">🚀</span>
           <div className="poster-hero-title">
             TECH CARNIVAL
-            <div className="poster-glitch-layer">TECH CARNIVAL</div>
+            
           </div>
           <div className="poster-hero-year">2K26</div>
           <div className="poster-hero-subtitle">National Level Technical Competition · UG Students</div>
