@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
   ChevronDown, ChevronUp, ExternalLink, RotateCcw, Search,
-  Wrench, Eye, EyeOff, Activity, GripVertical,
+  Wrench, Eye, EyeOff, Activity,
 } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 import {
@@ -95,9 +95,14 @@ const SortableCardRow = ({
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-muted-foreground flex-shrink-0 touch-none"
+          aria-label="Reorder card"
+          className="group cursor-grab active:cursor-grabbing text-foreground flex-shrink-0 touch-none rounded-md border border-border/60 bg-muted/20 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-1.5"
         >
-          <GripVertical size={14} />
+          <span className="grid grid-cols-2 gap-0.5" aria-hidden="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <span key={i} className="h-1 w-1 rounded-full bg-muted-foreground/90 group-hover:bg-foreground transition-colors" />
+            ))}
+          </span>
         </button>
         <span className={`text-sm ${card.is_visible ? "text-foreground" : "text-muted-foreground"}`}>
           {card.card_name}
@@ -152,9 +157,14 @@ const SortableSectionRow = ({
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-muted-foreground flex-shrink-0 touch-none"
+          aria-label="Reorder section"
+          className="group cursor-grab active:cursor-grabbing text-foreground flex-shrink-0 touch-none rounded-md border border-border/60 bg-muted/20 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-1.5"
         >
-          <GripVertical size={16} />
+          <span className="grid grid-cols-2 gap-0.5" aria-hidden="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <span key={i} className="h-1 w-1 rounded-full bg-muted-foreground/90 group-hover:bg-foreground transition-colors" />
+            ))}
+          </span>
         </button>
         <span className="text-xl">{sectionIcons[section.section_key] || "📄"}</span>
         <div className="flex-1 min-w-0">
