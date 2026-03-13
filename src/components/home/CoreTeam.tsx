@@ -51,12 +51,40 @@ const CoreTeam = () => {
         <div className="flex flex-wrap justify-center gap-10 md:gap-14">
           {coreTeam.map((member) => (
             <div key={member.name} className="flex flex-col items-center text-center group w-40 sm:w-52">
-              <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-primary/40 bg-muted/60 flex items-center justify-center mb-5 overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.15)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] group-hover:border-primary/70 transition-all duration-300">
-                {member.image_url ? (
-                  <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />
-                ) : (
-                  <User className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/50" />
-                )}
+              {/* Liquid glass avatar ring */}
+              <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-5">
+                {/* Outer glow ring */}
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/30 via-transparent to-accent/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Liquid glass border */}
+                <div
+                  className="relative w-full h-full rounded-full p-[3px] transition-all duration-500"
+                  style={{
+                    background: "linear-gradient(135deg, hsl(195 100% 60% / 0.5), hsl(270 91% 65% / 0.3), hsl(195 100% 50% / 0.2))",
+                  }}
+                >
+                  <div
+                    className="w-full h-full rounded-full overflow-hidden flex items-center justify-center transition-all duration-500"
+                    style={{
+                      background: "linear-gradient(160deg, hsl(195 100% 50% / 0.08), hsl(230 20% 10% / 0.6), hsl(270 91% 65% / 0.06))",
+                      backdropFilter: "blur(20px) saturate(1.6)",
+                      boxShadow: "inset 0 2px 4px 0 hsl(195 100% 80% / 0.1), inset 0 -1px 2px 0 hsl(270 91% 65% / 0.08), 0 4px 24px -4px hsl(195 100% 50% / 0.15)",
+                    }}
+                  >
+                    {member.image_url ? (
+                      <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/40" />
+                    )}
+                  </div>
+                </div>
+                {/* Refraction highlight */}
+                <div
+                  className="absolute top-2 left-1/2 -translate-x-1/2 w-3/5 h-4 rounded-full pointer-events-none opacity-60 group-hover:opacity-90 transition-opacity duration-500"
+                  style={{
+                    background: "linear-gradient(180deg, hsl(195 100% 90% / 0.25) 0%, transparent 100%)",
+                    filter: "blur(3px)",
+                  }}
+                />
               </div>
               <h3 className="text-base sm:text-lg font-semibold text-foreground leading-tight whitespace-nowrap">
                 {member.name}
