@@ -228,6 +228,7 @@ const AdminPageManager = () => {
   const [cardFilter, setCardFilter] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [regOpen, setRegOpen] = useState(true);
+  const [payVisible, setPayVisible] = useState(true);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
