@@ -252,6 +252,8 @@ const AdminPageManager = () => {
     if (settings) {
       const reg = (settings as any[]).find(s => s.setting_key === "registration_open");
       if (reg) setRegOpen(reg.setting_value === "true");
+      const pay = (settings as any[]).find(s => s.setting_key === "pay_button_visible");
+      if (pay) setPayVisible(pay.setting_value === "true");
     }
     setLoading(false);
   }, []);
