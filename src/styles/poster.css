@@ -215,90 +215,17 @@
   margin-bottom: 36px;
 }
 .poster-event-card {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.03) 40%,
-    rgba(var(--card-accent-rgb, 0, 245, 255), 0.06) 100%
-  );
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
   padding: 18px 16px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s, box-shadow 0.4s;
+  transition: border-color 0.3s, transform 0.3s;
   cursor: default;
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-}
-/* Inner glass highlight */
-.poster-event-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.02) 60%,
-    transparent 100%
-  );
-  border-radius: 20px 20px 0 0;
-  pointer-events: none;
-}
-/* Accent glow orb */
-.poster-event-card::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  right: -20px;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle, var(--card-accent, #00f5ff) 0%, transparent 70%);
-  opacity: 0.1;
-  border-radius: 50%;
-  pointer-events: none;
-  transition: opacity 0.4s;
 }
 .poster-event-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(var(--card-accent-rgb, 0, 245, 255), 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(0,245,255,0.3);
+  transform: translateY(-2px);
 }
-.poster-event-card:hover::after {
-  opacity: 0.2;
-}
-.poster-event-emoji { font-size: 28px; display: block; margin-bottom: 10px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-.poster-event-name {
-  font-family: 'Orbitron', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.95);
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-.poster-event-type {
-  font-size: 10px;
-  color: var(--card-accent, #00f5ff);
-  font-family: 'Share Tech Mono', monospace;
-  letter-spacing: 1px;
-  opacity: 0.8;
-}
-.ec1 { --card-accent: #00f5ff; --card-accent-rgb: 0, 245, 255; }
-.ec2 { --card-accent: #a78bfa; --card-accent-rgb: 167, 139, 250; }
-.ec3 { --card-accent: #ff00cc; --card-accent-rgb: 255, 0, 204; }
-.ec4 { --card-accent: #34d399; --card-accent-rgb: 52, 211, 153; }
-.ec5 { --card-accent: #fb923c; --card-accent-rgb: 251, 146, 60; }
-.ec6 { --card-accent: #38bdf8; --card-accent-rgb: 56, 189, 248; }
-.ec7 { --card-accent: #ffd700; --card-accent-rgb: 255, 215, 0; }
-.ec8 { --card-accent: #f472b6; --card-accent-rgb: 244, 114, 182; }
 
 /* Prize Banner */
 .poster-prize-banner {
