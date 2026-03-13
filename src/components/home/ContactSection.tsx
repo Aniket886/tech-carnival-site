@@ -71,10 +71,8 @@ const ContactSection = () => {
     if (!nv.valid) errs.name = nv.error!;
     const ev = validateEmail(form.email);
     if (!ev.valid) errs.email = ev.error!;
-    if (form.phone.trim()) {
-      const pv = validatePhone(form.phone);
-      if (!pv.valid) errs.phone = pv.error!;
-    }
+    const pv = validatePhone(form.phone);
+    if (!pv.valid) errs.phone = pv.error!;
     const mv = validateMessage(form.message);
     if (!mv.valid) errs.message = mv.error!;
     setErrors(errs);
