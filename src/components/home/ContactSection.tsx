@@ -135,7 +135,7 @@ const ContactSection = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <form onSubmit={handleSubmit} className="glass-strong rounded-xl p-6 sm:p-8 space-y-5">
+          <form onSubmit={handleSubmit} className="liquid-glass rounded-xl p-6 sm:p-8 space-y-5">
             <div className="space-y-1.5">
               <Label htmlFor="contact-name" className="text-sm text-foreground font-medium">
                 Name
