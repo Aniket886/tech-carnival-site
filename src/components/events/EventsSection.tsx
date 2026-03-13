@@ -197,6 +197,7 @@ const EventsSection = () => {
                     setRegisterEvent(event);
                   }}
                   registrationOpen={registrationOpen}
+                  payButtonVisible={payButtonVisible}
                 />
               ))}
             </AnimatePresence>

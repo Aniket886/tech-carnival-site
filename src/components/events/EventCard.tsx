@@ -158,19 +158,21 @@ const EventCard = ({ event, style, index, onSelect, onRegister, registrationOpen
           >
             <span className="inline-flex items-center gap-1 truncate"><FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" /> Rule Book</span>
           </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (event.paymentUrl) {
-                window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
-              } else {
-                toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
-              }
-            }}
-            className="btn-gold min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
-          >
-            <span className="truncate">💰 Pay</span>
-          </button>
+          {payButtonVisible && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (event.paymentUrl) {
+                  window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
+                } else {
+                  toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
+                }
+              }}
+              className="btn-gold min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
+            >
+              <span className="truncate">💰 Pay</span>
+            </button>
+          )}
           {registrationOpen && (
             <button
               onClick={(e) => onRegister(e)}
