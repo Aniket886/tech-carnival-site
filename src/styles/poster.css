@@ -78,6 +78,36 @@
   box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
 }
 
+/* Download button */
+.poster-download-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 40px;
+  background: rgba(5, 20, 50, 0.85);
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  color: #00f5ff;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.poster-download-btn:hover {
+  border-color: #00f5ff;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+}
+
+/* Hide elements in PDF */
+@media print {
+  .no-pdf { display: none !important; }
+}
+
 /* Container */
 .poster-container {
   position: relative;

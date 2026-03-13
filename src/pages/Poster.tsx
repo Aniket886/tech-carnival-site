@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import "@/styles/poster.css";
 import posterQr from "@/assets/poster-qr.png";
 
@@ -16,6 +16,28 @@ const events = [
 ];
 
 const Poster = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = useCallback(async () => {
+    const el = containerRef.current;
+    if (!el) return;
+    const html2pdf = (await import("html2pdf.js")).default;
+    const opt = {
+      margin: 0,
+      filename: "TechCarnival2K26-Flyer.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#020818",
+        scrollY: 0,
+        windowWidth: 860,
+      },
+      jsPDF: { unit: "in", format: [5.5, 8.5], orientation: "portrait" },
+    };
+    html2pdf().set(opt).from(el).save();
+  }, []);
+
   useEffect(() => {
     // Generate stars
     const starsEl = document.getElementById("poster-stars");
@@ -38,7 +60,7 @@ const Poster = () => {
   }, []);
 
   return (
-    <div className="poster-page">
+    <div className="poster-page" ref={containerRef}>
       <div className="poster-stars" id="poster-stars" />
       <div className="poster-scan-corner tl" />
       <div className="poster-scan-corner tr" />
@@ -48,11 +70,17 @@ const Poster = () => {
       {/* Back button */}
       <Link
         to="/"
-        className="poster-back-btn"
+        className="poster-back-btn no-pdf"
       >
         <ArrowLeft size={16} />
         Back
       </Link>
+
+      {/* Download button */}
+      <button onClick={handleDownload} className="poster-download-btn no-pdf">
+        <Download size={16} />
+        Download Flyer
+      </button>
 
       <div className="poster-container">
         {/* Header */}
