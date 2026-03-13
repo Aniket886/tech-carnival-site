@@ -104,11 +104,11 @@ const Poster = () => {
         <div className="poster-hero">
           <span className="poster-hero-rocket">🚀</span>
           <div className="poster-hero-title">
-            {"TECH CARNIVAL".split("").map((char, i) => (
-              <span key={i} className={`poster-clay-letter ${char === " " ? "poster-clay-space" : ""}`}>
-                {char === " " ? "\u00A0" : char}
-              </span>
+            {"TECH".split("").map((char, i) => (
+              <span key={`t${i}`} className="poster-clay-letter">{char}</span>
             ))}
+            <span className="poster-clay-space">{"\u00A0"}</span>
+            <span className="poster-clay-letter poster-clay-word">CARNIVAL</span>
           </div>
           <div className="poster-hero-year">2K26</div>
           <div className="poster-hero-subtitle">National Level Technical Competition · UG Students</div>
