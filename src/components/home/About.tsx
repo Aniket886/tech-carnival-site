@@ -10,7 +10,7 @@ const About = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto glass rounded-2xl p-8 sm:p-12 neon-border text-center"
+          className="max-w-3xl mx-auto liquid-glass-intense rounded-2xl p-8 sm:p-12 text-center"
         >
           <h2 className="text-3xl sm:text-4xl font-bold gradient-text mb-6">About the Event</h2>
           <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
