@@ -59,7 +59,10 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
 
   const handleNav = (href: string) => {
     setMobileOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    // Delay scroll until menu close animation finishes
+    setTimeout(() => {
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    }, 400);
   };
 
   return (
