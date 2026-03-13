@@ -360,6 +360,16 @@ const AdminPageManager = () => {
     toast.success(`Registration ${newVal ? "opened" : "closed"}`);
   };
 
+  const togglePayButton = async () => {
+    const newVal = !payVisible;
+    const { error } = await supabase
+      .from("admin_settings")
+      .upsert({ setting_key: "pay_button_visible", setting_value: String(newVal), updated_at: new Date().toISOString() }, { onConflict: "setting_key" });
+    if (error) { toast.error("Failed to update"); return; }
+    setPayVisible(newVal);
+    toast.success(`Pay button ${newVal ? "shown" : "hidden"}`);
+  };
+
   const resetToDefault = async () => {
     const updates = sections.map(s =>
       supabase.from("site_sections").update({ is_visible: true, updated_at: new Date().toISOString() }).eq("id", s.id)
