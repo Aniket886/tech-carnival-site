@@ -121,7 +121,7 @@ const Poster = () => {
               <div className="poster-register-url">techcarnival.online</div>
             </div>
             <div className="poster-contact-block">
-              <div className="poster-contact-line">📞 <span>+91 93804 74080</span> · <span>9845642942</span></div>
+              <div className="poster-contact-line">📞 <span>+91 9380474080</span> · <span>9845642942</span></div>
               <div className="poster-contact-line">Organizing Secretary – Tech Carnival 2K26</div>
             </div>
           </div>
