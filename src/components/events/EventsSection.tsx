@@ -77,6 +77,7 @@ const EventsSection = () => {
   const [events, setEvents] = useState<EventData[]>(fallbackEvents);
   const [loading, setLoading] = useState(false);
   const [registrationOpen, setRegistrationOpen] = useState(true);
+  const [payButtonVisible, setPayButtonVisible] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
