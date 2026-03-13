@@ -384,42 +384,109 @@
   text-transform: uppercase;
 }
 
-/* Footer Strip */
-.poster-footer-strip {
-  border-top: 1px solid rgba(0,245,255,0.1);
-  padding-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+/* Footer Redesigned */
+.poster-footer-redesigned {
+  border-top: 1px solid rgba(0,245,255,0.08);
+  padding-top: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
-.poster-cert-badge {
+
+.poster-footer-trophy-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(255,0,204,0.06) 100%);
+  border: 1px solid rgba(255,215,0,0.2);
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 40px;
-  padding: 6px 16px;
+  gap: 14px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.poster-footer-trophy-card:hover {
+  border-color: rgba(255,215,0,0.45);
+  transform: translateY(-2px);
+}
+.poster-trophy-glow {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.poster-trophy-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  animation: posterFloat 3s ease-in-out infinite;
+}
+.poster-trophy-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.poster-trophy-title {
+  font-family: 'Orbitron', monospace;
   font-size: 11px;
-  color: rgba(255,255,255,0.5);
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #ffd700, #fff, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200%;
+  animation: posterShimmer 3s linear infinite;
+}
+.poster-trophy-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,215,0,0.5);
   letter-spacing: 1px;
 }
-.poster-dot {
-  width: 6px; height: 6px;
+
+.poster-footer-cert-card {
+  position: relative;
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.poster-footer-cert-card:hover {
+  border-color: rgba(52, 211, 153, 0.4);
+  transform: translateY(-2px);
+}
+.poster-cert-dot-pulse {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 6px;
+  height: 6px;
   background: #34d399;
   border-radius: 50%;
   box-shadow: 0 0 8px #34d399;
-  animation: posterPulse 2s infinite;
+  animation: posterPulse 2s ease-in-out infinite;
 }
-.poster-champ-badge {
+.poster-cert-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.poster-cert-text {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: #ffd700;
-  letter-spacing: 2px;
-  text-align: right;
-  opacity: 0.8;
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 1px;
+  line-height: 1.5;
+}
+
+@media (max-width: 520px) {
+  .poster-footer-redesigned { grid-template-columns: 1fr; }
 }
 
 /* Responsive */
