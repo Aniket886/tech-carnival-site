@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, forwardRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -69,12 +69,10 @@ const fmtDate = (d: string) => {
 };
 
 /* ─── Sortable Card Row ─── */
-const SortableCardRow = ({
-  card, onToggleCard,
-}: {
+const SortableCardRow = forwardRef<HTMLDivElement, {
   card: Card;
   onToggleCard: (c: Card) => void;
-}) => {
+}>(({ card, onToggleCard }, _ref) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: card.id });
 
@@ -116,14 +114,11 @@ const SortableCardRow = ({
       </div>
     </div>
   );
-};
+});
+SortableCardRow.displayName = "SortableCardRow";
 
 /* ─── Sortable Section Row ─── */
-const SortableSectionRow = ({
-  section, cards, expanded, onToggleExpand, onToggleSection,
-  onToggleCard, onBulkCards, cardFilter, onCardFilterChange, filteredCards,
-  onReorderCards, cardSensors,
-}: {
+interface SortableSectionRowProps {
   section: Section;
   cards: Card[];
   expanded: string | null;
@@ -136,7 +131,13 @@ const SortableSectionRow = ({
   filteredCards: Card[];
   onReorderCards: (sectionKey: string, event: DragEndEvent) => void;
   cardSensors: ReturnType<typeof useSensors>;
-}) => {
+}
+
+const SortableSectionRow = forwardRef<HTMLDivElement, SortableSectionRowProps>(({
+  section, cards, expanded, onToggleExpand, onToggleSection,
+  onToggleCard, onBulkCards, cardFilter, onCardFilterChange, filteredCards,
+  onReorderCards, cardSensors,
+}, _ref) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: section.id });
 
@@ -225,7 +226,8 @@ const SortableSectionRow = ({
       )}
     </div>
   );
-};
+});
+SortableSectionRow.displayName = "SortableSectionRow";
 
 /* ─── main ─── */
 const AdminPageManager = () => {
