@@ -76,6 +76,7 @@ const EventsSection = () => {
   const [registerEvent, setRegisterEvent] = useState<EventData | null>(null);
   const [events, setEvents] = useState<EventData[]>(fallbackEvents);
   const [loading, setLoading] = useState(false);
+  const [registrationOpen, setRegistrationOpen] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,12 +120,25 @@ const EventsSection = () => {
       }
     };
 
+    const fetchRegStatus = async () => {
+      const { data } = await supabase
+        .from("admin_settings")
+        .select("setting_value")
+        .eq("setting_key", "registration_open")
+        .maybeSingle();
+      if (!cancelled && data) {
+        setRegistrationOpen(data.setting_value === "true");
+      }
+    };
+
     const timeout = setTimeout(() => { if (!cancelled) setLoading(false); }, 8000);
     fetchEvents();
+    fetchRegStatus();
 
     const channel = supabase
       .channel("events_realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "events" }, () => fetchEvents())
+      .on("postgres_changes", { event: "*", schema: "public", table: "admin_settings" }, () => fetchRegStatus())
       .subscribe();
 
     return () => { cancelled = true; clearTimeout(timeout); supabase.removeChannel(channel); };
