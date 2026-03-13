@@ -144,20 +144,48 @@ const HowToRegister = () => {
                       {/* Step circle with icon */}
                       <div className="relative flex-shrink-0 z-10">
                         <motion.div
-                          className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-primary/30 bg-background group-hover:border-primary/60 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)] transition-all duration-500"
+                          className="w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-xl transition-all duration-500"
+                          style={{
+                            background: 'linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.05))',
+                            border: '1px solid hsl(var(--primary) / 0.25)',
+                            boxShadow: `
+                              0 4px 24px hsl(var(--primary) / 0.1),
+                              inset 0 1px 1px rgba(255, 255, 255, 0.15),
+                              inset 0 -1px 1px rgba(0, 0, 0, 0.1)
+                            `,
+                          }}
                           whileHover={{ scale: 1.1 }}
                         >
                           <Icon size={18} className="text-primary" />
                         </motion.div>
                         {/* Step number badge */}
-                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                        <span
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center backdrop-blur-md"
+                          style={{
+                            background: 'linear-gradient(135deg, hsl(var(--primary) / 0.8), hsl(var(--primary) / 0.5))',
+                            color: 'hsl(var(--primary-foreground))',
+                            boxShadow: '0 2px 8px hsl(var(--primary) / 0.3), inset 0 1px 1px rgba(255,255,255,0.2)',
+                          }}
+                        >
                           {i + 1}
                         </span>
                       </div>
 
-                      {/* Content card */}
+                      {/* Liquid glass content card */}
                       <div className="flex-1 pb-2">
-                        <div className="p-4 rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm group-hover:border-primary/20 group-hover:bg-card/60 transition-all duration-500">
+                        <div
+                          className="p-4 rounded-2xl backdrop-blur-xl group-hover:scale-[1.01] transition-all duration-500"
+                          style={{
+                            background: 'linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--primary) / 0.02), hsl(var(--secondary) / 0.04))',
+                            border: '1px solid hsl(var(--primary) / 0.15)',
+                            boxShadow: `
+                              0 8px 32px rgba(0, 0, 0, 0.12),
+                              0 2px 8px rgba(0, 0, 0, 0.08),
+                              inset 0 1px 1px rgba(255, 255, 255, 0.1),
+                              inset 0 -1px 2px rgba(0, 0, 0, 0.05)
+                            `,
+                          }}
+                        >
                           <h3 className="font-display font-semibold text-foreground text-sm sm:text-base mb-1.5">
                             {step.title}
                           </h3>
