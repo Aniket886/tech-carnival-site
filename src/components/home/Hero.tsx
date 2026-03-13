@@ -78,11 +78,11 @@ const Hero = () => {
               className="btn-golden-gold h-14 px-12 text-lg font-bold inline-flex items-center justify-center transition-all duration-300">
               <span>🚀 Register Now</span>
             </button>
-            <button
-              className="btn-golden-gold h-14 px-12 text-lg inline-flex items-center justify-center transition-all duration-300"
-              onClick={() => document.querySelector("#how-to-register")?.scrollIntoView({ behavior: "smooth" })}>
+            <a
+              href="/poster"
+              className="btn-golden-gold h-14 px-12 text-lg inline-flex items-center justify-center transition-all duration-300">
               <span>Learn More →</span>
-            </button>
+            </a>
         </div>
       </div>
     </section>
