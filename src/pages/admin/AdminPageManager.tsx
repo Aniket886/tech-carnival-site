@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
   ChevronDown, ChevronUp, ExternalLink, RotateCcw, Search,
-  Wrench, Eye, EyeOff, Activity, GripVertical,
+  Wrench, Eye, EyeOff, Activity,
 } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
 import {
