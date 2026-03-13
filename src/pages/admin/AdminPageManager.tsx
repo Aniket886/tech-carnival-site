@@ -69,12 +69,10 @@ const fmtDate = (d: string) => {
 };
 
 /* ─── Sortable Card Row ─── */
-const SortableCardRow = ({
-  card, onToggleCard,
-}: {
+const SortableCardRow = forwardRef<HTMLDivElement, {
   card: Card;
   onToggleCard: (c: Card) => void;
-}) => {
+}>(({ card, onToggleCard }, _ref) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: card.id });
 
