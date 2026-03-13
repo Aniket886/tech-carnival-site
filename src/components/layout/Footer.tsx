@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore – injected by Vite define
+declare const __BUILD_TIMESTAMP__: string;
 import { Mail, Phone, MapPin, Instagram, Globe, ArrowUp } from "lucide-react";
 
 const Footer = () => {
@@ -126,6 +129,9 @@ const Footer = () => {
             <a href="/admin" className="text-[10px] tracking-wide select-all cursor-pointer transition-colors duration-300 text-muted-foreground hover:text-[hsl(45,100%,50%)]">
               Developed by Aniket Tegginamath
             </a>
+            <span className="text-[9px] font-mono text-muted-foreground/40 select-all" title="Build timestamp">
+              v{__BUILD_TIMESTAMP__}
+            </span>
           </div>
         </div>
       </div>
