@@ -104,9 +104,7 @@ const Poster = () => {
         <div className="poster-hero">
           <span className="poster-hero-rocket">🚀</span>
           <div className="poster-hero-title">
-            {"TECH".split("").map((char, i) => (
-              <span key={`t${i}`} className="poster-clay-letter">{char}</span>
-            ))}
+            <span className="poster-clay-letter poster-clay-word">TECH</span>
             <span className="poster-clay-space">{"\u00A0"}</span>
             <span className="poster-clay-letter poster-clay-word">CARNIVAL</span>
           </div>
