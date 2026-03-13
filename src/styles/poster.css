@@ -366,15 +366,11 @@
 }
 .poster-qr-box::before { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
 .poster-qr-box::after  { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }
-.poster-qr-icon { font-size: 28px; opacity: 0.5; }
-.poster-qr-text {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 9px;
-  color: rgba(0,245,255,0.5);
-  letter-spacing: 1px;
-  text-align: center;
-  padding: 0 8px;
-  line-height: 1.4;
+.poster-qr-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 4px;
+  object-fit: contain;
 }
 .poster-qr-label {
   font-size: 9px;

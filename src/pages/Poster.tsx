@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import "@/styles/poster.css";
+import posterQr from "@/assets/poster-qr.png";
 
 const events = [
   { emoji: "💻", name: "Hack Momentum", type: "Hackathon", cls: "ec1" },
@@ -127,8 +128,7 @@ const Poster = () => {
           </div>
           <div className="poster-qr-wrapper">
             <div className="poster-qr-box">
-              <span className="poster-qr-icon">📱</span>
-              <div className="poster-qr-text">SCAN TO<br />REGISTER</div>
+              <img src={posterQr} alt="Scan to Register" className="poster-qr-img" />
             </div>
             <div className="poster-qr-label">Scan to Register</div>
           </div>
