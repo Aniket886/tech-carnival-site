@@ -236,7 +236,7 @@ const ContactSection = () => {
                 </div>
               </div>
             ))}
-            <div className="glass rounded-xl p-5">
+            <div className="liquid-glass rounded-xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <MapPin size={16} className="text-primary" />
                 <p className="text-sm font-semibold text-foreground">College Address</p>
