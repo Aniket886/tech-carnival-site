@@ -21,9 +21,10 @@ interface EventCardProps {
   index: number;
   onSelect: () => void;
   onRegister: (e: ReactMouseEvent) => void;
+  registrationOpen?: boolean;
 }
 
-const EventCard = ({ event, style, index, onSelect, onRegister }: EventCardProps) => {
+const EventCard = ({ event, style, index, onSelect, onRegister, registrationOpen = true }: EventCardProps) => {
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
