@@ -146,7 +146,7 @@ const ContactSection = () => {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="contact-phone" className="text-sm text-foreground font-medium">Phone</Label>
-              <Input id="contact-phone" type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} onBlur={() => handleBlur("phone")} placeholder="9876543210" className={getFieldClass("phone")} />
+              <Input id="contact-phone" type="tel" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} onBlur={() => handleBlur("phone")} placeholder="9876543210" className={getFieldClass("phone")} />
               {errors.phone && touched.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
             </div>
             <div className="space-y-1.5">
