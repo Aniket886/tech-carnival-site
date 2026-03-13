@@ -36,16 +36,16 @@ const Poster = () => {
     const opt = {
       margin: 0,
       filename: "TechCarnival2K26-Flyer.pdf",
-      image: { type: "jpeg", quality: 0.98 },
+      image: { type: "jpeg", quality: 1 },
       html2canvas: {
-        scale: 2,
+        scale: 3,
         useCORS: true,
         backgroundColor: "#020818",
         scrollY: -window.scrollY,
-        width: el.scrollWidth,
-        height: el.scrollHeight,
+        width: 860,
+        windowWidth: 860,
       },
-      jsPDF: { unit: "in", format: [5.5, 8.5], orientation: "portrait" as const },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
     };
 
     await html2pdf().set(opt).from(el).save();
