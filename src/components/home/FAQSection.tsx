@@ -1,3 +1,4 @@
+/* Liquid Glass v2 — rebuilt */
 import { useState, useEffect } from "react";
 import {
   Accordion,
