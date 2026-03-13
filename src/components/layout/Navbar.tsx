@@ -1,4 +1,3 @@
-/* Liquid Glass v2 — rebuilt */
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -40,7 +39,6 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Track active section via IntersectionObserver
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     navLinks.forEach((link) => {
@@ -77,13 +75,11 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
           : "bg-transparent"
       }`}
     >
-      {/* Liquid refraction highlight on top edge */}
       {scrolled && (
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       )}
 
       <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-        {/* Logo */}
         <button
           onClick={() => handleNav("#home")}
           className="font-bold text-lg tracking-wider text-gradient relative group"
@@ -92,7 +88,6 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
           <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
         </button>
 
-        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => {
             const id = link.href.replace("#", "");
@@ -102,9 +97,7 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
                 key={link.href}
                 onClick={() => handleNav(link.href)}
                 className={`relative px-3.5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
-                  isActive
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {isActive && (
@@ -130,7 +123,6 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
           )}
         </div>
 
-        {/* Mobile toggle */}
         <button
           className="md:hidden text-foreground p-2 rounded-xl hover:bg-primary/10 transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -150,7 +142,6 @@ const Navbar = ({ visibleSections }: NavbarProps) => {
         </button>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
