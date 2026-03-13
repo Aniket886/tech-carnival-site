@@ -36,96 +36,51 @@ const CountdownTimer = () => {
   ];
 
   return (
-    <div className="flex gap-3 sm:gap-5">
+    <div className="flex gap-4 sm:gap-6">
       {units.map(({ label, value }) => {
         const digits = String(value).padStart(2, "0");
         return (
-          <div key={label} className="flex flex-col items-center gap-2">
-            {/* Outer bezel */}
+          <div key={label} className="flex flex-col items-center gap-2.5">
+            {/* Clay tile */}
             <div
-              className="relative w-[68px] h-[78px] sm:w-[84px] sm:h-[96px] rounded-xl"
+              className="relative w-[72px] h-[82px] sm:w-[88px] sm:h-[100px] rounded-2xl flex items-center justify-center"
               style={{
-                background: "linear-gradient(180deg, hsl(210 10% 30%) 0%, hsl(210 10% 14%) 100%)",
+                background: "linear-gradient(145deg, hsl(var(--primary) / 0.25) 0%, hsl(var(--primary) / 0.10) 100%)",
                 boxShadow:
-                  "0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)",
-                padding: "3px",
+                  "8px 8px 16px rgba(0,0,0,0.45), -4px -4px 12px rgba(255,255,255,0.04), inset -3px -3px 6px rgba(0,0,0,0.2), inset 3px 3px 6px hsl(var(--primary) / 0.12)",
+                border: "1px solid hsl(var(--primary) / 0.15)",
+                borderRadius: "20px",
               }}
             >
-              {/* Inner face */}
+              {/* Inner soft highlight */}
               <div
-                className="relative w-full h-full rounded-[9px] flex items-center justify-center overflow-hidden"
+                className="absolute inset-0 rounded-[19px] pointer-events-none"
                 style={{
-                  background: "linear-gradient(180deg, hsl(210 8% 10%) 0%, hsl(210 12% 6%) 100%)",
-                  boxShadow:
-                    "inset 0 2px 6px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.05)",
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)",
+                }}
+              />
+
+              {/* Digit */}
+              <span
+                className="relative text-2xl sm:text-4xl font-black tabular-nums"
+                style={{
+                  color: "hsl(var(--primary))",
+                  textShadow: "0 2px 4px rgba(0,0,0,0.4), 0 0 20px hsl(var(--primary) / 0.3)",
+                  letterSpacing: "0.08em",
                 }}
               >
-                {/* Flip-card center seam */}
-                <div
-                  className="absolute inset-x-0 top-1/2 h-px -translate-y-px"
-                  style={{
-                    background: "linear-gradient(90deg, transparent 8%, rgba(0,0,0,0.7) 20%, rgba(0,0,0,0.7) 80%, transparent 92%)",
-                  }}
-                />
-                <div
-                  className="absolute inset-x-0 top-1/2 h-px translate-y-px"
-                  style={{
-                    background: "linear-gradient(90deg, transparent 8%, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.04) 80%, transparent 92%)",
-                  }}
-                />
-
-                {/* Digit display */}
-                <div className="flex gap-[2px]">
-                  {digits.split("").map((d, i) => (
-                    <span
-                      key={i}
-                      className="text-2xl sm:text-3xl font-black tabular-nums"
-                      style={{
-                        color: "hsl(var(--primary))",
-                        textShadow: "0 0 12px hsl(var(--primary) / 0.5), 0 1px 2px rgba(0,0,0,0.8)",
-                        fontFamily: "'Courier New', monospace",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      {d}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Top highlight gloss */}
-                <div
-                  className="absolute inset-x-1 top-1 h-[45%] rounded-t-md pointer-events-none"
-                  style={{
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%)",
-                  }}
-                />
-
-                {/* Corner screws */}
-                {[
-                  "top-[5px] left-[5px]",
-                  "top-[5px] right-[5px]",
-                  "bottom-[5px] left-[5px]",
-                  "bottom-[5px] right-[5px]",
-                ].map((pos, i) => (
-                  <div
-                    key={i}
-                    className={`absolute ${pos} w-[5px] h-[5px] rounded-full`}
-                    style={{
-                      background: "radial-gradient(circle at 35% 35%, hsl(210 8% 35%), hsl(210 8% 15%))",
-                      boxShadow: "inset 0 0.5px 0 rgba(255,255,255,0.15), 0 0.5px 1px rgba(0,0,0,0.4)",
-                    }}
-                  />
-                ))}
-              </div>
+                {digits}
+              </span>
             </div>
 
-            {/* Label plate */}
+            {/* Clay label */}
             <span
-              className="text-[10px] sm:text-xs font-semibold tracking-[0.15em] uppercase px-2 py-0.5 rounded"
+              className="text-[10px] sm:text-xs font-bold tracking-[0.18em] uppercase px-3 py-1 rounded-full"
               style={{
-                color: "hsl(210 10% 55%)",
-                background: "linear-gradient(180deg, hsl(210 10% 16%) 0%, hsl(210 10% 12%) 100%)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.3)",
+                color: "hsl(var(--primary) / 0.8)",
+                background: "linear-gradient(145deg, hsl(var(--primary) / 0.12) 0%, hsl(var(--primary) / 0.05) 100%)",
+                boxShadow:
+                  "4px 4px 8px rgba(0,0,0,0.3), -2px -2px 6px rgba(255,255,255,0.03), inset -1px -1px 3px rgba(0,0,0,0.15), inset 1px 1px 3px hsl(var(--primary) / 0.08)",
               }}
             >
               {label}
