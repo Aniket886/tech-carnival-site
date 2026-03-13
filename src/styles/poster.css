@@ -137,6 +137,18 @@
   background-clip: text;
   position: relative;
   display: inline-block;
+  padding: 24px 40px;
+  border-radius: 32px;
+  background-color: rgba(30, 50, 90, 0.5);
+  background-image: none;
+  -webkit-text-fill-color: unset;
+  color: #00f5ff;
+  box-shadow:
+    12px 12px 24px rgba(0, 0, 0, 0.5),
+    -8px -8px 20px rgba(100, 160, 255, 0.08),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.1),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 30px rgba(0, 245, 255, 0.5), 0 0 60px rgba(0, 245, 255, 0.2);
 }
 .poster-glitch-layer {
   position: absolute;
@@ -144,12 +156,10 @@
   font-family: 'Orbitron', monospace;
   font-size: clamp(42px, 10vw, 96px);
   font-weight: 900;
-  background: linear-gradient(135deg, #ff00cc, #00f5ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ff00cc;
   animation: posterGlitch 6s infinite;
   opacity: 0;
+  padding: 24px 40px;
 }
 @keyframes posterGlitch {
   0%,94%,100% { opacity: 0; transform: none; }
