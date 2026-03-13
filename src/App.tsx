@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AdminAuthProvider } from "@/hooks/useAdminAuth";
 import { SiteVisibilityProvider } from "@/hooks/useSiteVisibility";
 import Index from "./pages/Index";
+import Poster from "./pages/Poster";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import AdminLayout from "./components/AdminLayout";
@@ -42,6 +43,7 @@ const App = () => (
           <SiteVisibilityProvider>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/poster" element={<Poster />} />
               <Route path="/admin" element={<AdminLogin />} />
               <Route element={<AdminLayout />}>
                 <Route path="/admin/overview" element={<AdminOverview />} />
