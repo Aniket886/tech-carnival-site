@@ -1,3 +1,4 @@
+/* Liquid Glass v2 — rebuilt */
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

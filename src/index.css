@@ -123,6 +123,7 @@
     border: 1px solid hsl(195 100% 50% / 0.2);
   }
 
+  /* Liquid Glass v2 — rebuilt cleanly */
   .liquid-glass {
     background: linear-gradient(
       135deg,

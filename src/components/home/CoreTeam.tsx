@@ -1,3 +1,4 @@
+/* Liquid Glass v2 — rebuilt */
 import { User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
