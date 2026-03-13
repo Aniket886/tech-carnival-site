@@ -300,62 +300,25 @@
 .ec7 { --card-accent: #ffd700; --card-accent-rgb: 255, 215, 0; }
 .ec8 { --card-accent: #f472b6; --card-accent-rgb: 244, 114, 182; }
 
-/* Prize Banner – Liquid Glass */
+/* Prize Banner */
 .poster-prize-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.04) 40%,
-    rgba(255, 215, 0, 0.06) 70%,
-    rgba(255, 0, 204, 0.04) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.5);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  padding: 32px 36px;
+  background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,0,204,0.12));
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 16px;
+  padding: 24px 32px;
   text-align: center;
   margin-bottom: 28px;
   position: relative;
   overflow: hidden;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s, box-shadow 0.4s;
-}
-/* Inner glass highlight */
-.poster-prize-banner::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.02) 60%,
-    transparent 100%
-  );
-  border-radius: 24px 24px 0 0;
-  pointer-events: none;
 }
 .poster-prize-banner::after {
   content: '🏆';
   position: absolute;
-  font-size: 140px;
+  font-size: 120px;
   right: -20px;
-  bottom: -35px;
-  opacity: 0.06;
+  bottom: -30px;
+  opacity: 0.07;
   pointer-events: none;
-  filter: blur(1px);
-}
-.poster-prize-banner:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.3),
-    0 0 30px rgba(255, 215, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 .poster-prize-amount {
   font-family: 'Orbitron', monospace;
@@ -367,7 +330,6 @@
   background-clip: text;
   background-size: 200%;
   animation: posterShimmer 3s linear infinite;
-  filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.2));
 }
 @keyframes posterShimmer {
   0%   { background-position: -200%; }
@@ -376,14 +338,14 @@
 .poster-prize-label {
   font-size: 12px;
   letter-spacing: 4px;
-  color: rgba(255,215,0,0.55);
+  color: rgba(255,215,0,0.6);
   font-family: 'Share Tech Mono', monospace;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 .poster-prize-extra {
-  margin-top: 12px;
+  margin-top: 10px;
   font-size: 12px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.5);
   letter-spacing: 1px;
 }
 
