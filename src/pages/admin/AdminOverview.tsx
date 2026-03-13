@@ -297,6 +297,9 @@ const AdminOverview = () => {
         <Button variant="outline" size="sm" className="gap-2" onClick={handleExportAll} disabled={exporting}>
           <Download size={14} /> {exporting ? "Exporting…" : "Export All Data"}
         </Button>
+        <span className="ml-auto text-[10px] font-mono text-muted-foreground/50 select-all" title="Build timestamp">
+          Build: {__BUILD_TIMESTAMP__}
+        </span>
       </div>
 
       {/* Stat Cards */}
