@@ -103,10 +103,6 @@
   box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
 }
 
-/* Hide elements in PDF */
-@media print {
-  .no-pdf { display: none !important; }
-}
 
 /* Container */
 .poster-container {

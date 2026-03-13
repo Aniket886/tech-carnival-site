@@ -21,6 +21,17 @@ const Poster = () => {
   const handleDownload = useCallback(async () => {
     const el = containerRef.current;
     if (!el) return;
+
+    // Hide non-PDF elements
+    const hideEls = document.querySelectorAll('.no-pdf');
+    hideEls.forEach(e => (e as HTMLElement).style.display = 'none');
+
+    // Temporarily make stars/corners absolute for capture
+    const starsEl = document.getElementById('poster-stars');
+    const corners = document.querySelectorAll('.poster-scan-corner');
+    if (starsEl) starsEl.style.position = 'absolute';
+    corners.forEach(c => (c as HTMLElement).style.position = 'absolute');
+
     const html2pdf = (await import("html2pdf.js")).default;
     const opt = {
       margin: 0,
@@ -30,12 +41,19 @@ const Poster = () => {
         scale: 2,
         useCORS: true,
         backgroundColor: "#020818",
-        scrollY: 0,
-        windowWidth: 860,
+        scrollY: -window.scrollY,
+        width: el.scrollWidth,
+        height: el.scrollHeight,
       },
-      jsPDF: { unit: "in", format: [5.5, 8.5], orientation: "portrait" },
+      jsPDF: { unit: "in", format: [5.5, 8.5], orientation: "portrait" as const },
     };
-    html2pdf().set(opt).from(el).save();
+
+    await html2pdf().set(opt).from(el).save();
+
+    // Restore elements
+    hideEls.forEach(e => (e as HTMLElement).style.display = '');
+    if (starsEl) starsEl.style.position = '';
+    corners.forEach(c => (c as HTMLElement).style.position = '');
   }, []);
 
   useEffect(() => {
