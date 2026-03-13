@@ -46,7 +46,7 @@ const ContactSection = () => {
       const r = validateEmail(form.email);
       if (!r.valid) errs.email = r.error!;
     }
-    if (field === "phone" && form.phone.trim()) {
+    if (field === "phone") {
       const r = validatePhone(form.phone);
       if (!r.valid) errs.phone = r.error!;
     }
