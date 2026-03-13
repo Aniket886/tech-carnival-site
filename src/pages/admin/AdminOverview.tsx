@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore – injected by Vite define
+declare const __BUILD_TIMESTAMP__: string;
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
