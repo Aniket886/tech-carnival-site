@@ -43,6 +43,7 @@ const App = () => (
           <SiteVisibilityProvider>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/poster" element={<Poster />} />
               <Route path="/admin" element={<AdminLogin />} />
               <Route element={<AdminLayout />}>
                 <Route path="/admin/overview" element={<AdminOverview />} />
