@@ -135,7 +135,7 @@ const ContactSection = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <form onSubmit={handleSubmit} className="glass-strong rounded-xl p-6 sm:p-8 space-y-5">
+          <form onSubmit={handleSubmit} className="liquid-glass rounded-xl p-6 sm:p-8 space-y-5">
             <div className="space-y-1.5">
               <Label htmlFor="contact-name" className="text-sm text-foreground font-medium">
                 Name
@@ -214,7 +214,7 @@ const ContactSection = () => {
 
           <div className="space-y-6">
             {coordinators.map((c) => (
-              <div key={c.email} className="glass rounded-xl p-5 flex items-start gap-4">
+              <div key={c.email} className="liquid-glass rounded-xl p-5 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span className="text-primary font-display font-bold text-sm">{c.initial}</span>
                 </div>
@@ -236,7 +236,7 @@ const ContactSection = () => {
                 </div>
               </div>
             ))}
-            <div className="glass rounded-xl p-5">
+            <div className="liquid-glass rounded-xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <MapPin size={16} className="text-primary" />
                 <p className="text-sm font-semibold text-foreground">College Address</p>
