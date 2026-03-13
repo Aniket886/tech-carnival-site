@@ -459,6 +459,11 @@ const AdminPageManager = () => {
         </div>
         <div className="h-6 w-px bg-border hidden sm:block" />
         <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-foreground">Pay Button</span>
+          <Badge variant={payVisible ? "default" : "destructive"} className="text-xs">{payVisible ? "Visible" : "Hidden"}</Badge>
+          <Switch checked={payVisible} onCheckedChange={togglePayButton} />
+        </div>
+        <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground">Registration</span>
           <Badge variant={regOpen ? "default" : "destructive"} className="text-xs">{regOpen ? "Open" : "Closed"}</Badge>
           <Switch checked={regOpen} onCheckedChange={toggleRegistration} />
