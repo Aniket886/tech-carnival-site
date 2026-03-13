@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore – injected by Vite define
+declare const __BUILD_TIMESTAMP__: string;
 import { Mail, Phone, MapPin, Instagram, Globe, ArrowUp } from "lucide-react";
 
 const Footer = () => {
