@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore – injected by Vite define
 declare const __BUILD_TIMESTAMP__: string;
-import { Mail, Phone, MapPin, Instagram, ArrowUp } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 
 const Footer = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
