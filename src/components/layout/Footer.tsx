@@ -29,22 +29,6 @@ const Footer = () => {
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
                 A two-day National Level Technical Competition by GM University, Davangere.
               </p>
-              <div className="flex gap-2 pt-1">
-                {[
-                  { href: "https://instagram.com/techcarnival2k26", icon: Instagram, label: "Instagram" },
-                ].map((s) => (
-                  <a
-                    key={s.label}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label}
-                    className="w-9 h-9 rounded-lg bg-muted/40 border border-border/30 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-200"
-                  >
-                    <s.icon size={15} />
-                  </a>
-                ))}
-              </div>
             </div>
 
             {/* Quick Links */}
