@@ -57,7 +57,7 @@ const AnnouncementBanner = () => {
   if (!visible.length) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] space-y-0 overflow-hidden">
+    <div className="fixed top-0 left-0 right-0 z-[60] space-y-0 overflow-hidden md:hidden">
       <AnimatePresence>
         {visible.map(a => {
           const cfg = typeConfig[a.type] || typeConfig.info;
