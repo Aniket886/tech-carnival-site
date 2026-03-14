@@ -111,6 +111,10 @@ export default {
           from: { transform: "translateY(0)" },
           to: { transform: "translateY(calc(-100% - var(--gap)))" },
         },
+        "marquee-announcement": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -124,6 +128,7 @@ export default {
         "marquee-vertical-reverse": "marquee-vertical-reverse var(--duration) linear infinite",
         "marquee-horizontal": "marquee-x var(--duration) infinite linear",
         "marquee-vertical-animata": "marquee-y var(--duration) linear infinite",
+        "marquee-announcement": "marquee-announcement 20s linear infinite",
       },
     },
   },
