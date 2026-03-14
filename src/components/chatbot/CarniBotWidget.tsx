@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Send, MessageCircle, Trash2 } from "lucide-react";
+import { X, Send, MessageCircle, Trash2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -308,6 +308,35 @@ const CarniBotWidget = () => {
                   Ask me anything!
                 </p>
               </div>
+              {messages.length > 1 && (
+                <button
+                  onClick={() => {
+                    const text = messages
+                      .map(m => `[${m.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}] ${m.role === "user" ? "You" : "CarniBOT"}: ${m.content}`)
+                      .join("\n\n");
+                    const blob = new Blob([text], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `carnibot-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="p-2 rounded-lg transition-all duration-200"
+                  style={{ color: "rgba(255, 255, 255, 0.5)" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "#00e5ff";
+                    e.currentTarget.style.background = "rgba(0, 229, 255, 0.1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                  title="Download conversation"
+                >
+                  <Download size={16} />
+                </button>
+              )}
               <button
                 onClick={() => {
                   setMessages([{
