@@ -107,6 +107,30 @@ const AnnouncementBanner = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* Swipe hint */}
+                <AnimatePresence>
+                  {showHint && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-20 pointer-events-none"
+                    >
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <motion.div
+                          animate={{ x: [-4, 4, -4] }}
+                          transition={{ repeat: Infinity, duration: 1.2 }}
+                          className="flex items-center gap-1"
+                        >
+                          <ChevronLeft size={14} />
+                          <span>Swipe to dismiss</span>
+                          <ChevronRight size={14} />
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           );
