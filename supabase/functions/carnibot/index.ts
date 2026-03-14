@@ -170,7 +170,7 @@ RULES:
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ model, messages: chatMessages, stream: true }),
+        body: JSON.stringify({ model, messages: chatMessages, stream: true, temperature: 0.2 }),
       });
     }
 
