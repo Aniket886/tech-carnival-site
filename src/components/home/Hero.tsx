@@ -79,7 +79,7 @@ const Hero = () => {
               <span>🚀 Register Now</span>
             </button>
             <a
-              href="/poster"
+              href="#how-to-register"
               className="btn-golden-gold h-14 px-12 text-lg inline-flex items-center justify-center transition-all duration-300">
               <span>Learn More →</span>
             </a>
