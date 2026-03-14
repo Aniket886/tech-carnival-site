@@ -71,23 +71,32 @@ const AnnouncementBanner = () => {
               }}
               className={`${cfg.bg} border-b ${cfg.border} backdrop-blur-md cursor-grab active:cursor-grabbing touch-pan-y`}
             >
-              <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center gap-4 select-none">
-                <Icon size={22} className={cfg.iconColor + " shrink-0"} />
-                <p className="text-base md:text-lg text-foreground flex-1 tracking-wide">
-                  <span className="font-bold uppercase">{a.title}</span>
-                  <span className="mx-2 text-muted-foreground">—</span>
-                  <span className="text-muted-foreground font-medium">{a.message}</span>
-                </p>
-                {a.link_url && (
-                  <a href={a.link_url} target="_blank" rel="noopener noreferrer"
-                    className="text-sm font-semibold text-primary hover:underline flex items-center gap-1.5 shrink-0">
-                    {a.link_label || "Learn more"} <ExternalLink size={14} />
-                  </a>
-                )}
+              <div className="relative flex items-center py-3.5 select-none">
+                {/* Fixed close button on the right */}
                 <button onClick={() => dismiss(a.id)}
-                  className="text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors">
+                  className="absolute right-2 z-10 text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors">
                   <X size={18} strokeWidth={2.5} />
                 </button>
+                {/* Marquee content */}
+                <div className="overflow-hidden flex-1 mr-10">
+                  <div className="flex gap-16 animate-marquee-reverse whitespace-nowrap" style={{ "--duration": "20s" } as React.CSSProperties}>
+                    {[...Array(2)].map((_, i) => (
+                      <span key={i} className="inline-flex items-center gap-4 text-base md:text-lg tracking-wide">
+                        <Icon size={22} className={cfg.iconColor + " shrink-0"} />
+                        <span className="font-bold uppercase text-foreground">{a.title}</span>
+                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground font-medium">{a.message}</span>
+                        {a.link_url && (
+                          <a href={a.link_url} target="_blank" rel="noopener noreferrer"
+                            className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1.5"
+                            onClick={e => e.stopPropagation()}>
+                            {a.link_label || "Learn more"} <ExternalLink size={14} />
+                          </a>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           );
