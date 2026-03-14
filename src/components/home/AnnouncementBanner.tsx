@@ -79,7 +79,7 @@ const AnnouncementBanner = () => {
               }}
               className={`${cfg.bg} border-b ${cfg.border} backdrop-blur-md cursor-grab active:cursor-grabbing touch-pan-y`}
             >
-              <div className="flex items-center py-2 px-2 select-none">
+              <div className="flex items-center py-2 px-2 select-none relative">
                 {/* Close button pinned left */}
                 <button onClick={() => dismiss(a.id)}
                   className="text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors mr-2 z-10">
