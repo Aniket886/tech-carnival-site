@@ -171,69 +171,146 @@
   .btn-golden {
     position: relative;
     border: none;
-    border-radius: 10px;
-    background: linear-gradient(to right, hsl(var(--primary) / 0.4), hsl(var(--primary)), hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.4), hsl(var(--primary)), hsl(var(--primary) / 0.4));
-    background-size: 250%;
-    background-position: left;
+    border-radius: 12px;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary) / 0.25) 0%,
+      hsl(var(--primary) / 0.12) 50%,
+      hsl(var(--primary) / 0.06) 100%
+    );
     color: hsl(var(--primary));
     overflow: hidden;
-    transition: background-position 1s;
     z-index: 0;
+    transition: all 0.2s ease;
+    border-top: 1px solid hsl(var(--primary) / 0.4);
+    border-bottom: 1px solid hsl(var(--primary) / 0.1);
+    box-shadow:
+      0 1px 0 0 hsl(var(--primary) / 0.3) inset,
+      0 -1px 0 0 hsl(0 0% 0% / 0.3) inset,
+      0 4px 12px -2px hsl(0 0% 0% / 0.5),
+      0 1px 3px hsl(0 0% 0% / 0.3),
+      0 0 20px hsl(var(--primary) / 0.08);
+    text-shadow: 0 0 12px hsl(var(--primary) / 0.5);
+    backdrop-filter: blur(8px);
   }
 
   .btn-golden::before {
     content: "";
     position: absolute;
-    inset: 2px;
-    border-radius: 8px;
-    background-color: hsl(var(--background) / 0.9);
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(
+      180deg,
+      hsl(0 0% 100% / 0.08) 0%,
+      transparent 40%,
+      hsl(0 0% 0% / 0.1) 100%
+    );
     z-index: -1;
-    transition: background-position 1s;
+    pointer-events: none;
   }
 
   .btn-golden:hover {
-    background-position: right;
-    transform: scale(1.05);
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+    transform: translateY(-1px);
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary) / 0.35) 0%,
+      hsl(var(--primary) / 0.18) 50%,
+      hsl(var(--primary) / 0.1) 100%
+    );
+    box-shadow:
+      0 1px 0 0 hsl(var(--primary) / 0.4) inset,
+      0 -1px 0 0 hsl(0 0% 0% / 0.3) inset,
+      0 8px 20px -4px hsl(0 0% 0% / 0.5),
+      0 2px 6px hsl(0 0% 0% / 0.3),
+      0 0 30px hsl(var(--primary) / 0.15);
   }
 
   .btn-golden:active {
-    transform: scale(0.95);
+    transform: translateY(1px);
+    box-shadow:
+      0 -1px 0 0 hsl(var(--primary) / 0.2) inset,
+      0 2px 4px 0 hsl(0 0% 0% / 0.4) inset,
+      0 1px 2px hsl(0 0% 0% / 0.3);
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary) / 0.1) 0%,
+      hsl(var(--primary) / 0.15) 50%,
+      hsl(var(--primary) / 0.2) 100%
+    );
   }
 
   .btn-golden-gold {
     position: relative;
     border: none;
-    border-radius: 10px;
-    background: linear-gradient(to right, hsl(var(--primary) / 0.4), hsl(var(--primary)), hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.4), hsl(var(--primary)), hsl(var(--primary) / 0.4));
-    background-size: 250%;
-    background-position: left;
+    border-radius: 12px;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary) / 0.3) 0%,
+      hsl(var(--primary) / 0.15) 50%,
+      hsl(var(--primary) / 0.08) 100%
+    );
     color: hsl(var(--primary));
     overflow: hidden;
-    transition: background-position 1s;
     z-index: 0;
+    transition: all 0.2s ease;
+    border-top: 1px solid hsl(var(--primary) / 0.5);
+    border-bottom: 1px solid hsl(var(--primary) / 0.08);
+    box-shadow:
+      0 1px 0 0 hsl(var(--primary) / 0.35) inset,
+      0 -1px 0 0 hsl(0 0% 0% / 0.3) inset,
+      0 4px 14px -2px hsl(0 0% 0% / 0.5),
+      0 1px 4px hsl(0 0% 0% / 0.3),
+      0 0 24px hsl(var(--primary) / 0.1);
+    text-shadow: 0 0 14px hsl(var(--primary) / 0.5);
+    backdrop-filter: blur(8px);
   }
 
   .btn-golden-gold::before {
     content: "";
     position: absolute;
-    inset: 2px;
-    border-radius: 8px;
-    background-color: hsl(var(--background) / 0.9);
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(
+      180deg,
+      hsl(0 0% 100% / 0.1) 0%,
+      transparent 40%,
+      hsl(0 0% 0% / 0.12) 100%
+    );
     z-index: -1;
-    transition: background-position 1s;
+    pointer-events: none;
   }
 
   .btn-golden-gold:hover {
-    background-position: right;
-    transform: scale(1.05);
-    background: linear-gradient(to right, hsl(45 100% 50% / 0.4), hsl(45 100% 50%), hsl(45 100% 50% / 0.4));
+    transform: translateY(-1px);
+    background: linear-gradient(
+      180deg,
+      hsl(45 100% 50% / 0.3) 0%,
+      hsl(45 100% 50% / 0.15) 50%,
+      hsl(45 100% 50% / 0.08) 100%
+    );
     color: hsl(45 100% 50%);
-    box-shadow: 0 0 20px hsl(45 100% 50% / 0.4);
+    border-top-color: hsl(45 100% 50% / 0.5);
+    box-shadow:
+      0 1px 0 0 hsl(45 100% 50% / 0.4) inset,
+      0 -1px 0 0 hsl(0 0% 0% / 0.3) inset,
+      0 8px 24px -4px hsl(0 0% 0% / 0.5),
+      0 2px 6px hsl(0 0% 0% / 0.3),
+      0 0 30px hsl(45 100% 50% / 0.15);
+    text-shadow: 0 0 14px hsl(45 100% 50% / 0.5);
   }
 
   .btn-golden-gold:active {
-    transform: scale(0.95);
+    transform: translateY(1px);
+    box-shadow:
+      0 -1px 0 0 hsl(var(--primary) / 0.2) inset,
+      0 2px 4px 0 hsl(0 0% 0% / 0.4) inset,
+      0 1px 2px hsl(0 0% 0% / 0.3);
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary) / 0.08) 0%,
+      hsl(var(--primary) / 0.12) 50%,
+      hsl(var(--primary) / 0.18) 100%
+    );
   }
 
   .btn-gold {
