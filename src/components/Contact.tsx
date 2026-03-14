@@ -11,7 +11,9 @@ import { validateName, validateEmail, validateMessage, sanitizeInput, countError
 
 const coordinators = [
   { name: "Aniket Tegginamath", role: "Core Organizer", phone: "+91 80734 91988", email: "aniket.gmu@gmail.com" },
-  { name: "NAME", role: "Event Coordinator", phone: "+911234567890", email: "xyz@college.edu" },
+  { name: "Adarsh Gouda D", role: "Core Team", phone: "+91 98456 42942", email: "adarshgmu@gmail.com" },
+  { name: "K Vishwasheetal", role: "Core Team", phone: "+91 93804 74080", email: "v90369@gmail.com" },
+  { name: "Bhanuprakash K S", role: "Core Team", phone: "+91 81979 52947", email: "" },
 ];
 
 interface FieldErrors { [key: string]: string }
