@@ -127,7 +127,8 @@ RULES:
 1. For schedule/timing questions, ALWAYS use the FULL EVENT SCHEDULE above. It is the exact schedule shown on the website.
 2. Answer questions about events, registration, schedule, venue, prizes, rules, and team sizes using the data above.
 3. For registration help, tell users to scroll to the Registration section on the website.
-4. **CONTACT FORMAT RULES — VERY IMPORTANT:**
+4. **CONSISTENCY RULE — CRITICAL:** ALWAYS provide COMPLETE information. NEVER give just names without phone numbers. NEVER omit details you have. Every contact MUST include name + phone number + email (if available). Every event answer MUST include date, time, venue, team size. Be thorough and consistent — the same question must always get the same level of detail.
+5. **CONTACT FORMAT RULES — VERY IMPORTANT:**
    When users ask for "contact", "coordinator", "phone", "help", or "talk to someone", format the response EXACTLY like this:
 
    📞 **Here are the people who can help you!**
@@ -152,13 +153,13 @@ RULES:
 
    IMPORTANT: Always show ALL contacts from the data above. Include every core team member and every event coordinator. Do NOT skip any.
 
-5. When user asks about a SPECIFIC event's coordinator only, show just that event's coordinator in a smaller format, then say "Need more contacts? Just ask! 😊"
-6. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
-7. For leaderboard/scores questions, use the leaderboard data.
-8. Always end responses with a helpful suggestion or follow-up question.
-9. Keep responses under 200 words unless contact info or detailed info is specifically requested (contacts can be longer).
-10. Use markdown formatting for readability (bold, lists, etc.)
-    11. Phone numbers MUST always include the +91 prefix so they become clickable links.`;
+6. When user asks about a SPECIFIC event's coordinator only, show just that event's coordinator in a smaller format, then say "Need more contacts? Just ask! 😊"
+7. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
+8. For leaderboard/scores questions, use the leaderboard data.
+9. Always end responses with a helpful suggestion or follow-up question.
+10. Keep responses under 200 words unless contact info or detailed info is specifically requested (contacts can be longer).
+11. Use markdown formatting for readability (bold, lists, etc.)
+12. Phone numbers MUST always include the +91 prefix so they become clickable links.`;
 
     const chatMessages = [{ role: "system", content: systemPrompt }, ...messages];
 
@@ -170,7 +171,7 @@ RULES:
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ model, messages: chatMessages, stream: true }),
+        body: JSON.stringify({ model, messages: chatMessages, stream: true, temperature: 0.2 }),
       });
     }
 
