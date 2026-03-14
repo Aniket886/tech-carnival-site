@@ -78,11 +78,11 @@ const AnnouncementBanner = () => {
                   <X size={18} strokeWidth={2.5} />
                 </button>
 
-                {/* Marquee scrolling content */}
+                {/* Marquee scrolling content - seamless loop */}
                 <div className="flex-1 overflow-hidden relative">
-                  <div className="flex animate-marquee-announcement whitespace-nowrap gap-16">
-                    {[...Array(3)].map((_, i) => (
-                      <span key={i} className="inline-flex items-center gap-2 text-sm shrink-0">
+                  <div className="inline-flex animate-marquee-announcement whitespace-nowrap">
+                    {[...Array(2)].map((_, i) => (
+                      <span key={i} className="inline-flex items-center gap-3 text-sm shrink-0 px-8">
                         <Icon size={16} className={cfg.iconColor} />
                         <span className="font-semibold text-foreground">{a.title}</span>
                         <span className="text-muted-foreground">—</span>
@@ -94,6 +94,7 @@ const AnnouncementBanner = () => {
                             {a.link_label || "Learn more"} <ExternalLink size={12} />
                           </a>
                         )}
+                        <span className="text-muted-foreground/30 mx-4">✦</span>
                       </span>
                     ))}
                   </div>
