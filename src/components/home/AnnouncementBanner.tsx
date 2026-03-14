@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ExternalLink, Info, AlertTriangle, AlertCircle } from "lucide-react";
+import { X, ExternalLink, Info, AlertTriangle, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Announcement {
   id: string;
@@ -23,6 +23,14 @@ const SWIPE_THRESHOLD = 100;
 const AnnouncementBanner = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const [showHint, setShowHint] = useState(true);
+
+  useEffect(() => {
+    if (showHint) {
+      const timer = setTimeout(() => setShowHint(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showHint]);
 
   useEffect(() => {
     const fetchAnnouncements = () => {
@@ -71,7 +79,7 @@ const AnnouncementBanner = () => {
               }}
               className={`${cfg.bg} border-b ${cfg.border} backdrop-blur-md cursor-grab active:cursor-grabbing touch-pan-y`}
             >
-              <div className="flex items-center py-2 px-2 select-none">
+              <div className="flex items-center py-2 px-2 select-none relative">
                 {/* Close button pinned left */}
                 <button onClick={() => dismiss(a.id)}
                   className="text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors mr-2 z-10">
@@ -99,6 +107,30 @@ const AnnouncementBanner = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* Swipe hint */}
+                <AnimatePresence>
+                  {showHint && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-20 pointer-events-none"
+                    >
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <motion.div
+                          animate={{ x: [-4, 4, -4] }}
+                          transition={{ repeat: Infinity, duration: 1.2 }}
+                          className="flex items-center gap-1"
+                        >
+                          <ChevronLeft size={14} />
+                          <span>Swipe to dismiss</span>
+                          <ChevronRight size={14} />
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           );
