@@ -35,7 +35,7 @@ const tabs: { label: string; value: Category; icon: string; btnClass: string; ri
   { label: "Cultural", value: "cultural", icon: "🎭", btnClass: "btn-purple", ringColor: "ring-[hsl(270_80%_60%/0.5)]" },
 ];
 
-export const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string; border: string; glow: string; iconBg: string; neonColor: string; neonGlow: string; btnClass: string; btnOutlineClass: string }> = {
+export const categoryStyles: Record<Exclude<Category, "all">, { badge: string; accent: string; border: string; glow: string; iconBg: string; neonColor: string; neonGlow: string }> = {
   technical: {
     badge: "bg-primary/15 text-primary border-primary/30",
     accent: "group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]",
@@ -44,8 +44,6 @@ export const categoryStyles: Record<Exclude<Category, "all">, { badge: string; a
     iconBg: "bg-primary/10 ring-1 ring-primary/20",
     neonColor: "hsl(195 100% 50%)",
     neonGlow: "0 0 15px hsl(195 100% 50% / 0.4), 0 0 45px hsl(195 100% 50% / 0.15)",
-    btnClass: "btn-golden",
-    btnOutlineClass: "btn-golden",
   },
   gaming: {
     badge: "bg-red-500/15 text-red-400 border-red-500/30",
@@ -55,8 +53,6 @@ export const categoryStyles: Record<Exclude<Category, "all">, { badge: string; a
     iconBg: "bg-red-500/10 ring-1 ring-red-500/20",
     neonColor: "hsl(0 80% 55%)",
     neonGlow: "0 0 15px hsl(0 80% 55% / 0.4), 0 0 45px hsl(0 80% 55% / 0.15)",
-    btnClass: "btn-red",
-    btnOutlineClass: "btn-red",
   },
   cultural: {
     badge: "bg-accent/15 text-accent border-accent/30",
@@ -66,8 +62,6 @@ export const categoryStyles: Record<Exclude<Category, "all">, { badge: string; a
     iconBg: "bg-accent/10 ring-1 ring-accent/20",
     neonColor: "hsl(270 80% 60%)",
     neonGlow: "0 0 15px hsl(270 80% 60% / 0.4), 0 0 45px hsl(270 80% 60% / 0.15)",
-    btnClass: "btn-purple",
-    btnOutlineClass: "btn-purple",
   },
 };
 
