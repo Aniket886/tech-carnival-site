@@ -86,8 +86,23 @@ const AnnouncementBanner = () => {
                   <X size={18} strokeWidth={2.5} />
                 </button>
 
-                {/* Marquee scrolling content - seamless loop */}
-                <div className="flex-1 overflow-hidden relative">
+                {/* Desktop: static content */}
+                <div className="hidden md:flex flex-1 items-center gap-3 overflow-hidden">
+                  <Icon size={16} className={cfg.iconColor} />
+                  <span className="font-semibold text-foreground text-sm">{a.title}</span>
+                  <span className="text-muted-foreground text-sm">—</span>
+                  <span className="text-muted-foreground text-sm truncate">{a.message}</span>
+                  {a.link_url && (
+                    <a href={a.link_url} target="_blank" rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-primary hover:underline inline-flex items-center gap-1 ml-1 text-sm shrink-0">
+                      {a.link_label || "Learn more"} <ExternalLink size={12} />
+                    </a>
+                  )}
+                </div>
+
+                {/* Mobile: marquee scrolling content */}
+                <div className="flex-1 overflow-hidden relative md:hidden">
                   <div className="inline-flex animate-marquee-announcement whitespace-nowrap">
                     {[...Array(2)].map((_, i) => (
                       <span key={i} className="inline-flex items-center gap-3 text-sm shrink-0 px-8">
