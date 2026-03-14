@@ -1,0 +1,1 @@
+UPDATE bot_faqs SET answer = E'Here are the main prizes! 🏆\n\n🥇 **General Championship**: ₹50,000\n⚡ **Hackathon First Prize**: ₹10,000\n\nEach event also has certificates, trophies, and exciting prizes for winners! Check event details for more info. 🎁' WHERE id = 'e82ec0dc-1d24-4f5a-a497-fa419617504a';
