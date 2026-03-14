@@ -170,9 +170,11 @@ const Contact = () => {
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Phone className="h-3.5 w-3.5 text-primary shrink-0" /><span>{c.phone}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                    <Mail className="h-3.5 w-3.5 text-primary shrink-0" /><span className="truncate">{c.email}</span>
-                  </div>
+                  {c.email && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                      <Mail className="h-3.5 w-3.5 text-primary shrink-0" /><span className="truncate">{c.email}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
