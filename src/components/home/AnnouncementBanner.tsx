@@ -71,13 +71,19 @@ const AnnouncementBanner = () => {
               }}
               className={`${cfg.bg} border-b ${cfg.border} backdrop-blur-md cursor-grab active:cursor-grabbing touch-pan-y`}
             >
-              <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3 select-none">
+              <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3 select-none overflow-hidden">
                 <Icon size={18} className={cfg.iconColor + " shrink-0"} />
-                <p className="text-sm text-foreground flex-1">
-                  <span className="font-semibold">{a.title}</span>
-                  <span className="mx-1.5 text-muted-foreground">—</span>
-                  <span className="text-muted-foreground">{a.message}</span>
-                </p>
+                <div className="flex-1 overflow-hidden">
+                  <div className="animate-marquee-reverse whitespace-nowrap text-sm text-foreground" style={{ "--duration": "18s" } as React.CSSProperties}>
+                    <span className="font-semibold">{a.title}</span>
+                    <span className="mx-1.5 text-muted-foreground">—</span>
+                    <span className="text-muted-foreground">{a.message}</span>
+                    <span className="mx-8" />
+                    <span className="font-semibold">{a.title}</span>
+                    <span className="mx-1.5 text-muted-foreground">—</span>
+                    <span className="text-muted-foreground">{a.message}</span>
+                  </div>
+                </div>
                 {a.link_url && (
                   <a href={a.link_url} target="_blank" rel="noopener noreferrer"
                     className="text-xs text-primary hover:underline flex items-center gap-1 shrink-0">
