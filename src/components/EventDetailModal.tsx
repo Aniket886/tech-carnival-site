@@ -118,16 +118,24 @@ const EventDetailModal = ({ event, onClose, onRegister, categoryBadge }: Props) 
             </div>
 
             {/* Register Button */}
-            <Button
-              size="lg"
-              className="w-full neon-glow"
+            <button
+              className="w-full py-3.5 px-6 text-base font-bold tracking-wide rounded-xl
+                bg-gradient-to-b from-[hsl(190,100%,55%)] via-[hsl(190,100%,45%)] to-[hsl(190,100%,35%)]
+                text-[hsl(210,80%,10%)]
+                shadow-[0_6px_0_hsl(190,100%,25%),0_8px_16px_rgba(0,0,0,0.4),inset_0_2px_1px_rgba(255,255,255,0.35),inset_0_-2px_1px_rgba(0,0,0,0.15)]
+                hover:shadow-[0_4px_0_hsl(190,100%,25%),0_6px_12px_rgba(0,0,0,0.4),inset_0_2px_1px_rgba(255,255,255,0.35),inset_0_-2px_1px_rgba(0,0,0,0.15)]
+                hover:translate-y-[2px]
+                active:shadow-[0_1px_0_hsl(190,100%,25%),0_2px_4px_rgba(0,0,0,0.3),inset_0_2px_4px_rgba(0,0,0,0.2)]
+                active:translate-y-[5px]
+                transition-all duration-150 ease-out
+                border border-[hsl(190,100%,60%)]/30"
               onClick={() => {
                 onClose();
                 onRegister?.(event.name);
               }}
             >
               Register for {event.name}
-            </Button>
+            </button>
           </motion.div>
         </motion.div>
       )}
