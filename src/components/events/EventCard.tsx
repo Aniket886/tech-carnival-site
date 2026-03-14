@@ -13,6 +13,8 @@ interface CategoryStyle {
   iconBg: string;
   neonColor: string;
   neonGlow: string;
+  btnClass: string;
+  btnOutlineClass: string;
 }
 
 interface EventCardProps {
@@ -145,42 +147,42 @@ const EventCard = ({ event, style, index, onSelect, onRegister, registrationOpen
           <Badge variant="outline" className={`text-[11px] sm:text-xs capitalize justify-center min-h-[36px] sm:min-h-0 sm:h-auto truncate ${style.badge}`}>
             {event.category}
           </Badge>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (event.rulebookUrl) {
-                window.open(event.rulebookUrl, "_blank", "noopener,noreferrer");
-              } else {
-                toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
-              }
-            }}
-            className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
-          >
-            <span className="inline-flex items-center gap-1 truncate"><FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" /> Rule Book</span>
-          </button>
-          {payButtonVisible && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                if (event.paymentUrl) {
-                  window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
+                if (event.rulebookUrl) {
+                  window.open(event.rulebookUrl, "_blank", "noopener,noreferrer");
                 } else {
-                  toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
+                  toast("Rule book coming soon!", { description: `The rule book for ${event.name} will be available shortly.` });
                 }
               }}
-              className="btn-gold min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg"
+              className={`${style.btnClass} min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg`}
             >
-              <span className="truncate">💰 Pay</span>
+              <span className="inline-flex items-center gap-1 truncate"><FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" /> Rule Book</span>
             </button>
-          )}
-          {registrationOpen && (
-            <button
-              onClick={(e) => onRegister(e)}
-              className="btn-golden min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center overflow-hidden rounded-lg"
-            >
-              <span className="truncate">Register</span>
-            </button>
-          )}
+            {payButtonVisible && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (event.paymentUrl) {
+                    window.open(event.paymentUrl, "_blank", "noopener,noreferrer");
+                  } else {
+                    toast("Payment link coming soon!", { description: `The payment link for ${event.name} will be available shortly.` });
+                  }
+                }}
+                className={`${style.btnOutlineClass} min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center gap-1 overflow-hidden rounded-lg`}
+              >
+                <span className="truncate">💰 Pay</span>
+              </button>
+            )}
+            {registrationOpen && (
+              <button
+                onClick={(e) => onRegister(e)}
+                className={`${style.btnClass} min-h-[36px] sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm font-medium inline-flex items-center justify-center overflow-hidden rounded-lg`}
+              >
+                <span className="truncate">Register</span>
+              </button>
+            )}
         </div>
       </div>
     </motion.div>
