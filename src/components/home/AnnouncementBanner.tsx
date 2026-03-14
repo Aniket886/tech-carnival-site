@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { X, ExternalLink, Info, AlertTriangle, AlertCircle } from "lucide-react";
+import { X, ExternalLink, Info, AlertTriangle, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Announcement {
   id: string;
