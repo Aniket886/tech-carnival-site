@@ -13,6 +13,8 @@ interface CategoryStyle {
   iconBg: string;
   neonColor: string;
   neonGlow: string;
+  btnClass: string;
+  btnOutlineClass: string;
 }
 
 interface EventCardProps {
