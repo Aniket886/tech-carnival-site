@@ -128,6 +128,7 @@ export default {
         "marquee-vertical-reverse": "marquee-vertical-reverse var(--duration) linear infinite",
         "marquee-horizontal": "marquee-x var(--duration) infinite linear",
         "marquee-vertical-animata": "marquee-y var(--duration) linear infinite",
+        "marquee-announcement": "marquee-announcement 20s linear infinite",
       },
     },
   },
