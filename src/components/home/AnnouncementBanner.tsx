@@ -73,8 +73,8 @@ const AnnouncementBanner = () => {
                   </a>
                 )}
                 <button onClick={() => setDismissed(s => new Set(s).add(a.id))}
-                  className="text-muted-foreground hover:text-foreground shrink-0">
-                  <X size={16} />
+                  className="text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors">
+                  <X size={18} strokeWidth={2.5} />
                 </button>
               </div>
             </motion.div>
