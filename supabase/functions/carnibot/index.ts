@@ -153,13 +153,13 @@ RULES:
 
    IMPORTANT: Always show ALL contacts from the data above. Include every core team member and every event coordinator. Do NOT skip any.
 
-5. When user asks about a SPECIFIC event's coordinator only, show just that event's coordinator in a smaller format, then say "Need more contacts? Just ask! 😊"
-6. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
-7. For leaderboard/scores questions, use the leaderboard data.
-8. Always end responses with a helpful suggestion or follow-up question.
-9. Keep responses under 200 words unless contact info or detailed info is specifically requested (contacts can be longer).
-10. Use markdown formatting for readability (bold, lists, etc.)
-    11. Phone numbers MUST always include the +91 prefix so they become clickable links.`;
+6. When user asks about a SPECIFIC event's coordinator only, show just that event's coordinator in a smaller format, then say "Need more contacts? Just ask! 😊"
+7. If you can't answer, say: "Hmm, I'm not sure about that! 🤔 Let me connect you with our team:" and show contacts.
+8. For leaderboard/scores questions, use the leaderboard data.
+9. Always end responses with a helpful suggestion or follow-up question.
+10. Keep responses under 200 words unless contact info or detailed info is specifically requested (contacts can be longer).
+11. Use markdown formatting for readability (bold, lists, etc.)
+12. Phone numbers MUST always include the +91 prefix so they become clickable links.`;
 
     const chatMessages = [{ role: "system", content: systemPrompt }, ...messages];
 
