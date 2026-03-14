@@ -18,6 +18,8 @@ const typeConfig: Record<string, { bg: string; border: string; icon: typeof Info
   urgent: { bg: "bg-red-500/10", border: "border-red-500/30", icon: AlertCircle, iconColor: "text-red-400" },
 };
 
+const SWIPE_THRESHOLD = 100;
+
 const AnnouncementBanner = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
@@ -41,11 +43,13 @@ const AnnouncementBanner = () => {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
+  const dismiss = (id: string) => setDismissed(s => new Set(s).add(id));
+
   const visible = announcements.filter(a => !dismissed.has(a.id));
   if (!visible.length) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] space-y-0">
+    <div className="fixed top-0 left-0 right-0 z-[60] space-y-0 overflow-hidden">
       <AnimatePresence>
         {visible.map(a => {
           const cfg = typeConfig[a.type] || typeConfig.info;
@@ -54,12 +58,20 @@ const AnnouncementBanner = () => {
             <motion.div
               key={a.id}
               initial={{ y: -60, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1, x: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className={`${cfg.bg} border-b ${cfg.border} backdrop-blur-md`}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.4}
+              onDragEnd={(_e, info) => {
+                if (Math.abs(info.offset.x) > SWIPE_THRESHOLD) {
+                  dismiss(a.id);
+                }
+              }}
+              className={`${cfg.bg} border-b ${cfg.border} backdrop-blur-md cursor-grab active:cursor-grabbing touch-pan-y`}
             >
-              <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3">
+              <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3 select-none">
                 <Icon size={18} className={cfg.iconColor + " shrink-0"} />
                 <p className="text-sm text-foreground flex-1">
                   <span className="font-semibold">{a.title}</span>
@@ -72,7 +84,7 @@ const AnnouncementBanner = () => {
                     {a.link_label || "Learn more"} <ExternalLink size={12} />
                   </a>
                 )}
-                <button onClick={() => setDismissed(s => new Set(s).add(a.id))}
+                <button onClick={() => dismiss(a.id)}
                   className="text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors">
                   <X size={18} strokeWidth={2.5} />
                 </button>
