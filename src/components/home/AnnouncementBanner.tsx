@@ -71,23 +71,33 @@ const AnnouncementBanner = () => {
               }}
               className={`${cfg.bg} border-b ${cfg.border} backdrop-blur-md cursor-grab active:cursor-grabbing touch-pan-y`}
             >
-              <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3 select-none">
-                <Icon size={18} className={cfg.iconColor + " shrink-0"} />
-                <p className="text-sm text-foreground flex-1">
-                  <span className="font-semibold">{a.title}</span>
-                  <span className="mx-1.5 text-muted-foreground">—</span>
-                  <span className="text-muted-foreground">{a.message}</span>
-                </p>
-                {a.link_url && (
-                  <a href={a.link_url} target="_blank" rel="noopener noreferrer"
-                    className="text-xs text-primary hover:underline flex items-center gap-1 shrink-0">
-                    {a.link_label || "Learn more"} <ExternalLink size={12} />
-                  </a>
-                )}
+              <div className="flex items-center py-2 px-2 select-none">
+                {/* Close button pinned left */}
                 <button onClick={() => dismiss(a.id)}
-                  className="text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors">
+                  className="text-foreground/70 hover:text-foreground hover:bg-foreground/10 rounded-full p-1 shrink-0 transition-colors mr-2 z-10">
                   <X size={18} strokeWidth={2.5} />
                 </button>
+
+                {/* Marquee scrolling content */}
+                <div className="flex-1 overflow-hidden relative">
+                  <div className="flex animate-marquee-announcement whitespace-nowrap gap-16">
+                    {[...Array(3)].map((_, i) => (
+                      <span key={i} className="inline-flex items-center gap-2 text-sm shrink-0">
+                        <Icon size={16} className={cfg.iconColor} />
+                        <span className="font-semibold text-foreground">{a.title}</span>
+                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">{a.message}</span>
+                        {a.link_url && (
+                          <a href={a.link_url} target="_blank" rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-primary hover:underline inline-flex items-center gap-1 ml-1">
+                            {a.link_label || "Learn more"} <ExternalLink size={12} />
+                          </a>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           );
