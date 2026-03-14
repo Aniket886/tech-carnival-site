@@ -87,7 +87,7 @@ const AnnouncementBanner = () => {
                 </button>
 
                 {/* Desktop: static content */}
-                <div className="hidden md:flex flex-1 items-center gap-3 overflow-hidden">
+                <div className="hidden md:flex flex-1 items-center justify-center gap-3 overflow-hidden">
                   <Icon size={16} className={cfg.iconColor} />
                   <span className="font-semibold text-foreground text-sm">{a.title}</span>
                   <span className="text-muted-foreground text-sm">—</span>
