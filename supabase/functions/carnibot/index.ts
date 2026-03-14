@@ -6,27 +6,34 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// ── Hardcoded schedule (single source of truth, mirrors src/data/schedule.ts) ──
-const SCHEDULE_TEXT = `FULL EVENT SCHEDULE:
-Tech Carnival 2K26 dates: Day 1 = 27th March 2026, Day 2 = 28th March 2026.
+/** Format decimal hour to readable string, e.g. 14.5 → "2:30 PM" */
+function formatHour(h: number): string {
+  const hour = Math.floor(h);
+  const min = Math.round((h - hour) * 60);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const h12 = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+  return `${h12}:${min.toString().padStart(2, "0")} ${ampm}`;
+}
 
-Day 1 (27th March 2026):
-  🏁 Assemble — 8:45 AM – 9:00 AM — 📍 Main Gate [ceremony]
-  🎤 Inauguration + Flash Mob + Banner Drop — 9:00 AM – 10:00 AM — 📍 Main Auditorium [ceremony]
-  🔍 Myth Busters — 9:00 AM – 11:00 AM — 📍 Seminar Hall B | Team: Solo [technical]
-  ⚡ Hack Momentum (6hr Hackathon) — 10:30 AM – 5:30 PM — 📍 Main Auditorium | Team: 2-4 [technical]
-  🧠 Brain Quest (Mega Quiz) — 10:30 AM – 1:30 PM — 📍 Seminar Hall A | Team: 2 [technical]
-  📊 Pixel Perfect — 10:30 AM – 1:30 PM — 📍 Exhibition Hall | Team: 1-2 [technical]
-  🍽️ Lunch Break — 1:30 PM – 2:30 PM — 📍 Food Court [break]
-  🎯 Pitch Perfect — 2:30 PM – 5:00 PM — 📍 Seminar Hall B | Team: 1-2 [technical]
-  🎮 Battle Ground – Free Fire — 2:30 PM – 5:30 PM — 📍 Gaming Arena | Team: 4 (squad) [gaming]
-  💃 Dance Mania (Group Dance) — 6:00 PM – 8:00 PM — 📍 Main Stage | Team: 6-12 [cultural]
-
-Day 2 (28th March 2026):
-  🧭 Code Compass — 9:00 AM – 11:00 AM — 📍 Computer Lab 1 | Team: Solo [technical]
-  🎬 Scitopia (Skit Play) — 11:30 AM – 2:00 PM — 📍 Main Auditorium | Team: 5-10 [cultural]
-  🍽️ Lunch Break — 2:00 PM – 3:00 PM — 📍 Food Court [break]
-  🏆 Valedictory + Special Band Performance — 3:15 PM – 6:00 PM — 📍 Main Auditorium [ceremony]`;
+/** Build schedule text from schedule_events rows */
+function buildScheduleFromDB(rows: any[]): string {
+  const lines: string[] = [
+    "FULL EVENT SCHEDULE:",
+    "Tech Carnival 2K26 dates: Day 1 = 27th March 2026, Day 2 = 28th March 2026.",
+  ];
+  for (const day of [1, 2]) {
+    lines.push(`\nDay ${day} (${day === 1 ? "27th" : "28th"} March 2026):`);
+    const dayEvents = rows
+      .filter((e: any) => e.day === day)
+      .sort((a: any, b: any) => a.start_hour - b.start_hour);
+    for (const ev of dayEvents) {
+      const time = `${formatHour(ev.start_hour)} – ${formatHour(ev.end_hour)}`;
+      const team = ev.team_size ? ` | Team: ${ev.team_size}` : "";
+      lines.push(`  ${ev.emoji} ${ev.name} — ${time} — 📍 ${ev.venue}${team} [${ev.category}]`);
+    }
+  }
+  return lines.join("\n");
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -41,13 +48,17 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Fetch context data
-    const [{ data: events }, { data: contacts }, { data: faqs }, { data: scores }] = await Promise.all([
+    // Fetch context data (including schedule)
+    const [{ data: events }, { data: contacts }, { data: faqs }, { data: scores }, { data: scheduleRows }] = await Promise.all([
       supabase.from("events").select("*").eq("is_active", true).order("name"),
       supabase.from("bot_contacts").select("*, events(name)").eq("is_active", true).order("display_order"),
       supabase.from("bot_faqs").select("*").eq("is_active", true),
       supabase.from("college_scores").select("college_name, points").order("points", { ascending: false }).limit(10),
+      supabase.from("schedule_events").select("*").eq("is_active", true).order("day").order("start_hour"),
     ]);
+
+    // Build dynamic schedule text
+    const SCHEDULE_TEXT = buildScheduleFromDB(scheduleRows || []);
 
     // Build context
     const eventList = (events || [])
@@ -175,7 +186,7 @@ RULES:
         );
         if (!response.ok) {
           console.log(`Groq returned ${response.status}, falling back to Lovable AI`);
-          await response.text(); // consume body
+          await response.text();
           response = null;
         }
       } catch (e) {
