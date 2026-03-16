@@ -93,7 +93,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [shakeSubmit, setShakeSubmit] = useState(false);
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
-  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [paymentScreenshots, setPaymentScreenshots] = useState<File[]>([]);
   const [eventPrices, setEventPrices] = useState<Record<string, number>>({});
   const [paymentSettings, setPaymentSettings] = useState<{ upi_id: string; upi_name: string; instructions: string; qr_url: string }>({ upi_id: "", upi_name: "", instructions: "", qr_url: "" });
   const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
@@ -329,7 +329,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       else if (utrStatus === "duplicate") errs.utrNumber = "This UTR number has already been used";
       if (!form.transactionId.trim()) errs.transactionId = "Enter your transaction ID";
       else if (txnStatus === "duplicate") errs.transactionId = "This Transaction ID has already been used";
-      if (!paymentScreenshot) errs.paymentScreenshot = "Please upload your payment screenshot";
+      if (paymentScreenshots.length === 0) errs.paymentScreenshot = "Please upload at least one payment screenshot";
     }
     if (s === 3) { if (!form.agreedTerms) errs.terms = "You must accept the terms"; }
     setErrors(errs);
@@ -415,16 +415,21 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         setErrors(errs); setStep(2); setLoading(false); return;
       }
       const regId = crypto.randomUUID();
-      // Upload payment screenshot if provided
+      // Upload payment screenshots (up to 3)
       let screenshotUrl: string | null = null;
-      if (paymentScreenshot) {
-        const ext = paymentScreenshot.name.split(".").pop() || "jpg";
-        const filePath = `${regId}.${ext}`;
-        const { error: uploadErr } = await supabase.storage.from("payment-screenshots").upload(filePath, paymentScreenshot);
-        if (!uploadErr) {
-          const { data: urlData } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
-          screenshotUrl = urlData.publicUrl;
+      if (paymentScreenshots.length > 0) {
+        const urls: string[] = [];
+        for (let i = 0; i < paymentScreenshots.length; i++) {
+          const file = paymentScreenshots[i];
+          const ext = file.name.split(".").pop() || "jpg";
+          const filePath = `${regId}_${i + 1}.${ext}`;
+          const { error: uploadErr } = await supabase.storage.from("payment-screenshots").upload(filePath, file);
+          if (!uploadErr) {
+            const { data: urlData } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
+            urls.push(urlData.publicUrl);
+          }
         }
+        screenshotUrl = urls.length > 0 ? JSON.stringify(urls) : null;
       }
       const { error } = await supabase.from("registrations").insert({
         id: regId,
@@ -452,7 +457,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       }
       setSuccessData({ id: regId, eventName: selectedEventData?.name || "" });
       setForm(initialForm);
-      setPaymentScreenshot(null);
+      setPaymentScreenshots([]);
       setTouched({});
       setStep(0);
       supabase.functions.invoke("send-email", {
@@ -754,33 +759,44 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                   {errors.transactionId && touched.transactionId && txnStatus !== "duplicate" && <p className="text-xs text-destructive">{errors.transactionId}</p>}
                 </div>
                 
-                {/* Payment Screenshot Upload */}
+                {/* Payment Screenshot Upload (up to 3) */}
                 <div className="space-y-1.5">
-                   <Label className="text-sm text-foreground font-medium">Payment Screenshot <span className="text-destructive">*</span></Label>
+                   <Label className="text-sm text-foreground font-medium">Payment Screenshots <span className="text-destructive">*</span> <span className="text-xs text-muted-foreground font-normal">(up to 3)</span></Label>
                    {touched.paymentScreenshot && errors.paymentScreenshot && <p className="text-xs text-destructive">{errors.paymentScreenshot}</p>}
-                  <div className="relative">
-                    {paymentScreenshot ? (
-                      <div className={`glass rounded-lg p-3 flex items-center gap-3 ${touched.paymentScreenshot && errors.paymentScreenshot ? "border border-destructive" : ""}`}>
-                        <div className="w-16 h-16 rounded-md overflow-hidden bg-muted shrink-0 flex items-center justify-center">
-                          {paymentScreenshot.type.startsWith("image/") ? (
-                            <img src={URL.createObjectURL(paymentScreenshot)} alt="Payment screenshot" className="w-full h-full object-cover" />
-                          ) : (
-                            <FileText size={28} className="text-muted-foreground" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-foreground font-medium truncate">{paymentScreenshot.name}</p>
-                          <p className="text-xs text-muted-foreground">{(paymentScreenshot.size / 1024).toFixed(1)} KB</p>
-                        </div>
-                        <Button variant="ghost" size="sm" onClick={() => { setPaymentScreenshot(null); setErrors((e) => ({ ...e, paymentScreenshot: "Payment screenshot is required" })); }} className="text-destructive hover:text-destructive shrink-0">
-                          <X size={14} />
-                        </Button>
+                  <div className="space-y-2">
+                    {paymentScreenshots.length > 0 && (
+                      <div className="space-y-2">
+                        {paymentScreenshots.map((file, idx) => (
+                          <div key={idx} className="glass rounded-lg p-3 flex items-center gap-3">
+                            <div className="w-14 h-14 rounded-md overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+                              {file.type.startsWith("image/") ? (
+                                <img src={URL.createObjectURL(file)} alt={`Screenshot ${idx + 1}`} className="w-full h-full object-cover" />
+                              ) : (
+                                <FileText size={24} className="text-muted-foreground" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-foreground font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
+                            </div>
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              const updated = paymentScreenshots.filter((_, i) => i !== idx);
+                              setPaymentScreenshots(updated);
+                              if (updated.length === 0) setErrors((e) => ({ ...e, paymentScreenshot: "Please upload at least one payment screenshot" }));
+                            }} className="text-destructive hover:text-destructive shrink-0">
+                              <X size={14} />
+                            </Button>
+                          </div>
+                        ))}
                       </div>
-                    ) : (
-                      <label className={`flex flex-col items-center gap-2 cursor-pointer rounded-lg border-2 border-dashed ${touched.paymentScreenshot && errors.paymentScreenshot ? "border-destructive" : "border-border hover:border-primary/50"} bg-muted/30 p-6 transition-colors`}>
-                        <Upload size={24} className="text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground text-center">Click to upload screenshot (All image formats & PDF supported, up to 5 MB)</span>
-                        <span className="text-xs text-muted-foreground/70">PNG, JPG, GIF, BMP, WEBP, SVG, PDF, HEIC, HEIF</span>
+                    )}
+                    {paymentScreenshots.length < 3 && (
+                      <label className={`flex flex-col items-center gap-2 cursor-pointer rounded-lg border-2 border-dashed ${touched.paymentScreenshot && errors.paymentScreenshot && paymentScreenshots.length === 0 ? "border-destructive" : "border-border hover:border-primary/50"} bg-muted/30 p-4 transition-colors`}>
+                        <Upload size={20} className="text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground text-center">
+                          {paymentScreenshots.length === 0 ? "Click to upload screenshot" : `Add another screenshot (${paymentScreenshots.length}/3)`}
+                        </span>
+                        <span className="text-xs text-muted-foreground/70">PNG, JPG, PDF, HEIC — Max 5 MB each</span>
                         <input
                           type="file"
                           accept="image/*,.pdf,.heic,.heif"
@@ -788,22 +804,17 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              if (file.size > 5 * 1024 * 1024) {
-                                toast.error("File size must be under 5 MB");
-                                return;
-                              }
+                              if (file.size > 5 * 1024 * 1024) { toast.error("File size must be under 5 MB"); return; }
                               const allowedTypes = ["image/", "application/pdf"];
                               const allowedExts = [".heic", ".heif"];
                               const ext = "." + (file.name.split(".").pop() || "").toLowerCase();
                               const isAllowed = allowedTypes.some((t) => file.type.startsWith(t)) || allowedExts.includes(ext);
-                              if (!isAllowed) {
-                                toast.error("Unsupported file format");
-                                return;
-                              }
-                              setPaymentScreenshot(file);
+                              if (!isAllowed) { toast.error("Unsupported file format"); return; }
+                              setPaymentScreenshots((prev) => [...prev, file]);
                               setErrors((er) => { const n = { ...er }; delete n.paymentScreenshot; return n; });
                               setTouched((t) => ({ ...t, paymentScreenshot: true }));
                             }
+                            e.target.value = "";
                           }}
                         />
                       </label>
@@ -813,7 +824,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
               </div>
               <div className="flex justify-between">
                 <Button variant="ghost" onClick={prev} className="text-muted-foreground"><ChevronLeft size={16} className="mr-1" /> Back</Button>
-                <Button variant="neon" onClick={next} disabled={checkingPayment || !form.amountPaid || !form.utrNumber.trim() || !form.transactionId.trim() || !paymentScreenshot} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
+                <Button variant="neon" onClick={next} disabled={checkingPayment || !form.amountPaid || !form.utrNumber.trim() || !form.transactionId.trim() || paymentScreenshots.length === 0} className={shakeSubmit ? "animate-shake" : ""}>{checkingPayment ? "Verifying..." : "Review"} <ChevronRight size={16} className="ml-1" /></Button>
               </div>
             </div>
           )}

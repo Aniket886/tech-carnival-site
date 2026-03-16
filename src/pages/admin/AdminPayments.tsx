@@ -19,9 +19,19 @@ import {
 import { toast } from "sonner";
 
 import {
-  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon, X,
+  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon, X, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
+
+/* ─── helpers ─── */
+const parseScreenshotUrls = (url: string | null): string[] => {
+  if (!url) return [];
+  try {
+    const parsed = JSON.parse(url);
+    if (Array.isArray(parsed)) return parsed;
+  } catch {}
+  return [url];
+};
 
 /* ─── types ─── */
 interface Registration {
@@ -61,7 +71,8 @@ const AdminPayments = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dupsOnly, setDupsOnly] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
-  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [lightboxUrls, setLightboxUrls] = useState<string[]>([]);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
 
   const fetchData = useCallback(async () => {
     const [{ data: regs }, { data: evts }] = await Promise.all([
@@ -309,14 +320,21 @@ const AdminPayments = () => {
                               {r.team_name && <p className="text-xs text-muted-foreground">Team: {r.team_name}</p>}
                               <p className="text-xs text-muted-foreground">College: {r.college_name}</p>
                               {r.transaction_id && <p className="text-xs text-muted-foreground">Txn: {r.transaction_id}</p>}
-                              {r.payment_screenshot_url && (
-                                <div className="pt-1 border-t border-border mt-1">
-                                  <p className="text-xs font-medium text-foreground mb-1">Payment Screenshot:</p>
-                                  <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer">
-                                    <img src={r.payment_screenshot_url} alt="Payment screenshot" className="w-full max-w-[200px] rounded-md border border-border" />
-                                  </a>
-                                </div>
-                              )}
+                              {r.payment_screenshot_url && (() => {
+                                const urls = parseScreenshotUrls(r.payment_screenshot_url);
+                                return urls.length > 0 && (
+                                  <div className="pt-1 border-t border-border mt-1">
+                                    <p className="text-xs font-medium text-foreground mb-1">Payment Screenshots ({urls.length}):</p>
+                                    <div className="flex gap-1.5 flex-wrap">
+                                      {urls.map((u, i) => (
+                                        <a key={i} href={u} target="_blank" rel="noopener noreferrer">
+                                          <img src={u} alt={`Screenshot ${i+1}`} className="w-16 h-16 object-cover rounded-md border border-border" />
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              })()}
                               {getMembers(r.members).length > 0 && (
                                 <div className="pt-1 border-t border-border mt-1">
                                   <p className="text-xs font-medium text-foreground mb-0.5">Members:</p>
@@ -342,13 +360,16 @@ const AdminPayments = () => {
                         {r.utr_number || "—"}
                       </TableCell>
                       <TableCell>
-                        {r.payment_screenshot_url ? (
-                          <button onClick={() => setLightboxUrl(r.payment_screenshot_url)} title="View payment screenshot" className="block">
-                            <img src={r.payment_screenshot_url} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity cursor-pointer" />
-                          </button>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
-                        )}
+                        {(() => {
+                          const urls = parseScreenshotUrls(r.payment_screenshot_url);
+                          if (urls.length === 0) return <span className="text-xs text-muted-foreground">—</span>;
+                          return (
+                            <button onClick={() => { setLightboxUrls(urls); setLightboxIdx(0); }} title={`View ${urls.length} screenshot(s)`} className="flex items-center gap-1">
+                              <img src={urls[0]} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity cursor-pointer" />
+                              {urls.length > 1 && <span className="text-[10px] text-muted-foreground font-medium">+{urls.length - 1}</span>}
+                            </button>
+                          );
+                        })()}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`text-[10px] capitalize ${sc.cls}`}>
@@ -405,15 +426,53 @@ const AdminPayments = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Screenshot Lightbox */}
-      {lightboxUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setLightboxUrl(null)}>
-          <div className="relative max-w-[90vw] max-h-[90vh]" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setLightboxUrl(null)} className="absolute -top-10 right-0 text-white/80 hover:text-white transition-colors flex items-center gap-1 text-sm">
+      {/* Screenshot Lightbox with Pagination */}
+      {lightboxUrls.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setLightboxUrls([])}>
+          <div className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setLightboxUrls([])} className="absolute -top-10 right-0 text-white/80 hover:text-white transition-colors flex items-center gap-1 text-sm z-10">
               <X size={16} /> Close
             </button>
-            <img src={lightboxUrl} alt="Payment screenshot" className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg border border-border" />
-            <a href={lightboxUrl} target="_blank" rel="noopener noreferrer" className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-xs text-white/60 hover:text-white transition-colors flex items-center gap-1">
+            {/* Pagination indicator */}
+            {lightboxUrls.length > 1 && (
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 text-white/80 text-sm font-medium">
+                {lightboxIdx + 1} / {lightboxUrls.length}
+              </div>
+            )}
+            <div className="relative flex items-center gap-4">
+              {lightboxUrls.length > 1 && (
+                <button
+                  onClick={() => setLightboxIdx((i) => (i - 1 + lightboxUrls.length) % lightboxUrls.length)}
+                  className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors shrink-0"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+              )}
+              <img src={lightboxUrls[lightboxIdx]} alt={`Payment screenshot ${lightboxIdx + 1}`} className="max-w-[75vw] max-h-[80vh] object-contain rounded-lg border border-border" />
+              {lightboxUrls.length > 1 && (
+                <button
+                  onClick={() => setLightboxIdx((i) => (i + 1) % lightboxUrls.length)}
+                  className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors shrink-0"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              )}
+            </div>
+            {/* Thumbnail dots */}
+            {lightboxUrls.length > 1 && (
+              <div className="flex gap-2 mt-4">
+                {lightboxUrls.map((url, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setLightboxIdx(i)}
+                    className={`w-10 h-10 rounded-md overflow-hidden border-2 transition-all ${i === lightboxIdx ? "border-primary scale-110" : "border-white/20 opacity-60 hover:opacity-100"}`}
+                  >
+                    <img src={url} alt={`Thumb ${i+1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+            <a href={lightboxUrls[lightboxIdx]} target="_blank" rel="noopener noreferrer" className="mt-3 text-xs text-white/60 hover:text-white transition-colors flex items-center gap-1">
               <Download size={12} /> Open in new tab
             </a>
           </div>
