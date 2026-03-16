@@ -457,7 +457,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       }
       setSuccessData({ id: regId, eventName: selectedEventData?.name || "" });
       setForm(initialForm);
-      setPaymentScreenshot(null);
+      setPaymentScreenshots([]);
       setTouched({});
       setStep(0);
       supabase.functions.invoke("send-email", {
