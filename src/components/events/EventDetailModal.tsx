@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
+import { X, Calendar, Clock, MapPin, Users, Trophy, IndianRupee } from "lucide-react";
 import type { EventData } from "@/components/events/EventsSection";
 
 interface EventDetailModalProps {
