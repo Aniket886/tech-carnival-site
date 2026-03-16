@@ -360,13 +360,16 @@ const AdminPayments = () => {
                         {r.utr_number || "—"}
                       </TableCell>
                       <TableCell>
-                        {r.payment_screenshot_url ? (
-                          <button onClick={() => setLightboxUrl(r.payment_screenshot_url)} title="View payment screenshot" className="block">
-                            <img src={r.payment_screenshot_url} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity cursor-pointer" />
-                          </button>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
-                        )}
+                        {(() => {
+                          const urls = parseScreenshotUrls(r.payment_screenshot_url);
+                          if (urls.length === 0) return <span className="text-xs text-muted-foreground">—</span>;
+                          return (
+                            <button onClick={() => { setLightboxUrls(urls); setLightboxIdx(0); }} title={`View ${urls.length} screenshot(s)`} className="flex items-center gap-1">
+                              <img src={urls[0]} alt="Payment" className="w-12 h-12 object-cover rounded-md border border-border hover:opacity-80 transition-opacity cursor-pointer" />
+                              {urls.length > 1 && <span className="text-[10px] text-muted-foreground font-medium">+{urls.length - 1}</span>}
+                            </button>
+                          );
+                        })()}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`text-[10px] capitalize ${sc.cls}`}>
