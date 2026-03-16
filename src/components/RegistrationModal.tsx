@@ -660,34 +660,45 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                     <FieldError field="transaction_id" />
                   </div>
 
-                  {/* Screenshot Upload — Mandatory */}
+                  {/* Screenshot Upload — up to 3 */}
                   <div className="space-y-1">
-                    <Label className="text-xs">Payment Screenshot <span className="text-destructive">*</span></Label>
+                    <Label className="text-xs">Payment Screenshots <span className="text-destructive">*</span> <span className="text-muted-foreground font-normal">(up to 3)</span></Label>
                     {touched.has("payment_screenshot") && errors.payment_screenshot && (
                       <p className="text-xs text-destructive">{errors.payment_screenshot}</p>
                     )}
-                    {paymentScreenshot ? (
-                      <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/10 p-2">
-                        <div className="w-12 h-12 rounded overflow-hidden bg-muted shrink-0 flex items-center justify-center">
-                          {paymentScreenshot.type.startsWith("image/") ? (
-                            <img src={URL.createObjectURL(paymentScreenshot)} alt="Screenshot" className="w-full h-full object-cover" />
-                          ) : (
-                            <FileText className="h-6 w-6 text-muted-foreground" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-foreground truncate">{paymentScreenshot.name}</p>
-                          <p className="text-[10px] text-muted-foreground">{(paymentScreenshot.size / 1024).toFixed(1)} KB</p>
-                        </div>
-                        <Button variant="ghost" size="sm" onClick={() => { setPaymentScreenshot(null); setErrors((e) => ({ ...e, payment_screenshot: "Payment screenshot is required" })); }} className="text-destructive hover:text-destructive h-7 px-1.5">
-                          <X className="h-3.5 w-3.5" />
-                        </Button>
+                    {paymentScreenshots.length > 0 && (
+                      <div className="space-y-1.5">
+                        {paymentScreenshots.map((file, idx) => (
+                          <div key={idx} className="flex items-center gap-3 rounded-lg border border-border bg-muted/10 p-2">
+                            <div className="w-10 h-10 rounded overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+                              {file.type.startsWith("image/") ? (
+                                <img src={URL.createObjectURL(file)} alt={`Screenshot ${idx+1}`} className="w-full h-full object-cover" />
+                              ) : (
+                                <FileText className="h-5 w-5 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs text-foreground truncate">{file.name}</p>
+                              <p className="text-[10px] text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
+                            </div>
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              const updated = paymentScreenshots.filter((_, i) => i !== idx);
+                              setPaymentScreenshots(updated);
+                              if (updated.length === 0) setErrors((e) => ({ ...e, payment_screenshot: "Please upload at least one payment screenshot" }));
+                            }} className="text-destructive hover:text-destructive h-7 px-1.5">
+                              <X className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        ))}
                       </div>
-                    ) : (
-                      <label className={`flex flex-col items-center gap-1.5 cursor-pointer rounded-lg border border-dashed ${touched.has("payment_screenshot") && errors.payment_screenshot ? "border-destructive" : "border-border hover:border-primary/50"} bg-muted/10 p-4 transition-colors`}>
+                    )}
+                    {paymentScreenshots.length < 3 && (
+                      <label className={`flex flex-col items-center gap-1.5 cursor-pointer rounded-lg border border-dashed ${touched.has("payment_screenshot") && errors.payment_screenshot && paymentScreenshots.length === 0 ? "border-destructive" : "border-border hover:border-primary/50"} bg-muted/10 p-3 transition-colors`}>
                         <Upload className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground text-center">Click to upload screenshot (All image formats & PDF supported, up to 5 MB)</span>
-                        <span className="text-[10px] text-muted-foreground/70">PNG, JPG, GIF, BMP, WEBP, SVG, PDF, HEIC, HEIF</span>
+                        <span className="text-xs text-muted-foreground text-center">
+                          {paymentScreenshots.length === 0 ? "Click to upload screenshot" : `Add another (${paymentScreenshots.length}/3)`}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground/70">PNG, JPG, PDF, HEIC — Max 5 MB each</span>
                         <input type="file" accept="image/*,.pdf,.heic,.heif" className="hidden" onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -697,10 +708,11 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                             const ext = "." + (file.name.split(".").pop() || "").toLowerCase();
                             const isAllowed = allowedTypes.some((t) => file.type.startsWith(t)) || allowedExts.includes(ext);
                             if (!isAllowed) { toast({ title: "Unsupported file format", variant: "destructive" }); return; }
-                            setPaymentScreenshot(file);
+                            setPaymentScreenshots((prev) => [...prev, file]);
                             setErrors((prev) => { const n = { ...prev }; delete n.payment_screenshot; return n; });
                             setTouched((prev) => new Set([...prev, "payment_screenshot"]));
                           }
+                          e.target.value = "";
                         }} />
                       </label>
                     )}
