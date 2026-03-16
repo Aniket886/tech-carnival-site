@@ -392,7 +392,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     setErrors({});
     setTouched(new Set());
     setSuccessData(null);
-    setPaymentScreenshot(null);
+    setPaymentScreenshots([]);
     onClose();
   };
 
