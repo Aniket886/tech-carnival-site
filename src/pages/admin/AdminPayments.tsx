@@ -320,14 +320,21 @@ const AdminPayments = () => {
                               {r.team_name && <p className="text-xs text-muted-foreground">Team: {r.team_name}</p>}
                               <p className="text-xs text-muted-foreground">College: {r.college_name}</p>
                               {r.transaction_id && <p className="text-xs text-muted-foreground">Txn: {r.transaction_id}</p>}
-                              {r.payment_screenshot_url && (
-                                <div className="pt-1 border-t border-border mt-1">
-                                  <p className="text-xs font-medium text-foreground mb-1">Payment Screenshot:</p>
-                                  <a href={r.payment_screenshot_url} target="_blank" rel="noopener noreferrer">
-                                    <img src={r.payment_screenshot_url} alt="Payment screenshot" className="w-full max-w-[200px] rounded-md border border-border" />
-                                  </a>
-                                </div>
-                              )}
+                              {r.payment_screenshot_url && (() => {
+                                const urls = parseScreenshotUrls(r.payment_screenshot_url);
+                                return urls.length > 0 && (
+                                  <div className="pt-1 border-t border-border mt-1">
+                                    <p className="text-xs font-medium text-foreground mb-1">Payment Screenshots ({urls.length}):</p>
+                                    <div className="flex gap-1.5 flex-wrap">
+                                      {urls.map((u, i) => (
+                                        <a key={i} href={u} target="_blank" rel="noopener noreferrer">
+                                          <img src={u} alt={`Screenshot ${i+1}`} className="w-16 h-16 object-cover rounded-md border border-border" />
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              })()}
                               {getMembers(r.members).length > 0 && (
                                 <div className="pt-1 border-t border-border mt-1">
                                   <p className="text-xs font-medium text-foreground mb-0.5">Members:</p>
