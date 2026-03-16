@@ -223,7 +223,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         else if (form.utr_number.trim().length < 6) e.utr_number = "UTR number must be at least 6 characters";
         if (!form.transaction_id.trim()) e.transaction_id = "Transaction ID is required";
         else if (form.transaction_id.trim().length < 4) e.transaction_id = "Transaction ID must be at least 4 characters";
-        if (!paymentScreenshot) e.payment_screenshot = "Payment screenshot is required";
+        if (paymentScreenshots.length === 0) e.payment_screenshot = "Please upload at least one payment screenshot";
       }
       if (s === 2) {
         if (!form.agreed) e.agreed = "You must agree to the terms";
