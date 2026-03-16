@@ -109,7 +109,7 @@ const Footer = () => {
                 Built with <span className="text-destructive">❤️</span> by FCIT Tech Team
               </span>
             </div>
-            <a href="https://github.com/Aniket886" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-wide select-all cursor-pointer transition-colors duration-300 text-muted-foreground hover:text-[hsl(45,100%,50%)]">
+            <a href="https://linktr.ee/anikettegginamath" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-wide select-all cursor-pointer transition-colors duration-300 text-muted-foreground hover:text-[hsl(45,100%,50%)]">
               Developed by Aniket Tegginamath
             </a>
             <span className="text-[9px] font-mono text-muted-foreground/40 select-all" title="Build timestamp">
