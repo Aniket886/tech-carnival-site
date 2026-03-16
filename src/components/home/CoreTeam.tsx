@@ -50,7 +50,7 @@ const CoreTeam = () => {
 
         <div className="flex flex-wrap justify-center gap-10 md:gap-14">
           {coreTeam.map((member) => (
-            <div key={member.name} className="flex flex-col items-center text-center group w-40 sm:w-52">
+            <a key={member.name} href={member.name === "Aniket Tegginamath" ? "https://linktr.ee/anikettegginamath" : undefined} target={member.name === "Aniket Tegginamath" ? "_blank" : undefined} rel={member.name === "Aniket Tegginamath" ? "noopener noreferrer" : undefined} className="flex flex-col items-center text-center group w-40 sm:w-52 cursor-pointer">
               <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-5">
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/30 via-transparent to-accent/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative w-full h-full rounded-full p-[3px] liquid-glass transition-all duration-500" style={{ borderRadius: "9999px" }}>
