@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
+import { X, Calendar, Clock, MapPin, Users, Trophy, IndianRupee } from "lucide-react";
 import type { EventData } from "@/components/events/EventsSection";
 
 interface EventDetailModalProps {
@@ -61,6 +61,7 @@ const EventDetailModal = ({ event, onClose, onRegister, categoryStyles }: EventD
     { icon: MapPin, label: "Venue", value: event.venue || "TBA" },
     { icon: Users, label: "Team Size", value: event.teamSize },
     { icon: Trophy, label: "Prize Pool", value: event.prize_pool || "TBA" },
+    { icon: IndianRupee, label: "Registration Fee", value: event.price > 0 ? `₹${event.price}` : "Free" },
   ];
 
   const eventRules = event.rules?.length ? event.rules : [
