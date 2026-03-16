@@ -73,7 +73,7 @@ const CoreTeam = () => {
               <h3 className="text-base sm:text-lg font-semibold text-foreground leading-tight whitespace-nowrap">
                 {member.name}
               </h3>
-            </div>
+            </a>
           ))}
         </div>
       </div>
