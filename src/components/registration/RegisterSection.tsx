@@ -93,7 +93,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
   const [shakeSubmit, setShakeSubmit] = useState(false);
   const [colleges, setColleges] = useState<{ id: string; name: string; short_name: string | null }[]>([]);
   const [otherCollegeOpen, setOtherCollegeOpen] = useState(false);
-  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [paymentScreenshots, setPaymentScreenshots] = useState<File[]>([]);
   const [eventPrices, setEventPrices] = useState<Record<string, number>>({});
   const [paymentSettings, setPaymentSettings] = useState<{ upi_id: string; upi_name: string; instructions: string; qr_url: string }>({ upi_id: "", upi_name: "", instructions: "", qr_url: "" });
   const [utrStatus, setUtrStatus] = useState<"idle" | "checking" | "valid" | "duplicate">("idle");
