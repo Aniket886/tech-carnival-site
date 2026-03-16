@@ -131,14 +131,19 @@ const EventCard = ({ event, style, index, onSelect, onRegister, registrationOpen
           )}
         </AnimatePresence>
 
-        {/* Team size */}
-        <p className="text-xs text-muted-foreground/70 mb-3 sm:mb-4">
-          {event.team_size_min === 1 && event.team_size_max === 1
-            ? "👤 Solo"
-            : event.team_size_min === event.team_size_max
-              ? `👥 Team of ${event.team_size_min}`
-              : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
-        </p>
+        {/* Team size & Price */}
+        <div className="flex items-center justify-between text-xs text-muted-foreground/70 mb-3 sm:mb-4">
+          <span>
+            {event.team_size_min === 1 && event.team_size_max === 1
+              ? "👤 Solo"
+              : event.team_size_min === event.team_size_max
+                ? `👥 Team of ${event.team_size_min}`
+                : `👥 Team: ${event.team_size_min}–${event.team_size_max} members`}
+          </span>
+          {event.price > 0 && (
+            <span className="text-primary font-semibold text-sm">₹{event.price}</span>
+          )}
+        </div>
 
         {/* Buttons */}
         <div className="flex flex-wrap items-center gap-2">
