@@ -19,9 +19,19 @@ import {
 import { toast } from "sonner";
 
 import {
-  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon, X,
+  Search, Download, ChevronDown, CheckCircle2, XCircle, AlertTriangle, RotateCcw, IndianRupee, Undo2, ImageIcon, X, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { useIsOwner } from "@/hooks/useIsOwner";
+
+/* ─── helpers ─── */
+const parseScreenshotUrls = (url: string | null): string[] => {
+  if (!url) return [];
+  try {
+    const parsed = JSON.parse(url);
+    if (Array.isArray(parsed)) return parsed;
+  } catch {}
+  return [url];
+};
 
 /* ─── types ─── */
 interface Registration {
