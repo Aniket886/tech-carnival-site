@@ -313,17 +313,22 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     setLoading(true);
 
     try {
-      // Upload payment screenshot if provided
+      // Upload payment screenshots (up to 3)
       let screenshotUrl: string | null = null;
-      if (paymentScreenshot) {
+      if (paymentScreenshots.length > 0) {
         const regIdForFile = crypto.randomUUID();
-        const ext = paymentScreenshot.name.split(".").pop() || "jpg";
-        const filePath = `${regIdForFile}.${ext}`;
-        const { error: uploadErr } = await supabase.storage.from("payment-screenshots").upload(filePath, paymentScreenshot);
-        if (!uploadErr) {
-          const { data: urlData } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
-          screenshotUrl = urlData.publicUrl;
+        const urls: string[] = [];
+        for (let i = 0; i < paymentScreenshots.length; i++) {
+          const file = paymentScreenshots[i];
+          const ext = file.name.split(".").pop() || "jpg";
+          const filePath = `${regIdForFile}_${i + 1}.${ext}`;
+          const { error: uploadErr } = await supabase.storage.from("payment-screenshots").upload(filePath, file);
+          if (!uploadErr) {
+            const { data: urlData } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
+            urls.push(urlData.publicUrl);
+          }
         }
+        screenshotUrl = urls.length > 0 ? JSON.stringify(urls) : null;
       }
 
       const insertPromise = supabase
