@@ -71,7 +71,8 @@ const AdminPayments = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dupsOnly, setDupsOnly] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
-  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [lightboxUrls, setLightboxUrls] = useState<string[]>([]);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
 
   const fetchData = useCallback(async () => {
     const [{ data: regs }, { data: evts }] = await Promise.all([
