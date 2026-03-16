@@ -725,7 +725,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                   <ChevronLeft className="h-4 w-4" /> Back
                 </Button>
                 <motion.div animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : {}} transition={{ duration: 0.4 }}>
-                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment || !form.amount_paid || !form.utr_number.trim() || !form.transaction_id.trim() || !paymentScreenshot}>
+                  <Button onClick={goNext} className="neon-glow gap-2" disabled={checkingPayment || !form.amount_paid || !form.utr_number.trim() || !form.transaction_id.trim() || paymentScreenshots.length === 0}>
                     {checkingPayment ? "Verifying..." : "Review"} <ChevronRight className="h-4 w-4" />
                   </Button>
                 </motion.div>
