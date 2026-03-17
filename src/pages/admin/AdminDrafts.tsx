@@ -110,6 +110,7 @@ const AdminDrafts = () => {
   const deleteDraft = async (id: string) => {
     await supabase.from("registration_drafts" as any).delete().eq("id", id);
     toast.success("Lead deleted");
+    setDeleteTarget(null);
     fetchDrafts();
   };
 
@@ -120,7 +121,14 @@ const AdminDrafts = () => {
       await supabase.from("registration_drafts" as any).delete().eq("id", id);
     }
     toast.success(`Deleted ${ids.length} leads`);
+    setDeleteTarget(null);
     fetchDrafts();
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "single") deleteDraft(deleteTarget.id);
+    else deleteAll();
   };
 
   const getMemberCount = (members: any) => {
