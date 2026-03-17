@@ -641,6 +641,54 @@ export type Database = {
         }
         Relationships: []
       }
+      registration_drafts: {
+        Row: {
+          college_name: string
+          created_at: string
+          event_id: string
+          event_name: string
+          id: string
+          leader_email: string
+          leader_name: string
+          leader_phone: string
+          members: Json | null
+          semester: string | null
+          status: string
+          team_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          college_name?: string
+          created_at?: string
+          event_id: string
+          event_name?: string
+          id?: string
+          leader_email?: string
+          leader_name?: string
+          leader_phone?: string
+          members?: Json | null
+          semester?: string | null
+          status?: string
+          team_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          college_name?: string
+          created_at?: string
+          event_id?: string
+          event_name?: string
+          id?: string
+          leader_email?: string
+          leader_name?: string
+          leader_phone?: string
+          members?: Json | null
+          semester?: string | null
+          status?: string
+          team_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       registrations: {
         Row: {
           amount_paid: string | null
