@@ -63,6 +63,18 @@ const AdminLayout = () => {
     return () => clearInterval(id);
   }, []);
 
+  // Fetch abandoned count + realtime
+  useEffect(() => {
+    fetchAbandonedCount();
+    const channel = supabase
+      .channel("abandoned-count")
+      .on("postgres_changes", { event: "*", schema: "public", table: "registration_drafts" }, () => {
+        fetchAbandonedCount();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchAbandonedCount]);
+
   useEffect(() => {
     if (loading) return;
     if (!user || !isAdmin) {
