@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminRefresh } from "@/components/AdminLayout";
 import { Input } from "@/components/ui/input";
@@ -54,6 +54,8 @@ const AdminDrafts = () => {
   const [eventFilter, setEventFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("abandoned");
   const [deleteTarget, setDeleteTarget] = useState<{ type: "single"; id: string } | { type: "all" } | null>(null);
+  const [pendingDeletes, setPendingDeletes] = useState<Set<string>>(new Set());
+  const deleteTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const fetchDrafts = async () => {
     setLoading(true);
@@ -84,7 +86,7 @@ const AdminDrafts = () => {
   }, [drafts]);
 
   const filtered = useMemo(() => {
-    let list = drafts;
+    let list = drafts.filter(d => !pendingDeletes.has(d.id));
     if (statusFilter !== "all") list = list.filter(d => d.status === statusFilter);
     if (eventFilter !== "all") list = list.filter(d => d.event_name === eventFilter);
     if (search.trim()) {
@@ -97,7 +99,7 @@ const AdminDrafts = () => {
       );
     }
     return list;
-  }, [drafts, search, eventFilter, statusFilter]);
+  }, [drafts, search, eventFilter, statusFilter, pendingDeletes]);
 
   const markContacted = async (id: string) => {
     await supabase.from("registration_drafts" as any)
@@ -107,29 +109,77 @@ const AdminDrafts = () => {
     fetchDrafts();
   };
 
-  const deleteDraft = async (id: string) => {
-    await supabase.from("registration_drafts" as any).delete().eq("id", id);
-    toast.success("Lead deleted");
-    setDeleteTarget(null);
-    fetchDrafts();
-  };
-
-  const deleteAll = async () => {
-    const ids = filtered.map(d => d.id);
-    if (ids.length === 0) return;
+  const permanentlyDelete = useCallback(async (ids: string[]) => {
     for (const id of ids) {
       await supabase.from("registration_drafts" as any).delete().eq("id", id);
     }
-    toast.success(`Deleted ${ids.length} leads`);
-    setDeleteTarget(null);
+    setPendingDeletes(prev => {
+      const next = new Set(prev);
+      ids.forEach(id => next.delete(id));
+      return next;
+    });
+    deleteTimers.current.forEach((_, key) => {
+      if (ids.includes(key)) deleteTimers.current.delete(key);
+    });
     fetchDrafts();
-  };
+  }, []);
+
+  const undoDelete = useCallback((ids: string[]) => {
+    ids.forEach(id => {
+      const timer = deleteTimers.current.get(id);
+      if (timer) clearTimeout(timer);
+      deleteTimers.current.delete(id);
+    });
+    setPendingDeletes(prev => {
+      const next = new Set(prev);
+      ids.forEach(id => next.delete(id));
+      return next;
+    });
+    toast.info("Delete undone");
+  }, []);
+
+  const scheduleDeletion = useCallback((ids: string[]) => {
+    setPendingDeletes(prev => {
+      const next = new Set(prev);
+      ids.forEach(id => next.add(id));
+      return next;
+    });
+    setDeleteTarget(null);
+
+    const label = ids.length === 1 ? "Lead deleted" : `${ids.length} leads deleted`;
+
+    // Set individual timers for permanent deletion
+    const batchKey = `batch-${Date.now()}`;
+    const timer = setTimeout(() => {
+      permanentlyDelete(ids);
+    }, 3000);
+    ids.forEach(id => deleteTimers.current.set(id, timer));
+
+    toast(label, {
+      action: {
+        label: "Undo",
+        onClick: () => undoDelete(ids),
+      },
+      duration: 3000,
+    });
+  }, [permanentlyDelete, undoDelete]);
 
   const confirmDelete = () => {
     if (!deleteTarget) return;
-    if (deleteTarget.type === "single") deleteDraft(deleteTarget.id);
-    else deleteAll();
+    if (deleteTarget.type === "single") {
+      scheduleDeletion([deleteTarget.id]);
+    } else {
+      const ids = filtered.map(d => d.id);
+      if (ids.length > 0) scheduleDeletion(ids);
+    }
   };
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      deleteTimers.current.forEach(timer => clearTimeout(timer));
+    };
+  }, []);
 
   const getMemberCount = (members: any) => {
     if (!members) return 0;
