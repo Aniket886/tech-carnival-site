@@ -53,6 +53,7 @@ const AdminDrafts = () => {
   const [search, setSearch] = useState("");
   const [eventFilter, setEventFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("abandoned");
+  const [deleteTarget, setDeleteTarget] = useState<{ type: "single"; id: string } | { type: "all" } | null>(null);
 
   const fetchDrafts = async () => {
     setLoading(true);
