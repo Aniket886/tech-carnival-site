@@ -138,6 +138,21 @@ const AdminLayout = () => {
                   {abandonedCount}
                 </Badge>
               )}
+              {link.to === "/admin/messages" && unreadMessages > 0 && (
+                <Badge variant="default" className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold">
+                  {unreadMessages}
+                </Badge>
+              )}
+              {link.to === "/admin/colleges" && pendingColleges > 0 && (
+                <Badge className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold bg-amber-500 text-white border-0 hover:bg-amber-600">
+                  {pendingColleges}
+                </Badge>
+              )}
+              {link.to === "/admin/payments" && pendingPayments > 0 && (
+                <Badge className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold bg-amber-500 text-white border-0 hover:bg-amber-600">
+                  {pendingPayments}
+                </Badge>
+              )}
             </NavLink>
           ))}
         </nav>
