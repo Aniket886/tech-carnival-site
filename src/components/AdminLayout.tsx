@@ -123,7 +123,12 @@ const AdminLayout = () => {
               }
             >
               <link.icon size={18} />
-              <span>{link.label}</span>
+              <span className="flex-1">{link.label}</span>
+              {link.to === "/admin/drafts" && abandonedCount > 0 && (
+                <Badge variant="destructive" className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold">
+                  {abandonedCount}
+                </Badge>
+              )}
             </NavLink>
           ))}
         </nav>
