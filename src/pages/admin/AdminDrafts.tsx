@@ -124,6 +124,32 @@ const AdminDrafts = () => {
 
   const abandonedCount = drafts.filter(d => d.status === "abandoned").length;
 
+  const exportCsv = () => {
+    if (filtered.length === 0) return;
+    const headers = ["Event", "Leader Name", "Email", "Phone", "College", "Semester", "Team Name", "Members", "Status", "Updated At"];
+    const rows = filtered.map(d => [
+      d.event_name,
+      d.leader_name,
+      d.leader_email,
+      d.leader_phone,
+      d.college_name,
+      d.semester || "",
+      d.team_name || "",
+      getMemberCount(d.members),
+      d.status,
+      new Date(d.updated_at).toLocaleString(),
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `abandoned-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exported ${filtered.length} leads`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
