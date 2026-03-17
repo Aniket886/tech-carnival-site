@@ -30,6 +30,7 @@ import AdminFAQ from "./pages/admin/AdminFAQ";
 import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
 import AdminGallery from "./pages/admin/AdminGallery";
 import AdminVideoGuide from "./pages/admin/AdminVideoGuide";
+import AdminDrafts from "./pages/admin/AdminDrafts";
 
 const queryClient = new QueryClient();
 
