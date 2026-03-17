@@ -332,6 +332,11 @@ const AdminDrafts = () => {
                           <Phone className="h-4 w-4" />
                         </Button>
                       </a>
+                      <a href={`https://wa.me/91${draft.leader_phone}?text=${encodeURIComponent(`Hi ${draft.leader_name}, we noticed you started registering for ${draft.event_name} at Tech Carnival but didn't complete it. Need any help?`)}`} target="_blank" rel="noopener noreferrer" title="WhatsApp">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-500 hover:text-emerald-400">
+                          <MessageCircle className="h-4 w-4" />
+                        </Button>
+                      </a>
                       <a href={`mailto:${draft.leader_email}`} title="Email">
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:text-blue-400">
                           <Mail className="h-4 w-4" />
