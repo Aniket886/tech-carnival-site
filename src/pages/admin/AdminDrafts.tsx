@@ -86,7 +86,7 @@ const AdminDrafts = () => {
   }, [drafts]);
 
   const filtered = useMemo(() => {
-    let list = drafts;
+    let list = drafts.filter(d => !pendingDeletes.has(d.id));
     if (statusFilter !== "all") list = list.filter(d => d.status === statusFilter);
     if (eventFilter !== "all") list = list.filter(d => d.event_name === eventFilter);
     if (search.trim()) {
@@ -99,7 +99,7 @@ const AdminDrafts = () => {
       );
     }
     return list;
-  }, [drafts, search, eventFilter, statusFilter]);
+  }, [drafts, search, eventFilter, statusFilter, pendingDeletes]);
 
   const markContacted = async (id: string) => {
     await supabase.from("registration_drafts" as any)
