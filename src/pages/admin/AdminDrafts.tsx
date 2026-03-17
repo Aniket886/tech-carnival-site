@@ -164,6 +164,10 @@ const AdminDrafts = () => {
         </div>
         <div className="flex gap-2">
           {filtered.length > 0 && (
+            <Button variant="outline" size="sm" onClick={exportCsv}>
+              <Download className="h-4 w-4 mr-1" /> Export CSV
+            </Button>
+          )}
             <Button variant="destructive" size="sm" onClick={deleteAll}>
               <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
             </Button>
