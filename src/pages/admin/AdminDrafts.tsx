@@ -10,6 +10,10 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useIsOwner } from "@/hooks/useIsOwner";
@@ -49,6 +53,7 @@ const AdminDrafts = () => {
   const [search, setSearch] = useState("");
   const [eventFilter, setEventFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("abandoned");
+  const [deleteTarget, setDeleteTarget] = useState<{ type: "single"; id: string } | { type: "all" } | null>(null);
 
   const fetchDrafts = async () => {
     setLoading(true);
@@ -105,6 +110,7 @@ const AdminDrafts = () => {
   const deleteDraft = async (id: string) => {
     await supabase.from("registration_drafts" as any).delete().eq("id", id);
     toast.success("Lead deleted");
+    setDeleteTarget(null);
     fetchDrafts();
   };
 
@@ -115,7 +121,14 @@ const AdminDrafts = () => {
       await supabase.from("registration_drafts" as any).delete().eq("id", id);
     }
     toast.success(`Deleted ${ids.length} leads`);
+    setDeleteTarget(null);
     fetchDrafts();
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "single") deleteDraft(deleteTarget.id);
+    else deleteAll();
   };
 
   const getMemberCount = (members: any) => {
@@ -171,7 +184,7 @@ const AdminDrafts = () => {
                   <Download className="h-4 w-4 mr-1" /> Export CSV
                 </Button>
                 {isOwner && (
-                  <Button variant="destructive" size="sm" onClick={deleteAll}>
+                  <Button variant="destructive" size="sm" onClick={() => setDeleteTarget({ type: "all" })}>
                     <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
                   </Button>
                 )}
@@ -304,7 +317,7 @@ const AdminDrafts = () => {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                          onClick={() => deleteDraft(draft.id)}
+                          onClick={() => setDeleteTarget({ type: "single", id: draft.id })}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -321,6 +334,27 @@ const AdminDrafts = () => {
       <p className="text-xs text-muted-foreground text-center">
         Showing {filtered.length} of {drafts.length} total leads • Auto-syncs in real-time
       </p>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {deleteTarget?.type === "all" ? "Delete all filtered leads?" : "Delete this lead?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget?.type === "all"
+                ? `This will permanently delete ${filtered.length} lead(s). This action cannot be undone.`
+                : "This will permanently remove this abandoned lead. This action cannot be undone."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
