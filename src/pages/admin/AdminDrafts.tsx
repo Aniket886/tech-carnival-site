@@ -246,16 +246,26 @@ const AdminDrafts = () => {
                     {timeAgo(draft.updated_at)}
                   </TableCell>
                   <TableCell>
-                    {draft.status === "abandoned" && (
+                    <div className="flex gap-1">
+                      {draft.status === "abandoned" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => markContacted(draft.id)}
+                          className="text-xs"
+                        >
+                          <CheckCircle className="h-3 w-3 mr-1" /> Contacted
+                        </Button>
+                      )}
                       <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => markContacted(draft.id)}
-                        className="text-xs"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        onClick={() => deleteDraft(draft.id)}
                       >
-                        <CheckCircle className="h-3 w-3 mr-1" /> Contacted
+                        <Trash2 className="h-4 w-4" />
                       </Button>
-                    )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
