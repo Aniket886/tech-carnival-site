@@ -42,6 +42,7 @@ const timeAgo = (date: string) => {
 };
 
 const AdminDrafts = () => {
+  const isOwner = useIsOwner();
   const refreshKey = useAdminRefresh();
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(true);
