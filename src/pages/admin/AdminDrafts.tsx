@@ -136,9 +136,16 @@ const AdminDrafts = () => {
             )}
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={fetchDrafts} disabled={loading}>
-          <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
-        </Button>
+        <div className="flex gap-2">
+          {filtered.length > 0 && (
+            <Button variant="destructive" size="sm" onClick={deleteAll}>
+              <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={fetchDrafts} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
