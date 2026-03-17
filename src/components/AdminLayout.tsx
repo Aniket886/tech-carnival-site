@@ -1,9 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export const AdminRefreshContext = createContext(0);
 export const useAdminRefresh = () => useContext(AdminRefreshContext);
+import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog, AlertDialogContent, AlertDialogDescription,
@@ -43,14 +45,35 @@ const AdminLayout = () => {
   const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [abandonedCount, setAbandonedCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const fetchAbandonedCount = useCallback(async () => {
+    const { count } = await supabase
+      .from("registration_drafts" as any)
+      .select("*", { count: "exact", head: true })
+      .eq("status", "abandoned");
+    setAbandonedCount(count || 0);
+  }, []);
 
   // Auto-refresh admin data every 10 seconds
   useEffect(() => {
     const id = setInterval(() => setRefreshKey(k => k + 1), 10_000);
     return () => clearInterval(id);
   }, []);
+
+  // Fetch abandoned count + realtime
+  useEffect(() => {
+    fetchAbandonedCount();
+    const channel = supabase
+      .channel("abandoned-count")
+      .on("postgres_changes", { event: "*", schema: "public", table: "registration_drafts" }, () => {
+        fetchAbandonedCount();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchAbandonedCount]);
 
   useEffect(() => {
     if (loading) return;
@@ -100,7 +123,12 @@ const AdminLayout = () => {
               }
             >
               <link.icon size={18} />
-              <span>{link.label}</span>
+              <span className="flex-1">{link.label}</span>
+              {link.to === "/admin/drafts" && abandonedCount > 0 && (
+                <Badge variant="destructive" className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold">
+                  {abandonedCount}
+                </Badge>
+              )}
             </NavLink>
           ))}
         </nav>
