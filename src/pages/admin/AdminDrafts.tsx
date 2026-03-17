@@ -221,7 +221,7 @@ const AdminDrafts = () => {
         <div>
           <h2 className="text-lg font-semibold text-foreground">Abandoned Leads</h2>
           <p className="text-sm text-muted-foreground">
-            Participants who filled details but didn't complete registration
+            <span>Participants who filled details but didn't complete registration</span>
             {abandonedCount > 0 && (
               <Badge variant="destructive" className="ml-2">{abandonedCount} pending</Badge>
             )}
