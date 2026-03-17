@@ -10,7 +10,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2 } from "lucide-react";
+import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
 
 interface Draft {
@@ -124,6 +124,32 @@ const AdminDrafts = () => {
 
   const abandonedCount = drafts.filter(d => d.status === "abandoned").length;
 
+  const exportCsv = () => {
+    if (filtered.length === 0) return;
+    const headers = ["Event", "Leader Name", "Email", "Phone", "College", "Semester", "Team Name", "Members", "Status", "Updated At"];
+    const rows = filtered.map(d => [
+      d.event_name,
+      d.leader_name,
+      d.leader_email,
+      d.leader_phone,
+      d.college_name,
+      d.semester || "",
+      d.team_name || "",
+      getMemberCount(d.members),
+      d.status,
+      new Date(d.updated_at).toLocaleString(),
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `abandoned-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exported ${filtered.length} leads`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -138,9 +164,14 @@ const AdminDrafts = () => {
         </div>
         <div className="flex gap-2">
           {filtered.length > 0 && (
-            <Button variant="destructive" size="sm" onClick={deleteAll}>
-              <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
-            </Button>
+            <>
+              <Button variant="outline" size="sm" onClick={exportCsv}>
+                <Download className="h-4 w-4 mr-1" /> Export CSV
+              </Button>
+              <Button variant="destructive" size="sm" onClick={deleteAll}>
+                <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
+              </Button>
+            </>
           )}
           <Button variant="outline" size="sm" onClick={fetchDrafts} disabled={loading}>
             <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
