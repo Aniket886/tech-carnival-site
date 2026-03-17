@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 interface Draft {
   id: string;
@@ -41,6 +42,7 @@ const timeAgo = (date: string) => {
 };
 
 const AdminDrafts = () => {
+  const isOwner = useIsOwner();
   const refreshKey = useAdminRefresh();
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(true);
@@ -163,16 +165,18 @@ const AdminDrafts = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          {filtered.length > 0 && (
-            <>
-              <Button variant="outline" size="sm" onClick={exportCsv}>
-                <Download className="h-4 w-4 mr-1" /> Export CSV
-              </Button>
-              <Button variant="destructive" size="sm" onClick={deleteAll}>
-                <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
-              </Button>
-            </>
-          )}
+            {filtered.length > 0 && (
+              <>
+                <Button variant="outline" size="sm" onClick={exportCsv}>
+                  <Download className="h-4 w-4 mr-1" /> Export CSV
+                </Button>
+                {isOwner && (
+                  <Button variant="destructive" size="sm" onClick={deleteAll}>
+                    <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
+                  </Button>
+                )}
+              </>
+            )}
           <Button variant="outline" size="sm" onClick={fetchDrafts} disabled={loading}>
             <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
           </Button>
@@ -295,14 +299,16 @@ const AdminDrafts = () => {
                           <CheckCircle className="h-3 w-3 mr-1" /> Contacted
                         </Button>
                       )}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                        onClick={() => deleteDraft(draft.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      {isOwner && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          onClick={() => deleteDraft(draft.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
