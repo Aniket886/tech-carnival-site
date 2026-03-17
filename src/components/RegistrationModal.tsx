@@ -235,6 +235,35 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
 
   const [checkingPayment, setCheckingPayment] = useState(false);
 
+  const saveDraftToDb = async () => {
+    if (!event || !form.leader_email.trim()) return;
+    try {
+      await supabase.from("registration_drafts" as any).upsert({
+        event_id: event.id,
+        event_name: event.name || "",
+        leader_name: form.leader_name.trim(),
+        leader_email: form.leader_email.trim().toLowerCase(),
+        leader_phone: form.leader_phone.trim(),
+        college_name: form.college_name.trim(),
+        semester: form.semester || null,
+        team_name: isTeamEvent ? form.team_name.trim() || null : null,
+        members: isTeamEvent && form.members.length > 0 ? form.members : null,
+        status: "abandoned",
+        updated_at: new Date().toISOString(),
+      } as any, { onConflict: "event_id,leader_email" } as any);
+    } catch {}
+  };
+
+  const markDraftCompleted = async () => {
+    if (!event || !form.leader_email.trim()) return;
+    try {
+      await supabase.from("registration_drafts" as any)
+        .update({ status: "completed", updated_at: new Date().toISOString() } as any)
+        .eq("event_id", event.id)
+        .eq("leader_email", form.leader_email.trim().toLowerCase());
+    } catch {}
+  };
+
   const goNext = async () => {
     const errs = validateStep(step);
     setErrors(errs);
@@ -251,6 +280,10 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
       setTimeout(() => setShake(false), 500);
       toast({ title: `Please fix ${countErrors(errs)} error${countErrors(errs) > 1 ? "s" : ""} before continuing`, variant: "destructive" });
       return;
+    }
+    // Save draft when moving from Details (step 0) to Payment (step 1)
+    if (step === 0) {
+      saveDraftToDb();
     }
     // Duplicate payment check on step 1
     if (step === 1) {
