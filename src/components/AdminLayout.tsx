@@ -153,6 +153,11 @@ const AdminLayout = () => {
                   {pendingPayments}
                 </Badge>
               )}
+              {link.to === "/admin/registrations" && pendingPayments > 0 && (
+                <Badge className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold bg-amber-500 text-white border-0 hover:bg-amber-600">
+                  {pendingPayments}
+                </Badge>
+              )}
             </NavLink>
           ))}
         </nav>
