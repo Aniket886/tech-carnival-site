@@ -299,14 +299,16 @@ const AdminDrafts = () => {
                           <CheckCircle className="h-3 w-3 mr-1" /> Contacted
                         </Button>
                       )}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                        onClick={() => deleteDraft(draft.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      {isOwner && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          onClick={() => deleteDraft(draft.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
