@@ -10,7 +10,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Phone, Mail, CheckCircle, Search, RefreshCw, Users } from "lucide-react";
+import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Draft {
@@ -100,6 +100,22 @@ const AdminDrafts = () => {
     fetchDrafts();
   };
 
+  const deleteDraft = async (id: string) => {
+    await supabase.from("registration_drafts" as any).delete().eq("id", id);
+    toast.success("Lead deleted");
+    fetchDrafts();
+  };
+
+  const deleteAll = async () => {
+    const ids = filtered.map(d => d.id);
+    if (ids.length === 0) return;
+    for (const id of ids) {
+      await supabase.from("registration_drafts" as any).delete().eq("id", id);
+    }
+    toast.success(`Deleted ${ids.length} leads`);
+    fetchDrafts();
+  };
+
   const getMemberCount = (members: any) => {
     if (!members) return 0;
     if (Array.isArray(members)) return members.length;
@@ -120,9 +136,16 @@ const AdminDrafts = () => {
             )}
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={fetchDrafts} disabled={loading}>
-          <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
-        </Button>
+        <div className="flex gap-2">
+          {filtered.length > 0 && (
+            <Button variant="destructive" size="sm" onClick={deleteAll}>
+              <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={fetchDrafts} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -230,16 +253,26 @@ const AdminDrafts = () => {
                     {timeAgo(draft.updated_at)}
                   </TableCell>
                   <TableCell>
-                    {draft.status === "abandoned" && (
+                    <div className="flex gap-1">
+                      {draft.status === "abandoned" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => markContacted(draft.id)}
+                          className="text-xs"
+                        >
+                          <CheckCircle className="h-3 w-3 mr-1" /> Contacted
+                        </Button>
+                      )}
                       <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => markContacted(draft.id)}
-                        className="text-xs"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        onClick={() => deleteDraft(draft.id)}
                       >
-                        <CheckCircle className="h-3 w-3 mr-1" /> Contacted
+                        <Trash2 className="h-4 w-4" />
                       </Button>
-                    )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
