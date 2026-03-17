@@ -14,7 +14,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2, Download } from "lucide-react";
+import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2, Download, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
