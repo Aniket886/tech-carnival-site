@@ -334,6 +334,27 @@ const AdminDrafts = () => {
       <p className="text-xs text-muted-foreground text-center">
         Showing {filtered.length} of {drafts.length} total leads • Auto-syncs in real-time
       </p>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {deleteTarget?.type === "all" ? "Delete all filtered leads?" : "Delete this lead?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget?.type === "all"
+                ? `This will permanently delete ${filtered.length} lead(s). This action cannot be undone.`
+                : "This will permanently remove this abandoned lead. This action cannot be undone."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
