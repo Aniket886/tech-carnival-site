@@ -46,15 +46,23 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [abandonedCount, setAbandonedCount] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [pendingColleges, setPendingColleges] = useState(0);
+  const [pendingPayments, setPendingPayments] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const fetchAbandonedCount = useCallback(async () => {
-    const { count } = await supabase
-      .from("registration_drafts" as any)
-      .select("*", { count: "exact", head: true })
-      .eq("status", "abandoned");
-    setAbandonedCount(count || 0);
+  const fetchBadgeCounts = useCallback(async () => {
+    const [drafts, messages, colleges, payments] = await Promise.all([
+      supabase.from("registration_drafts" as any).select("*", { count: "exact", head: true }).eq("status", "abandoned"),
+      supabase.from("contacts").select("*", { count: "exact", head: true }).eq("is_read", false),
+      supabase.from("colleges").select("*", { count: "exact", head: true }).eq("approval_status", "pending"),
+      supabase.from("registrations").select("*", { count: "exact", head: true }).eq("registration_status", "pending"),
+    ]);
+    setAbandonedCount(drafts.count || 0);
+    setUnreadMessages(messages.count || 0);
+    setPendingColleges(colleges.count || 0);
+    setPendingPayments(payments.count || 0);
   }, []);
 
   // Auto-refresh admin data every 10 seconds
@@ -63,17 +71,18 @@ const AdminLayout = () => {
     return () => clearInterval(id);
   }, []);
 
-  // Fetch abandoned count + realtime
+  // Fetch badge counts + realtime
   useEffect(() => {
-    fetchAbandonedCount();
+    fetchBadgeCounts();
     const channel = supabase
-      .channel("abandoned-count")
-      .on("postgres_changes", { event: "*", schema: "public", table: "registration_drafts" }, () => {
-        fetchAbandonedCount();
-      })
+      .channel("admin-badge-counts")
+      .on("postgres_changes", { event: "*", schema: "public", table: "registration_drafts" }, fetchBadgeCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "contacts" }, fetchBadgeCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "colleges" }, fetchBadgeCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "registrations" }, fetchBadgeCounts)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [fetchAbandonedCount]);
+  }, [fetchBadgeCounts]);
 
   useEffect(() => {
     if (loading) return;
@@ -127,6 +136,21 @@ const AdminLayout = () => {
               {link.to === "/admin/drafts" && abandonedCount > 0 && (
                 <Badge variant="destructive" className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold">
                   {abandonedCount}
+                </Badge>
+              )}
+              {link.to === "/admin/messages" && unreadMessages > 0 && (
+                <Badge variant="default" className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold">
+                  {unreadMessages}
+                </Badge>
+              )}
+              {link.to === "/admin/colleges" && pendingColleges > 0 && (
+                <Badge className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold bg-amber-500 text-white border-0 hover:bg-amber-600">
+                  {pendingColleges}
+                </Badge>
+              )}
+              {link.to === "/admin/payments" && pendingPayments > 0 && (
+                <Badge className="h-5 min-w-[20px] px-1.5 text-[10px] font-bold bg-amber-500 text-white border-0 hover:bg-amber-600">
+                  {pendingPayments}
                 </Badge>
               )}
             </NavLink>
