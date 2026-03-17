@@ -4,6 +4,8 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export const AdminRefreshContext = createContext(0);
 export const useAdminRefresh = () => useContext(AdminRefreshContext);
+import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog, AlertDialogContent, AlertDialogDescription,
