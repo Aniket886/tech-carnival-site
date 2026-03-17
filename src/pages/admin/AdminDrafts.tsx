@@ -184,7 +184,7 @@ const AdminDrafts = () => {
                   <Download className="h-4 w-4 mr-1" /> Export CSV
                 </Button>
                 {isOwner && (
-                  <Button variant="destructive" size="sm" onClick={deleteAll}>
+                  <Button variant="destructive" size="sm" onClick={() => setDeleteTarget({ type: "all" })}>
                     <Trash2 className="h-4 w-4 mr-1" /> Delete All ({filtered.length})
                   </Button>
                 )}
