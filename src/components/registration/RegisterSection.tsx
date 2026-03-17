@@ -488,6 +488,7 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
         }
         throw error;
       }
+      markDraftCompleted();
       setSuccessData({ id: regId, eventName: selectedEventData?.name || "" });
       setForm(initialForm);
       setPaymentScreenshots([]);

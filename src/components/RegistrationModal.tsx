@@ -401,6 +401,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         }
       } else {
         const regId = result?.data?.[0]?.id || crypto.randomUUID().slice(0, 8);
+        markDraftCompleted();
         setSuccessData({ id: regId, eventName: event.name });
         supabase.functions.invoke("send-email", {
           body: {
