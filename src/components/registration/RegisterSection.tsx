@@ -342,6 +342,35 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
 
   const [checkingPayment, setCheckingPayment] = useState(false);
 
+  const saveDraftToDb = async () => {
+    if (!form.eventId || !form.leaderEmail.trim()) return;
+    try {
+      await supabase.from("registration_drafts" as any).upsert({
+        event_id: form.eventId,
+        event_name: selectedEventData?.name || "",
+        leader_name: form.leaderName.trim(),
+        leader_email: form.leaderEmail.trim().toLowerCase(),
+        leader_phone: form.leaderPhone.trim(),
+        college_name: form.collegeName.trim(),
+        semester: form.semester || null,
+        team_name: isSolo ? null : form.teamName.trim() || null,
+        members: isSolo ? null : (form.members.length > 0 ? form.members : null),
+        status: "abandoned",
+        updated_at: new Date().toISOString(),
+      } as any, { onConflict: "event_id,leader_email" } as any);
+    } catch {}
+  };
+
+  const markDraftCompleted = async () => {
+    if (!form.eventId || !form.leaderEmail.trim()) return;
+    try {
+      await supabase.from("registration_drafts" as any)
+        .update({ status: "completed", updated_at: new Date().toISOString() } as any)
+        .eq("event_id", form.eventId)
+        .eq("leader_email", form.leaderEmail.trim().toLowerCase());
+    } catch {}
+  };
+
   const next = async () => {
     // Mark all current step fields as touched so errors display
     if (step === 1) {
@@ -358,6 +387,10 @@ const RegisterSection = ({ selectedEvent }: RegisterSectionProps) => {
       setShakeSubmit(true);
       setTimeout(() => setShakeSubmit(false), 500);
       return;
+    }
+    // Save draft when moving from Details (step 1) to Payment (step 2)
+    if (step === 1) {
+      saveDraftToDb();
     }
     if (step === 2) {
       setCheckingPayment(true);
