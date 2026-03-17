@@ -45,8 +45,17 @@ const AdminLayout = () => {
   const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [abandonedCount, setAbandonedCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const fetchAbandonedCount = useCallback(async () => {
+    const { count } = await supabase
+      .from("registration_drafts" as any)
+      .select("*", { count: "exact", head: true })
+      .eq("status", "abandoned");
+    setAbandonedCount(count || 0);
+  }, []);
 
   // Auto-refresh admin data every 10 seconds
   useEffect(() => {
