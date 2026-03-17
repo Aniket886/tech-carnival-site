@@ -10,7 +10,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Phone, Mail, CheckCircle, Search, RefreshCw, Users } from "lucide-react";
+import { Phone, Mail, CheckCircle, Search, RefreshCw, Users, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Draft {
