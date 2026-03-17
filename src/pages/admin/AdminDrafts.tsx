@@ -100,6 +100,22 @@ const AdminDrafts = () => {
     fetchDrafts();
   };
 
+  const deleteDraft = async (id: string) => {
+    await supabase.from("registration_drafts" as any).delete().eq("id", id);
+    toast.success("Lead deleted");
+    fetchDrafts();
+  };
+
+  const deleteAll = async () => {
+    const ids = filtered.map(d => d.id);
+    if (ids.length === 0) return;
+    for (const id of ids) {
+      await supabase.from("registration_drafts" as any).delete().eq("id", id);
+    }
+    toast.success(`Deleted ${ids.length} leads`);
+    fetchDrafts();
+  };
+
   const getMemberCount = (members: any) => {
     if (!members) return 0;
     if (Array.isArray(members)) return members.length;
