@@ -20,7 +20,7 @@ export const fallbackEvents: EventData[] = [
     description: "Present your ideas visually — where art meets tech", category: "technical",
     teamSize: "2 members", team_size_min: 2, team_size_max: 2,
     detailedDescription: "Pixel Perfect challenges you to present complex technical ideas through visually compelling posters and innovative designs.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, price: 200,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, websiteUrl: null, price: 200,
   },
   {
     id: "fallback-code-compass", emoji: "🧭", name: "Code Compass",
