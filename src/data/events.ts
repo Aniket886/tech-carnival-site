@@ -6,7 +6,7 @@ export const fallbackEvents: EventData[] = [
     description: "6-hour hackathon to build, innovate, and win!", category: "technical",
     teamSize: "2-4 members", team_size_min: 2, team_size_max: 4,
     detailedDescription: "Hack Momentum is a 6-hour national-level hackathon uniting skilled creators and engineers to craft meaningful and practical solutions.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, price: 1000,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, websiteUrl: null, price: 1000,
   },
   {
     id: "fallback-brain-quest", emoji: "🧠", name: "Brain Quest",
