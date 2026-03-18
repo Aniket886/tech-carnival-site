@@ -438,7 +438,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     const ev = eventRef.current;
     if (!ev || completedRef.current) return;
     // Only save if core leader fields are filled
-    if (!f.leader_name.trim() || !f.leader_email.trim() || !f.leader_phone.trim() || !f.college_name.trim()) return;
+    if (!f.leader_name.trim() || !f.leader_email.trim() || !f.leader_phone.trim()) return;
     try {
       await supabase.from("registration_drafts" as any).upsert({
         event_id: ev.id,
@@ -477,7 +477,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         // Use sendBeacon for reliability on tab close
         const f = formRef.current;
         const ev = eventRef.current;
-        if (ev && f.leader_name.trim() && f.leader_email.trim() && f.leader_phone.trim() && f.college_name.trim()) {
+        if (ev && f.leader_name.trim() && f.leader_email.trim() && f.leader_phone.trim()) {
           saveAbandonedDraft();
         }
       }
@@ -489,7 +489,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const resetAndClose = () => {
     // Save abandoned draft before resetting if leader fields are filled and not completed
     if (!completedRef.current && event) {
-      const hasLeaderData = form.leader_name.trim() && form.leader_email.trim() && form.leader_phone.trim() && form.college_name.trim();
+      const hasLeaderData = form.leader_name.trim() && form.leader_email.trim() && form.leader_phone.trim();
       if (hasLeaderData) {
         saveDraftToDb();
       }
