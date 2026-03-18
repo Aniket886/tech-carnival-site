@@ -431,7 +431,68 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     }
   };
 
+  // Helper to save abandoned draft using refs (for use in cleanup/close)
+  const saveAbandonedDraft = useCallback(async () => {
+    const f = formRef.current;
+    const ev = eventRef.current;
+    if (!ev || completedRef.current) return;
+    // Only save if core leader fields are filled
+    if (!f.leader_name.trim() || !f.leader_email.trim() || !f.leader_phone.trim() || !f.college_name.trim()) return;
+    try {
+      await supabase.from("registration_drafts" as any).upsert({
+        event_id: ev.id,
+        event_name: ev.name || "",
+        leader_name: f.leader_name.trim(),
+        leader_email: f.leader_email.trim().toLowerCase(),
+        leader_phone: f.leader_phone.trim(),
+        college_name: f.college_name.trim(),
+        semester: f.semester || null,
+        team_name: isTeamEventRef.current ? f.team_name.trim() || null : null,
+        members: isTeamEventRef.current && f.members.length > 0 ? f.members : null,
+        status: "abandoned",
+        updated_at: new Date().toISOString(),
+      } as any, { onConflict: "event_id,leader_email" } as any);
+    } catch {}
+  }, []);
+
+  // Auto-save abandoned draft when modal closes without completing
+  useEffect(() => {
+    if (!isOpen) {
+      // Modal just closed — if not completed and has data, save draft
+      if (!completedRef.current && eventRef.current) {
+        saveAbandonedDraft();
+      }
+    }
+    // Reset completedRef when modal opens fresh
+    if (isOpen) {
+      completedRef.current = false;
+    }
+  }, [isOpen, saveAbandonedDraft]);
+
+  // Also capture on browser tab close / navigation
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (isOpen && !completedRef.current) {
+        // Use sendBeacon for reliability on tab close
+        const f = formRef.current;
+        const ev = eventRef.current;
+        if (ev && f.leader_name.trim() && f.leader_email.trim() && f.leader_phone.trim() && f.college_name.trim()) {
+          saveAbandonedDraft();
+        }
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isOpen, saveAbandonedDraft]);
+
   const resetAndClose = () => {
+    // Save abandoned draft before resetting if leader fields are filled and not completed
+    if (!completedRef.current && event) {
+      const hasLeaderData = form.leader_name.trim() && form.leader_email.trim() && form.leader_phone.trim() && form.college_name.trim();
+      if (hasLeaderData) {
+        saveDraftToDb();
+      }
+    }
     setForm({ ...initialForm });
     setStep(0);
     setErrors({});
