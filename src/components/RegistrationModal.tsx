@@ -489,7 +489,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const resetAndClose = () => {
     // Save abandoned draft before resetting if leader fields are filled and not completed
     if (!completedRef.current && event) {
-      const hasLeaderData = form.leader_name.trim() && form.leader_email.trim() && form.leader_phone.trim() && form.college_name.trim();
+      const hasLeaderData = form.leader_name.trim() && form.leader_email.trim() && form.leader_phone.trim();
       if (hasLeaderData) {
         saveDraftToDb();
       }
