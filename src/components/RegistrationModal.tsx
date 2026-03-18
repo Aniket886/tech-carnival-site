@@ -438,7 +438,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
     const ev = eventRef.current;
     if (!ev || completedRef.current) return;
     // Only save if core leader fields are filled
-    if (!f.leader_name.trim() || !f.leader_email.trim() || !f.leader_phone.trim() || !f.college_name.trim()) return;
+    if (!f.leader_name.trim() || !f.leader_email.trim() || !f.leader_phone.trim()) return;
     try {
       await supabase.from("registration_drafts" as any).upsert({
         event_id: ev.id,
