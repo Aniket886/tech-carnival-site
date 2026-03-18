@@ -25,6 +25,7 @@ export interface EventData {
   rules: string[] | null;
   rulebookUrl: string | null;
   paymentUrl: string | null;
+  websiteUrl: string | null;
   price: number;
 }
 
@@ -110,6 +111,7 @@ const EventsSection = () => {
               rules: e.rules,
               rulebookUrl: e.rulebook_url || null,
               paymentUrl: e.payment_url || null,
+              websiteUrl: e.website_url || null,
               price: e.price || 0,
             }))
           );
