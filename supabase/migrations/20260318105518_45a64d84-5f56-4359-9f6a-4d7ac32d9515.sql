@@ -1,0 +1,1 @@
+DELETE FROM registration_drafts WHERE leader_email LIKE '%testabandon%';
