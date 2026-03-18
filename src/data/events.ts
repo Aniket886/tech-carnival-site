@@ -41,7 +41,7 @@ export const fallbackEvents: EventData[] = [
     description: "BGMI tournament – last team standing wins!", category: "gaming",
     teamSize: "4 members (squad)", team_size_min: 4, team_size_max: 4,
     detailedDescription: "Battle Ground is an exciting BGMI esports event challenging participants in squad-based battle royale gameplay across multiple maps.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, price: 400,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, websiteUrl: null, price: 400,
   },
   {
     id: "fallback-dance-mania", emoji: "💃", name: "Dance Mania",
