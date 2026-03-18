@@ -27,7 +27,7 @@ export const fallbackEvents: EventData[] = [
     description: "Navigate coding challenges and prove your skills", category: "technical",
     teamSize: "2 members", team_size_min: 2, team_size_max: 2,
     detailedDescription: "Code Compass is a navigation-themed technical event testing your skills in debugging, navigating algorithmic challenges and optimizing code.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, price: 200,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, websiteUrl: null, price: 200,
   },
   {
     id: "fallback-myth-busters", emoji: "🔍", name: "Myth Busters",
