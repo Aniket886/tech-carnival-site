@@ -25,6 +25,7 @@ export interface EventData {
   rules: string[] | null;
   rulebookUrl: string | null;
   paymentUrl: string | null;
+  websiteUrl: string | null;
   price: number;
 }
 
