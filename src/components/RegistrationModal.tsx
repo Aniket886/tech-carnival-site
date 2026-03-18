@@ -114,6 +114,17 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
   const [paymentScreenshots, setPaymentScreenshots] = useState<File[]>([]);
   const [eventPrices, setEventPrices] = useState<Record<string, number>>({});
 
+  // Refs for abandoned draft capture
+  const completedRef = useRef(false);
+  const formRef = useRef(form);
+  const eventRef = useRef(event);
+  const isTeamEventRef = useRef(false);
+
+  // Keep refs in sync
+  useEffect(() => { formRef.current = form; }, [form]);
+  useEffect(() => { eventRef.current = event; }, [event]);
+  useEffect(() => { isTeamEventRef.current = event ? event.team_size_max > 1 : false; }, [event]);
+
   const fetchColleges = async () => {
     const { data } = await supabase.from("colleges").select("id, name, short_name, approval_status").eq("is_active", true).order("name");
     if (data) setColleges(data.filter((c: any) => c.approval_status === "approved"));
