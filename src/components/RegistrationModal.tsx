@@ -477,7 +477,7 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
         // Use sendBeacon for reliability on tab close
         const f = formRef.current;
         const ev = eventRef.current;
-        if (ev && f.leader_name.trim() && f.leader_email.trim() && f.leader_phone.trim() && f.college_name.trim()) {
+        if (ev && f.leader_name.trim() && f.leader_email.trim() && f.leader_phone.trim()) {
           saveAbandonedDraft();
         }
       }
