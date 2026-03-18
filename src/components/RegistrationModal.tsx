@@ -550,12 +550,18 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                     <Label className="text-xs">College *</Label>
                     {colleges.length > 0 ? (
                       <>
-                        <CollegePicker
+                      <CollegePicker
                           colleges={colleges}
                           value={form.college_name}
                           onChange={(name) => {
                             setForm((p) => ({ ...p, college_name: name }));
-                            onBlur("college_name");
+                            setTouched((prev) => new Set(prev).add("college_name"));
+                            // Clear error immediately since we know the value is valid
+                            setErrors((prev) => {
+                              const next = { ...prev };
+                              delete next.college_name;
+                              return next;
+                            });
                           }}
                           onOtherClick={() => setOtherCollegeOpen(true)}
                           className={fieldClass("college_name")}
@@ -566,7 +572,12 @@ const RegistrationModal = ({ eventData, onClose }: RegistrationModalProps) => {
                           onCollegeSaved={(name) => {
                             setForm((p) => ({ ...p, college_name: name }));
                             fetchColleges();
-                            onBlur("college_name");
+                            setTouched((prev) => new Set(prev).add("college_name"));
+                            setErrors((prev) => {
+                              const next = { ...prev };
+                              delete next.college_name;
+                              return next;
+                            });
                           }}
                         />
                       </>
