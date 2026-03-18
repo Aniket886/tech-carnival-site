@@ -124,6 +124,20 @@ const EventDetailModal = ({ event, onClose, onRegister, categoryStyles }: EventD
                   <span className="text-foreground font-medium">{value}</span>
                 </div>
               ))}
+              {event.websiteUrl && (
+                <div className="flex items-center gap-3 text-sm">
+                  <Globe size={16} className="text-muted-foreground shrink-0" />
+                  <span className="text-muted-foreground">Event Website:</span>
+                  <a
+                    href={event.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline font-medium inline-flex items-center gap-1"
+                  >
+                    Visit Website <ExternalLink size={12} />
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 

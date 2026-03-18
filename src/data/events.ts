@@ -55,6 +55,6 @@ export const fallbackEvents: EventData[] = [
     description: "Skit play – drama, comedy, and creativity combined", category: "cultural",
     teamSize: "8-10 members", team_size_min: 8, team_size_max: 10,
     detailedDescription: "Scitopia is a creative stage event where participants perform short skits to present meaningful messages through acting and storytelling.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, price: 500,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, websiteUrl: null, price: 500,
   },
 ];
