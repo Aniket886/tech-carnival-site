@@ -48,7 +48,7 @@ export const fallbackEvents: EventData[] = [
     description: "Group dance competition to set the stage on fire", category: "cultural",
     teamSize: "4-8 members", team_size_min: 4, team_size_max: 8,
     detailedDescription: "Dance Mania is an exciting dance competition where participants showcase their talent, creativity and energy in any style.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, price: 500,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, websiteUrl: null, price: 500,
   },
   {
     id: "fallback-scitopia", emoji: "🎬", name: "Scitopia",
