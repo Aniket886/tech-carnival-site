@@ -13,7 +13,7 @@ export const fallbackEvents: EventData[] = [
     description: "A quiz and problem-solving competition to test your tech knowledge", category: "technical",
     teamSize: "2 members", team_size_min: 2, team_size_max: 2,
     detailedDescription: "Brain Quest is an intellectually stimulating quiz and problem-solving competition challenging participants in computer science, programming and technology trends.",
-    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, price: 200,
+    date: null, time: null, venue: null, prize_pool: null, rules: null, rulebookUrl: null, paymentUrl: null, websiteUrl: null, price: 200,
   },
   {
     id: "fallback-poster-presentation", emoji: "📊", name: "Pixel Perfect",
