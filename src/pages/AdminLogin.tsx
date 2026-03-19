@@ -18,12 +18,20 @@ const AdminLogin = () => {
     e.preventDefault();
     setBusy(true);
 
-    const error = await loginAndCheckRole(email, password);
-    if (error) {
-      toast.error(error);
+    try {
+      const result = await Promise.race([
+        loginAndCheckRole(email, password),
+        new Promise<string>((_, reject) => setTimeout(() => reject(new Error("timeout")), 15000)),
+      ]);
+      if (result) {
+        toast.error(result);
+        setBusy(false);
+      } else {
+        navigate("/admin/overview", { replace: true });
+      }
+    } catch {
+      toast.error("Login timed out — please try again.");
       setBusy(false);
-    } else {
-      navigate("/admin/overview", { replace: true });
     }
   };
 
