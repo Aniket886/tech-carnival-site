@@ -15,9 +15,10 @@ const About = () => {
           <h2 className="text-3xl sm:text-4xl font-bold gradient-text mb-6">About the Event</h2>
           <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
             Tech Carnival 2K26 is a prestigious two-day national-level technical competition designed to ignite
-            innovation, creativity and a spirit of healthy competition among BCA, BSc in Computer Science &amp; Diploma in Computer Science students across India. Over two
-            action-packed days, this event unites the nation's brightest young minds to collaborate, compete and
-            celebrate technological excellence under one roof.
+            innovation, creativity and a spirit of healthy competition among BCA, MCA, BSc in Computer Science &amp;
+            Diploma in Computer Science students across India. Over two action-packed days, this event unites the
+            nation's brightest young minds to collaborate, compete and celebrate technological excellence under one
+            roof.
           </p>
         </motion.div>
       </div>
