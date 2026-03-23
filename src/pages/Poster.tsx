@@ -109,7 +109,7 @@ const Poster = () => {
             <span className="poster-clay-letter poster-clay-word">CARNIVAL</span>
           </div>
           <div className="poster-hero-year">2K26</div>
-          <div className="poster-hero-subtitle">National Level Technical Competition · BCA Students</div>
+          <div className="poster-hero-subtitle">National Level Technical Competition · BCA, MCA, BSc in Computer Science &amp; Diploma in Computer Science Students</div>
         </div>
 
         <div className="poster-divider">
