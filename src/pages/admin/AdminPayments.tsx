@@ -135,6 +135,26 @@ const AdminPayments = () => {
     return data;
   }, [registrations, search, statusFilter, dupsOnly, duplicateIds]);
 
+  // Reset page when filters change
+  useEffect(() => { setCurrentPage(1); }, [search, statusFilter, dupsOnly, pageSize]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginatedData = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const getPageNumbers = () => {
+    const pages: (number | "...")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
+
   /* ─── stats ─── */
   const stats = useMemo(() => {
     const total = registrations.length;
