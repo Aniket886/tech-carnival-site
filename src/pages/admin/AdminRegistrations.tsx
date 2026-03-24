@@ -108,7 +108,6 @@ const AdminRegistrations = () => {
     const set = new Set(colleges.map(c => c.state).filter(Boolean) as string[]);
     return Array.from(set).sort();
   }, [colleges]);
-  }, [events]);
 
   const collegeIdMap = useMemo(() => {
     const m = new Map<string, CollegeInfo>();
