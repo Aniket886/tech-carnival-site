@@ -313,6 +313,27 @@ const AdminRegistrations = () => {
             ))}
           </SelectContent>
         </Select>
+        <Select value={stateFilter} onValueChange={setStateFilter}>
+          <SelectTrigger className="w-full sm:w-36 bg-card border-border">
+            <SelectValue placeholder="All States" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All States</SelectItem>
+            {states.map(s => (
+              <SelectItem key={s} value={s}>{s}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={cityFilter} onValueChange={setCityFilter}>
+          <SelectTrigger className="w-full sm:w-36 bg-card border-border">
+            <SelectValue placeholder="All Cities" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Cities</SelectItem>
+            {cities.map(c => (
+              <SelectItem key={c} value={c}>{c}</SelectItem>
+            ))}
+          </SelectContent>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-36 bg-card border-border">
             <SelectValue placeholder="All Status" />
