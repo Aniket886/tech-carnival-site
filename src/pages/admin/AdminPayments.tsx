@@ -323,11 +323,12 @@ const AdminPayments = () => {
               <TableBody>
                 {paginatedData.map((r, idx) => {
                   const globalIdx = (currentPage - 1) * pageSize + idx;
+                  const ev = eventMap.get(r.event_id);
                   const sc = statusConfig[r.registration_status] || statusConfig.pending;
                   const isDup = duplicateIds.has(r.id);
                   return (
                     <TableRow key={r.id} className="border-border">
-                      <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{globalIdx + 1}</TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
