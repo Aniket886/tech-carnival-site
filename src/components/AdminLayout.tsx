@@ -170,7 +170,7 @@ const AdminLayout = () => {
               Admin
             </Badge>
             {isOwner && (
-              <Badge className="bg-amber-500/20 text-amber-300 border-amber-400/50 text-[10px] shadow-[0_0_8px_rgba(251,191,36,0.4)] animate-pulse">
+              <Badge className="bg-amber-500/15 text-amber-300 border-amber-400/40 text-[10px] shadow-[0_0_6px_rgba(251,191,36,0.3)]">
                 Owner
               </Badge>
             )}
