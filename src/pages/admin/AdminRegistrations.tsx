@@ -66,7 +66,6 @@ const AdminRegistrations = () => {
   const [eventFilter, setEventFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
-  const [stateFilter, setStateFilter] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: "single" | "bulk"; id?: string } | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -104,10 +103,6 @@ const AdminRegistrations = () => {
     return Array.from(set).sort();
   }, [colleges]);
 
-  const states = useMemo(() => {
-    const set = new Set(colleges.map(c => c.state).filter(Boolean) as string[]);
-    return Array.from(set).sort();
-  }, [colleges]);
 
   const collegeIdMap = useMemo(() => {
     const m = new Map<string, CollegeInfo>();
@@ -141,12 +136,6 @@ const AdminRegistrations = () => {
         return col?.city === cityFilter;
       });
     }
-    if (stateFilter !== "all") {
-      data = data.filter(r => {
-        const col = getCollegeInfo(r);
-        return col?.state === stateFilter;
-      });
-    }
     if (search.trim()) {
       const q = search.toLowerCase();
       data = data.filter(r =>
@@ -159,7 +148,7 @@ const AdminRegistrations = () => {
       );
     }
     return data;
-  }, [registrations, search, statusFilter, eventFilter, categoryFilter, cityFilter, stateFilter, events, getCollegeInfo]);
+  }, [registrations, search, statusFilter, eventFilter, categoryFilter, cityFilter, events, getCollegeInfo]);
 
   /* ─── status update ─── */
   const updateStatus = async (id: string, status: string) => {
@@ -310,17 +299,6 @@ const AdminRegistrations = () => {
             <SelectItem value="all">All Categories</SelectItem>
             {categories.map(c => (
               <SelectItem key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={stateFilter} onValueChange={setStateFilter}>
-          <SelectTrigger className="w-full sm:w-36 bg-card border-border">
-            <SelectValue placeholder="All States" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All States</SelectItem>
-            {states.map(s => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
             ))}
           </SelectContent>
         </Select>
