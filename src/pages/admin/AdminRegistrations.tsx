@@ -69,12 +69,14 @@ const AdminRegistrations = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
-    const [{ data: regs }, { data: evts }] = await Promise.all([
+    const [{ data: regs }, { data: evts }, { data: cols }] = await Promise.all([
       supabase.from("registrations").select("*").order("created_at", { ascending: false }),
       supabase.from("events").select("id, name, icon, category"),
+      supabase.from("colleges").select("id, name, city, state"),
     ]);
     setRegistrations(regs || []);
     setEvents(evts || []);
+    setColleges(cols || []);
     setLoading(false);
   }, []);
 
