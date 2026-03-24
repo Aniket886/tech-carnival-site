@@ -71,6 +71,8 @@ const AdminPayments = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dupsOnly, setDupsOnly] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
   const [lightboxUrls, setLightboxUrls] = useState<string[]>([]);
   const [lightboxIdx, setLightboxIdx] = useState(0);
 
