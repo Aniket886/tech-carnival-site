@@ -334,6 +334,7 @@ const AdminDrafts = () => {
                   <TableCell>
                     <div className="text-sm font-medium">{draft.leader_name}</div>
                     <div className="text-xs text-muted-foreground">{draft.leader_email}</div>
+                    <div className="text-xs text-muted-foreground">{draft.leader_phone}</div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-sm">
                     {draft.college_name}
