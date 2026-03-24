@@ -369,15 +369,16 @@ const AdminRegistrations = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((r, idx) => {
+                {paginatedRegs.map((r, idx) => {
                   const ev = eventMap.get(r.event_id);
                   const sc = statusConfig[r.registration_status] || statusConfig.pending;
                   const isExpanded = expandedId === r.id;
                   const members = getMembers(r.members);
+                  const globalIdx = (currentPage - 1) * pageSize + idx;
                   return (
                     <>
                       <TableRow key={r.id} className="border-border cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : r.id)}>
-                        <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{globalIdx + 1}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1.5">
                             <span className="text-sm font-medium text-foreground">{r.team_name || r.leader_name}</span>
