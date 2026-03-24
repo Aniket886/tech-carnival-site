@@ -41,6 +41,7 @@ interface College {
   approval_status: string;
   affiliated_university: string | null;
   website_url: string | null;
+  manual_registration_count: number | null;
 }
 
 interface FormData {
