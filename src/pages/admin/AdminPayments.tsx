@@ -321,8 +321,8 @@ const AdminPayments = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((r, idx) => {
-                  const ev = eventMap.get(r.event_id);
+                {paginatedData.map((r, idx) => {
+                  const globalIdx = (currentPage - 1) * pageSize + idx;
                   const sc = statusConfig[r.registration_status] || statusConfig.pending;
                   const isDup = duplicateIds.has(r.id);
                   return (
