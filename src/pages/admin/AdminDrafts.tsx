@@ -326,7 +326,7 @@ const AdminDrafts = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              filtered.map(draft => (
+              paginatedDrafts.map(draft => (
                 <TableRow key={draft.id}>
                   <TableCell className="font-medium text-sm max-w-[120px] truncate">
                     {draft.event_name}
