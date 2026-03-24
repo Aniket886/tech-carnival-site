@@ -56,6 +56,8 @@ const AdminDrafts = () => {
   const [deleteTarget, setDeleteTarget] = useState<{ type: "single"; id: string } | { type: "all" } | null>(null);
   const [pendingDeletes, setPendingDeletes] = useState<Set<string>>(new Set());
   const deleteTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
 
   const fetchDrafts = async () => {
     setLoading(true);
