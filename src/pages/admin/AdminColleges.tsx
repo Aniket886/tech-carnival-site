@@ -126,6 +126,7 @@ const AdminColleges = () => {
       contact_person: c.contact_person || "", contact_email: c.contact_email || "",
       contact_phone: c.contact_phone || "", logo_url: c.logo_url || "",
       affiliated_university: c.affiliated_university || "", website_url: c.website_url || "",
+      manual_registration_count: c.manual_registration_count != null ? String(c.manual_registration_count) : "",
     });
     setDialogOpen(true);
   };
