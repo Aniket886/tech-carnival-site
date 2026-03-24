@@ -16,8 +16,13 @@ import {
 import { toast } from "sonner";
 
 import {
-  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2,
+  Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2, MessageCircle, Mail,
 } from "lucide-react";
+
+const getWhatsAppConfirmUrl = (phone: string) => {
+  const msg = `Hey there! 👋\n\n🎉 *Registration Confirmed – Tech Carnival 2K26!* 🎉\n\nWe're thrilled to have you on board! 🙌 Your registration has been successfully confirmed and we can't wait to see you at the event! 🚀\n\n📌 *Event:* Tech Carnival 2K26\n\n✅ *Status:* Confirmed\n\nGet ready for an amazing experience filled with exciting events, competitions, and a whole lot of fun! 💻⚡🏆\n\nStay tuned for further updates and details. 📲\n\nSee you there! 😄🔥\n\n— Core Team, Tech Carnival 2K26 🎊`;
+  return `https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`;
+};
 import { useIsOwner } from "@/hooks/useIsOwner";
 
 /* ─── types ─── */
