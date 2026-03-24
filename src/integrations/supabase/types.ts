@@ -335,6 +335,7 @@ export type Database = {
           id: string
           is_active: boolean
           logo_url: string | null
+          manual_registration_count: number | null
           name: string
           short_name: string | null
           source: string
@@ -352,6 +353,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          manual_registration_count?: number | null
           name: string
           short_name?: string | null
           source?: string
@@ -369,6 +371,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          manual_registration_count?: number | null
           name?: string
           short_name?: string | null
           source?: string

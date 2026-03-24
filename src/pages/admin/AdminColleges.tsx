@@ -21,6 +21,8 @@ import {
 import { toast } from "sonner";
 
 import { Search, Plus, Pencil, Trash2, Upload, Building2, CheckCircle2, Clock, UserPlus } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useIsOwner } from "@/hooks/useIsOwner";
 
 interface College {
@@ -39,6 +41,7 @@ interface College {
   approval_status: string;
   affiliated_university: string | null;
   website_url: string | null;
+  manual_registration_count: number | null;
 }
 
 interface FormData {
@@ -52,12 +55,13 @@ interface FormData {
   logo_url: string;
   affiliated_university: string;
   website_url: string;
+  manual_registration_count: string;
 }
 
 const emptyForm: FormData = {
   name: "", short_name: "", city: "", state: "",
   contact_person: "", contact_email: "", contact_phone: "", logo_url: "",
-  affiliated_university: "", website_url: "",
+  affiliated_university: "", website_url: "", manual_registration_count: "",
 };
 
 type FilterStatus = "all" | "pending" | "approved";
@@ -122,6 +126,7 @@ const AdminColleges = () => {
       contact_person: c.contact_person || "", contact_email: c.contact_email || "",
       contact_phone: c.contact_phone || "", logo_url: c.logo_url || "",
       affiliated_university: c.affiliated_university || "", website_url: c.website_url || "",
+      manual_registration_count: c.manual_registration_count != null ? String(c.manual_registration_count) : "",
     });
     setDialogOpen(true);
   };
@@ -140,6 +145,7 @@ const AdminColleges = () => {
       logo_url: form.logo_url.trim() || null,
       affiliated_university: form.affiliated_university.trim() || null,
       website_url: form.website_url.trim() || null,
+      manual_registration_count: form.manual_registration_count.trim() ? parseInt(form.manual_registration_count.trim(), 10) : null,
     };
     let error;
     if (editingId) {
@@ -341,9 +347,40 @@ const AdminColleges = () => {
                     </button>
                   </TableCell>
                   <TableCell>
-                    <span className={`text-sm font-semibold ${(regCounts.get(c.id) || 0) > 0 ? "text-primary" : "text-muted-foreground"}`}>
-                      {regCounts.get(c.id) || 0}
-                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button className="cursor-pointer px-2 py-1 rounded-md hover:bg-muted/50 transition-colors">
+                                <span className={`text-sm font-semibold ${((regCounts.get(c.id) || 0) + (c.manual_registration_count || 0)) > 0 ? "text-primary" : "text-muted-foreground"}`}>
+                                  {(regCounts.get(c.id) || 0) + (c.manual_registration_count || 0)}
+                                </span>
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 p-3">
+                              <Label className="text-xs text-muted-foreground">Manual Count</Label>
+                              <Input
+                                type="number"
+                                min={0}
+                                className="mt-1 bg-card border-border"
+                                defaultValue={c.manual_registration_count ?? ""}
+                                onBlur={async (e) => {
+                                  const val = e.target.value.trim() ? parseInt(e.target.value, 10) : null;
+                                  const { error } = await supabase.from("colleges").update({ manual_registration_count: val } as any).eq("id", c.id);
+                                  if (error) { toast.error("Failed to update"); return; }
+                                  toast.success("Count updated");
+                                  fetchData();
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">Auto: {regCounts.get(c.id) || 0} | Manual: {c.manual_registration_count || 0}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </TableCell>
                   <TableCell>
                     <Switch checked={c.is_active} onCheckedChange={() => toggleActive(c)} />
@@ -417,6 +454,10 @@ const AdminColleges = () => {
             <div>
               <Label className="text-xs text-muted-foreground">Logo URL</Label>
               <Input value={form.logo_url} onChange={e => updateField("logo_url", e.target.value)} className="bg-card border-border" />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Manual Registration Count</Label>
+              <Input type="number" min={0} value={form.manual_registration_count} onChange={e => updateField("manual_registration_count", e.target.value)} placeholder="0" className="bg-card border-border" />
             </div>
           </div>
           <DialogFooter>
