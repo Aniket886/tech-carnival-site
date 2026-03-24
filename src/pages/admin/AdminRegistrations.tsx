@@ -97,6 +97,23 @@ const AdminRegistrations = () => {
     return Array.from(set).sort();
   }, [events]);
 
+  const collegeIdMap = useMemo(() => {
+    const m = new Map<string, CollegeInfo>();
+    colleges.forEach(c => m.set(c.id, c));
+    return m;
+  }, [colleges]);
+
+  const collegeNameMap = useMemo(() => {
+    const m = new Map<string, CollegeInfo>();
+    colleges.forEach(c => m.set(c.name.toLowerCase(), c));
+    return m;
+  }, [colleges]);
+
+  const getCollegeInfo = useCallback((r: Registration) => {
+    if (r.college_id) return collegeIdMap.get(r.college_id);
+    return collegeNameMap.get(r.college_name.toLowerCase());
+  }, [collegeIdMap, collegeNameMap]);
+
   /* ─── filtering ─── */
   const filtered = useMemo(() => {
     let data = registrations;
