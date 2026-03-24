@@ -193,18 +193,28 @@ const AdminRegistrations = () => {
 
   /* ─── CSV export ─── */
   const exportCSV = (andDelete = false) => {
+    const maxMembers = Math.max(...filtered.map(r => Array.isArray(r.members) ? r.members.length : 0), 0);
+    const memberHeaders = Array.from({ length: maxMembers }, (_, i) => [
+      `Member ${i + 1} Name`, `Member ${i + 1} Email`, `Member ${i + 1} Phone`
+    ]).flat();
     const headers = [
-      "S.No", "Leader Name", "Email", "Phone", "College", "Team Name", "Event", "Category",
-      "Status", "Amount Paid", "UTR", "Transaction ID", "Source", "Semester", "Members", "Date",
+      "S.No", "Leader Name", "Email", "Phone", "College", "City", "State", "Team Name", "Event", "Category",
+      "Status", "Amount Paid", "UTR", "Transaction ID", "Source", "Semester", ...memberHeaders, "Date",
     ];
     const rows = filtered.map((r, i) => {
       const ev = eventMap.get(r.event_id);
-      const memberCount = Array.isArray(r.members) ? r.members.length : 0;
+      const col = getCollegeInfo(r);
+      const members = Array.isArray(r.members) ? r.members : [];
+      const memberCells = Array.from({ length: maxMembers }, (_, j) => {
+        const m = members[j];
+        return [m?.name || "", m?.email || "", m?.phone || ""];
+      }).flat();
       return [
         i + 1, r.leader_name, r.leader_email, r.leader_phone, r.college_name,
+        col?.city || "", col?.state || "",
         r.team_name || "", ev?.name || "", ev?.category || "",
         r.registration_status, r.amount_paid || "", r.utr_number || "",
-        r.transaction_id || "", r.source, r.semester || "", memberCount,
+        r.transaction_id || "", r.source, r.semester || "", ...memberCells,
         new Date(r.created_at).toLocaleDateString(),
       ];
     });
