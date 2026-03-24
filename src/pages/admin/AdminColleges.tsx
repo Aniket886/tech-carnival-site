@@ -145,6 +145,7 @@ const AdminColleges = () => {
       logo_url: form.logo_url.trim() || null,
       affiliated_university: form.affiliated_university.trim() || null,
       website_url: form.website_url.trim() || null,
+      manual_registration_count: form.manual_registration_count.trim() ? parseInt(form.manual_registration_count.trim(), 10) : null,
     };
     let error;
     if (editingId) {
