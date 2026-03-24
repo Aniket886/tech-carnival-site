@@ -130,6 +130,7 @@ const AdminVideoGuide = () => {
 
   useEffect(() => {
     fetchVideos();
+    const interval = setInterval(() => fetchVideos(), 10_000);
 
     const channel = supabase
       .channel("admin_guide_videos_realtime")
@@ -141,6 +142,7 @@ const AdminVideoGuide = () => {
       .subscribe();
 
     return () => {
+      clearInterval(interval);
       clearTimeout(debounceRef.current);
       supabase.removeChannel(channel);
     };

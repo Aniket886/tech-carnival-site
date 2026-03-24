@@ -173,25 +173,29 @@ const AdminEmail = () => {
   const [tableSelected, setTableSelected] = useState<Set<string>>(new Set());
   const [regSearch, setRegSearch] = useState("");
 
-  // load events + all registrations
+  const fetchEventsAndRegistrations = async () => {
+    const { data } = await supabase.from("events").select("id,name").eq("is_active", true).order("name");
+    if (data) {
+      setEvents(data);
+      const { data: regs } = await supabase.from("registrations").select("leader_name,leader_email,leader_phone,team_name,college_name,event_id").order("created_at", { ascending: false });
+      if (regs) {
+        const eventMap = new Map(data.map(e => [e.id, e.name]));
+        setAllRegistrations(regs.map(r => ({
+          leader_name: r.leader_name,
+          leader_email: r.leader_email,
+          leader_phone: r.leader_phone,
+          team_name: r.team_name || "",
+          college_name: r.college_name,
+          event_name: eventMap.get(r.event_id) || "Unknown",
+        })));
+      }
+    }
+  };
+
   useEffect(() => {
-    supabase.from("events").select("id,name").eq("is_active", true).order("name").then(({ data }) => {
-      if (data) setEvents(data);
-      // load registrations with event names
-      supabase.from("registrations").select("leader_name,leader_email,leader_phone,team_name,college_name,event_id").order("created_at", { ascending: false }).then(({ data: regs }) => {
-        if (regs && data) {
-          const eventMap = new Map(data.map(e => [e.id, e.name]));
-          setAllRegistrations(regs.map(r => ({
-            leader_name: r.leader_name,
-            leader_email: r.leader_email,
-            leader_phone: r.leader_phone,
-            team_name: r.team_name || "",
-            college_name: r.college_name,
-            event_name: eventMap.get(r.event_id) || "Unknown",
-          })));
-        }
-      });
-    });
+    fetchEventsAndRegistrations();
+    const interval = setInterval(fetchEventsAndRegistrations, 10_000);
+    return () => clearInterval(interval);
   }, []);
 
   // load participants when event selected
