@@ -302,17 +302,6 @@ const AdminRegistrations = () => {
             ))}
           </SelectContent>
         </Select>
-        <Select value={stateFilter} onValueChange={setStateFilter}>
-          <SelectTrigger className="w-full sm:w-36 bg-card border-border">
-            <SelectValue placeholder="All States" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All States</SelectItem>
-            {states.map(s => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Select value={cityFilter} onValueChange={setCityFilter}>
           <SelectTrigger className="w-full sm:w-36 bg-card border-border">
             <SelectValue placeholder="All Cities" />
