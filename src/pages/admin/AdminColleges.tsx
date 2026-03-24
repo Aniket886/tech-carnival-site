@@ -243,6 +243,24 @@ const AdminColleges = () => {
           )}
         </h2>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => {
+            const headers = ["Name","Short Name","City","State","Affiliated University","Contact Person","Contact Email","Contact Phone","Website","Status","Source","Active","Manual Reg Count","Created At"];
+            const rows = colleges.map(c => [
+              c.name, c.short_name || "", c.city || "", c.state || "", c.affiliated_university || "",
+              c.contact_person || "", c.contact_email || "", c.contact_phone || "", c.website_url || "",
+              c.approval_status, c.source, c.is_active ? "Yes" : "No",
+              c.manual_registration_count ?? "", c.created_at,
+            ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(","));
+            const csv = [headers.join(","), ...rows].join("\n");
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = `colleges_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click(); URL.revokeObjectURL(url);
+            toast.success("CSV exported");
+          }}>
+            <Download size={14} /> Export CSV
+          </Button>
           <Button variant="outline" size="sm" className="gap-2" onClick={importCSV}>
             <Upload size={14} /> Import CSV
           </Button>
