@@ -334,6 +334,7 @@ const AdminRegistrations = () => {
               <SelectItem key={c} value={c}>{c}</SelectItem>
             ))}
           </SelectContent>
+        </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-36 bg-card border-border">
             <SelectValue placeholder="All Status" />
