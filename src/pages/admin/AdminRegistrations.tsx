@@ -58,6 +58,7 @@ const categoryConfig: Record<string, string> = {
 const AdminRegistrations = () => {
   const isOwner = useIsOwner();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [colleges, setColleges] = useState<CollegeInfo[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
