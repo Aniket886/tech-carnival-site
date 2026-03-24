@@ -1,25 +1,18 @@
 
 
-## Plan: Add Screenshot URLs to CSV Export
+## Plan: Show Phone Number Below Leader Email in Admin Drafts
 
-### Change to `src/pages/admin/AdminPayments.tsx`
+### Change to `src/pages/admin/AdminDrafts.tsx`
 
-Update the `exportCSV` function (line 186-207) to include a "Screenshot URL(s)" column:
+In the Leader table cell (around line 335-337), add `draft.leader_phone` as a third line below the email:
 
-- Add "Screenshot URL(s)" to the CSV headers array
-- For each row, use `parseScreenshotUrls` to extract all screenshot URLs and join them with a semicolon separator (so multiple URLs fit in one cell)
-- This ensures every exported record includes the direct links to payment screenshots
-
-### Technical detail
-
-```typescript
-// In headers array, add "Screenshot URL(s)" after "Transaction ID"
-const headers = ["S.No", "Name", "Team", "Event", "Amount", "UTR", "Transaction ID", "Screenshot URL(s)", "Status", "College", "Date"];
-
-// In row mapping, add:
-parseScreenshotUrls(r.payment_screenshot_url).join("; ") || ""
+```tsx
+<TableCell>
+  <div className="text-sm font-medium">{draft.leader_name}</div>
+  <div className="text-xs text-muted-foreground">{draft.leader_email}</div>
+  <div className="text-xs text-muted-foreground">{draft.leader_phone}</div>
+</TableCell>
 ```
 
-### File changed
-- `src/pages/admin/AdminPayments.tsx` only
+Single file change, ~1 line addition.
 
