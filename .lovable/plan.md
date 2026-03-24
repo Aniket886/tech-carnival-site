@@ -1,29 +1,45 @@
 
 
-## Plan: Add Manual Registration Count to College Management
+## Plan: Add Auto-Sync to Remaining Admin Pages
 
-The registration count column currently only reads from the `registrations` table via `college_id`. Since some colleges may have registrations not linked by `college_id` (or tracked externally), you need a manual override field.
+Most admin pages already have 10-second auto-refresh. Only 4 pages are missing it.
 
-### Approach
+### Current State
+- **10 pages** already use `setInterval(fetchData, 10_000)` — no changes needed
+- **6 pages** use `useAdminRefresh` context (10s interval from AdminLayout) — no changes needed
+- **4 pages** lack auto-refresh and need updating
 
-**1. Add `manual_registration_count` column to `colleges` table**
-- New nullable integer column, default `null`
-- Migration only — no existing data touched
+### Changes
 
-**2. Update `AdminColleges.tsx` — Registration display**
-- In the Registrations column, show: `(auto count from registrations table) + (manual_registration_count ?? 0)`
-- Make the count clickable — clicking opens a small inline input/popover to set the manual count
-- Show tooltip: "Auto: X | Manual: Y" so admin sees breakdown
+**1. `src/pages/admin/AdminSettings.tsx`**
+- Add `setInterval` around `fetchAdmins` + `fetchTimeout` calls (10s)
+- Clean up interval on unmount
 
-**3. Update `AdminColleges.tsx` — Edit dialog**
-- Add a "Manual Registration Count" number input field in the create/edit college dialog
-- Include it in the save payload
+**2. `src/pages/admin/AdminPaymentInstructions.tsx`**
+- Add `setInterval` around its fetch function (10s)
+- Clean up interval on unmount
 
-### Files changed
-- **Database migration**: Add `manual_registration_count integer default null` to `colleges`
-- **`src/pages/admin/AdminColleges.tsx`**: Add manual count field to form, display combined count in table, clickable quick-edit for the count
+**3. `src/pages/admin/AdminVideoGuide.tsx`**
+- Already has realtime subscription, but add a 10s `setInterval` as fallback (consistent with other pages)
+- Clean up interval on unmount
 
-### Notes
-- Existing 2 real registrations in `registrations` table are untouched
-- The auto-count continues working as before; manual count is additive
+**4. `src/pages/admin/AdminEmail.tsx`**
+- Add `setInterval` to refresh events and registrations data (10s)
+- Clean up interval on unmount
+
+### Technical Details
+Each page will follow the same pattern already used across the codebase:
+```typescript
+useEffect(() => {
+  fetchData();
+  const interval = setInterval(fetchData, 10_000);
+  return () => clearInterval(interval);
+}, [fetchData]);
+```
+
+### Files Changed
+- `src/pages/admin/AdminSettings.tsx`
+- `src/pages/admin/AdminPaymentInstructions.tsx`
+- `src/pages/admin/AdminVideoGuide.tsx`
+- `src/pages/admin/AdminEmail.tsx`
 
