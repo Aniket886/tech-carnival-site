@@ -419,8 +419,8 @@ const AdminRegistrations = () => {
                           <TableCell colSpan={7} className="py-4 px-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 text-sm">
                               <p><span className="text-muted-foreground">Leader:</span> <span className="font-medium text-foreground">{r.leader_name}</span></p>
-                              <p><span className="text-muted-foreground">Phone:</span> <span className="font-medium text-foreground">{r.leader_phone}</span></p>
-                              <p><span className="text-muted-foreground">Email:</span> <span className="font-medium text-foreground">{r.leader_email}</span></p>
+                              <p className="flex items-center gap-1"><span className="text-muted-foreground">Phone:</span> <span className="font-medium text-foreground">{r.leader_phone}</span><a href={getWhatsAppConfirmUrl(r.leader_phone)} target="_blank" rel="noopener noreferrer" className="inline-flex ml-1 text-emerald-500 hover:text-emerald-400"><MessageCircle size={14} /></a></p>
+                              <p className="flex items-center gap-1"><span className="text-muted-foreground">Email:</span> <span className="font-medium text-foreground">{r.leader_email}</span><a href={`mailto:${r.leader_email}`} className="inline-flex ml-1 text-blue-500 hover:text-blue-400"><Mail size={14} /></a></p>
                               <p><span className="text-muted-foreground">Semester:</span> <span className="font-medium text-foreground">{r.semester || "—"}</span></p>
                               <p><span className="text-muted-foreground">College:</span> <span className="font-medium text-foreground">{r.college_name || "—"}</span></p>
                               {(() => { const col = getCollegeInfo(r); return <>
