@@ -455,6 +455,10 @@ const AdminColleges = () => {
               <Label className="text-xs text-muted-foreground">Logo URL</Label>
               <Input value={form.logo_url} onChange={e => updateField("logo_url", e.target.value)} className="bg-card border-border" />
             </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Manual Registration Count</Label>
+              <Input type="number" min={0} value={form.manual_registration_count} onChange={e => updateField("manual_registration_count", e.target.value)} placeholder="0" className="bg-card border-border" />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialogOpen(false)}>Cancel</Button>
