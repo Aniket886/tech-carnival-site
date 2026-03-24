@@ -44,6 +44,7 @@ const links = [
 
 const AdminLayout = () => {
   const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
+  const isOwner = useIsOwner();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [abandonedCount, setAbandonedCount] = useState(0);
