@@ -148,7 +148,7 @@ const AdminRegistrations = () => {
       );
     }
     return data;
-  }, [registrations, search, statusFilter, eventFilter, categoryFilter, cityFilter, stateFilter, events, getCollegeInfo]);
+  }, [registrations, search, statusFilter, eventFilter, categoryFilter, cityFilter, events, getCollegeInfo]);
 
   /* ─── status update ─── */
   const updateStatus = async (id: string, status: string) => {
