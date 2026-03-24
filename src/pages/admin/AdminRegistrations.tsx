@@ -19,9 +19,30 @@ import {
   Search, Download, ChevronDown, Check, XCircle, Trash2, AlertTriangle, Undo2, MessageCircle, Mail,
 } from "lucide-react";
 
+const WHATSAPP_CONFIRM_MESSAGE = [
+  `Hey there! ${String.fromCodePoint(0x1F44B)}`,
+  "",
+  `${String.fromCodePoint(0x1F389)} *Registration Confirmed \u2013 Tech Carnival 2K26!* ${String.fromCodePoint(0x1F389)}`,
+  "",
+  `We\u2019re thrilled to have you on board! ${String.fromCodePoint(0x1F64C)} Your registration has been successfully confirmed and we can\u2019t wait to see you at the event! ${String.fromCodePoint(0x1F680)}`,
+  "",
+  `${String.fromCodePoint(0x1F4CC)} *Event:* Tech Carnival 2K26`,
+  "",
+  `${String.fromCodePoint(0x2705)} *Status:* Confirmed`,
+  "",
+  `Get ready for an amazing experience filled with exciting events, competitions, and a whole lot of fun! ${String.fromCodePoint(0x1F4BB)}${String.fromCodePoint(0x26A1)}${String.fromCodePoint(0x1F3C6)}`,
+  "",
+  `Stay tuned for further updates and details. ${String.fromCodePoint(0x1F4F2)}`,
+  "",
+  `See you there! ${String.fromCodePoint(0x1F604)}${String.fromCodePoint(0x1F525)}`,
+  "",
+  `\u2014 CoreTeam, Tech Carnival 2K26 ${String.fromCodePoint(0x1F38A)}`,
+].join("\n");
+
 const getWhatsAppConfirmUrl = (phone: string) => {
-  const msg = "Hey there! \ud83d\udc4b\n\n\ud83c\udf89 *Registration Confirmed \u2013 Tech Carnival 2K26!* \ud83c\udf89\n\nWe\u2019re thrilled to have you on board! \ud83d\ude4c Your registration has been successfully confirmed and we can\u2019t wait to see you at the event! \ud83d\ude80\n\n\ud83d\udccc *Event:* Tech Carnival 2K26\n\n\u2705 *Status:* Confirmed\n\nGet ready for an amazing experience filled with exciting events, competitions, and a whole lot of fun! \ud83d\udcbb\u26a1\ud83c\udfc6\n\nStay tuned for further updates and details. \ud83d\udcf2\n\nSee you there! \ud83d\ude04\ud83d\udd25\n\n\u2014 Core Team, Tech Carnival 2K26 \ud83c\udf8a";
-  return `https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`;
+  const cleanPhone = phone.replace(/\D/g, "");
+  const params = new URLSearchParams({ phone: `91${cleanPhone}`, text: WHATSAPP_CONFIRM_MESSAGE });
+  return `https://api.whatsapp.com/send?${params.toString()}`;
 };
 import { useIsOwner } from "@/hooks/useIsOwner";
 
