@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 const getWhatsAppConfirmUrl = (phone: string) => {
-  const msg = `Hey there! 👋\n\n🎉 *Registration Confirmed – Tech Carnival 2K26!* 🎉\n\nWe're thrilled to have you on board! 🙌 Your registration has been successfully confirmed and we can't wait to see you at the event! 🚀\n\n📌 *Event:* Tech Carnival 2K26\n\n✅ *Status:* Confirmed\n\nGet ready for an amazing experience filled with exciting events, competitions, and a whole lot of fun! 💻⚡🏆\n\nStay tuned for further updates and details. 📲\n\nSee you there! 😄🔥\n\n— Core Team, Tech Carnival 2K26 🎊`;
+  const msg = "Hey there! \ud83d\udc4b\n\n\ud83c\udf89 *Registration Confirmed \u2013 Tech Carnival 2K26!* \ud83c\udf89\n\nWe\u2019re thrilled to have you on board! \ud83d\ude4c Your registration has been successfully confirmed and we can\u2019t wait to see you at the event! \ud83d\ude80\n\n\ud83d\udccc *Event:* Tech Carnival 2K26\n\n\u2705 *Status:* Confirmed\n\nGet ready for an amazing experience filled with exciting events, competitions, and a whole lot of fun! \ud83d\udcbb\u26a1\ud83c\udfc6\n\nStay tuned for further updates and details. \ud83d\udcf2\n\nSee you there! \ud83d\ude04\ud83d\udd25\n\n\u2014 Core Team, Tech Carnival 2K26 \ud83c\udf8a";
   return `https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`;
 };
 import { useIsOwner } from "@/hooks/useIsOwner";
