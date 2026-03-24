@@ -1,45 +1,39 @@
 
 
-## Plan: Add Auto-Sync to Remaining Admin Pages
+## Plan: Add College Location + Full Member Details
 
-Most admin pages already have 10-second auto-refresh. Only 4 pages are missing it.
+### Changes to `src/pages/admin/AdminRegistrations.tsx`
 
-### Current State
-- **10 pages** already use `setInterval(fetchData, 10_000)` — no changes needed
-- **6 pages** use `useAdminRefresh` context (10s interval from AdminLayout) — no changes needed
-- **4 pages** lack auto-refresh and need updating
+**1. Fetch colleges data alongside registrations and events**
+- Add `colleges` to the `fetchData` call: `supabase.from("colleges").select("id, name, city, state")`
+- Build a `collegeMap` (by id) and a `collegeNameMap` (by name, for fallback when `college_id` is null)
 
-### Changes
+**2. Show State & City in the expanded dropdown**
+- After the "College" line in the detail grid, add "City" and "State" rows
+- Look up via `college_id` first, fall back to matching by `college_name`
 
-**1. `src/pages/admin/AdminSettings.tsx`**
-- Add `setInterval` around `fetchAdmins` + `fetchTimeout` calls (10s)
-- Clean up interval on unmount
+**3. Update CSV export to include all details**
+- Add "City" and "State" columns to the CSV headers
+- Replace the "Members" column (currently just a count) with individual member columns: expand each member's name, email, phone as separate columns (e.g., "Member 1 Name", "Member 1 Email", "Member 1 Phone", etc.)
+- Determine max member count across filtered registrations to set the right number of member columns
 
-**2. `src/pages/admin/AdminPaymentInstructions.tsx`**
-- Add `setInterval` around its fetch function (10s)
-- Clean up interval on unmount
+### Technical details
 
-**3. `src/pages/admin/AdminVideoGuide.tsx`**
-- Already has realtime subscription, but add a 10s `setInterval` as fallback (consistent with other pages)
-- Clean up interval on unmount
-
-**4. `src/pages/admin/AdminEmail.tsx`**
-- Add `setInterval` to refresh events and registrations data (10s)
-- Clean up interval on unmount
-
-### Technical Details
-Each page will follow the same pattern already used across the codebase:
 ```typescript
-useEffect(() => {
-  fetchData();
-  const interval = setInterval(fetchData, 10_000);
-  return () => clearInterval(interval);
-}, [fetchData]);
+// College lookup helper
+const getCollegeInfo = (r: Registration) => {
+  if (r.college_id) return collegeMap.get(r.college_id);
+  return collegeNameMap.get(r.college_name.toLowerCase());
+};
+
+// CSV: dynamic member columns
+const maxMembers = Math.max(...filtered.map(r => Array.isArray(r.members) ? r.members.length : 0), 0);
+const memberHeaders = Array.from({ length: maxMembers }, (_, i) => [
+  `Member ${i+1} Name`, `Member ${i+1} Email`, `Member ${i+1} Phone`
+]).flat();
+// Headers: [...baseHeaders, "City", "State", ...memberHeaders]
 ```
 
-### Files Changed
-- `src/pages/admin/AdminSettings.tsx`
-- `src/pages/admin/AdminPaymentInstructions.tsx`
-- `src/pages/admin/AdminVideoGuide.tsx`
-- `src/pages/admin/AdminEmail.tsx`
+### Files changed
+- `src/pages/admin/AdminRegistrations.tsx` only
 
