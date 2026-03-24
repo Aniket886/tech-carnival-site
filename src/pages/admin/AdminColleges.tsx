@@ -61,7 +61,7 @@ interface FormData {
 const emptyForm: FormData = {
   name: "", short_name: "", city: "", state: "",
   contact_person: "", contact_email: "", contact_phone: "", logo_url: "",
-  affiliated_university: "", website_url: "",
+  affiliated_university: "", website_url: "", manual_registration_count: "",
 };
 
 type FilterStatus = "all" | "pending" | "approved";
