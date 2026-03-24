@@ -136,12 +136,6 @@ const AdminRegistrations = () => {
         return col?.city === cityFilter;
       });
     }
-    if (stateFilter !== "all") {
-      data = data.filter(r => {
-        const col = getCollegeInfo(r);
-        return col?.state === stateFilter;
-      });
-    }
     if (search.trim()) {
       const q = search.toLowerCase();
       data = data.filter(r =>
