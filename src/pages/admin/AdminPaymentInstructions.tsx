@@ -28,25 +28,29 @@ const AdminPaymentInstructions = () => {
   const [qrFile, setQrFile] = useState<File | null>(null);
   const [qrPreview, setQrPreview] = useState<string | null>(null);
 
+  const fetchSettings = async () => {
+    const { data } = await supabase
+      .from("admin_settings")
+      .select("setting_key, setting_value")
+      .in("setting_key", [...SETTING_KEYS]);
+    if (data) {
+      const map: Record<string, string> = {};
+      data.forEach((r) => (map[r.setting_key] = r.setting_value));
+      setValues((v) => ({
+        ...v,
+        ...Object.fromEntries(
+          SETTING_KEYS.map((k) => [k, map[k] || ""])
+        ),
+      }));
+      if (map.payment_qr_url) setQrPreview(map.payment_qr_url);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("admin_settings")
-        .select("setting_key, setting_value")
-        .in("setting_key", [...SETTING_KEYS]);
-      if (data) {
-        const map: Record<string, string> = {};
-        data.forEach((r) => (map[r.setting_key] = r.setting_value));
-        setValues((v) => ({
-          ...v,
-          ...Object.fromEntries(
-            SETTING_KEYS.map((k) => [k, map[k] || ""])
-          ),
-        }));
-        if (map.payment_qr_url) setQrPreview(map.payment_qr_url);
-      }
-      setLoading(false);
-    })();
+    fetchSettings();
+    const interval = setInterval(fetchSettings, 10_000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSave = async () => {

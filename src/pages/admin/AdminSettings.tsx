@@ -96,6 +96,8 @@ const AdminSettings = () => {
   useEffect(() => {
     fetchAdmins();
     fetchTimeout();
+    const interval = setInterval(() => { fetchAdmins(); fetchTimeout(); }, 10_000);
+    return () => clearInterval(interval);
   }, [fetchAdmins, fetchTimeout]);
 
   // Create admin
