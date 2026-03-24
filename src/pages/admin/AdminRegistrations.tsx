@@ -337,6 +337,7 @@ const AdminRegistrations = () => {
                               <p><span className="text-muted-foreground">Phone:</span> <span className="font-medium text-foreground">{r.leader_phone}</span></p>
                               <p><span className="text-muted-foreground">Email:</span> <span className="font-medium text-foreground">{r.leader_email}</span></p>
                               <p><span className="text-muted-foreground">Semester:</span> <span className="font-medium text-foreground">{r.semester || "—"}</span></p>
+                              <p><span className="text-muted-foreground">College:</span> <span className="font-medium text-foreground">{r.college_name || "—"}</span></p>
                               <p><span className="text-muted-foreground">Event:</span> <span className="font-medium text-foreground">{ev?.icon || ""} {ev?.name || "—"}</span></p>
                               <p><span className="text-muted-foreground">Category:</span> <span className="font-medium text-foreground capitalize">{ev?.category || "—"}</span></p>
                               <p><span className="text-muted-foreground">Date:</span> <span className="font-medium text-foreground">{new Date(r.created_at).toLocaleString("en-IN")}</span></p>
