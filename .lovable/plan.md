@@ -1,22 +1,25 @@
 
 
-## Plan: Add Pagination to Admin Drafts
+## Plan: Add Screenshot URLs to CSV Export
 
-### Changes to `src/pages/admin/AdminDrafts.tsx`
+### Change to `src/pages/admin/AdminPayments.tsx`
 
-1. **Add pagination state**: `currentPage` (default 1), `pageSize` (default 15)
-2. **Compute paginated data**: Slice `filtered` array based on current page
-3. **Reset page to 1** when filters/search change
-4. **Add pagination controls** below the table using `Button` components (Previous/Next + page numbers)
-5. **Update footer text** to show range (e.g., "Showing 1-15 of 27")
+Update the `exportCSV` function (line 186-207) to include a "Screenshot URL(s)" column:
 
-### Technical details
-- `totalPages = Math.ceil(filtered.length / pageSize)`
-- `paginatedDrafts = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize)`
-- Render the table with `paginatedDrafts` instead of `filtered`
-- Page number buttons with ellipsis for large page counts
-- Add a page size selector (10, 15, 25, 50)
+- Add "Screenshot URL(s)" to the CSV headers array
+- For each row, use `parseScreenshotUrls` to extract all screenshot URLs and join them with a semicolon separator (so multiple URLs fit in one cell)
+- This ensures every exported record includes the direct links to payment screenshots
+
+### Technical detail
+
+```typescript
+// In headers array, add "Screenshot URL(s)" after "Transaction ID"
+const headers = ["S.No", "Name", "Team", "Event", "Amount", "UTR", "Transaction ID", "Screenshot URL(s)", "Status", "College", "Date"];
+
+// In row mapping, add:
+parseScreenshotUrls(r.payment_screenshot_url).join("; ") || ""
+```
 
 ### File changed
-- `src/pages/admin/AdminDrafts.tsx` only
+- `src/pages/admin/AdminPayments.tsx` only
 
