@@ -68,6 +68,8 @@ const AdminRegistrations = () => {
   const [cityFilter, setCityFilter] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: "single" | "bulk"; id?: string } | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
 
   const fetchData = useCallback(async () => {
     const [{ data: regs }, { data: evts }, { data: cols }] = await Promise.all([
