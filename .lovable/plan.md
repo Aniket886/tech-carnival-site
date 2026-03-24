@@ -1,20 +1,33 @@
 
+Goal: fix the WhatsApp prefilled text so emojis render exactly as requested (no `�`) on `/admin/registrations`.
 
-## Plan: Fix Emoji Encoding in WhatsApp Message
+Implementation plan (single file: `src/pages/admin/AdminRegistrations.tsx`):
 
-### Problem
-The emoji characters in the WhatsApp confirmation message got corrupted during file encoding, showing as `�` replacement characters instead of actual emojis.
+1) Replace current message construction with an exact, deterministic message constant
+- Move message text to a top-level `const WHATSAPP_CONFIRM_MESSAGE`.
+- Match your exact copy, including:
+  - `Hey there! 👋`
+  - `🎉 *Registration Confirmed – Tech Carnival 2K26!* 🎉`
+  - final line `— CoreTeam, Tech Carnival 2K26 🎊` (no space in CoreTeam).
+- Build emoji characters via `String.fromCodePoint(...)` (or `\u{...}` code point escapes) instead of raw pasted emoji/surrogate pairs, to prevent encoding corruption in source control/editors.
 
-### Fix in `src/pages/admin/AdminRegistrations.tsx`
+2) Make URL generation fully robust for UTF-8 + line breaks
+- Update `getWhatsAppConfirmUrl` to:
+  - sanitize phone number to digits only.
+  - normalize to `91` country code once.
+  - build query via `URLSearchParams({ text: WHATSAPP_CONFIRM_MESSAGE })` instead of manual string concatenation.
+- Use `https://api.whatsapp.com/send?phone=...&text=...` for maximum compatibility.
 
-Replace the literal emoji characters with their Unicode escape sequences so they survive any encoding issues. Update line 23 to use escaped Unicode codepoints:
+3) Keep existing UI placement, only change underlying text encoding reliability
+- Keep WhatsApp action beside Phone as-is.
+- Keep Email action behavior unchanged unless explicitly requested otherwise.
+- No layout changes required.
 
-```tsx
-const msg = "Hey there! \ud83d\udc4b\n\n\ud83c\udf89 *Registration Confirmed \u2013 Tech Carnival 2K26!* \ud83c\udf89\n\nWe\u2019re thrilled to have you on board! \ud83d\ude4c Your registration has been successfully confirmed and we can\u2019t wait to see you at the event! \ud83d\ude80\n\n\ud83d\udccc *Event:* Tech Carnival 2K26\n\n\u2705 *Status:* Confirmed\n\nGet ready for an amazing experience filled with exciting events, competitions, and a whole lot of fun! \ud83d\udcbb\u26a1\ud83c\udfc6\n\nStay tuned for further updates and details. \ud83d\udcf2\n\nSee you there! \ud83d\ude04\ud83d\udd25\n\n\u2014 Core Team, Tech Carnival 2K26 \ud83c\udf8a";
-```
+4) Quick verification checklist after implementation
+- Open `/admin/registrations`, expand a row, click WhatsApp icon.
+- Confirm every emoji renders correctly in the prefilled message (no `�`).
+- Confirm line breaks and markdown (`*bold*`) appear as intended.
+- Confirm final signature is exactly `— CoreTeam, Tech Carnival 2K26 🎊`.
 
-This ensures emojis render correctly regardless of file encoding. Single file, single line change.
-
-### Files changed
-- `src/pages/admin/AdminRegistrations.tsx` — line 23
-
+Why this will fix it:
+- The current issue is character-encoding/mojibake in message composition. Using code-point-based emoji creation + `URLSearchParams` UTF-8 encoding removes editor/encoding ambiguity and ensures WhatsApp receives valid text bytes.
