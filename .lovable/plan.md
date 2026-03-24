@@ -1,30 +1,29 @@
 
 
-## Plan: Redesign README.md
+## Plan: Add Manual Registration Count to College Management
 
-Replace the current README with a modern, comprehensive version reflecting the actual codebase state.
+The registration count column currently only reads from the `registrations` table via `college_id`. Since some colleges may have registrations not linked by `college_id` (or tracked externally), you need a manual override field.
 
-### Key Updates
+### Approach
 
-**1. Accurate project description** — Update from "three-day" to "two-day" (matches About component), target audience to "BCA, BSc CS & Diploma CS students"
+**1. Add `manual_registration_count` column to `colleges` table**
+- New nullable integer column, default `null`
+- Migration only — no existing data touched
 
-**2. Complete database schema** — Add all 22 tables from the actual types.ts:
-- `activity_log`, `admin_login_logs`, `admin_sessions`, `admin_settings`, `announcements`, `api_keys`, `bot_contacts`, `bot_faqs`, `college_scores`, `colleges`, `contacts`, `email_sends`, `event_updates`, `events`, `faqs`, `gallery_items`, `guide_videos`, `registration_drafts`, `registrations`, `schedule_events`, `section_cards`, `site_sections`, `sponsors`, `team_members`, `user_roles`, `visibility_log`
+**2. Update `AdminColleges.tsx` — Registration display**
+- In the Registrations column, show: `(auto count from registrations table) + (manual_registration_count ?? 0)`
+- Make the count clickable — clicking opens a small inline input/popover to set the manual count
+- Show tooltip: "Auto: X | Manual: Y" so admin sees breakdown
 
-**3. Updated admin dashboard features** — Add missing pages: Payment Instructions, Drafts, Video Guide, Page Manager (section/card visibility)
+**3. Update `AdminColleges.tsx` — Edit dialog**
+- Add a "Manual Registration Count" number input field in the create/edit college dialog
+- Include it in the save payload
 
-**4. Updated edge functions** — List all 6: `api`, `carnibot`, `create-admin`, `delete-admin`, `kick-session`, `send-email`
+### Files changed
+- **Database migration**: Add `manual_registration_count integer default null` to `colleges`
+- **`src/pages/admin/AdminColleges.tsx`**: Add manual count field to form, display combined count in table, clickable quick-edit for the count
 
-**5. Accurate tech stack** — Update dependency versions from package.json (React 18.3, Framer Motion 12, etc.), add `react-markdown`, `html2pdf.js`, `@dnd-kit/sortable`, `dnd-kit`
-
-**6. Updated project structure** — Reflect actual directory layout including `src/components/home/About.tsx`, `src/hooks/useSiteVisibility.tsx`, `src/hooks/useIsOwner.tsx`, admin drafts, payment instructions pages
-
-**7. Cleaner design** — Modern badges, cleaner tables, remove placeholder screenshot section (or keep with note), remove duplicate/outdated info
-
-**8. Event categories** — Update from "Technical, Cultural, Sports, Fun" to actual: "Technical, Gaming, Cultural"
-
-**9. Live URL** — Update to `tech-carnival-site.lovable.app`
-
-### File Changed
-- `README.md` — Full rewrite
+### Notes
+- Existing 2 real registrations in `registrations` table are untouched
+- The auto-count continues working as before; manual count is additive
 
