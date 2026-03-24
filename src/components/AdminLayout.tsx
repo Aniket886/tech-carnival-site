@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useIsOwner } from "@/hooks/useIsOwner";
 
 export const AdminRefreshContext = createContext(0);
 export const useAdminRefresh = () => useContext(AdminRefreshContext);
@@ -43,6 +44,7 @@ const links = [
 
 const AdminLayout = () => {
   const { user, isAdmin, loading, signOut, showIdleWarning, dismissIdleWarning, idleMinutesLeft } = useAdminAuth();
+  const isOwner = useIsOwner();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [abandonedCount, setAbandonedCount] = useState(0);
@@ -162,7 +164,17 @@ const AdminLayout = () => {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-border">
+        <div className="p-3 border-t border-border space-y-2">
+          <div className="flex items-center gap-2 px-2">
+            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/40 text-[10px]">
+              Admin
+            </Badge>
+            {isOwner && (
+              <Badge className="bg-amber-500/20 text-amber-300 border-amber-400/50 text-[10px] shadow-[0_0_8px_rgba(251,191,36,0.4)] animate-pulse">
+                Owner
+              </Badge>
+            )}
+          </div>
           <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-destructive" onClick={handleLogout}>
             <LogOut size={18} className="mr-2" /> Logout
           </Button>
