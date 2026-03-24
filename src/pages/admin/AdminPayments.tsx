@@ -184,12 +184,13 @@ const AdminPayments = () => {
   };
 
   const exportCSV = () => {
-    const headers = ["S.No", "Name", "Team", "Event", "Amount", "UTR", "Transaction ID", "Status", "College", "Date"];
+    const headers = ["S.No", "Name", "Team", "Event", "Amount", "UTR", "Transaction ID", "Screenshot URL(s)", "Status", "College", "Date"];
     const rows = filtered.map((r, i) => {
       const ev = eventMap.get(r.event_id);
       return [
         i + 1, r.leader_name, r.team_name || "", ev?.name || "",
         r.amount_paid || "0", r.utr_number || "", r.transaction_id || "",
+        parseScreenshotUrls(r.payment_screenshot_url).join("; ") || "",
         r.registration_status, r.college_name, new Date(r.created_at).toLocaleDateString(),
       ];
     });
