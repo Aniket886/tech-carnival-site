@@ -66,7 +66,6 @@ const AdminRegistrations = () => {
   const [eventFilter, setEventFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
-  const [stateFilter, setStateFilter] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: "single" | "bulk"; id?: string } | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
