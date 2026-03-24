@@ -68,6 +68,8 @@ const AdminRegistrations = () => {
   const [cityFilter, setCityFilter] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: "single" | "bulk"; id?: string } | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
 
   const fetchData = useCallback(async () => {
     const [{ data: regs }, { data: evts }, { data: cols }] = await Promise.all([
@@ -149,6 +151,26 @@ const AdminRegistrations = () => {
     }
     return data;
   }, [registrations, search, statusFilter, eventFilter, categoryFilter, cityFilter, events, getCollegeInfo]);
+
+  // Reset page when filters change
+  useEffect(() => { setCurrentPage(1); }, [search, statusFilter, eventFilter, categoryFilter, cityFilter, pageSize]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginatedRegs = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const getPageNumbers = () => {
+    const pages: (number | "...")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   /* ─── status update ─── */
   const updateStatus = async (id: string, status: string) => {
@@ -347,15 +369,16 @@ const AdminRegistrations = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((r, idx) => {
+                {paginatedRegs.map((r, idx) => {
                   const ev = eventMap.get(r.event_id);
                   const sc = statusConfig[r.registration_status] || statusConfig.pending;
                   const isExpanded = expandedId === r.id;
                   const members = getMembers(r.members);
+                  const globalIdx = (currentPage - 1) * pageSize + idx;
                   return (
                     <>
                       <TableRow key={r.id} className="border-border cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : r.id)}>
-                        <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{globalIdx + 1}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1.5">
                             <span className="text-sm font-medium text-foreground">{r.team_name || r.leader_name}</span>
@@ -452,6 +475,51 @@ const AdminRegistrations = () => {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>
+            Showing {filtered.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, filtered.length)} of {filtered.length}
+          </span>
+          <Select value={String(pageSize)} onValueChange={v => setPageSize(Number(v))}>
+            <SelectTrigger className="w-[70px] h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {[10, 15, 25, 50].map(n => (
+                <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span>per page</span>
+        </div>
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1">
+            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>
+              Previous
+            </Button>
+            {getPageNumbers().map((p, i) =>
+              p === "..." ? (
+                <span key={`e${i}`} className="px-2 text-muted-foreground">…</span>
+              ) : (
+                <Button
+                  key={p}
+                  variant={currentPage === p ? "secondary" : "outline"}
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setCurrentPage(p as number)}
+                >
+                  {p}
+                </Button>
+              )
+            )}
+            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+              Next
+            </Button>
+          </div>
+        )}
+      </div>
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
