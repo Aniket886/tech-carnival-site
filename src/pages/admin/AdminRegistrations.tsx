@@ -27,6 +27,7 @@ interface Registration {
   leader_email: string;
   leader_phone: string;
   college_name: string;
+  college_id: string | null;
   team_name: string | null;
   event_id: string;
   registration_status: string;
@@ -38,6 +39,8 @@ interface Registration {
   created_at: string;
   members: any;
 }
+
+interface CollegeInfo { id: string; name: string; city: string | null; state: string | null; }
 
 interface EventInfo { id: string; name: string; icon: string | null; category: string; }
 
