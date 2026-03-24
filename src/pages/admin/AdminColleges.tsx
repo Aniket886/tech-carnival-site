@@ -347,9 +347,40 @@ const AdminColleges = () => {
                     </button>
                   </TableCell>
                   <TableCell>
-                    <span className={`text-sm font-semibold ${(regCounts.get(c.id) || 0) > 0 ? "text-primary" : "text-muted-foreground"}`}>
-                      {regCounts.get(c.id) || 0}
-                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button className="cursor-pointer px-2 py-1 rounded-md hover:bg-muted/50 transition-colors">
+                                <span className={`text-sm font-semibold ${((regCounts.get(c.id) || 0) + (c.manual_registration_count || 0)) > 0 ? "text-primary" : "text-muted-foreground"}`}>
+                                  {(regCounts.get(c.id) || 0) + (c.manual_registration_count || 0)}
+                                </span>
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 p-3">
+                              <Label className="text-xs text-muted-foreground">Manual Count</Label>
+                              <Input
+                                type="number"
+                                min={0}
+                                className="mt-1 bg-card border-border"
+                                defaultValue={c.manual_registration_count ?? ""}
+                                onBlur={async (e) => {
+                                  const val = e.target.value.trim() ? parseInt(e.target.value, 10) : null;
+                                  const { error } = await supabase.from("colleges").update({ manual_registration_count: val } as any).eq("id", c.id);
+                                  if (error) { toast.error("Failed to update"); return; }
+                                  toast.success("Count updated");
+                                  fetchData();
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">Auto: {regCounts.get(c.id) || 0} | Manual: {c.manual_registration_count || 0}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </TableCell>
                   <TableCell>
                     <Switch checked={c.is_active} onCheckedChange={() => toggleActive(c)} />
