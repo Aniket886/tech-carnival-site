@@ -136,6 +136,18 @@ const AdminRegistrations = () => {
       const catEventIds = new Set(events.filter(e => e.category === categoryFilter).map(e => e.id));
       data = data.filter(r => catEventIds.has(r.event_id));
     }
+    if (cityFilter !== "all") {
+      data = data.filter(r => {
+        const col = getCollegeInfo(r);
+        return col?.city === cityFilter;
+      });
+    }
+    if (stateFilter !== "all") {
+      data = data.filter(r => {
+        const col = getCollegeInfo(r);
+        return col?.state === stateFilter;
+      });
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       data = data.filter(r =>
@@ -148,7 +160,7 @@ const AdminRegistrations = () => {
       );
     }
     return data;
-  }, [registrations, search, statusFilter, eventFilter, categoryFilter, events]);
+  }, [registrations, search, statusFilter, eventFilter, categoryFilter, cityFilter, stateFilter, events, getCollegeInfo]);
 
   /* ─── status update ─── */
   const updateStatus = async (id: string, status: string) => {
