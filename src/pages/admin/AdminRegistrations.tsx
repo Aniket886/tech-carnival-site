@@ -27,6 +27,7 @@ interface Registration {
   leader_email: string;
   leader_phone: string;
   college_name: string;
+  college_id: string | null;
   team_name: string | null;
   event_id: string;
   registration_status: string;
@@ -38,6 +39,8 @@ interface Registration {
   created_at: string;
   members: any;
 }
+
+interface CollegeInfo { id: string; name: string; city: string | null; state: string | null; }
 
 interface EventInfo { id: string; name: string; icon: string | null; category: string; }
 
@@ -55,6 +58,7 @@ const categoryConfig: Record<string, string> = {
 const AdminRegistrations = () => {
   const isOwner = useIsOwner();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [colleges, setColleges] = useState<CollegeInfo[]>([]);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -65,12 +69,14 @@ const AdminRegistrations = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
-    const [{ data: regs }, { data: evts }] = await Promise.all([
+    const [{ data: regs }, { data: evts }, { data: cols }] = await Promise.all([
       supabase.from("registrations").select("*").order("created_at", { ascending: false }),
       supabase.from("events").select("id, name, icon, category"),
+      supabase.from("colleges").select("id, name, city, state"),
     ]);
     setRegistrations(regs || []);
     setEvents(evts || []);
+    setColleges(cols || []);
     setLoading(false);
   }, []);
 
@@ -90,6 +96,23 @@ const AdminRegistrations = () => {
     const set = new Set(events.map(e => e.category));
     return Array.from(set).sort();
   }, [events]);
+
+  const collegeIdMap = useMemo(() => {
+    const m = new Map<string, CollegeInfo>();
+    colleges.forEach(c => m.set(c.id, c));
+    return m;
+  }, [colleges]);
+
+  const collegeNameMap = useMemo(() => {
+    const m = new Map<string, CollegeInfo>();
+    colleges.forEach(c => m.set(c.name.toLowerCase(), c));
+    return m;
+  }, [colleges]);
+
+  const getCollegeInfo = useCallback((r: Registration) => {
+    if (r.college_id) return collegeIdMap.get(r.college_id);
+    return collegeNameMap.get(r.college_name.toLowerCase());
+  }, [collegeIdMap, collegeNameMap]);
 
   /* ─── filtering ─── */
   const filtered = useMemo(() => {
@@ -170,18 +193,28 @@ const AdminRegistrations = () => {
 
   /* ─── CSV export ─── */
   const exportCSV = (andDelete = false) => {
+    const maxMembers = Math.max(...filtered.map(r => Array.isArray(r.members) ? r.members.length : 0), 0);
+    const memberHeaders = Array.from({ length: maxMembers }, (_, i) => [
+      `Member ${i + 1} Name`, `Member ${i + 1} Email`, `Member ${i + 1} Phone`
+    ]).flat();
     const headers = [
-      "S.No", "Leader Name", "Email", "Phone", "College", "Team Name", "Event", "Category",
-      "Status", "Amount Paid", "UTR", "Transaction ID", "Source", "Semester", "Members", "Date",
+      "S.No", "Leader Name", "Email", "Phone", "College", "City", "State", "Team Name", "Event", "Category",
+      "Status", "Amount Paid", "UTR", "Transaction ID", "Source", "Semester", ...memberHeaders, "Date",
     ];
     const rows = filtered.map((r, i) => {
       const ev = eventMap.get(r.event_id);
-      const memberCount = Array.isArray(r.members) ? r.members.length : 0;
+      const col = getCollegeInfo(r);
+      const members = Array.isArray(r.members) ? r.members : [];
+      const memberCells = Array.from({ length: maxMembers }, (_, j) => {
+        const m = members[j];
+        return [m?.name || "", m?.email || "", m?.phone || ""];
+      }).flat();
       return [
         i + 1, r.leader_name, r.leader_email, r.leader_phone, r.college_name,
+        col?.city || "", col?.state || "",
         r.team_name || "", ev?.name || "", ev?.category || "",
         r.registration_status, r.amount_paid || "", r.utr_number || "",
-        r.transaction_id || "", r.source, r.semester || "", memberCount,
+        r.transaction_id || "", r.source, r.semester || "", ...memberCells,
         new Date(r.created_at).toLocaleDateString(),
       ];
     });
@@ -338,6 +371,10 @@ const AdminRegistrations = () => {
                               <p><span className="text-muted-foreground">Email:</span> <span className="font-medium text-foreground">{r.leader_email}</span></p>
                               <p><span className="text-muted-foreground">Semester:</span> <span className="font-medium text-foreground">{r.semester || "—"}</span></p>
                               <p><span className="text-muted-foreground">College:</span> <span className="font-medium text-foreground">{r.college_name || "—"}</span></p>
+                              {(() => { const col = getCollegeInfo(r); return <>
+                                <p><span className="text-muted-foreground">City:</span> <span className="font-medium text-foreground">{col?.city || "—"}</span></p>
+                                <p><span className="text-muted-foreground">State:</span> <span className="font-medium text-foreground">{col?.state || "—"}</span></p>
+                              </>; })()}
                               <p><span className="text-muted-foreground">Event:</span> <span className="font-medium text-foreground">{ev?.icon || ""} {ev?.name || "—"}</span></p>
                               <p><span className="text-muted-foreground">Category:</span> <span className="font-medium text-foreground capitalize">{ev?.category || "—"}</span></p>
                               <p><span className="text-muted-foreground">Date:</span> <span className="font-medium text-foreground">{new Date(r.created_at).toLocaleString("en-IN")}</span></p>
