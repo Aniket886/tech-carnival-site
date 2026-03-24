@@ -55,6 +55,7 @@ interface FormData {
   logo_url: string;
   affiliated_university: string;
   website_url: string;
+  manual_registration_count: string;
 }
 
 const emptyForm: FormData = {
