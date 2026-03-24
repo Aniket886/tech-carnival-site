@@ -1,0 +1,1 @@
+ALTER TABLE public.colleges ADD COLUMN manual_registration_count integer DEFAULT NULL;
