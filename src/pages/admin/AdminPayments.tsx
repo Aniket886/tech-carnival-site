@@ -71,6 +71,8 @@ const AdminPayments = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dupsOnly, setDupsOnly] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
   const [lightboxUrls, setLightboxUrls] = useState<string[]>([]);
   const [lightboxIdx, setLightboxIdx] = useState(0);
 
@@ -132,6 +134,26 @@ const AdminPayments = () => {
     }
     return data;
   }, [registrations, search, statusFilter, dupsOnly, duplicateIds]);
+
+  // Reset page when filters change
+  useEffect(() => { setCurrentPage(1); }, [search, statusFilter, dupsOnly, pageSize]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginatedData = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const getPageNumbers = () => {
+    const pages: (number | "...")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   /* ─── stats ─── */
   const stats = useMemo(() => {
@@ -299,13 +321,14 @@ const AdminPayments = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((r, idx) => {
+                {paginatedData.map((r, idx) => {
+                  const globalIdx = (currentPage - 1) * pageSize + idx;
                   const ev = eventMap.get(r.event_id);
                   const sc = statusConfig[r.registration_status] || statusConfig.pending;
                   const isDup = duplicateIds.has(r.id);
                   return (
                     <TableRow key={r.id} className="border-border">
-                      <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{globalIdx + 1}</TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
@@ -409,7 +432,53 @@ const AdminPayments = () => {
         )}
       </div>
 
-      {/* Reset Confirmation */}
+      {/* Pagination */}
+      {filtered.length > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>
+              Showing {(currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, filtered.length)} of {filtered.length} payments
+            </span>
+            <Select value={String(pageSize)} onValueChange={v => setPageSize(Number(v))}>
+              <SelectTrigger className="w-[70px] h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[10, 15, 25, 50].map(n => (
+                  <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span>per page</span>
+          </div>
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>
+                Previous
+              </Button>
+              {getPageNumbers().map((p, i) =>
+                p === "..." ? (
+                  <span key={`e${i}`} className="px-2 text-muted-foreground">…</span>
+                ) : (
+                  <Button
+                    key={p}
+                    variant={currentPage === p ? "secondary" : "outline"}
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    onClick={() => setCurrentPage(p as number)}
+                  >
+                    {p}
+                  </Button>
+                )
+              )}
+              <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                Next
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
       <AlertDialog open={resetConfirm} onOpenChange={setResetConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
