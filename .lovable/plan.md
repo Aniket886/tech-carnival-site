@@ -1,46 +1,22 @@
 
 
-## Plan: Add Download Button to Lightbox View
+## Plan: Change Desktop Pagination to 10 Images Per Page
 
 ### What
-Add a download button in the lightbox (fullscreen image viewer) so users can download the currently viewed image. The button will sit next to the close (X) button in the top-right area.
+Update the `ITEMS_PER_PAGE` constant from 12 to 10 so the desktop masonry grid shows 10 images per page, creating a better collage layout.
 
-### Change to `src/components/home/GallerySection.tsx`
+### Change in `src/components/home/GallerySection.tsx`
 
-In the `SwipeableLightbox` component, add a download button next to the close button (around line 140-145):
-
-- Track `currentIndex` via Embla's `select` event so we know which image is active
-- Add a `Download` button positioned at `top-4 right-16` (left of the X button)
-- On click, fetch the current image as blob and trigger download
-
+**Line 16** — change the constant:
 ```tsx
-// Add state + effect inside SwipeableLightbox
-const [currentIndex, setCurrentIndex] = useState(selectedIndex);
-useEffect(() => {
-  if (!emblaApi) return;
-  const onSelect = () => setCurrentIndex(emblaApi.selectedScrollSnap());
-  emblaApi.on("select", onSelect);
-  return () => { emblaApi.off("select", onSelect); };
-}, [emblaApi]);
-
-// Download button next to close button
-<button
-  onClick={async () => {
-    const item = items[currentIndex];
-    const res = await fetch(item.image_url);
-    const blob = await res.blob();
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = (item.caption || "gallery-image") + "." + (item.image_url.split(".").pop() || "jpg");
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }}
-  className="absolute top-4 right-16 p-3 rounded-full bg-background/80 border border-border text-muted-foreground hover:text-foreground transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center"
->
-  <Download size={20} />
-</button>
+// From:
+const ITEMS_PER_PAGE = 12;
+// To:
+const ITEMS_PER_PAGE = 10;
 ```
 
+That's it — single line change. The existing pagination logic, masonry grid (4 columns on lg, 3 on md, 2 on sm), and page controls all work automatically with the new count. Mobile carousel remains unaffected as it uses all filtered items.
+
 ### Files changed
-- `src/components/home/GallerySection.tsx` — add download button + index tracking in SwipeableLightbox
+- `src/components/home/GallerySection.tsx` — line 16
 
