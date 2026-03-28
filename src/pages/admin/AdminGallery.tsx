@@ -157,6 +157,24 @@ const AdminGallery = () => {
         </div>
       </div>
 
+      {/* Drop Zone */}
+      <div
+        ref={dropRef}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onClick={() => fileRef.current?.click()}
+        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+          isDragging
+            ? "border-primary bg-primary/10 text-primary"
+            : "border-border hover:border-primary/50 text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        <Upload size={28} className="mx-auto mb-2" />
+        <p className="text-sm font-medium">{uploading ? "Uploading…" : "Drag & drop files here or click to browse"}</p>
+        <p className="text-xs mt-1">Supports all image formats including HEIC</p>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="animate-spin text-muted-foreground" /></div>
       ) : filtered.length === 0 ? (
