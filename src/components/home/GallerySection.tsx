@@ -283,7 +283,7 @@ const GallerySection = () => {
           <>
             <motion.div
               layout
-              className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3"
+              className="columns-2 md:columns-3 lg:columns-3 gap-4 space-y-4"
             >
               <AnimatePresence mode="popLayout">
                 {paginated.map((item, i) => (
