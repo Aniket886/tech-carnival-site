@@ -56,11 +56,31 @@ const AdminGallery = () => {
   const fetchItems = async () => {
     const q = supabase.from("gallery_items").select("*").order("display_order").order("created_at", { ascending: false });
     const { data } = await q;
-    if (data) setItems(data as unknown as GalleryItem[]);
+    if (data) {
+      setItems(data as unknown as GalleryItem[]);
+      // Discover categories from existing items not in defaults
+      const extra = (data as unknown as GalleryItem[])
+        .map(i => i.category)
+        .filter(c => !DEFAULT_CATEGORIES.includes(c));
+      setCustomCategories(prev => [...new Set([...prev, ...extra])]);
+    }
     setLoading(false);
   };
 
   useEffect(() => { fetchItems(); }, [refreshKey]);
+
+  const handleAddCategory = () => {
+    const name = newCatName.trim().toLowerCase();
+    if (!name) return;
+    if (allCategories.includes(name)) {
+      toast({ title: "Category already exists", variant: "destructive" });
+      return;
+    }
+    setCustomCategories(prev => [...prev, name]);
+    setNewCatName("");
+    setNewCatOpen(false);
+    toast({ title: `Category "${name}" added` });
+  };
 
   const processFiles = async (files: FileList | File[]) => {
     if (!files.length) return;
