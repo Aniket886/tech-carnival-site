@@ -1,46 +1,46 @@
 
 
-## Plan: Compress Large Images + Add Download Button
+## Plan: Add Download Button to Lightbox View
 
-### 1. Auto-compress images over 4MB before upload
+### What
+Add a download button in the lightbox (fullscreen image viewer) so users can download the currently viewed image. The button will sit next to the close (X) button in the top-right area.
 
-**File: `src/pages/admin/AdminGallery.tsx`** — in `processFiles`, after the HEIC conversion block and before the storage upload:
+### Change to `src/components/home/GallerySection.tsx`
 
-- Check if `uploadFile.size > 4 * 1024 * 1024` (4MB)
-- If so, use `createImageBitmap` + Canvas to re-encode as JPEG at 0.92 quality (high quality, visually identical)
-- If still over 4MB, reduce quality to 0.85
-- Also store the **original file URL** in a new `original_url` column so downloads serve the full-quality original
+In the `SwipeableLightbox` component, add a download button next to the close button (around line 140-145):
 
-**However**, storing originals separately doubles storage — simpler approach: compress via Canvas at high quality (0.92) which is visually indistinguishable, and serve the same file for both display and download. The "same size when uploaded" requirement means the download should give the stored file as-is (which is the compressed version, visually identical).
-
-**Simplified approach** (no schema change needed):
-- Before upload, if file > 4MB, compress via Canvas to JPEG at quality 0.92
-- If still > 4MB, try 0.85
-- Upload the result — this is what gets displayed AND downloaded
-
-### 2. Add download button on hover
-
-**File: `src/pages/admin/AdminGallery.tsx`** — in the hover overlay (line 270-277):
-
-- Import `Download` from lucide-react
-- Add a download button alongside Edit and Delete in the hover overlay
-- The button fetches the image, creates a blob URL, and triggers a download with the original filename
+- Track `currentIndex` via Embla's `select` event so we know which image is active
+- Add a `Download` button positioned at `top-4 right-16` (left of the X button)
+- On click, fetch the current image as blob and trigger download
 
 ```tsx
-<Button variant="ghost" size="icon" onClick={async (e) => {
-  e.stopPropagation();
-  const res = await fetch(item.image_url);
-  const blob = await res.blob();
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = item.caption || "gallery-image";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}}>
-  <Download size={16} />
-</Button>
+// Add state + effect inside SwipeableLightbox
+const [currentIndex, setCurrentIndex] = useState(selectedIndex);
+useEffect(() => {
+  if (!emblaApi) return;
+  const onSelect = () => setCurrentIndex(emblaApi.selectedScrollSnap());
+  emblaApi.on("select", onSelect);
+  return () => { emblaApi.off("select", onSelect); };
+}, [emblaApi]);
+
+// Download button next to close button
+<button
+  onClick={async () => {
+    const item = items[currentIndex];
+    const res = await fetch(item.image_url);
+    const blob = await res.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (item.caption || "gallery-image") + "." + (item.image_url.split(".").pop() || "jpg");
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }}
+  className="absolute top-4 right-16 p-3 rounded-full bg-background/80 border border-border text-muted-foreground hover:text-foreground transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center"
+>
+  <Download size={20} />
+</button>
 ```
 
 ### Files changed
-- `src/pages/admin/AdminGallery.tsx` — compression logic in `processFiles` + download button in card overlay
+- `src/components/home/GallerySection.tsx` — add download button + index tracking in SwipeableLightbox
 
