@@ -102,6 +102,14 @@ const SwipeableLightbox = ({
     loop: true,
     startIndex: selectedIndex,
   });
+  const [currentIndex, setCurrentIndex] = useState(selectedIndex);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setCurrentIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    return () => { emblaApi.off("select", onSelect); };
+  }, [emblaApi]);
 
   return (
     <motion.div
