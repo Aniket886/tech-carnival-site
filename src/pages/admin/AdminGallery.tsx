@@ -42,7 +42,9 @@ const AdminGallery = () => {
   const [filterCat, setFilterCat] = useState("all");
   const [editCaption, setEditCaption] = useState("");
   const [editCategory, setEditCategory] = useState("general");
+  const [isDragging, setIsDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
 
   const fetchItems = async () => {
     const q = supabase.from("gallery_items").select("*").order("display_order").order("created_at", { ascending: false });
@@ -53,9 +55,8 @@ const AdminGallery = () => {
 
   useEffect(() => { fetchItems(); }, [refreshKey]);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files?.length) return;
+  const processFiles = async (files: FileList | File[]) => {
+    if (!files.length) return;
     setUploading(true);
     let count = 0;
     for (const file of Array.from(files)) {
@@ -85,6 +86,19 @@ const AdminGallery = () => {
     if (count) { toast({ title: `${count} image(s) uploaded` }); fetchItems(); }
     if (fileRef.current) fileRef.current.value = "";
   };
+
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) processFiles(e.target.files);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); };
 
   const handleEditSave = async () => {
     if (!editItem) return;
@@ -141,6 +155,24 @@ const AdminGallery = () => {
           </Button>
           <input ref={fileRef} type="file" accept="*/*" multiple className="hidden" onChange={handleUpload} />
         </div>
+      </div>
+
+      {/* Drop Zone */}
+      <div
+        ref={dropRef}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onClick={() => fileRef.current?.click()}
+        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+          isDragging
+            ? "border-primary bg-primary/10 text-primary"
+            : "border-border hover:border-primary/50 text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        <Upload size={28} className="mx-auto mb-2" />
+        <p className="text-sm font-medium">{uploading ? "Uploading…" : "Drag & drop files here or click to browse"}</p>
+        <p className="text-xs mt-1">Supports all image formats including HEIC</p>
       </div>
 
       {loading ? (
