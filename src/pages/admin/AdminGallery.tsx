@@ -299,6 +299,20 @@ const AdminGallery = () => {
                   <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteId(item.id)}>
                     <Trash2 size={16} />
                   </Button>
+                  <Button variant="ghost" size="icon" onClick={async (e) => {
+                    e.stopPropagation();
+                    try {
+                      const res = await fetch(item.image_url);
+                      const blob = await res.blob();
+                      const a = document.createElement("a");
+                      a.href = URL.createObjectURL(blob);
+                      a.download = (item.caption || "gallery-image") + "." + (item.image_url.split(".").pop() || "jpg");
+                      a.click();
+                      URL.revokeObjectURL(a.href);
+                    } catch { toast({ title: "Download failed", variant: "destructive" }); }
+                  }}>
+                    <Download size={16} />
+                  </Button>
                 </div>
               </div>
               <CardContent className="p-3">
