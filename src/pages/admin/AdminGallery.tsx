@@ -90,14 +90,35 @@ const AdminGallery = () => {
       let uploadFile: File | Blob = file;
       let finalExt = (file.name.split(".").pop() || "jpg").toLowerCase();
 
-      if (["heic", "heif"].includes(finalExt)) {
+      // Detect HEIC by extension OR by mime type (iPhone often sends image/heic)
+      const isHeic = ["heic", "heif"].includes(finalExt) || 
+        file.type.toLowerCase().includes("heic") || 
+        file.type.toLowerCase().includes("heif");
+
+      if (isHeic) {
         try {
           const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.85 });
           uploadFile = converted as Blob;
           finalExt = "jpg";
-        } catch (convErr: any) {
-          toast({ title: "Conversion failed", description: convErr?.message || "Could not convert HEIC", variant: "destructive" });
-          continue;
+        } catch {
+          // Fallback: try browser-native decoding via createImageBitmap + Canvas
+          try {
+            const bitmap = await createImageBitmap(file);
+            const canvas = document.createElement("canvas");
+            canvas.width = bitmap.width;
+            canvas.height = bitmap.height;
+            const ctx = canvas.getContext("2d")!;
+            ctx.drawImage(bitmap, 0, 0);
+            bitmap.close();
+            const jpegBlob = await new Promise<Blob>((resolve, reject) => {
+              canvas.toBlob(b => b ? resolve(b) : reject(new Error("Canvas export failed")), "image/jpeg", 0.85);
+            });
+            uploadFile = jpegBlob;
+            finalExt = "jpg";
+          } catch (fallbackErr: any) {
+            toast({ title: "HEIC conversion failed", description: "This image format is not supported by your browser. Try converting to JPG first.", variant: "destructive" });
+            continue;
+          }
         }
       }
 
