@@ -124,6 +124,7 @@ const SwipeableLightbox = ({
                     src={item.image_url}
                     alt={item.caption || "Gallery image"}
                     className="max-w-full max-h-[80vh] object-contain rounded-xl border border-border"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
                   {item.caption && (
                     <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/80 to-transparent p-4 rounded-b-xl">
