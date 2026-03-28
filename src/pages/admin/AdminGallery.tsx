@@ -17,7 +17,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import { ImageIcon, Plus, Pencil, Trash2, Loader2, Upload, ImageOff } from "lucide-react";
+import { ImageIcon, Plus, Pencil, Trash2, Loader2, Upload, ImageOff, Download } from "lucide-react";
 import heic2any from "heic2any";
 
 interface GalleryItem {
@@ -119,6 +119,31 @@ const AdminGallery = () => {
             toast({ title: "HEIC conversion failed", description: "This image format is not supported by your browser. Try converting to JPG first.", variant: "destructive" });
             continue;
           }
+        }
+      }
+
+      // Auto-compress if over 4MB
+      if (uploadFile.size > 4 * 1024 * 1024) {
+        try {
+          const bitmap = await createImageBitmap(uploadFile instanceof Blob ? uploadFile : new Blob([uploadFile]));
+          const canvas = document.createElement("canvas");
+          canvas.width = bitmap.width;
+          canvas.height = bitmap.height;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(bitmap, 0, 0);
+          bitmap.close();
+          let compressed = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob(b => b ? resolve(b) : reject(new Error("Compress failed")), "image/jpeg", 0.92);
+          });
+          if (compressed.size > 4 * 1024 * 1024) {
+            compressed = await new Promise<Blob>((resolve, reject) => {
+              canvas.toBlob(b => b ? resolve(b) : reject(new Error("Compress failed")), "image/jpeg", 0.85);
+            });
+          }
+          uploadFile = compressed;
+          finalExt = "jpg";
+        } catch {
+          // If compression fails, upload as-is
         }
       }
 
@@ -273,6 +298,20 @@ const AdminGallery = () => {
                   </Button>
                   <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteId(item.id)}>
                     <Trash2 size={16} />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={async (e) => {
+                    e.stopPropagation();
+                    try {
+                      const res = await fetch(item.image_url);
+                      const blob = await res.blob();
+                      const a = document.createElement("a");
+                      a.href = URL.createObjectURL(blob);
+                      a.download = (item.caption || "gallery-image") + "." + (item.image_url.split(".").pop() || "jpg");
+                      a.click();
+                      URL.revokeObjectURL(a.href);
+                    } catch { toast({ title: "Download failed", variant: "destructive" }); }
+                  }}>
+                    <Download size={16} />
                   </Button>
                 </div>
               </div>
