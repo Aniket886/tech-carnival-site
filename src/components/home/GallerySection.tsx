@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ImageIcon, X, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useEmblaCarousel from "embla-carousel-react";
@@ -280,6 +280,25 @@ const GallerySection = () => {
                         loading="lazy"
                         onError={(e) => { (e.currentTarget.closest('.break-inside-avoid') as HTMLElement)?.style.setProperty('display', 'none'); }}
                       />
+                      {/* Download button - bottom right on hover */}
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const res = await fetch(item.image_url);
+                            const blob = await res.blob();
+                            const a = document.createElement("a");
+                            a.href = URL.createObjectURL(blob);
+                            a.download = (item.caption || "gallery-image") + "." + (item.image_url.split(".").pop() || "jpg");
+                            a.click();
+                            URL.revokeObjectURL(a.href);
+                          } catch {}
+                        }}
+                        className="absolute bottom-2 right-2 p-2 rounded-lg bg-background/80 border border-border/50 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm hover:bg-background/90 z-10"
+                        title="Download"
+                      >
+                        <Download size={14} />
+                      </button>
                       {item.caption && (
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-3 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           <p className="text-xs text-foreground font-medium">{item.caption}</p>
