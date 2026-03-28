@@ -277,6 +277,7 @@ const GallerySection = () => {
                         alt={item.caption || "Gallery image"}
                         className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
+                        onError={(e) => { (e.currentTarget.closest('.break-inside-avoid') as HTMLElement)?.style.setProperty('display', 'none'); }}
                       />
                       {item.caption && (
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-3 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
