@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -30,7 +30,7 @@ interface GalleryItem {
   created_at: string;
 }
 
-const CATEGORIES = ["general", "technical", "cultural", "sports", "backstage"];
+const DEFAULT_CATEGORIES = ["general", "technical", "cultural", "sports", "backstage"];
 
 const AdminGallery = () => {
   const refreshKey = useAdminRefresh();
@@ -43,17 +43,44 @@ const AdminGallery = () => {
   const [editCaption, setEditCaption] = useState("");
   const [editCategory, setEditCategory] = useState("general");
   const [isDragging, setIsDragging] = useState(false);
+  const [customCategories, setCustomCategories] = useState<string[]>([]);
+  const [newCatOpen, setNewCatOpen] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
+
+  const allCategories = [...new Set([...DEFAULT_CATEGORIES, ...customCategories])];
+
+
 
   const fetchItems = async () => {
     const q = supabase.from("gallery_items").select("*").order("display_order").order("created_at", { ascending: false });
     const { data } = await q;
-    if (data) setItems(data as unknown as GalleryItem[]);
+    if (data) {
+      setItems(data as unknown as GalleryItem[]);
+      // Discover categories from existing items not in defaults
+      const extra = (data as unknown as GalleryItem[])
+        .map(i => i.category)
+        .filter(c => !DEFAULT_CATEGORIES.includes(c));
+      setCustomCategories(prev => [...new Set([...prev, ...extra])]);
+    }
     setLoading(false);
   };
 
   useEffect(() => { fetchItems(); }, [refreshKey]);
+
+  const handleAddCategory = () => {
+    const name = newCatName.trim().toLowerCase();
+    if (!name) return;
+    if (allCategories.includes(name)) {
+      toast({ title: "Category already exists", variant: "destructive" });
+      return;
+    }
+    setCustomCategories(prev => [...prev, name]);
+    setNewCatName("");
+    setNewCatOpen(false);
+    toast({ title: `Category "${name}" added` });
+  };
 
   const processFiles = async (files: FileList | File[]) => {
     if (!files.length) return;
@@ -146,9 +173,31 @@ const AdminGallery = () => {
             <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              {CATEGORIES.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
+              {allCategories.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
             </SelectContent>
           </Select>
+          <Dialog open={newCatOpen} onOpenChange={setNewCatOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1">
+                <Plus size={14} /> Category
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-sm">
+              <DialogHeader><DialogTitle>Add New Category</DialogTitle></DialogHeader>
+              <div className="space-y-3">
+                <Input
+                  placeholder="Category name"
+                  value={newCatName}
+                  onChange={e => setNewCatName(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleAddCategory()}
+                />
+              </div>
+              <DialogFooter>
+                <Button variant="ghost" onClick={() => setNewCatOpen(false)}>Cancel</Button>
+                <Button onClick={handleAddCategory} disabled={!newCatName.trim()}>Add</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button onClick={() => fileRef.current?.click()} disabled={uploading} size="sm">
             {uploading ? <Loader2 size={16} className="mr-1 animate-spin" /> : <Upload size={16} className="mr-1" />}
             Upload
@@ -229,7 +278,7 @@ const AdminGallery = () => {
               <Select value={editCategory} onValueChange={setEditCategory}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
+                  {allCategories.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
