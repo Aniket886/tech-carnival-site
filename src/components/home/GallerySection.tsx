@@ -13,7 +13,7 @@ interface GalleryItem {
   category: string;
 }
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 8;
 
 /* ── Mobile Carousel ── */
 const MobileCarousel = ({
