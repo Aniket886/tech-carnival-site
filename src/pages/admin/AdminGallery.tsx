@@ -122,6 +122,31 @@ const AdminGallery = () => {
         }
       }
 
+      // Auto-compress if over 4MB
+      if (uploadFile.size > 4 * 1024 * 1024) {
+        try {
+          const bitmap = await createImageBitmap(uploadFile instanceof Blob ? uploadFile : new Blob([uploadFile]));
+          const canvas = document.createElement("canvas");
+          canvas.width = bitmap.width;
+          canvas.height = bitmap.height;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(bitmap, 0, 0);
+          bitmap.close();
+          let compressed = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob(b => b ? resolve(b) : reject(new Error("Compress failed")), "image/jpeg", 0.92);
+          });
+          if (compressed.size > 4 * 1024 * 1024) {
+            compressed = await new Promise<Blob>((resolve, reject) => {
+              canvas.toBlob(b => b ? resolve(b) : reject(new Error("Compress failed")), "image/jpeg", 0.85);
+            });
+          }
+          uploadFile = compressed;
+          finalExt = "jpg";
+        } catch {
+          // If compression fails, upload as-is
+        }
+      }
+
       const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${finalExt}`;
       const contentType = finalExt === "jpg" ? "image/jpeg" : file.type;
       const { error: uploadErr } = await supabase.storage.from("gallery-images").upload(path, uploadFile, { contentType });
