@@ -55,9 +55,8 @@ const AdminGallery = () => {
 
   useEffect(() => { fetchItems(); }, [refreshKey]);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files?.length) return;
+  const processFiles = async (files: FileList | File[]) => {
+    if (!files.length) return;
     setUploading(true);
     let count = 0;
     for (const file of Array.from(files)) {
