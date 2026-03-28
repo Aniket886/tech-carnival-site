@@ -220,6 +220,11 @@ const GallerySection = () => {
 
   if (!isSectionVisible("gallery") || !items.length) return null;
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const categories = ["all", ...Array.from(new Set(items.map(i => i.category)))];
   const filtered = filter === "all" ? items : items.filter(i => i.category === filter);
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
