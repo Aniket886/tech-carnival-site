@@ -17,7 +17,8 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import { ImageIcon, Plus, Pencil, Trash2, Loader2, Upload } from "lucide-react";
+import { ImageIcon, Plus, Pencil, Trash2, Loader2, Upload, ImageOff } from "lucide-react";
+import heic2any from "heic2any";
 
 interface GalleryItem {
   id: string;
