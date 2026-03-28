@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ImageIcon, X, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useSiteVisibility } from "@/hooks/useSiteVisibility";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useEmblaCarousel from "embla-carousel-react";
