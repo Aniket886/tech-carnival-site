@@ -42,7 +42,9 @@ const AdminGallery = () => {
   const [filterCat, setFilterCat] = useState("all");
   const [editCaption, setEditCaption] = useState("");
   const [editCategory, setEditCategory] = useState("general");
+  const [isDragging, setIsDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
 
   const fetchItems = async () => {
     const q = supabase.from("gallery_items").select("*").order("display_order").order("created_at", { ascending: false });
