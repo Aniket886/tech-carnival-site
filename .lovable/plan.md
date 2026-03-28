@@ -1,22 +1,28 @@
 
 
-## Plan: Change Desktop Pagination to 10 Images Per Page
+## Plan: Fix Pagination Scrolling to Wrong Section
 
-### What
-Update the `ITEMS_PER_PAGE` constant from 12 to 10 so the desktop masonry grid shows 10 images per page, creating a better collage layout.
+### Problem
+Clicking pagination buttons in the gallery causes the page to jump to the "Get in Touch" section. This happens because when the page state changes, the masonry grid re-renders (with AnimatePresence exit/enter animations), temporarily collapsing in height — the browser then adjusts scroll position, landing on the contact section below.
 
-### Change in `src/components/home/GallerySection.tsx`
+### Fix in `src/components/home/GallerySection.tsx`
 
-**Line 16** — change the constant:
+1. **Add `type="button"`** to all three pagination buttons (prev, page numbers, next) to prevent any default behavior.
+
+2. **Scroll to gallery section** on page change — update the `setPage` calls to also scroll the gallery section into view:
+
 ```tsx
-// From:
-const ITEMS_PER_PAGE = 12;
-// To:
-const ITEMS_PER_PAGE = 10;
+const handlePageChange = (newPage: number) => {
+  setPage(newPage);
+  document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth", block: "start" });
+};
 ```
 
-That's it — single line change. The existing pagination logic, masonry grid (4 columns on lg, 3 on md, 2 on sm), and page controls all work automatically with the new count. Mobile carousel remains unaffected as it uses all filtered items.
+3. Replace all `setPage(...)` calls in the pagination buttons with `handlePageChange(...)`:
+   - Previous button: `handlePageChange(Math.max(1, page - 1))`
+   - Page number buttons: `handlePageChange(p)`
+   - Next button: `handlePageChange(Math.min(totalPages, page + 1))`
 
 ### Files changed
-- `src/components/home/GallerySection.tsx` — line 16
+- `src/components/home/GallerySection.tsx` — add helper function + update 3 button onClick handlers
 
