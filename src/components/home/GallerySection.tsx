@@ -247,7 +247,7 @@ const GallerySection = () => {
             <span className="text-xs font-medium tracking-wider uppercase text-primary">Gallery</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-3">
-            Event <span className="text-gradient">Moments</span>
+            Event <span className="text-foreground">Moments</span>
           </h2>
           <p className="text-muted-foreground max-w-md mx-auto">
             Relive the best moments from Tech Carnival
