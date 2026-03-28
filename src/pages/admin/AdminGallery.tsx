@@ -87,6 +87,19 @@ const AdminGallery = () => {
     if (fileRef.current) fileRef.current.value = "";
   };
 
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) processFiles(e.target.files);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); };
+
   const handleEditSave = async () => {
     if (!editItem) return;
     await supabase.from("gallery_items").update({ caption: editCaption || null, category: editCategory }).eq("id", editItem.id);
