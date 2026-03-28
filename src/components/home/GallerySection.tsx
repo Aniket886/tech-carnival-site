@@ -344,7 +344,8 @@ const GallerySection = () => {
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mt-10">
                 <button
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  type="button"
+                  onClick={() => handlePageChange(Math.max(1, page - 1))}
                   disabled={page === 1}
                   className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 >
@@ -353,8 +354,9 @@ const GallerySection = () => {
 
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                   <button
+                    type="button"
                     key={p}
-                    onClick={() => setPage(p)}
+                    onClick={() => handlePageChange(p)}
                     className={`min-w-[44px] min-h-[44px] rounded-lg text-sm font-medium border transition-all flex items-center justify-center ${
                       p === page
                         ? "bg-primary/15 border-primary/40 text-primary shadow-[0_0_10px_hsl(var(--neon-blue)/0.15)]"
@@ -366,7 +368,8 @@ const GallerySection = () => {
                 ))}
 
                 <button
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  type="button"
+                  onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
                   className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 >
