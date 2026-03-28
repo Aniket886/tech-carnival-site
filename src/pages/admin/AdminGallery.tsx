@@ -50,9 +50,8 @@ const AdminGallery = () => {
   const dropRef = useRef<HTMLDivElement>(null);
 
   const allCategories = [...new Set([...DEFAULT_CATEGORIES, ...customCategories])];
-  const [isDragging, setIsDragging] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const dropRef = useRef<HTMLDivElement>(null);
+
+
 
   const fetchItems = async () => {
     const q = supabase.from("gallery_items").select("*").order("display_order").order("created_at", { ascending: false });
