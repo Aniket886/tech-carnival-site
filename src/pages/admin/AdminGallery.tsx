@@ -59,9 +59,23 @@ const AdminGallery = () => {
     setUploading(true);
     let count = 0;
     for (const file of Array.from(files)) {
-      const ext = file.name.split(".").pop();
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: uploadErr } = await supabase.storage.from("gallery-images").upload(path, file);
+      let uploadFile: File | Blob = file;
+      let finalExt = (file.name.split(".").pop() || "jpg").toLowerCase();
+
+      if (["heic", "heif"].includes(finalExt)) {
+        try {
+          const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.85 });
+          uploadFile = converted as Blob;
+          finalExt = "jpg";
+        } catch (convErr: any) {
+          toast({ title: "Conversion failed", description: convErr?.message || "Could not convert HEIC", variant: "destructive" });
+          continue;
+        }
+      }
+
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${finalExt}`;
+      const contentType = finalExt === "jpg" ? "image/jpeg" : file.type;
+      const { error: uploadErr } = await supabase.storage.from("gallery-images").upload(path, uploadFile, { contentType });
       if (uploadErr) { toast({ title: "Upload failed", description: uploadErr.message, variant: "destructive" }); continue; }
       const { data: urlData } = supabase.storage.from("gallery-images").getPublicUrl(path);
       await supabase.from("gallery_items").insert({ image_url: urlData.publicUrl, category: "general" });
