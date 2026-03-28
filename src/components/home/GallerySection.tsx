@@ -55,6 +55,7 @@ const MobileCarousel = ({
                   alt={item.caption || "Gallery image"}
                   className="w-full aspect-[4/3] object-cover"
                   loading="lazy"
+                  onError={(e) => { (e.currentTarget.closest('.flex-\\[0_0_85\\%\\]') as HTMLElement)?.style.setProperty('display', 'none'); }}
                 />
                 {item.caption && (
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-3 pt-6">
