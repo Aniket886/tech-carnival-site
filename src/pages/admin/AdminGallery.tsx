@@ -17,7 +17,8 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import { ImageIcon, Plus, Pencil, Trash2, Loader2, Upload } from "lucide-react";
+import { ImageIcon, Plus, Pencil, Trash2, Loader2, Upload, ImageOff } from "lucide-react";
+import heic2any from "heic2any";
 
 interface GalleryItem {
   id: string;
@@ -58,9 +59,23 @@ const AdminGallery = () => {
     setUploading(true);
     let count = 0;
     for (const file of Array.from(files)) {
-      const ext = file.name.split(".").pop();
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: uploadErr } = await supabase.storage.from("gallery-images").upload(path, file);
+      let uploadFile: File | Blob = file;
+      let finalExt = (file.name.split(".").pop() || "jpg").toLowerCase();
+
+      if (["heic", "heif"].includes(finalExt)) {
+        try {
+          const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.85 });
+          uploadFile = converted as Blob;
+          finalExt = "jpg";
+        } catch (convErr: any) {
+          toast({ title: "Conversion failed", description: convErr?.message || "Could not convert HEIC", variant: "destructive" });
+          continue;
+        }
+      }
+
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${finalExt}`;
+      const contentType = finalExt === "jpg" ? "image/jpeg" : file.type;
+      const { error: uploadErr } = await supabase.storage.from("gallery-images").upload(path, uploadFile, { contentType });
       if (uploadErr) { toast({ title: "Upload failed", description: uploadErr.message, variant: "destructive" }); continue; }
       const { data: urlData } = supabase.storage.from("gallery-images").getPublicUrl(path);
       await supabase.from("gallery_items").insert({ image_url: urlData.publicUrl, category: "general" });
@@ -124,7 +139,7 @@ const AdminGallery = () => {
             {uploading ? <Loader2 size={16} className="mr-1 animate-spin" /> : <Upload size={16} className="mr-1" />}
             Upload
           </Button>
-          <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
+          <input ref={fileRef} type="file" accept="*/*" multiple className="hidden" onChange={handleUpload} />
         </div>
       </div>
 
@@ -137,7 +152,19 @@ const AdminGallery = () => {
           {filtered.map(item => (
             <Card key={item.id} className={`overflow-hidden border-border group ${!item.is_visible ? "opacity-50" : ""}`}>
               <div className="relative aspect-square">
-                <img src={item.image_url} alt={item.caption || "Gallery"} className="w-full h-full object-cover" />
+                <img
+                  src={item.image_url}
+                  alt={item.caption || "Gallery"}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.style.display = "none";
+                    const placeholder = document.createElement("div");
+                    placeholder.className = "w-full h-full flex items-center justify-center bg-muted";
+                    placeholder.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>';
+                    target.parentElement?.appendChild(placeholder);
+                  }}
+                />
                 <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <Button variant="ghost" size="icon" onClick={() => { setEditItem(item); setEditCaption(item.caption || ""); setEditCategory(item.category); }}>
                     <Pencil size={16} />
