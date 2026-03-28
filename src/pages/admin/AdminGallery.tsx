@@ -30,7 +30,7 @@ interface GalleryItem {
   created_at: string;
 }
 
-const CATEGORIES = ["general", "technical", "cultural", "sports", "backstage"];
+const DEFAULT_CATEGORIES = ["general", "technical", "cultural", "sports", "backstage"];
 
 const AdminGallery = () => {
   const refreshKey = useAdminRefresh();
@@ -42,6 +42,14 @@ const AdminGallery = () => {
   const [filterCat, setFilterCat] = useState("all");
   const [editCaption, setEditCaption] = useState("");
   const [editCategory, setEditCategory] = useState("general");
+  const [isDragging, setIsDragging] = useState(false);
+  const [customCategories, setCustomCategories] = useState<string[]>([]);
+  const [newCatOpen, setNewCatOpen] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
+
+  const allCategories = [...new Set([...DEFAULT_CATEGORIES, ...customCategories])];
   const [isDragging, setIsDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
