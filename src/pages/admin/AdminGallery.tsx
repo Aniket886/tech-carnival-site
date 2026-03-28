@@ -139,7 +139,7 @@ const AdminGallery = () => {
             {uploading ? <Loader2 size={16} className="mr-1 animate-spin" /> : <Upload size={16} className="mr-1" />}
             Upload
           </Button>
-          <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
+          <input ref={fileRef} type="file" accept="*/*" multiple className="hidden" onChange={handleUpload} />
         </div>
       </div>
 
