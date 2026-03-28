@@ -278,7 +278,7 @@ const AdminGallery = () => {
               <Select value={editCategory} onValueChange={setEditCategory}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
+                  {allCategories.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
