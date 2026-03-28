@@ -159,6 +159,23 @@ const SwipeableLightbox = ({
         </button>
       </div>
       <button
+        onClick={async () => {
+          const item = items[currentIndex];
+          try {
+            const res = await fetch(item.image_url);
+            const blob = await res.blob();
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = (item.caption || "gallery-image") + "." + (item.image_url.split(".").pop() || "jpg");
+            a.click();
+            URL.revokeObjectURL(a.href);
+          } catch {}
+        }}
+        className="absolute top-4 right-16 p-3 rounded-full bg-background/80 border border-border text-muted-foreground hover:text-foreground transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center"
+      >
+        <Download size={20} />
+      </button>
+      <button
         onClick={onClose}
         className="absolute top-4 right-4 p-3 rounded-full bg-background/80 border border-border text-muted-foreground hover:text-foreground transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center"
       >
