@@ -55,6 +55,7 @@ const MobileCarousel = ({
                   alt={item.caption || "Gallery image"}
                   className="w-full aspect-[4/3] object-cover"
                   loading="lazy"
+                  onError={(e) => { (e.currentTarget.closest('.flex-\\[0_0_85\\%\\]') as HTMLElement)?.style.setProperty('display', 'none'); }}
                 />
                 {item.caption && (
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-3 pt-6">
@@ -123,6 +124,7 @@ const SwipeableLightbox = ({
                     src={item.image_url}
                     alt={item.caption || "Gallery image"}
                     className="max-w-full max-h-[80vh] object-contain rounded-xl border border-border"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
                   {item.caption && (
                     <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/80 to-transparent p-4 rounded-b-xl">
@@ -276,6 +278,7 @@ const GallerySection = () => {
                         alt={item.caption || "Gallery image"}
                         className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
+                        onError={(e) => { (e.currentTarget.closest('.break-inside-avoid') as HTMLElement)?.style.setProperty('display', 'none'); }}
                       />
                       {item.caption && (
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-3 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
