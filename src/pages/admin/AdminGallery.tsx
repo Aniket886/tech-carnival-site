@@ -173,9 +173,31 @@ const AdminGallery = () => {
             <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              {CATEGORIES.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
+              {allCategories.map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
             </SelectContent>
           </Select>
+          <Dialog open={newCatOpen} onOpenChange={setNewCatOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1">
+                <Plus size={14} /> Category
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-sm">
+              <DialogHeader><DialogTitle>Add New Category</DialogTitle></DialogHeader>
+              <div className="space-y-3">
+                <Input
+                  placeholder="Category name"
+                  value={newCatName}
+                  onChange={e => setNewCatName(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleAddCategory()}
+                />
+              </div>
+              <DialogFooter>
+                <Button variant="ghost" onClick={() => setNewCatOpen(false)}>Cancel</Button>
+                <Button onClick={handleAddCategory} disabled={!newCatName.trim()}>Add</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button onClick={() => fileRef.current?.click()} disabled={uploading} size="sm">
             {uploading ? <Loader2 size={16} className="mr-1 animate-spin" /> : <Upload size={16} className="mr-1" />}
             Upload
