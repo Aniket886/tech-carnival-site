@@ -188,6 +188,7 @@ const SwipeableLightbox = ({
 /* ── Main Gallery Section ── */
 const GallerySection = () => {
   const [items, setItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedImgIndex, setSelectedImgIndex] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
@@ -204,6 +205,7 @@ const GallerySection = () => {
         .order("created_at", { ascending: false })
         .then(({ data }) => {
           if (data) setItems(data as unknown as GalleryItem[]);
+          setLoading(false);
         });
     };
     fetchGallery();
@@ -218,7 +220,7 @@ const GallerySection = () => {
 
   useEffect(() => { setPage(1); }, [filter]);
 
-  if (!isSectionVisible("gallery") || !items.length) return null;
+  if (!isSectionVisible("gallery") || (!loading && !items.length)) return null;
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
