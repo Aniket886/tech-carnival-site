@@ -188,6 +188,7 @@ const SwipeableLightbox = ({
 /* ── Main Gallery Section ── */
 const GallerySection = () => {
   const [items, setItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedImgIndex, setSelectedImgIndex] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
@@ -204,6 +205,7 @@ const GallerySection = () => {
         .order("created_at", { ascending: false })
         .then(({ data }) => {
           if (data) setItems(data as unknown as GalleryItem[]);
+          setLoading(false);
         });
     };
     fetchGallery();
@@ -218,7 +220,7 @@ const GallerySection = () => {
 
   useEffect(() => { setPage(1); }, [filter]);
 
-  if (!isSectionVisible("gallery") || !items.length) return null;
+  if (!isSectionVisible("gallery") || (!loading && !items.length)) return null;
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -278,8 +280,25 @@ const GallerySection = () => {
           </div>
         )}
 
-        {/* Mobile: Swipeable Carousel / Desktop: Masonry Grid */}
-        {isMobile ? (
+        {/* Loading Skeleton */}
+        {loading ? (
+          <div className={isMobile ? "flex gap-3 overflow-hidden" : "columns-2 md:columns-3 lg:columns-3 gap-4 space-y-4"}>
+            {Array.from({ length: isMobile ? 2 : ITEMS_PER_PAGE }).map((_, i) => (
+              <div
+                key={i}
+                className={`rounded-xl overflow-hidden border border-border/50 ${isMobile ? "flex-[0_0_85%] min-w-0" : "break-inside-avoid mb-4"}`}
+              >
+                <div
+                  className="w-full bg-muted/50 animate-pulse"
+                  style={{ aspectRatio: isMobile ? "4/3" : [3/4, 1, 4/3, 16/9][i % 4].toString() }}
+                />
+                <div className="p-3 space-y-2">
+                  <div className="h-3 bg-muted/50 rounded animate-pulse w-3/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : isMobile ? (
           <MobileCarousel
             items={filtered}
             onSelect={(item) => setSelectedImgIndex(filtered.indexOf(item))}
